@@ -3,11 +3,11 @@ import db from "../../database";
 import { notificationTable } from "../../database/schema";
 
 async function clearNotifications(userId: string) {
-  await db
-    .delete(notificationTable)
-    .where(eq(notificationTable.userId, userId));
+	await db
+		.delete(notificationTable)
+		.where(eq(notificationTable.userId, userId));
 
-  return { success: true };
+	return { success: true };
 }
 
 export default clearNotifications;

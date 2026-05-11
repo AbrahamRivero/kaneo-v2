@@ -3,67 +3,67 @@ import { authClient } from "@/lib/auth-client";
 import { createSlug } from "@/lib/utils/create-slug";
 
 type UpdateWorkspaceRequest = {
-  workspaceId: string;
-  name?: string;
-  description?: string;
-  slug?: string;
-  logo?: string;
-  metadata?: Record<string, unknown>;
+	workspaceId: string;
+	name?: string;
+	description?: string;
+	slug?: string;
+	logo?: string;
+	metadata?: Record<string, unknown>;
 };
 
 function useUpdateWorkspace() {
-  return useMutation({
-    mutationFn: async ({
-      workspaceId,
-      name,
-      description,
-      slug,
-      logo,
-      metadata,
-    }: UpdateWorkspaceRequest) => {
-      const updateData: {
-        name?: string;
-        description?: string;
-        slug?: string;
-        logo?: string;
-        metadata?: Record<string, unknown>;
-      } = {};
+	return useMutation({
+		mutationFn: async ({
+			workspaceId,
+			name,
+			description,
+			slug,
+			logo,
+			metadata,
+		}: UpdateWorkspaceRequest) => {
+			const updateData: {
+				name?: string;
+				description?: string;
+				slug?: string;
+				logo?: string;
+				metadata?: Record<string, unknown>;
+			} = {};
 
-      if (name !== undefined) {
-        updateData.name = name;
-        if (slug === undefined) {
-          updateData.slug = createSlug(name);
-        }
-      }
+			if (name !== undefined) {
+				updateData.name = name;
+				if (slug === undefined) {
+					updateData.slug = createSlug(name);
+				}
+			}
 
-      if (slug !== undefined) {
-        updateData.slug = slug;
-      }
+			if (slug !== undefined) {
+				updateData.slug = slug;
+			}
 
-      if (description !== undefined) {
-        updateData.description = description;
-      }
+			if (description !== undefined) {
+				updateData.description = description;
+			}
 
-      if (logo !== undefined) {
-        updateData.logo = logo;
-      }
+			if (logo !== undefined) {
+				updateData.logo = logo;
+			}
 
-      if (metadata !== undefined) {
-        updateData.metadata = metadata;
-      }
+			if (metadata !== undefined) {
+				updateData.metadata = metadata;
+			}
 
-      const { data, error } = await authClient.organization.update({
-        data: updateData,
-        organizationId: workspaceId,
-      });
+			const { data, error } = await authClient.organization.update({
+				data: updateData,
+				organizationId: workspaceId,
+			});
 
-      if (error) {
-        throw new Error(error.message || "Failed to update workspace");
-      }
+			if (error) {
+				throw new Error(error.message || "Failed to update workspace");
+			}
 
-      return data;
-    },
-  });
+			return data;
+		},
+	});
 }
 
 export default useUpdateWorkspace;

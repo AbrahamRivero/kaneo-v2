@@ -6,5 +6,5 @@ import { fileURLToPath } from "node:url";
  * Resolved from `dist/install/resolve-entry.js` at runtime.
  */
 export function resolvePackageEntryPath(): string {
-  return join(dirname(fileURLToPath(import.meta.url)), "../index.js");
+	return join(dirname(fileURLToPath(import.meta.url)), "../index.js");
 }

@@ -23,7 +23,12 @@
 			"!**/.cache",
 			"!**/coverage",
 			"!**/.claude",
-			"!**/openapi.json"
+			"!**/openapi.json",
+			"!**/.devcontainer",
+			"!**/.vscode",
+			"!**/biome.json",
+			"!**/turbo.json",
+			"!**/package.json"
 		]
 	},
 	"formatter": {
@@ -51,8 +56,7 @@
 	},
 	"javascript": {
 		"formatter": {
-			"quoteStyle": "double",
-			"indentStyle": "space"
+			"quoteStyle": "double"
 		}
 	}
 }

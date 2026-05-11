@@ -5,16 +5,16 @@ type EmailLocale = (typeof supportedLocales)[number];
 const defaultLocale: EmailLocale = "en";
 
 export function resolveEmailLocale(locale?: string | null): EmailLocale {
-  if (!locale) return defaultLocale;
+	if (!locale) return defaultLocale;
 
-  const normalized = locale.toLowerCase();
+	const normalized = locale.toLowerCase();
 
-  const exact = supportedLocales.find((l) => l === normalized);
-  if (exact) return exact;
+	const exact = supportedLocales.find((l) => l === normalized);
+	if (exact) return exact;
 
-  const languageCode = normalized.split("-")[0];
-  const match = supportedLocales.find((l) => l === languageCode);
-  if (match) return match;
+	const languageCode = normalized.split("-")[0];
+	const match = supportedLocales.find((l) => l === languageCode);
+	if (match) return match;
 
-  return defaultLocale;
+	return defaultLocale;
 }

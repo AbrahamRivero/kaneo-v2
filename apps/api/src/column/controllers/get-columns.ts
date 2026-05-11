@@ -3,13 +3,13 @@ import db from "../../database";
 import { columnTable } from "../../database/schema";
 
 async function getColumns(projectId: string) {
-  const columns = await db
-    .select()
-    .from(columnTable)
-    .where(eq(columnTable.projectId, projectId))
-    .orderBy(asc(columnTable.position));
+	const columns = await db
+		.select()
+		.from(columnTable)
+		.where(eq(columnTable.projectId, projectId))
+		.orderBy(asc(columnTable.position));
 
-  return columns;
+	return columns;
 }
 
 export default getColumns;

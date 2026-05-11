@@ -3,35 +3,35 @@
 import { Menubar as MenubarPrimitive } from "@base-ui/react/menubar";
 
 import {
-  Menu,
-  MenuCheckboxItem,
-  MenuGroup,
-  MenuGroupLabel,
-  MenuItem,
-  MenuPopup,
-  MenuPortal,
-  MenuRadioGroup,
-  MenuRadioItem,
-  MenuSeparator,
-  MenuShortcut,
-  MenuSub,
-  MenuSubPopup,
-  MenuSubTrigger,
-  MenuTrigger,
+	Menu,
+	MenuCheckboxItem,
+	MenuGroup,
+	MenuGroupLabel,
+	MenuItem,
+	MenuPopup,
+	MenuPortal,
+	MenuRadioGroup,
+	MenuRadioItem,
+	MenuSeparator,
+	MenuShortcut,
+	MenuSub,
+	MenuSubPopup,
+	MenuSubTrigger,
+	MenuTrigger,
 } from "@/components/ui/menu";
 import { cn } from "@/lib/cn";
 
 function Menubar({ className, ...props }: MenubarPrimitive.Props) {
-  return (
-    <MenubarPrimitive
-      className={cn(
-        "flex items-center gap-1 rounded-lg border bg-background p-1",
-        className,
-      )}
-      data-slot="menubar"
-      {...props}
-    />
-  );
+	return (
+		<MenubarPrimitive
+			className={cn(
+				"flex items-center gap-1 rounded-lg border bg-background p-1",
+				className,
+			)}
+			data-slot="menubar"
+			{...props}
+		/>
+	);
 }
 
 const MenubarMenu = Menu;
@@ -51,20 +51,20 @@ const MenubarSeparator = MenuSeparator;
 const MenubarShortcut = MenuShortcut;
 
 export {
-  Menubar,
-  MenubarCheckboxItem,
-  MenubarContent,
-  MenubarGroup,
-  MenubarItem,
-  MenubarLabel,
-  MenubarMenu,
-  MenubarPortal,
-  MenubarRadioGroup,
-  MenubarRadioItem,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarSub,
-  MenubarSubContent,
-  MenubarSubTrigger,
-  MenubarTrigger,
+	Menubar,
+	MenubarCheckboxItem,
+	MenubarContent,
+	MenubarGroup,
+	MenubarItem,
+	MenubarLabel,
+	MenubarMenu,
+	MenubarPortal,
+	MenubarRadioGroup,
+	MenubarRadioItem,
+	MenubarSeparator,
+	MenubarShortcut,
+	MenubarSub,
+	MenubarSubContent,
+	MenubarSubTrigger,
+	MenubarTrigger,
 };

@@ -4,17 +4,17 @@ import useAuth from "@/components/providers/auth-provider/hooks/use-auth";
 import { getBrowserLocale, i18n, resolveLocale } from "./index";
 
 export function AppI18nProvider({ children }: PropsWithChildren) {
-  const { user } = useAuth();
+	const { user } = useAuth();
 
-  const resolvedLocale = useMemo(
-    () => resolveLocale(user?.locale, getBrowserLocale()),
-    [user?.locale],
-  );
+	const resolvedLocale = useMemo(
+		() => resolveLocale(user?.locale, getBrowserLocale()),
+		[user?.locale],
+	);
 
-  useEffect(() => {
-    void i18n.changeLanguage(resolvedLocale);
-    document.documentElement.lang = resolvedLocale;
-  }, [resolvedLocale]);
+	useEffect(() => {
+		void i18n.changeLanguage(resolvedLocale);
+		document.documentElement.lang = resolvedLocale;
+	}, [resolvedLocale]);
 
-  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
+	return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
 }

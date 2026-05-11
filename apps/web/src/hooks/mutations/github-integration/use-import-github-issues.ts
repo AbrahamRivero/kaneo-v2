@@ -3,12 +3,12 @@ import importGithubIssues from "@/fetchers/github-integration/import-github-issu
 import queryClient from "@/query-client";
 
 function useImportGithubIssues() {
-  return useMutation({
-    mutationFn: importGithubIssues,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
-    },
-  });
+	return useMutation({
+		mutationFn: importGithubIssues,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["tasks"] });
+		},
+	});
 }
 
 export default useImportGithubIssues;

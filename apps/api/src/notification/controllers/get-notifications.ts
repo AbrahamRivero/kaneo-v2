@@ -3,14 +3,14 @@ import db from "../../database";
 import { notificationTable } from "../../database/schema";
 
 async function getNotifications(userId: string) {
-  const notifications = await db
-    .select()
-    .from(notificationTable)
-    .where(eq(notificationTable.userId, userId))
-    .orderBy(desc(notificationTable.createdAt))
-    .limit(50);
+	const notifications = await db
+		.select()
+		.from(notificationTable)
+		.where(eq(notificationTable.userId, userId))
+		.orderBy(desc(notificationTable.createdAt))
+		.limit(50);
 
-  return notifications;
+	return notifications;
 }
 
 export default getNotifications;

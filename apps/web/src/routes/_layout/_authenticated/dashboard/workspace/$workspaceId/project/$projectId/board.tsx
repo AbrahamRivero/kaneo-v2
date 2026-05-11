@@ -22,250 +22,250 @@ import useProjectStore from "@/store/project";
 import { useUserPreferencesStore } from "@/store/user-preferences";
 
 type BoardSearchParams = {
-  taskId?: string;
+	taskId?: string;
 };
 
 export const Route = createFileRoute(
-  "/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/board",
+	"/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/board",
 )({
-  component: RouteComponent,
-  validateSearch: (search: Record<string, unknown>): BoardSearchParams => ({
-    taskId: typeof search.taskId === "string" ? search.taskId : undefined,
-  }),
+	component: RouteComponent,
+	validateSearch: (search: Record<string, unknown>): BoardSearchParams => ({
+		taskId: typeof search.taskId === "string" ? search.taskId : undefined,
+	}),
 });
 
 const skeletonColumns = [
-  { key: "col-todo", cards: 3 },
-  { key: "col-progress", cards: 4 },
-  { key: "col-review", cards: 2 },
-  { key: "col-done", cards: 1 },
+	{ key: "col-todo", cards: 3 },
+	{ key: "col-progress", cards: 4 },
+	{ key: "col-review", cards: 2 },
+	{ key: "col-done", cards: 1 },
 ];
 
 function BoardSkeleton() {
-  return (
-    <div className="flex h-full w-full gap-4 p-4 overflow-hidden">
-      {skeletonColumns.map((col) => (
-        <div key={col.key} className="flex w-72 shrink-0 flex-col gap-3">
-          <div className="flex items-center gap-2 px-1">
-            <div className="h-3 w-3 rounded-full bg-muted animate-pulse" />
-            <div className="h-4 w-24 rounded bg-muted animate-pulse" />
-            <div className="h-4 w-5 rounded bg-muted animate-pulse" />
-          </div>
-          <div className="flex flex-col gap-2.5">
-            {Array.from({ length: col.cards }, (_, i) => `${col.key}-${i}`).map(
-              (cardKey) => (
-                <div
-                  key={cardKey}
-                  className="rounded-lg border border-border bg-card p-3 space-y-2.5"
-                >
-                  <div className="h-3.5 w-4/5 rounded bg-muted animate-pulse" />
-                  <div className="h-3 w-3/5 rounded bg-muted animate-pulse" />
-                  <div className="flex items-center gap-2 pt-1">
-                    <div className="h-5 w-5 rounded-full bg-muted animate-pulse" />
-                    <div className="h-3 w-16 rounded bg-muted animate-pulse" />
-                  </div>
-                </div>
-              ),
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+	return (
+		<div className="flex h-full w-full gap-4 p-4 overflow-hidden">
+			{skeletonColumns.map((col) => (
+				<div key={col.key} className="flex w-72 shrink-0 flex-col gap-3">
+					<div className="flex items-center gap-2 px-1">
+						<div className="h-3 w-3 rounded-full bg-muted animate-pulse" />
+						<div className="h-4 w-24 rounded bg-muted animate-pulse" />
+						<div className="h-4 w-5 rounded bg-muted animate-pulse" />
+					</div>
+					<div className="flex flex-col gap-2.5">
+						{Array.from({ length: col.cards }, (_, i) => `${col.key}-${i}`).map(
+							(cardKey) => (
+								<div
+									key={cardKey}
+									className="rounded-lg border border-border bg-card p-3 space-y-2.5"
+								>
+									<div className="h-3.5 w-4/5 rounded bg-muted animate-pulse" />
+									<div className="h-3 w-3/5 rounded bg-muted animate-pulse" />
+									<div className="flex items-center gap-2 pt-1">
+										<div className="h-5 w-5 rounded-full bg-muted animate-pulse" />
+										<div className="h-3 w-16 rounded bg-muted animate-pulse" />
+									</div>
+								</div>
+							),
+						)}
+					</div>
+				</div>
+			))}
+		</div>
+	);
 }
 
 function RouteComponent() {
-  const { t } = useTranslation();
-  const { projectId, workspaceId } = Route.useParams();
-  const { taskId } = Route.useSearch();
-  const navigate = useNavigate();
-  const { data } = useGetTasks(projectId);
-  const { project, setProject } = useProjectStore();
-  const { viewMode, setViewMode } = useUserPreferencesStore();
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-  const [boardSearchQuery, setBoardSearchQuery] = useState("");
-  const [isBoardSearchMounted, setIsBoardSearchMounted] = useState(false);
-  const [isBoardSearchVisible, setIsBoardSearchVisible] = useState(false);
-  const [boardSearchInput, setBoardSearchInput] =
-    useState<HTMLInputElement | null>(null);
-  const [sort, setSort] = useState<SortConfig>({
-    field: "position",
-    direction: "asc",
-  });
+	const { t } = useTranslation();
+	const { projectId, workspaceId } = Route.useParams();
+	const { taskId } = Route.useSearch();
+	const navigate = useNavigate();
+	const { data } = useGetTasks(projectId);
+	const { project, setProject } = useProjectStore();
+	const { viewMode, setViewMode } = useUserPreferencesStore();
+	const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+	const [boardSearchQuery, setBoardSearchQuery] = useState("");
+	const [isBoardSearchMounted, setIsBoardSearchMounted] = useState(false);
+	const [isBoardSearchVisible, setIsBoardSearchVisible] = useState(false);
+	const [boardSearchInput, setBoardSearchInput] =
+		useState<HTMLInputElement | null>(null);
+	const [sort, setSort] = useState<SortConfig>({
+		field: "position",
+		direction: "asc",
+	});
 
-  const { data: users } = useGetActiveWorkspaceUsers(workspaceId);
-  const { data: workspaceLabels = [] } = useGetLabelsByWorkspace(workspaceId);
+	const { data: users } = useGetActiveWorkspaceUsers(workspaceId);
+	const { data: workspaceLabels = [] } = useGetLabelsByWorkspace(workspaceId);
 
-  const handleCloseTaskSheet = useCallback(() => {
-    navigate({
-      to: ".",
-      search: {},
-      replace: true,
-    });
-  }, [navigate]);
+	const handleCloseTaskSheet = useCallback(() => {
+		navigate({
+			to: ".",
+			search: {},
+			replace: true,
+		});
+	}, [navigate]);
 
-  useRegisterShortcuts({
-    sequentialShortcuts: {
-      [shortcuts.view.prefix]: {
-        [shortcuts.view.board]: () => setViewMode("board"),
-        [shortcuts.view.list]: () => setViewMode("list"),
-        [shortcuts.view.gantt]: () =>
-          navigate({
-            to: "/dashboard/workspace/$workspaceId/project/$projectId/gantt",
-            params: { workspaceId, projectId },
-          }),
-        [shortcuts.view.backlog]: () =>
-          navigate({
-            to: "/dashboard/workspace/$workspaceId/project/$projectId/backlog",
-            params: { workspaceId, projectId },
-          }),
-      },
-    },
-  });
+	useRegisterShortcuts({
+		sequentialShortcuts: {
+			[shortcuts.view.prefix]: {
+				[shortcuts.view.board]: () => setViewMode("board"),
+				[shortcuts.view.list]: () => setViewMode("list"),
+				[shortcuts.view.gantt]: () =>
+					navigate({
+						to: "/dashboard/workspace/$workspaceId/project/$projectId/gantt",
+						params: { workspaceId, projectId },
+					}),
+				[shortcuts.view.backlog]: () =>
+					navigate({
+						to: "/dashboard/workspace/$workspaceId/project/$projectId/backlog",
+						params: { workspaceId, projectId },
+					}),
+			},
+		},
+	});
 
-  useEffect(() => {
-    if (data) {
-      setProject(data);
-    }
-  }, [data, setProject]);
+	useEffect(() => {
+		if (data) {
+			setProject(data);
+		}
+	}, [data, setProject]);
 
-  const openBoardSearch = useCallback(() => {
-    setIsBoardSearchMounted(true);
-    window.requestAnimationFrame(() => setIsBoardSearchVisible(true));
-  }, []);
+	const openBoardSearch = useCallback(() => {
+		setIsBoardSearchMounted(true);
+		window.requestAnimationFrame(() => setIsBoardSearchVisible(true));
+	}, []);
 
-  const closeBoardSearch = useCallback(() => {
-    setIsBoardSearchVisible(false);
-    window.setTimeout(() => setIsBoardSearchMounted(false), 180);
-  }, []);
+	const closeBoardSearch = useCallback(() => {
+		setIsBoardSearchVisible(false);
+		window.setTimeout(() => setIsBoardSearchMounted(false), 180);
+	}, []);
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      const isFindShortcut =
-        (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "f";
+	useEffect(() => {
+		const onKeyDown = (event: KeyboardEvent) => {
+			const isFindShortcut =
+				(event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "f";
 
-      if (!isFindShortcut) return;
+			if (!isFindShortcut) return;
 
-      event.preventDefault();
-      openBoardSearch();
-    };
+			event.preventDefault();
+			openBoardSearch();
+		};
 
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [openBoardSearch]);
+		window.addEventListener("keydown", onKeyDown);
+		return () => window.removeEventListener("keydown", onKeyDown);
+	}, [openBoardSearch]);
 
-  useEffect(() => {
-    if (!isBoardSearchMounted) return;
-    window.requestAnimationFrame(() => boardSearchInput?.focus());
-  }, [isBoardSearchMounted, boardSearchInput]);
+	useEffect(() => {
+		if (!isBoardSearchMounted) return;
+		window.requestAnimationFrame(() => boardSearchInput?.focus());
+	}, [isBoardSearchMounted, boardSearchInput]);
 
-  const {
-    filters,
-    updateFilter,
-    updateLabelFilter,
-    filteredProject,
-    hasActiveFilters,
-    clearFilters,
-  } = useTaskFiltersWithLabelsSupport(project, projectId, boardSearchQuery);
+	const {
+		filters,
+		updateFilter,
+		updateLabelFilter,
+		filteredProject,
+		hasActiveFilters,
+		clearFilters,
+	} = useTaskFiltersWithLabelsSupport(project, projectId, boardSearchQuery);
 
-  const sortedProject = useMemo(() => {
-    if (!filteredProject || sort.field === "position") return filteredProject;
-    return {
-      ...filteredProject,
-      columns: filteredProject.columns.map((column) => ({
-        ...column,
-        tasks: sortTasks(column.tasks, sort),
-      })),
-    };
-  }, [filteredProject, sort]);
+	const sortedProject = useMemo(() => {
+		if (!filteredProject || sort.field === "position") return filteredProject;
+		return {
+			...filteredProject,
+			columns: filteredProject.columns.map((column) => ({
+				...column,
+				tasks: sortTasks(column.tasks, sort),
+			})),
+		};
+	}, [filteredProject, sort]);
 
-  const boardHeaderSearch = isBoardSearchMounted ? (
-    <div
-      className={`relative w-[240px] origin-top transition-all duration-180 ease-out ${
-        isBoardSearchVisible
-          ? "translate-y-0 scale-y-100 opacity-100"
-          : "pointer-events-none -translate-y-1 scale-y-95 opacity-0"
-      }`}
-    >
-      <Search className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 text-muted-foreground" />
-      <Input
-        ref={setBoardSearchInput}
-        value={boardSearchQuery}
-        onChange={(event) => setBoardSearchQuery(event.target.value)}
-        onKeyDown={(event) => {
-          if (event.key === "Escape" && !boardSearchQuery.trim()) {
-            closeBoardSearch();
-          }
-        }}
-        onBlur={() => {
-          if (!boardSearchQuery.trim()) {
-            closeBoardSearch();
-          }
-        }}
-        placeholder={t("tasks:boardSearchPlaceholder")}
-        className="h-7.5 [&_[data-slot=input]]:h-7 [&_[data-slot=input]]:leading-7 [&_[data-slot=input]]:pl-8 [&_[data-slot=input]]:text-xs [&_[data-slot=input]]:placeholder:text-xs [&_[data-slot=input]]:placeholder:leading-7"
-      />
-    </div>
-  ) : null;
+	const boardHeaderSearch = isBoardSearchMounted ? (
+		<div
+			className={`relative w-[240px] origin-top transition-all duration-180 ease-out ${
+				isBoardSearchVisible
+					? "translate-y-0 scale-y-100 opacity-100"
+					: "pointer-events-none -translate-y-1 scale-y-95 opacity-0"
+			}`}
+		>
+			<Search className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 text-muted-foreground" />
+			<Input
+				ref={setBoardSearchInput}
+				value={boardSearchQuery}
+				onChange={(event) => setBoardSearchQuery(event.target.value)}
+				onKeyDown={(event) => {
+					if (event.key === "Escape" && !boardSearchQuery.trim()) {
+						closeBoardSearch();
+					}
+				}}
+				onBlur={() => {
+					if (!boardSearchQuery.trim()) {
+						closeBoardSearch();
+					}
+				}}
+				placeholder={t("tasks:boardSearchPlaceholder")}
+				className="h-7.5 [&_[data-slot=input]]:h-7 [&_[data-slot=input]]:leading-7 [&_[data-slot=input]]:pl-8 [&_[data-slot=input]]:text-xs [&_[data-slot=input]]:placeholder:text-xs [&_[data-slot=input]]:placeholder:leading-7"
+			/>
+		</div>
+	) : null;
 
-  return (
-    <ProjectLayout
-      projectId={projectId}
-      workspaceId={workspaceId}
-      activeView="board"
-      headerActions={boardHeaderSearch}
-    >
-      <PageTitle
-        title={`${project?.name} — ${viewMode === "board" ? t("tasks:view.board") : t("tasks:view.list")}`}
-        hideAppName
-      />
-      <div className="relative flex flex-col h-full min-h-0 overflow-hidden">
-        <BoardToolbar
-          project={project}
-          filters={filters}
-          updateFilter={updateFilter}
-          updateLabelFilter={updateLabelFilter}
-          clearFilters={clearFilters}
-          hasActiveFilters={hasActiveFilters}
-          users={users}
-          workspaceLabels={workspaceLabels}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          sort={sort}
-          onSortChange={setSort}
-        />
+	return (
+		<ProjectLayout
+			projectId={projectId}
+			workspaceId={workspaceId}
+			activeView="board"
+			headerActions={boardHeaderSearch}
+		>
+			<PageTitle
+				title={`${project?.name} — ${viewMode === "board" ? t("tasks:view.board") : t("tasks:view.list")}`}
+				hideAppName
+			/>
+			<div className="relative flex flex-col h-full min-h-0 overflow-hidden">
+				<BoardToolbar
+					project={project}
+					filters={filters}
+					updateFilter={updateFilter}
+					updateLabelFilter={updateLabelFilter}
+					clearFilters={clearFilters}
+					hasActiveFilters={hasActiveFilters}
+					users={users}
+					workspaceLabels={workspaceLabels}
+					viewMode={viewMode}
+					setViewMode={setViewMode}
+					sort={sort}
+					onSortChange={setSort}
+				/>
 
-        <div className="flex h-full flex-1 overflow-hidden bg-background">
-          {sortedProject ? (
-            viewMode === "board" ? (
-              <KanbanBoard
-                project={sortedProject}
-                disableDragDrop={sort.field !== "position"}
-              />
-            ) : (
-              <ListView
-                project={sortedProject}
-                disableDragDrop={sort.field !== "position"}
-              />
-            )
-          ) : (
-            <BoardSkeleton />
-          )}
-        </div>
+				<div className="flex h-full flex-1 overflow-hidden bg-background">
+					{sortedProject ? (
+						viewMode === "board" ? (
+							<KanbanBoard
+								project={sortedProject}
+								disableDragDrop={sort.field !== "position"}
+							/>
+						) : (
+							<ListView
+								project={sortedProject}
+								disableDragDrop={sort.field !== "position"}
+							/>
+						)
+					) : (
+						<BoardSkeleton />
+					)}
+				</div>
 
-        <CreateTaskModal
-          open={isTaskModalOpen}
-          projectId={projectId}
-          onClose={() => setIsTaskModalOpen(false)}
-        />
+				<CreateTaskModal
+					open={isTaskModalOpen}
+					projectId={projectId}
+					onClose={() => setIsTaskModalOpen(false)}
+				/>
 
-        <TaskDetailsSheet
-          taskId={taskId}
-          projectId={projectId}
-          workspaceId={workspaceId}
-          onClose={handleCloseTaskSheet}
-        />
-      </div>
-    </ProjectLayout>
-  );
+				<TaskDetailsSheet
+					taskId={taskId}
+					projectId={projectId}
+					workspaceId={workspaceId}
+					onClose={handleCloseTaskSheet}
+				/>
+			</div>
+		</ProjectLayout>
+	);
 }

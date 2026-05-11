@@ -3,12 +3,12 @@ import { getPendingInvitations } from "@/fetchers/invitation/get-pending-invitat
 import { authClient } from "@/lib/auth-client";
 
 export function usePendingInvitations() {
-  const { data: session } = authClient.useSession();
+	const { data: session } = authClient.useSession();
 
-  return useQuery({
-    queryKey: ["invitations", "pending", session?.user?.email],
-    queryFn: getPendingInvitations,
-    enabled: !!session?.user?.email,
-    refetchInterval: 60000,
-  });
+	return useQuery({
+		queryKey: ["invitations", "pending", session?.user?.email],
+		queryFn: getPendingInvitations,
+		enabled: !!session?.user?.email,
+		refetchInterval: 60000,
+	});
 }
