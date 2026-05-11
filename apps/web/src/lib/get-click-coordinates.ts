@@ -8,14 +8,14 @@ import type { MouseEvent } from "react";
  * @returns Object with x and y coordinates as percentages (0-100)
  */
 export function getClickCoordinates(event: MouseEvent<HTMLElement>): {
-  x: number;
-  y: number;
+	x: number;
+	y: number;
 } {
-  const rect = event.currentTarget.getBoundingClientRect();
-  const x = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
-  const y = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
+	const rect = event.currentTarget.getBoundingClientRect();
+	const x = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
+	const y = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
 
-  return { x, y };
+	return { x, y };
 }
 
 /**
@@ -26,12 +26,12 @@ export function getClickCoordinates(event: MouseEvent<HTMLElement>): {
  * @returns Object with x and y coordinates as percentages (0-100)
  */
 export function getElementCoordinates(element: HTMLElement): {
-  x: number;
-  y: number;
+	x: number;
+	y: number;
 } {
-  const rect = element.getBoundingClientRect();
-  const x = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
-  const y = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
+	const rect = element.getBoundingClientRect();
+	const x = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
+	const y = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
 
-  return { x, y };
+	return { x, y };
 }

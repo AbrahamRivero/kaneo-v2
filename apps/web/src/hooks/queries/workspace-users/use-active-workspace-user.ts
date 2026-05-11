@@ -4,24 +4,24 @@ import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 import { authClient } from "@/lib/auth-client";
 
 export const useGetActiveWorkspaceUser = () => {
-  const { user } = useAuth();
-  const { data: workspace } = useActiveWorkspace();
+	const { user } = useAuth();
+	const { data: workspace } = useActiveWorkspace();
 
-  return useQuery({
-    queryKey: ["workspace-user", "active", workspace?.id, user?.id],
-    enabled: !!workspace?.id && !!user?.id,
-    queryFn: async () => {
-      const { data, error } = await authClient.organization.listMembers({
-        query: {
-          organizationId: workspace?.id,
-        },
-      });
+	return useQuery({
+		queryKey: ["workspace-user", "active", workspace?.id, user?.id],
+		enabled: !!workspace?.id && !!user?.id,
+		queryFn: async () => {
+			const { data, error } = await authClient.organization.listMembers({
+				query: {
+					organizationId: workspace?.id,
+				},
+			});
 
-      if (error) {
-        throw new Error(error.message || "Failed to get active workspace user");
-      }
+			if (error) {
+				throw new Error(error.message || "Failed to get active workspace user");
+			}
 
-      return data.members.find((member) => member.userId === user?.id) ?? null;
-    },
-  });
+			return data.members.find((member) => member.userId === user?.id) ?? null;
+		},
+	});
 };

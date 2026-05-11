@@ -21,11 +21,11 @@ function useUpdateWorkspaceUserRole() {
         role: role as "admin" | "member" | "owner",
       });
 
-      if (error) {
-        throw new Error(
-          error.message || "Failed to update workspace member role",
-        );
-      }
+			if (error) {
+				throw new Error(
+					error.message || "Failed to update workspace member role",
+				);
+			}
 
       return data;
     },

@@ -7,8 +7,8 @@ import * as v from "valibot";
 import db from "../database";
 import { integrationTable, projectTable } from "../database/schema";
 import {
-  type GitHubConfig,
-  validateGitHubConfig,
+	type GitHubConfig,
+	validateGitHubConfig,
 } from "../plugins/github/config";
 import { handleGitHubWebhook } from "../plugins/github/webhook-handler";
 import { githubIntegrationSchema } from "../schemas";
@@ -23,114 +23,114 @@ import listUserRepositories from "./controllers/list-user-repositories";
 import verifyGithubInstallation from "./controllers/verify-github-installation";
 
 const githubAppInfoSchema = v.object({
-  appName: v.nullable(v.string()),
+	appName: v.nullable(v.string()),
 });
 
 const githubRepositorySchema = v.object({
-  id: v.number(),
-  name: v.string(),
-  full_name: v.string(),
-  owner: v.object({
-    login: v.string(),
-  }),
-  private: v.boolean(),
-  html_url: v.string(),
+	id: v.number(),
+	name: v.string(),
+	full_name: v.string(),
+	owner: v.object({
+		login: v.string(),
+	}),
+	private: v.boolean(),
+	html_url: v.string(),
 });
 
 const verificationResultSchema = v.object({
-  installed: v.boolean(),
-  message: v.optional(v.string()),
+	installed: v.boolean(),
+	message: v.optional(v.string()),
 });
 
 const importResultSchema = v.object({
-  imported: v.number(),
-  skipped: v.number(),
-  errors: v.optional(v.array(v.string())),
+	imported: v.number(),
+	skipped: v.number(),
+	errors: v.optional(v.array(v.string())),
 });
 
 const githubIntegration = new Hono<{
-  Variables: {
-    userId: string;
-    workspaceId: string;
-    apiKey?: {
-      id: string;
-      userId: string;
-      enabled: boolean;
-    };
-  };
+	Variables: {
+		userId: string;
+		workspaceId: string;
+		apiKey?: {
+			id: string;
+			userId: string;
+			enabled: boolean;
+		};
+	};
 }>()
-  .get(
-    "/app-info",
-    describeRoute({
-      operationId: "getGitHubAppInfo",
-      tags: ["GitHub"],
-      description: "Get GitHub app configuration information",
-      responses: {
-        200: {
-          description: "GitHub app information",
-          content: {
-            "application/json": { schema: resolver(githubAppInfoSchema) },
-          },
-        },
-      },
-    }),
-    async (c) => {
-      return c.json({
-        appName: process.env.GITHUB_APP_NAME || null,
-      });
-    },
-  )
-  .get(
-    "/repositories",
-    describeRoute({
-      operationId: "listGitHubRepositories",
-      tags: ["GitHub"],
-      description: "List all accessible GitHub repositories",
-      responses: {
-        200: {
-          description: "List of repositories",
-          content: {
-            "application/json": {
-              schema: resolver(v.array(githubRepositorySchema)),
-            },
-          },
-        },
-      },
-    }),
-    async (c) => {
-      const repositories = await listUserRepositories();
-      return c.json(repositories);
-    },
-  )
-  .post(
-    "/verify",
-    describeRoute({
-      operationId: "verifyGitHubInstallation",
-      tags: ["GitHub"],
-      description: "Verify GitHub app installation for a repository",
-      responses: {
-        200: {
-          description: "Verification result",
-          content: {
-            "application/json": { schema: resolver(verificationResultSchema) },
-          },
-        },
-      },
-    }),
-    validator(
-      "json",
-      v.object({
-        repositoryOwner: v.pipe(v.string(), v.minLength(1)),
-        repositoryName: v.pipe(v.string(), v.minLength(1)),
-      }),
-    ),
-    async (c) => {
-      const { repositoryOwner, repositoryName } = c.req.valid("json");
+	.get(
+		"/app-info",
+		describeRoute({
+			operationId: "getGitHubAppInfo",
+			tags: ["GitHub"],
+			description: "Get GitHub app configuration information",
+			responses: {
+				200: {
+					description: "GitHub app information",
+					content: {
+						"application/json": { schema: resolver(githubAppInfoSchema) },
+					},
+				},
+			},
+		}),
+		async (c) => {
+			return c.json({
+				appName: process.env.GITHUB_APP_NAME || null,
+			});
+		},
+	)
+	.get(
+		"/repositories",
+		describeRoute({
+			operationId: "listGitHubRepositories",
+			tags: ["GitHub"],
+			description: "List all accessible GitHub repositories",
+			responses: {
+				200: {
+					description: "List of repositories",
+					content: {
+						"application/json": {
+							schema: resolver(v.array(githubRepositorySchema)),
+						},
+					},
+				},
+			},
+		}),
+		async (c) => {
+			const repositories = await listUserRepositories();
+			return c.json(repositories);
+		},
+	)
+	.post(
+		"/verify",
+		describeRoute({
+			operationId: "verifyGitHubInstallation",
+			tags: ["GitHub"],
+			description: "Verify GitHub app installation for a repository",
+			responses: {
+				200: {
+					description: "Verification result",
+					content: {
+						"application/json": { schema: resolver(verificationResultSchema) },
+					},
+				},
+			},
+		}),
+		validator(
+			"json",
+			v.object({
+				repositoryOwner: v.pipe(v.string(), v.minLength(1)),
+				repositoryName: v.pipe(v.string(), v.minLength(1)),
+			}),
+		),
+		async (c) => {
+			const { repositoryOwner, repositoryName } = c.req.valid("json");
 
-      const verification = await verifyGithubInstallation({
-        repositoryOwner,
-        repositoryName,
-      });
+			const verification = await verifyGithubInstallation({
+				repositoryOwner,
+				repositoryName,
+			});
 
       return c.json(verification);
     },
@@ -187,11 +187,11 @@ const githubIntegration = new Hono<{
       const { projectId } = c.req.valid("param");
       const { repositoryOwner, repositoryName } = c.req.valid("json");
 
-      const integration = await createGithubIntegration({
-        projectId,
-        repositoryOwner,
-        repositoryName,
-      });
+			const integration = await createGithubIntegration({
+				projectId,
+				repositoryOwner,
+				repositoryName,
+			});
 
       return c.json(integration);
     },
@@ -233,54 +233,54 @@ const githubIntegration = new Hono<{
       const { projectId } = c.req.valid("param");
       const body = c.req.valid("json");
 
-      const row = await db.query.integrationTable.findFirst({
-        where: and(
-          eq(integrationTable.projectId, projectId),
-          eq(integrationTable.type, "github"),
-        ),
-      });
+			const row = await db.query.integrationTable.findFirst({
+				where: and(
+					eq(integrationTable.projectId, projectId),
+					eq(integrationTable.type, "github"),
+				),
+			});
 
-      if (!row) {
-        return c.json({ error: "Integration not found" }, 404);
-      }
+			if (!row) {
+				return c.json({ error: "Integration not found" }, 404);
+			}
 
-      let config: GitHubConfig;
-      try {
-        config = JSON.parse(row.config) as GitHubConfig;
-      } catch {
-        throw new HTTPException(500, { message: "Invalid integration config" });
-      }
+			let config: GitHubConfig;
+			try {
+				config = JSON.parse(row.config) as GitHubConfig;
+			} catch {
+				throw new HTTPException(500, { message: "Invalid integration config" });
+			}
 
-      if (body.commentTaskLinkOnGitHubIssue !== undefined) {
-        config = {
-          ...config,
-          commentTaskLinkOnGitHubIssue: body.commentTaskLinkOnGitHubIssue,
-        };
-      }
+			if (body.commentTaskLinkOnGitHubIssue !== undefined) {
+				config = {
+					...config,
+					commentTaskLinkOnGitHubIssue: body.commentTaskLinkOnGitHubIssue,
+				};
+			}
 
-      const validation = await validateGitHubConfig(config);
-      if (!validation.valid) {
-        throw new HTTPException(400, {
-          message: validation.errors?.join(", ") ?? "Invalid config",
-        });
-      }
+			const validation = await validateGitHubConfig(config);
+			if (!validation.valid) {
+				throw new HTTPException(400, {
+					message: validation.errors?.join(", ") ?? "Invalid config",
+				});
+			}
 
-      await db
-        .update(integrationTable)
-        .set({
-          config: JSON.stringify(config),
-          isActive:
-            body.isActive !== undefined
-              ? body.isActive
-              : (row.isActive ?? true),
-          updatedAt: new Date(),
-        })
-        .where(
-          and(
-            eq(integrationTable.projectId, projectId),
-            eq(integrationTable.type, "github"),
-          ),
-        );
+			await db
+				.update(integrationTable)
+				.set({
+					config: JSON.stringify(config),
+					isActive:
+						body.isActive !== undefined
+							? body.isActive
+							: (row.isActive ?? true),
+					updatedAt: new Date(),
+				})
+				.where(
+					and(
+						eq(integrationTable.projectId, projectId),
+						eq(integrationTable.type, "github"),
+					),
+				);
 
       const updated = await getGithubIntegration(projectId);
       return c.json(updated, 200);
@@ -337,23 +337,23 @@ const githubIntegration = new Hono<{
         throw new HTTPException(401, { message: "Unauthorized" });
       }
 
-      const { projectId } = c.req.valid("json");
+			const { projectId } = c.req.valid("json");
 
-      const [project] = await db
-        .select({ workspaceId: projectTable.workspaceId })
-        .from(projectTable)
-        .where(eq(projectTable.id, projectId))
-        .limit(1);
+			const [project] = await db
+				.select({ workspaceId: projectTable.workspaceId })
+				.from(projectTable)
+				.where(eq(projectTable.id, projectId))
+				.limit(1);
 
-      if (!project) {
-        throw new HTTPException(404, { message: "Project not found" });
-      }
+			if (!project) {
+				throw new HTTPException(404, { message: "Project not found" });
+			}
 
-      const apiKey = c.get("apiKey");
-      const apiKeyId = apiKey?.id;
+			const apiKey = c.get("apiKey");
+			const apiKeyId = apiKey?.id;
 
-      await validateWorkspaceAccess(userId, project.workspaceId, apiKeyId);
-      c.set("workspaceId", project.workspaceId);
+			await validateWorkspaceAccess(userId, project.workspaceId, apiKeyId);
+			c.set("workspaceId", project.workspaceId);
 
       return next();
     },
@@ -366,32 +366,32 @@ const githubIntegration = new Hono<{
   );
 
 export async function handleGithubWebhookRoute(c: Context) {
-  const arrayBuffer = await c.req.arrayBuffer();
-  const body = Buffer.from(arrayBuffer).toString("utf8");
+	const arrayBuffer = await c.req.arrayBuffer();
+	const body = Buffer.from(arrayBuffer).toString("utf8");
 
-  const signature = c.req.header("x-hub-signature-256");
-  if (!signature) {
-    return c.json({ error: "Missing signature" }, 400);
-  }
+	const signature = c.req.header("x-hub-signature-256");
+	if (!signature) {
+		return c.json({ error: "Missing signature" }, 400);
+	}
 
-  const eventName = c.req.header("x-github-event");
-  if (!eventName) {
-    return c.json({ error: "Missing event name" }, 400);
-  }
+	const eventName = c.req.header("x-github-event");
+	if (!eventName) {
+		return c.json({ error: "Missing event name" }, 400);
+	}
 
-  const deliveryId = c.req.header("x-github-delivery") || "";
+	const deliveryId = c.req.header("x-github-delivery") || "";
 
-  const result = await handleGitHubWebhook(
-    body,
-    signature,
-    eventName,
-    deliveryId,
-  );
+	const result = await handleGitHubWebhook(
+		body,
+		signature,
+		eventName,
+		deliveryId,
+	);
 
-  if (!result.success) {
-    return c.json({ error: result.error }, 400);
-  }
+	if (!result.success) {
+		return c.json({ error: result.error }, 400);
+	}
 
-  return c.json({ status: "success" });
+	return c.json({ status: "success" });
 }
 export default githubIntegration;

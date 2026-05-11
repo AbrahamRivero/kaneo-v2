@@ -27,17 +27,17 @@ async function deleteComment(userId: string, id: string) {
     .where(and(eq(activityTable.id, id), eq(activityTable.userId, userId)))
     .returning();
 
-  if (!deletedComment) {
-    throw new HTTPException(404, {
-      message: "Comment not found or you are not the author",
-    });
-  }
+	if (!deletedComment) {
+		throw new HTTPException(404, {
+			message: "Comment not found or you are not the author",
+		});
+	}
 
-  const [task] = await db
-    .select({ projectId: taskTable.projectId })
-    .from(taskTable)
-    .where(eq(taskTable.id, deletedComment.taskId))
-    .limit(1);
+	const [task] = await db
+		.select({ projectId: taskTable.projectId })
+		.from(taskTable)
+		.where(eq(taskTable.id, deletedComment.taskId))
+		.limit(1);
 
   if (task) {
     await publishEvent("comment.deleted", {
@@ -51,7 +51,7 @@ async function deleteComment(userId: string, id: string) {
     taskId: existing.taskId,
   }).catch(() => {});
 
-  return deletedComment;
+	return deletedComment;
 }
 
 export default deleteComment;

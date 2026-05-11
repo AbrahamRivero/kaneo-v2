@@ -1,35 +1,35 @@
 import { client } from "@kaneo/libs";
 
 export type InvitationDetails = {
-  id: string;
-  email: string;
-  workspaceName: string;
-  inviterName: string;
-  expiresAt: string;
-  status: string;
-  expired: boolean;
+	id: string;
+	email: string;
+	workspaceName: string;
+	inviterName: string;
+	expiresAt: string;
+	status: string;
+	expired: boolean;
 };
 
 export type GetInvitationDetailsResponse = {
-  valid: boolean;
-  invitation?: InvitationDetails;
-  error?: string;
+	valid: boolean;
+	invitation?: InvitationDetails;
+	error?: string;
 };
 
 export async function getInvitationDetails(
-  invitationId: string,
+	invitationId: string,
 ): Promise<GetInvitationDetailsResponse> {
-  const response = await client.invitation.public[":id"].$get({
-    param: {
-      id: invitationId,
-    },
-  });
+	const response = await client.invitation.public[":id"].$get({
+		param: {
+			id: invitationId,
+		},
+	});
 
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error);
-  }
+	if (!response.ok) {
+		const error = await response.text();
+		throw new Error(error);
+	}
 
-  const result = await response.json();
-  return result;
+	const result = await response.json();
+	return result;
 }

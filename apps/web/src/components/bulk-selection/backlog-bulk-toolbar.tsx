@@ -1,47 +1,47 @@
 import {
-  Archive,
-  ArrowUpToLine,
-  CalendarIcon,
-  ChevronDown,
-  Menu,
-  Trash2,
-  X,
+	Archive,
+	ArrowUpToLine,
+	CalendarIcon,
+	ChevronDown,
+	Menu,
+	Trash2,
+	X,
 } from "lucide-react";
 import {
-  Fragment,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
+	Fragment,
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
 } from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar } from "@/components/ui/calendar";
 import {
-  Command,
-  CommandCollection,
-  CommandDialog,
-  CommandDialogPopup,
-  CommandEmpty,
-  CommandGroup,
-  CommandGroupLabel,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandPanel,
-  CommandSeparator,
+	Command,
+	CommandCollection,
+	CommandDialog,
+	CommandDialogPopup,
+	CommandEmpty,
+	CommandGroup,
+	CommandGroupLabel,
+	CommandInput,
+	CommandItem,
+	CommandList,
+	CommandPanel,
+	CommandSeparator,
 } from "@/components/ui/command";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
 } from "@/components/ui/menu";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
 } from "@/components/ui/popover";
 import labelColors from "@/constants/label-colors";
 import { useBulkOperations } from "@/hooks/mutations/task/use-bulk-operations";
@@ -59,22 +59,22 @@ import { Button } from "../ui/button";
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from "../ui/toolbar";
 
 type BacklogActionItem = {
-  value: string;
-  label: string;
-  icon?: ReactNode;
-  onRun: () => void;
+	value: string;
+	label: string;
+	icon?: ReactNode;
+	onRun: () => void;
 };
 
 type BacklogActionGroup = {
-  value: string;
-  label: string;
-  items: BacklogActionItem[];
+	value: string;
+	label: string;
+	items: BacklogActionItem[];
 };
 
 function BacklogBulkToolbar() {
-  const { t } = useTranslation();
-  const { selectedTaskIds, clearSelection, selectAll } =
-    useBacklogBulkSelectionStore();
+	const { t } = useTranslation();
+	const { selectedTaskIds, clearSelection, selectAll } =
+		useBacklogBulkSelectionStore();
 
   const priorityOptions = useMemo(
     () => [
@@ -109,154 +109,154 @@ function BacklogBulkToolbar() {
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
-  const selectedCount = selectedTaskIds.size;
+	const selectedCount = selectedTaskIds.size;
 
-  const uniqueLabels = useMemo(() => {
-    const labelMap = new Map<string, (typeof workspaceLabels)[0]>();
-    for (const label of workspaceLabels) {
-      const existing = labelMap.get(label.name);
-      if (!existing || (label.taskId === null && existing.taskId !== null)) {
-        labelMap.set(label.name, label);
-      }
-    }
-    return Array.from(labelMap.values());
-  }, [workspaceLabels]);
+	const uniqueLabels = useMemo(() => {
+		const labelMap = new Map<string, (typeof workspaceLabels)[0]>();
+		for (const label of workspaceLabels) {
+			const existing = labelMap.get(label.name);
+			if (!existing || (label.taskId === null && existing.taskId !== null)) {
+				labelMap.set(label.name, label);
+			}
+		}
+		return Array.from(labelMap.values());
+	}, [workspaceLabels]);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement | null;
-      const isTypingContext = Boolean(
-        target?.closest(
-          "input, textarea, [contenteditable='true'], .ProseMirror",
-        ),
-      );
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			const target = e.target as HTMLElement | null;
+			const isTypingContext = Boolean(
+				target?.closest(
+					"input, textarea, [contenteditable='true'], .ProseMirror",
+				),
+			);
 
-      if ((e.metaKey || e.ctrlKey) && e.key === "a") {
-        if (isTypingContext) return;
-        e.preventDefault();
-        selectAll();
-      }
+			if ((e.metaKey || e.ctrlKey) && e.key === "a") {
+				if (isTypingContext) return;
+				e.preventDefault();
+				selectAll();
+			}
 
-      if (e.key === "Escape") {
-        e.preventDefault();
-        clearSelection();
-      }
-    };
+			if (e.key === "Escape") {
+				e.preventDefault();
+				clearSelection();
+			}
+		};
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [selectAll, clearSelection]);
+		document.addEventListener("keydown", handleKeyDown);
+		return () => document.removeEventListener("keydown", handleKeyDown);
+	}, [selectAll, clearSelection]);
 
-  const handleMoveToBoard = useCallback(
-    async (status: string) => {
-      try {
-        await bulkMoveToBoard({
-          taskIds: Array.from(selectedTaskIds),
-          status,
-        });
-        toast.success(
-          t("tasks:bulk.moveToBoardSuccess", { count: selectedCount }),
-        );
-        clearSelection();
-      } catch (_error) {
-        toast.error(t("tasks:bulk.moveToBoardError"));
-      }
-    },
-    [bulkMoveToBoard, selectedTaskIds, selectedCount, clearSelection, t],
-  );
+	const handleMoveToBoard = useCallback(
+		async (status: string) => {
+			try {
+				await bulkMoveToBoard({
+					taskIds: Array.from(selectedTaskIds),
+					status,
+				});
+				toast.success(
+					t("tasks:bulk.moveToBoardSuccess", { count: selectedCount }),
+				);
+				clearSelection();
+			} catch (_error) {
+				toast.error(t("tasks:bulk.moveToBoardError"));
+			}
+		},
+		[bulkMoveToBoard, selectedTaskIds, selectedCount, clearSelection, t],
+	);
 
-  const handleBulkDelete = useCallback(async () => {
-    if (!confirm(t("tasks:bulk.deleteConfirm", { count: selectedCount }))) {
-      return;
-    }
+	const handleBulkDelete = useCallback(async () => {
+		if (!confirm(t("tasks:bulk.deleteConfirm", { count: selectedCount }))) {
+			return;
+		}
 
-    try {
-      await bulkDelete(Array.from(selectedTaskIds));
-      toast.success(t("tasks:bulk.deleteSuccess", { count: selectedCount }));
-      clearSelection();
-      setIsActionsOpen(false);
-    } catch (_error) {
-      toast.error(t("tasks:bulk.deleteError"));
-    }
-  }, [bulkDelete, selectedTaskIds, selectedCount, clearSelection, t]);
+		try {
+			await bulkDelete(Array.from(selectedTaskIds));
+			toast.success(t("tasks:bulk.deleteSuccess", { count: selectedCount }));
+			clearSelection();
+			setIsActionsOpen(false);
+		} catch (_error) {
+			toast.error(t("tasks:bulk.deleteError"));
+		}
+	}, [bulkDelete, selectedTaskIds, selectedCount, clearSelection, t]);
 
-  const handleBulkArchive = useCallback(async () => {
-    try {
-      await bulkArchive(Array.from(selectedTaskIds));
-      toast.success(t("tasks:bulk.archiveSuccess", { count: selectedCount }));
-      clearSelection();
-      setIsActionsOpen(false);
-    } catch (_error) {
-      toast.error(t("tasks:bulk.archiveError"));
-    }
-  }, [bulkArchive, selectedTaskIds, selectedCount, clearSelection, t]);
+	const handleBulkArchive = useCallback(async () => {
+		try {
+			await bulkArchive(Array.from(selectedTaskIds));
+			toast.success(t("tasks:bulk.archiveSuccess", { count: selectedCount }));
+			clearSelection();
+			setIsActionsOpen(false);
+		} catch (_error) {
+			toast.error(t("tasks:bulk.archiveError"));
+		}
+	}, [bulkArchive, selectedTaskIds, selectedCount, clearSelection, t]);
 
-  const handleBulkAssign = useCallback(
-    async (userId: string) => {
-      try {
-        await bulkAssign({ taskIds: Array.from(selectedTaskIds), userId });
-        toast.success(t("tasks:bulk.assignSuccess", { count: selectedCount }));
-        clearSelection();
-        setIsActionsOpen(false);
-      } catch (_error) {
-        toast.error(t("tasks:bulk.assignError"));
-      }
-    },
-    [bulkAssign, selectedTaskIds, selectedCount, clearSelection, t],
-  );
+	const handleBulkAssign = useCallback(
+		async (userId: string) => {
+			try {
+				await bulkAssign({ taskIds: Array.from(selectedTaskIds), userId });
+				toast.success(t("tasks:bulk.assignSuccess", { count: selectedCount }));
+				clearSelection();
+				setIsActionsOpen(false);
+			} catch (_error) {
+				toast.error(t("tasks:bulk.assignError"));
+			}
+		},
+		[bulkAssign, selectedTaskIds, selectedCount, clearSelection, t],
+	);
 
-  const handleBulkPriority = useCallback(
-    async (priority: string) => {
-      try {
-        await bulkPriority({
-          taskIds: Array.from(selectedTaskIds),
-          priority,
-        });
-        toast.success(t("tasks:bulk.updateSuccess", { count: selectedCount }));
-        clearSelection();
-        setIsActionsOpen(false);
-      } catch (_error) {
-        toast.error(t("tasks:bulk.updatePriorityError"));
-      }
-    },
-    [bulkPriority, selectedTaskIds, selectedCount, clearSelection, t],
-  );
+	const handleBulkPriority = useCallback(
+		async (priority: string) => {
+			try {
+				await bulkPriority({
+					taskIds: Array.from(selectedTaskIds),
+					priority,
+				});
+				toast.success(t("tasks:bulk.updateSuccess", { count: selectedCount }));
+				clearSelection();
+				setIsActionsOpen(false);
+			} catch (_error) {
+				toast.error(t("tasks:bulk.updatePriorityError"));
+			}
+		},
+		[bulkPriority, selectedTaskIds, selectedCount, clearSelection, t],
+	);
 
-  const handleBulkAddLabel = useCallback(
-    async (labelId: string) => {
-      try {
-        await bulkAddLabel({
-          taskIds: Array.from(selectedTaskIds),
-          labelId,
-        });
-        toast.success(
-          t("tasks:bulk.addLabelSuccess", { count: selectedCount }),
-        );
-        clearSelection();
-        setIsActionsOpen(false);
-      } catch (_error) {
-        toast.error(t("tasks:bulk.addLabelError"));
-      }
-    },
-    [bulkAddLabel, selectedTaskIds, selectedCount, clearSelection, t],
-  );
+	const handleBulkAddLabel = useCallback(
+		async (labelId: string) => {
+			try {
+				await bulkAddLabel({
+					taskIds: Array.from(selectedTaskIds),
+					labelId,
+				});
+				toast.success(
+					t("tasks:bulk.addLabelSuccess", { count: selectedCount }),
+				);
+				clearSelection();
+				setIsActionsOpen(false);
+			} catch (_error) {
+				toast.error(t("tasks:bulk.addLabelError"));
+			}
+		},
+		[bulkAddLabel, selectedTaskIds, selectedCount, clearSelection, t],
+	);
 
-  const handleBulkDueDate = useCallback(
-    async (date: Date | undefined) => {
-      try {
-        await bulkDueDate({
-          taskIds: Array.from(selectedTaskIds),
-          dueDate: date?.toISOString() ?? null,
-        });
-        toast.success(t("tasks:bulk.updateSuccess", { count: selectedCount }));
-        clearSelection();
-        setIsDatePickerOpen(false);
-      } catch (_error) {
-        toast.error(t("tasks:bulk.updateDueDateError"));
-      }
-    },
-    [bulkDueDate, selectedTaskIds, selectedCount, clearSelection, t],
-  );
+	const handleBulkDueDate = useCallback(
+		async (date: Date | undefined) => {
+			try {
+				await bulkDueDate({
+					taskIds: Array.from(selectedTaskIds),
+					dueDate: date?.toISOString() ?? null,
+				});
+				toast.success(t("tasks:bulk.updateSuccess", { count: selectedCount }));
+				clearSelection();
+				setIsDatePickerOpen(false);
+			} catch (_error) {
+				toast.error(t("tasks:bulk.updateDueDateError"));
+			}
+		},
+		[bulkDueDate, selectedTaskIds, selectedCount, clearSelection, t],
+	);
 
   const groupedItems = useMemo<BacklogActionGroup[]>(() => {
     const groups: BacklogActionGroup[] = [];
@@ -361,14 +361,14 @@ function BacklogBulkToolbar() {
   if (selectedCount === 0) return null;
   if (!canEdit && !canAssign) return null;
 
-  return (
-    <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-      <Toolbar className="items-center gap-1 rounded-xl border-border/80 bg-background px-1.5 py-1 shadow-lg/8">
-        <ToolbarGroup className="px-1.5">
-          <span className="text-sm font-medium text-foreground">
-            {t("tasks:bulk.selectedCount", { count: selectedCount })}
-          </span>
-        </ToolbarGroup>
+	return (
+		<div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
+			<Toolbar className="items-center gap-1 rounded-xl border-border/80 bg-background px-1.5 py-1 shadow-lg/8">
+				<ToolbarGroup className="px-1.5">
+					<span className="text-sm font-medium text-foreground">
+						{t("tasks:bulk.selectedCount", { count: selectedCount })}
+					</span>
+				</ToolbarGroup>
 
         {canEdit && (
           <>
@@ -447,52 +447,52 @@ function BacklogBulkToolbar() {
           </>
         )}
 
-        <ToolbarSeparator orientation="vertical" className="my-1 h-5" />
+				<ToolbarSeparator orientation="vertical" className="my-1 h-5" />
 
-        <ToolbarGroup>
-          <Button size="sm" variant="ghost" onClick={clearSelection}>
-            <X className="size-4" />
-          </Button>
-        </ToolbarGroup>
-      </Toolbar>
+				<ToolbarGroup>
+					<Button size="sm" variant="ghost" onClick={clearSelection}>
+						<X className="size-4" />
+					</Button>
+				</ToolbarGroup>
+			</Toolbar>
 
-      <CommandDialog open={isActionsOpen} onOpenChange={setIsActionsOpen}>
-        <CommandDialogPopup>
-          <Command items={groupedItems}>
-            <CommandInput placeholder={t("tasks:bulk.searchActions")} />
-            <CommandPanel>
-              <CommandEmpty>{t("tasks:bulk.noActionsFound")}</CommandEmpty>
-              <CommandList>
-                {(group: BacklogActionGroup, groupIndex: number) => (
-                  <Fragment key={group.value}>
-                    <CommandGroup items={group.items}>
-                      <CommandGroupLabel>{group.label}</CommandGroupLabel>
-                      <CommandCollection>
-                        {(item: BacklogActionItem) => (
-                          <CommandItem
-                            key={item.value}
-                            value={item.value}
-                            onClick={item.onRun}
-                            className="gap-1.5 px-3"
-                          >
-                            <span className="shrink-0">{item.icon}</span>
-                            <span className="flex-1 text-sm">{item.label}</span>
-                          </CommandItem>
-                        )}
-                      </CommandCollection>
-                    </CommandGroup>
-                    {groupIndex < groupedItems.length - 1 && (
-                      <CommandSeparator />
-                    )}
-                  </Fragment>
-                )}
-              </CommandList>
-            </CommandPanel>
-          </Command>
-        </CommandDialogPopup>
-      </CommandDialog>
-    </div>
-  );
+			<CommandDialog open={isActionsOpen} onOpenChange={setIsActionsOpen}>
+				<CommandDialogPopup>
+					<Command items={groupedItems}>
+						<CommandInput placeholder={t("tasks:bulk.searchActions")} />
+						<CommandPanel>
+							<CommandEmpty>{t("tasks:bulk.noActionsFound")}</CommandEmpty>
+							<CommandList>
+								{(group: BacklogActionGroup, groupIndex: number) => (
+									<Fragment key={group.value}>
+										<CommandGroup items={group.items}>
+											<CommandGroupLabel>{group.label}</CommandGroupLabel>
+											<CommandCollection>
+												{(item: BacklogActionItem) => (
+													<CommandItem
+														key={item.value}
+														value={item.value}
+														onClick={item.onRun}
+														className="gap-1.5 px-3"
+													>
+														<span className="shrink-0">{item.icon}</span>
+														<span className="flex-1 text-sm">{item.label}</span>
+													</CommandItem>
+												)}
+											</CommandCollection>
+										</CommandGroup>
+										{groupIndex < groupedItems.length - 1 && (
+											<CommandSeparator />
+										)}
+									</Fragment>
+								)}
+							</CommandList>
+						</CommandPanel>
+					</Command>
+				</CommandDialogPopup>
+			</CommandDialog>
+		</div>
+	);
 }
 
 export default BacklogBulkToolbar;

@@ -1,35 +1,35 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import {
-  ChevronRight,
-  Folder,
-  Forward,
-  MoreHorizontal,
-  Settings,
-  Trash2,
+	ChevronRight,
+	Folder,
+	Forward,
+	MoreHorizontal,
+	Settings,
+	Trash2,
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Collapsible,
-  CollapsiblePanel,
-  CollapsibleTrigger,
+	Collapsible,
+	CollapsiblePanel,
+	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
 } from "@/components/ui/menu";
 import {
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
+	SidebarGroup,
+	SidebarGroupContent,
+	SidebarGroupLabel,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	useSidebar,
 } from "@/components/ui/sidebar";
 import useDeleteProject from "@/hooks/mutations/project/use-delete-project";
 import useGetProjects from "@/hooks/queries/project/use-get-projects";
@@ -39,13 +39,13 @@ import { toast } from "@/lib/toast";
 import type { ProjectWithTasks } from "@/types/project";
 import CreateProjectModal from "./shared/modals/create-project-modal";
 import {
-  AlertDialog,
-  AlertDialogClose,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+	AlertDialog,
+	AlertDialogClose,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
 } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
 
@@ -67,59 +67,59 @@ export function NavProjects() {
       strict: false,
     });
 
-  const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] =
-    useState(false);
-  const [isDeleteProjectModalOpen, setIsDeleteProjectModalOpen] =
-    useState(false);
-  const [projectToDeleteId, setProjectToDeleteID] = useState<string | null>(
-    null,
-  );
+	const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] =
+		useState(false);
+	const [isDeleteProjectModalOpen, setIsDeleteProjectModalOpen] =
+		useState(false);
+	const [projectToDeleteId, setProjectToDeleteID] = useState<string | null>(
+		null,
+	);
 
-  const isCurrentProject = (projectId: string) => {
-    return (
-      currentProjectId === projectId && currentWorkspaceId === workspace?.id
-    );
-  };
+	const isCurrentProject = (projectId: string) => {
+		return (
+			currentProjectId === projectId && currentWorkspaceId === workspace?.id
+		);
+	};
 
-  const handleProjectClick = (project: ProjectWithTasks) => {
-    navigate({
-      to: "/dashboard/workspace/$workspaceId/project/$projectId/board",
-      params: {
-        workspaceId: workspace?.id || "",
-        projectId: project.id,
-      },
-    });
-  };
+	const handleProjectClick = (project: ProjectWithTasks) => {
+		navigate({
+			to: "/dashboard/workspace/$workspaceId/project/$projectId/board",
+			params: {
+				workspaceId: workspace?.id || "",
+				projectId: project.id,
+			},
+		});
+	};
 
-  if (!workspace) return null;
+	if (!workspace) return null;
 
-  return (
-    <>
-      <Collapsible defaultOpen className="group/collapsible">
-        <SidebarGroup className="group-data-[collapsible=icon]:hidden gap-1 p-2 pt-1">
-          <CollapsibleTrigger
-            className="data-panel-open:[&_svg]:rotate-90"
-            render={
-              <SidebarGroupLabel className="h-7 cursor-pointer justify-between px-0 text-sidebar-accent-foreground" />
-            }
-          >
-            <span>{t("navigation:sidebar.projects")}</span>
-            <ChevronRight className="h-3.5 w-3.5 text-sidebar-foreground/60 transition-transform duration-200" />
-          </CollapsibleTrigger>
-          <CollapsiblePanel>
-            <SidebarGroupContent>
-              <SidebarMenu className="gap-0.5">
-                {projects?.map((project) => {
-                  return (
-                    <SidebarMenuItem key={project.id}>
-                      <SidebarMenuButton
-                        isActive={isCurrentProject(project.id)}
-                        size="default"
-                        className="h-8 gap-0 ps-3.5 text-sm hover:bg-transparent hover:text-sidebar-accent-foreground active:bg-transparent"
-                        onClick={() => handleProjectClick(project)}
-                      >
-                        <span>{project.name}</span>
-                      </SidebarMenuButton>
+	return (
+		<>
+			<Collapsible defaultOpen className="group/collapsible">
+				<SidebarGroup className="group-data-[collapsible=icon]:hidden gap-1 p-2 pt-1">
+					<CollapsibleTrigger
+						className="data-panel-open:[&_svg]:rotate-90"
+						render={
+							<SidebarGroupLabel className="h-7 cursor-pointer justify-between px-0 text-sidebar-accent-foreground" />
+						}
+					>
+						<span>{t("navigation:sidebar.projects")}</span>
+						<ChevronRight className="h-3.5 w-3.5 text-sidebar-foreground/60 transition-transform duration-200" />
+					</CollapsibleTrigger>
+					<CollapsiblePanel>
+						<SidebarGroupContent>
+							<SidebarMenu className="gap-0.5">
+								{projects?.map((project) => {
+									return (
+										<SidebarMenuItem key={project.id}>
+											<SidebarMenuButton
+												isActive={isCurrentProject(project.id)}
+												size="default"
+												className="h-8 gap-0 ps-3.5 text-sm hover:bg-transparent hover:text-sidebar-accent-foreground active:bg-transparent"
+												onClick={() => handleProjectClick(project)}
+											>
+												<span>{project.name}</span>
+											</SidebarMenuButton>
 
                       <DropdownMenu>
                         <DropdownMenuTrigger
@@ -219,54 +219,54 @@ export function NavProjects() {
         </SidebarGroup>
       </Collapsible>
 
-      <CreateProjectModal
-        open={isCreateProjectModalOpen}
-        onClose={() => setIsCreateProjectModalOpen(false)}
-      />
+			<CreateProjectModal
+				open={isCreateProjectModalOpen}
+				onClose={() => setIsCreateProjectModalOpen(false)}
+			/>
 
-      <AlertDialog
-        open={isDeleteProjectModalOpen}
-        onOpenChange={setIsDeleteProjectModalOpen}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {t("navigation:projectList.deleteConfirmTitle")}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("navigation:projectList.deleteConfirmDescription")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogClose>
-              <Button variant="outline" size="sm">
-                {t("common:actions.cancel")}
-              </Button>
-            </AlertDialogClose>
-            <AlertDialogClose
-              onClick={async () => {
-                await deleteProject({
-                  id: projectToDeleteId || "",
-                });
-                toast.success(t("navigation:projectList.deletedToast"));
-                queryClient.invalidateQueries({
-                  queryKey: ["projects"],
-                });
-                navigate({
-                  to: "/dashboard/workspace/$workspaceId",
-                  params: {
-                    workspaceId: workspace?.id || "",
-                  },
-                });
-              }}
-            >
-              <Button variant="destructive" size="sm">
-                {t("navigation:projectList.deleteProject")}
-              </Button>
-            </AlertDialogClose>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
-  );
+			<AlertDialog
+				open={isDeleteProjectModalOpen}
+				onOpenChange={setIsDeleteProjectModalOpen}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							{t("navigation:projectList.deleteConfirmTitle")}
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							{t("navigation:projectList.deleteConfirmDescription")}
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogClose>
+							<Button variant="outline" size="sm">
+								{t("common:actions.cancel")}
+							</Button>
+						</AlertDialogClose>
+						<AlertDialogClose
+							onClick={async () => {
+								await deleteProject({
+									id: projectToDeleteId || "",
+								});
+								toast.success(t("navigation:projectList.deletedToast"));
+								queryClient.invalidateQueries({
+									queryKey: ["projects"],
+								});
+								navigate({
+									to: "/dashboard/workspace/$workspaceId",
+									params: {
+										workspaceId: workspace?.id || "",
+									},
+								});
+							}}
+						>
+							<Button variant="destructive" size="sm">
+								{t("navigation:projectList.deleteProject")}
+							</Button>
+						</AlertDialogClose>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		</>
+	);
 }

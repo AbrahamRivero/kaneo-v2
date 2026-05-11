@@ -1,11 +1,11 @@
 import {
-  Calendar,
-  CalendarClock,
-  CalendarDays,
-  CalendarX,
-  Copy,
-  GitBranch,
-  Plus,
+	Calendar,
+	CalendarClock,
+	CalendarDays,
+	CalendarX,
+	Copy,
+	GitBranch,
+	Plus,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,10 +13,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { KbdSequence } from "@/components/ui/kbd";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import labelColors from "@/constants/label-colors";
 import { useGetColumns } from "@/hooks/queries/column/use-get-columns";
@@ -43,41 +43,41 @@ import TaskStartDatePopover from "./task-start-date-popover";
 import TaskStatusPopover from "./task-status-popover";
 
 function slugify(text: string | undefined): string {
-  if (!text) return "";
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 50);
+	if (!text) return "";
+	return text
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/^-|-$/g, "")
+		.slice(0, 50);
 }
 
 function generateBranchName(
-  pattern: string,
-  projectSlug: string | undefined,
-  taskNumber: number | null | undefined,
-  taskTitle: string | undefined,
+	pattern: string,
+	projectSlug: string | undefined,
+	taskNumber: number | null | undefined,
+	taskTitle: string | undefined,
 ): string {
-  if (!projectSlug || !taskNumber) return "";
-  return pattern
-    .replace("{slug}", projectSlug.toLowerCase())
-    .replace("{number}", taskNumber.toString())
-    .replace("{title}", slugify(taskTitle));
+	if (!projectSlug || !taskNumber) return "";
+	return pattern
+		.replace("{slug}", projectSlug.toLowerCase())
+		.replace("{number}", taskNumber.toString())
+		.replace("{title}", slugify(taskTitle));
 }
 
 type TaskPropertiesSidebarProps = {
-  taskId: string | undefined;
-  projectId: string;
-  workspaceId: string;
-  className?: string;
-  compact?: boolean;
+	taskId: string | undefined;
+	projectId: string;
+	workspaceId: string;
+	className?: string;
+	compact?: boolean;
 };
 
 export default function TaskPropertiesSidebar({
-  taskId,
-  projectId,
-  workspaceId,
-  className,
-  compact = false,
+	taskId,
+	projectId,
+	workspaceId,
+	className,
+	compact = false,
 }: TaskPropertiesSidebarProps) {
   const { t } = useTranslation();
   const { data: task } = useGetTask(taskId ?? "");
@@ -100,96 +100,96 @@ export default function TaskPropertiesSidebar({
   const statusIsFinal = statusColumn?.isFinal ?? false;
   const statusIcon = statusColumn?.icon;
 
-  const projectSlug = project?.slug;
-  const taskNumber = task?.number;
-  const branchPattern =
-    githubIntegration?.branchPattern ||
-    giteaIntegration?.branchPattern ||
-    "{slug}-{number}";
+	const projectSlug = project?.slug;
+	const taskNumber = task?.number;
+	const branchPattern =
+		githubIntegration?.branchPattern ||
+		giteaIntegration?.branchPattern ||
+		"{slug}-{number}";
 
-  const assignee = workspaceUsers?.members?.find(
-    (member) => member.userId === task?.userId,
-  );
+	const assignee = workspaceUsers?.members?.find(
+		(member) => member.userId === task?.userId,
+	);
 
-  const handleCopyTaskLink = () => {
-    navigator.clipboard.writeText(
-      `${window.location.origin}/dashboard/workspace/${workspaceId}/project/${projectId}/task/${taskId}`,
-    );
-    toast.message(t("tasks:properties.copyTaskLink"));
-  };
+	const handleCopyTaskLink = () => {
+		navigator.clipboard.writeText(
+			`${window.location.origin}/dashboard/workspace/${workspaceId}/project/${projectId}/task/${taskId}`,
+		);
+		toast.message(t("tasks:properties.copyTaskLink"));
+	};
 
-  const handleCopyTaskBranch = () => {
-    const branchName = generateBranchName(
-      branchPattern,
-      projectSlug,
-      taskNumber,
-      task?.title,
-    );
-    navigator.clipboard.writeText(branchName);
-    toast.message(t("tasks:properties.copyTaskBranch"));
-  };
+	const handleCopyTaskBranch = () => {
+		const branchName = generateBranchName(
+			branchPattern,
+			projectSlug,
+			taskNumber,
+			task?.title,
+		);
+		navigator.clipboard.writeText(branchName);
+		toast.message(t("tasks:properties.copyTaskBranch"));
+	};
 
-  return (
-    <div className={className}>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-        {/* Compact mode: properties + icons in one row */}
-        {compact && (
-          <div className="flex flex-row-reverse gap-2 w-full border-b border-border">
-            <div className="flex px-3 py-2">
-              {task && canMoveTask && (
-                <TaskMovePopover
-                  task={task}
-                  workspaceId={workspaceId}
-                  triggerClassName="rounded-l-md rounded-r-none border-r-0"
-                />
-              )}
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className={cn(
-                        "text-foreground border-r-0",
-                        canMoveTask ? "rounded-none" : "rounded-r-none",
-                      )}
-                      onClick={() => handleCopyTaskLink()}
-                    >
-                      <Copy className="size-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <KbdSequence
-                      keys={["Ctrl", "Shift", "C"]}
-                      description={t("tasks:properties.copyTaskLink")}
-                      separator=""
-                    />
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+	return (
+		<div className={className}>
+			<div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+				{/* Compact mode: properties + icons in one row */}
+				{compact && (
+					<div className="flex flex-row-reverse gap-2 w-full border-b border-border">
+						<div className="flex px-3 py-2">
+							{task && canMoveTask && (
+								<TaskMovePopover
+									task={task}
+									workspaceId={workspaceId}
+									triggerClassName="rounded-l-md rounded-r-none border-r-0"
+								/>
+							)}
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											variant="outline"
+											size="sm"
+											className={cn(
+												"text-foreground border-r-0",
+												canMoveTask ? "rounded-none" : "rounded-r-none",
+											)}
+											onClick={() => handleCopyTaskLink()}
+										>
+											<Copy className="size-4" />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>
+										<KbdSequence
+											keys={["Ctrl", "Shift", "C"]}
+											description={t("tasks:properties.copyTaskLink")}
+											separator=""
+										/>
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
 
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-foreground rounded-l-none"
-                      onClick={() => handleCopyTaskBranch()}
-                    >
-                      <GitBranch className="size-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <KbdSequence
-                      keys={["Ctrl", "Shift", "G"]}
-                      description={t("tasks:properties.copyTaskBranch")}
-                      separator=""
-                    />
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											variant="outline"
+											size="sm"
+											className="text-foreground rounded-l-none"
+											onClick={() => handleCopyTaskBranch()}
+										>
+											<GitBranch className="size-4" />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>
+										<KbdSequence
+											keys={["Ctrl", "Shift", "G"]}
+											description={t("tasks:properties.copyTaskBranch")}
+											separator=""
+										/>
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+						</div>
 
             <div className="flex flex-row flex-wrap gap-1 items-center p-2 w-full">
               {task && (
@@ -319,65 +319,65 @@ export default function TaskPropertiesSidebar({
           </div>
         )}
 
-        {!compact && (
-          <>
-            {/* Mobile: Compact-style layout */}
-            <div className="flex flex-row-reverse gap-2 w-full border-b border-border lg:hidden">
-              <div className="flex px-3 py-2">
-                {task && canMoveTask && (
-                  <TaskMovePopover
-                    task={task}
-                    workspaceId={workspaceId}
-                    triggerClassName="rounded-l-md rounded-r-none border-r-0"
-                  />
-                )}
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className={cn(
-                          "text-foreground border-r-0",
-                          canMoveTask ? "rounded-none" : "rounded-r-none",
-                        )}
-                        onClick={() => handleCopyTaskLink()}
-                      >
-                        <Copy className="size-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <KbdSequence
-                        keys={["Ctrl", "Shift", "C"]}
-                        description={t("tasks:properties.copyTaskLink")}
-                        separator=""
-                      />
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+				{!compact && (
+					<>
+						{/* Mobile: Compact-style layout */}
+						<div className="flex flex-row-reverse gap-2 w-full border-b border-border lg:hidden">
+							<div className="flex px-3 py-2">
+								{task && canMoveTask && (
+									<TaskMovePopover
+										task={task}
+										workspaceId={workspaceId}
+										triggerClassName="rounded-l-md rounded-r-none border-r-0"
+									/>
+								)}
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button
+												variant="outline"
+												size="sm"
+												className={cn(
+													"text-foreground border-r-0",
+													canMoveTask ? "rounded-none" : "rounded-r-none",
+												)}
+												onClick={() => handleCopyTaskLink()}
+											>
+												<Copy className="size-4" />
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent>
+											<KbdSequence
+												keys={["Ctrl", "Shift", "C"]}
+												description={t("tasks:properties.copyTaskLink")}
+												separator=""
+											/>
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
 
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-foreground rounded-l-none"
-                        onClick={() => handleCopyTaskBranch()}
-                      >
-                        <GitBranch className="size-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <KbdSequence
-                        keys={["Ctrl", "Shift", "G"]}
-                        description={t("tasks:properties.copyTaskBranch")}
-                        separator=""
-                      />
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button
+												variant="outline"
+												size="sm"
+												className="text-foreground rounded-l-none"
+												onClick={() => handleCopyTaskBranch()}
+											>
+												<GitBranch className="size-4" />
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent>
+											<KbdSequence
+												keys={["Ctrl", "Shift", "G"]}
+												description={t("tasks:properties.copyTaskBranch")}
+												separator=""
+											/>
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
+							</div>
 
               <div className="flex flex-row flex-wrap gap-1 items-center p-2 w-full">
                 {task && (
@@ -507,68 +507,68 @@ export default function TaskPropertiesSidebar({
               </div>
             </div>
 
-            {/* Desktop: Title + stacked properties */}
-            <div className="hidden lg:block">
-              <div className="flex items-center justify-between px-3 py-2 border-b border-border lg:border-none">
-                <p className="text-sm font-medium text-foreground/70 flex-1">
-                  {t("tasks:properties.title")}
-                </p>
-                <div className="flex">
-                  {task && canMoveTask && (
-                    <TaskMovePopover
-                      task={task}
-                      workspaceId={workspaceId}
-                      triggerClassName="rounded-l-md rounded-r-none border-r-0"
-                    />
-                  )}
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className={cn(
-                            "text-foreground border-r-0",
-                            canMoveTask ? "rounded-none" : "rounded-r-none",
-                          )}
-                          onClick={() => handleCopyTaskLink()}
-                        >
-                          <Copy className="size-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <KbdSequence
-                          keys={["Ctrl", "Shift", "C"]}
-                          description={t("tasks:properties.copyTaskLink")}
-                          separator=""
-                        />
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+						{/* Desktop: Title + stacked properties */}
+						<div className="hidden lg:block">
+							<div className="flex items-center justify-between px-3 py-2 border-b border-border lg:border-none">
+								<p className="text-sm font-medium text-foreground/70 flex-1">
+									{t("tasks:properties.title")}
+								</p>
+								<div className="flex">
+									{task && canMoveTask && (
+										<TaskMovePopover
+											task={task}
+											workspaceId={workspaceId}
+											triggerClassName="rounded-l-md rounded-r-none border-r-0"
+										/>
+									)}
+									<TooltipProvider>
+										<Tooltip>
+											<TooltipTrigger asChild>
+												<Button
+													variant="outline"
+													size="sm"
+													className={cn(
+														"text-foreground border-r-0",
+														canMoveTask ? "rounded-none" : "rounded-r-none",
+													)}
+													onClick={() => handleCopyTaskLink()}
+												>
+													<Copy className="size-4" />
+												</Button>
+											</TooltipTrigger>
+											<TooltipContent>
+												<KbdSequence
+													keys={["Ctrl", "Shift", "C"]}
+													description={t("tasks:properties.copyTaskLink")}
+													separator=""
+												/>
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
 
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-foreground rounded-l-none"
-                          onClick={() => handleCopyTaskBranch()}
-                        >
-                          <GitBranch className="size-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <KbdSequence
-                          keys={["Ctrl", "Shift", "G"]}
-                          description={t("tasks:properties.copyTaskBranch")}
-                          separator=""
-                        />
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-              </div>
+									<TooltipProvider>
+										<Tooltip>
+											<TooltipTrigger asChild>
+												<Button
+													variant="outline"
+													size="sm"
+													className="text-foreground rounded-l-none"
+													onClick={() => handleCopyTaskBranch()}
+												>
+													<GitBranch className="size-4" />
+												</Button>
+											</TooltipTrigger>
+											<TooltipContent>
+												<KbdSequence
+													keys={["Ctrl", "Shift", "G"]}
+													description={t("tasks:properties.copyTaskBranch")}
+													separator=""
+												/>
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
+								</div>
+							</div>
 
               <div className="flex flex-col gap-2 px-3 py-3">
                 {task && (
@@ -700,57 +700,57 @@ export default function TaskPropertiesSidebar({
           </>
         )}
 
-        <div className="hidden lg:flex px-3 flex-col gap-3 p-2">
-          <div className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-foreground/70 px-2">
-              {t("tasks:properties.labels")}
-            </span>
-            <div className="flex flex-wrap items-center gap-1.5 px-2">
-              {task &&
-                taskLabels.length > 0 &&
-                taskLabels.map(
-                  (label: { id: string; name: string; color: string }) => (
-                    <TaskLabelsPopover
-                      key={`edit-${label.id}`}
-                      task={task}
-                      workspaceId={workspaceId}
-                      triggerNativeButton={false}
-                    >
-                      <Badge
-                        variant="outline"
-                        className="flex items-center gap-1 px-1.5 py-0.5 cursor-pointer hover:bg-accent/50 transition-colors text-[10px]"
-                      >
-                        <span
-                          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                          style={{
-                            backgroundColor:
-                              labelColors.find((c) => c.value === label.color)
-                                ?.color || "var(--color-neutral-400)",
-                          }}
-                        />
-                        <span className="truncate max-w-[60px]">
-                          {label.name}
-                        </span>
-                      </Badge>
-                    </TaskLabelsPopover>
-                  ),
-                )}
+				<div className="hidden lg:flex px-3 flex-col gap-3 p-2">
+					<div className="flex flex-col gap-1">
+						<span className="text-xs font-medium text-foreground/70 px-2">
+							{t("tasks:properties.labels")}
+						</span>
+						<div className="flex flex-wrap items-center gap-1.5 px-2">
+							{task &&
+								taskLabels.length > 0 &&
+								taskLabels.map(
+									(label: { id: string; name: string; color: string }) => (
+										<TaskLabelsPopover
+											key={`edit-${label.id}`}
+											task={task}
+											workspaceId={workspaceId}
+											triggerNativeButton={false}
+										>
+											<Badge
+												variant="outline"
+												className="flex items-center gap-1 px-1.5 py-0.5 cursor-pointer hover:bg-accent/50 transition-colors text-[10px]"
+											>
+												<span
+													className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+													style={{
+														backgroundColor:
+															labelColors.find((c) => c.value === label.color)
+																?.color || "var(--color-neutral-400)",
+													}}
+												/>
+												<span className="truncate max-w-[60px]">
+													{label.name}
+												</span>
+											</Badge>
+										</TaskLabelsPopover>
+									),
+								)}
 
-              {task && (
-                <TaskLabelsPopover task={task} workspaceId={workspaceId}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-5 w-5 p-0 rounded-full"
-                  >
-                    <Plus className="h-3 w-3" />
-                  </Button>
-                </TaskLabelsPopover>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+							{task && (
+								<TaskLabelsPopover task={task} workspaceId={workspaceId}>
+									<Button
+										variant="ghost"
+										size="sm"
+										className="h-5 w-5 p-0 rounded-full"
+									>
+										<Plus className="h-3 w-3" />
+									</Button>
+								</TaskLabelsPopover>
+							)}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 }

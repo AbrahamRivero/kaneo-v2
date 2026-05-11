@@ -8,9 +8,9 @@ import getWorkflowRules from "./controllers/get-workflow-rules";
 import upsertWorkflowRule from "./controllers/upsert-workflow-rule";
 
 const workflowRule = new Hono<{
-  Variables: {
-    userId: string;
-  };
+	Variables: {
+		userId: string;
+	};
 }>()
   .get(
     "/:projectId",

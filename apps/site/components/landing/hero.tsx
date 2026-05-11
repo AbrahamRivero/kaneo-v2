@@ -6,23 +6,23 @@ import { FadeIn } from "@/components/landing/fade-in";
 import { Button } from "@/components/ui/button";
 
 export function Hero() {
-  return (
-    <section className="relative overflow-hidden px-6 pt-14 pb-16 md:pt-20 md:pb-20 lg:pt-24">
-      <div className="mx-auto w-full max-w-6xl">
-        {/* ── Heading + description + buttons ── */}
-        <div className="mb-10 max-w-2xl">
-          <FadeIn delay={0}>
-            <h1 className="text-balance text-4xl font-medium leading-[1.06] md:text-5xl lg:text-6xl">
-              All you <span className="text-primary">need</span>. Nothing you
-              don&apos;t.
-            </h1>
-          </FadeIn>
-          <FadeIn delay={80}>
-            <p className="mt-5 text-balance text-lg text-muted-foreground leading-relaxed md:text-xl">
-              Kaneo gives you clean planning, focused execution, and full
-              ownership of your workflow from backlog to release.
-            </p>
-          </FadeIn>
+	return (
+		<section className="relative overflow-hidden px-6 pt-14 pb-16 md:pt-20 md:pb-20 lg:pt-24">
+			<div className="mx-auto w-full max-w-6xl">
+				{/* ── Heading + description + buttons ── */}
+				<div className="mb-10 max-w-2xl">
+					<FadeIn delay={0}>
+						<h1 className="text-balance text-4xl font-medium leading-[1.06] md:text-5xl lg:text-6xl">
+							All you <span className="text-primary">need</span>. Nothing you
+							don&apos;t.
+						</h1>
+					</FadeIn>
+					<FadeIn delay={80}>
+						<p className="mt-5 text-balance text-lg text-muted-foreground leading-relaxed md:text-xl">
+							Kaneo gives you clean planning, focused execution, and full
+							ownership of your workflow from backlog to release.
+						</p>
+					</FadeIn>
 
           <FadeIn delay={160}>
             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -78,11 +78,11 @@ export function Hero() {
           </FadeIn>
         </div>
 
-        {/* ── App preview — interactive mock of the real Kaneo UI ── */}
-        <FadeIn delay={240} distance={32}>
-          <AppPreview />
-        </FadeIn>
-      </div>
-    </section>
-  );
+				{/* ── App preview — interactive mock of the real Kaneo UI ── */}
+				<FadeIn delay={240} distance={32}>
+					<AppPreview />
+				</FadeIn>
+			</div>
+		</section>
+	);
 }

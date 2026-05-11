@@ -14,9 +14,9 @@ import unassignLabelFromTask from "./controllers/unassign-label-from-task";
 import updateLabel from "./controllers/update-label";
 
 const label = new Hono<{
-  Variables: {
-    userId: string;
-  };
+	Variables: {
+		userId: string;
+	};
 }>()
   .get(
     "/task/:taskId",

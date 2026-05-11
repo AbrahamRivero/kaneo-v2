@@ -7,17 +7,17 @@ import { deleteOrphanedAssets } from "../../storage/cleanup-assets";
 import { assertValidTaskStatus } from "../validate-task-fields";
 
 async function updateTask(
-  id: string,
-  title: string,
-  status: string,
-  startDate: Date | undefined,
-  dueDate: Date | undefined,
-  projectId: string,
-  description: string,
-  priority: string,
-  position: number,
-  userId?: string,
-  currentUserId?: string,
+	id: string,
+	title: string,
+	status: string,
+	startDate: Date | undefined,
+	dueDate: Date | undefined,
+	projectId: string,
+	description: string,
+	priority: string,
+	position: number,
+	userId?: string,
+	currentUserId?: string,
 ) {
   const existingTask = await db.query.taskTable.findFirst({
     where: eq(taskTable.id, id),

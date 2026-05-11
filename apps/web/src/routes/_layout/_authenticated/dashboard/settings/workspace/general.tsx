@@ -8,22 +8,22 @@ import { z } from "zod";
 import PageTitle from "@/components/page-title";
 import useAuth from "@/components/providers/auth-provider/hooks/use-auth";
 import {
-  AlertDialog,
-  AlertDialogClose,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+	AlertDialog,
+	AlertDialogClose,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -43,66 +43,66 @@ import { useWorkspacePermission } from "@/hooks/use-workspace-permission";
 import { toast } from "@/lib/toast";
 
 export const Route = createFileRoute(
-  "/_layout/_authenticated/dashboard/settings/workspace/general",
+	"/_layout/_authenticated/dashboard/settings/workspace/general",
 )({
-  component: RouteComponent,
+	component: RouteComponent,
 });
 
 type WorkspaceFormValues = {
-  name: string;
-  description?: string;
+	name: string;
+	description?: string;
 };
 
 type NormalizedWorkspaceValues = {
-  name: string;
-  description: string;
+	name: string;
+	description: string;
 };
 
 function normalizeWorkspaceValues(
-  data: WorkspaceFormValues,
+	data: WorkspaceFormValues,
 ): NormalizedWorkspaceValues {
-  return {
-    name: data.name.trim(),
-    description: (data.description ?? "").trim(),
-  };
+	return {
+		name: data.name.trim(),
+		description: (data.description ?? "").trim(),
+	};
 }
 
 /** Better Auth persists description as an organization additional field (DB column), not only inside metadata. */
 function getWorkspaceDescription(
-  workspace:
-    | { description?: string | null; metadata?: unknown }
-    | null
-    | undefined,
+	workspace:
+		| { description?: string | null; metadata?: unknown }
+		| null
+		| undefined,
 ): string {
-  if (!workspace) return "";
-  if (typeof workspace.description === "string") {
-    return workspace.description;
-  }
-  if (
-    typeof workspace.metadata === "object" &&
-    workspace.metadata &&
-    "description" in workspace.metadata
-  ) {
-    return String(
-      (workspace.metadata as { description?: unknown }).description ?? "",
-    );
-  }
-  return "";
+	if (!workspace) return "";
+	if (typeof workspace.description === "string") {
+		return workspace.description;
+	}
+	if (
+		typeof workspace.metadata === "object" &&
+		workspace.metadata &&
+		"description" in workspace.metadata
+	) {
+		return String(
+			(workspace.metadata as { description?: unknown }).description ?? "",
+		);
+	}
+	return "";
 }
 
 function RouteComponent() {
-  const { t } = useTranslation();
-  const workspaceSchema = useMemo(
-    () =>
-      z.object({
-        name: z
-          .string()
-          .min(1, t("settings:workspaceGeneral.validation.nameRequired"))
-          .min(2, t("settings:workspaceGeneral.validation.nameShort")),
-        description: z.string().optional(),
-      }),
-    [t],
-  );
+	const { t } = useTranslation();
+	const workspaceSchema = useMemo(
+		() =>
+			z.object({
+				name: z
+					.string()
+					.min(1, t("settings:workspaceGeneral.validation.nameRequired"))
+					.min(2, t("settings:workspaceGeneral.validation.nameShort")),
+				description: z.string().optional(),
+			}),
+		[t],
+	);
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -141,83 +141,83 @@ function RouteComponent() {
     (m) => m.id === selectedNewOwnerId,
   );
 
-  const workspaceForm = useForm<WorkspaceFormValues>({
-    resolver: standardSchemaResolver(workspaceSchema),
-    mode: "onChange",
-    defaultValues: {
-      name: workspace?.name || "",
-      description: workspaceDescription,
-    },
-  });
+	const workspaceForm = useForm<WorkspaceFormValues>({
+		resolver: standardSchemaResolver(workspaceSchema),
+		mode: "onChange",
+		defaultValues: {
+			name: workspace?.name || "",
+			description: workspaceDescription,
+		},
+	});
 
-  useEffect(() => {
-    if (!workspace) return;
+	useEffect(() => {
+		if (!workspace) return;
 
-    const nextValues = {
-      name: workspace.name || "",
-      description: workspaceDescription,
-    };
-    lastSavedRef.current = normalizeWorkspaceValues(nextValues);
+		const nextValues = {
+			name: workspace.name || "",
+			description: workspaceDescription,
+		};
+		lastSavedRef.current = normalizeWorkspaceValues(nextValues);
 
-    if (!workspaceForm.formState.isDirty) {
-      workspaceForm.reset(nextValues);
-    }
-  }, [workspace, workspaceDescription, workspaceForm]);
+		if (!workspaceForm.formState.isDirty) {
+			workspaceForm.reset(nextValues);
+		}
+	}, [workspace, workspaceDescription, workspaceForm]);
 
-  const saveWorkspace = useCallback(
-    async (data: WorkspaceFormValues) => {
-      if (!workspace?.id) return;
+	const saveWorkspace = useCallback(
+		async (data: WorkspaceFormValues) => {
+			if (!workspace?.id) return;
 
-      const normalizedData = normalizeWorkspaceValues(data);
-      const nameChanged = lastSavedRef.current?.name !== normalizedData.name;
-      const descriptionChanged =
-        lastSavedRef.current?.description !== normalizedData.description;
-      const hasChanges = nameChanged || descriptionChanged;
+			const normalizedData = normalizeWorkspaceValues(data);
+			const nameChanged = lastSavedRef.current?.name !== normalizedData.name;
+			const descriptionChanged =
+				lastSavedRef.current?.description !== normalizedData.description;
+			const hasChanges = nameChanged || descriptionChanged;
 
-      if (!hasChanges) return;
+			if (!hasChanges) return;
 
-      if (isSavingRef.current) {
-        queuedSaveRef.current = data;
-        return;
-      }
+			if (isSavingRef.current) {
+				queuedSaveRef.current = data;
+				return;
+			}
 
-      isSavingRef.current = true;
+			isSavingRef.current = true;
 
-      try {
-        const updatePayload: {
-          workspaceId: string;
-          name?: string;
-          description?: string;
-        } = {
-          workspaceId: workspace.id,
-        };
+			try {
+				const updatePayload: {
+					workspaceId: string;
+					name?: string;
+					description?: string;
+				} = {
+					workspaceId: workspace.id,
+				};
 
-        if (nameChanged) {
-          updatePayload.name = normalizedData.name;
-        }
+				if (nameChanged) {
+					updatePayload.name = normalizedData.name;
+				}
 
-        if (descriptionChanged) {
-          updatePayload.description = normalizedData.description;
-        }
+				if (descriptionChanged) {
+					updatePayload.description = normalizedData.description;
+				}
 
-        await updateWorkspace(updatePayload);
+				await updateWorkspace(updatePayload);
 
-        workspaceForm.reset(normalizedData, { keepDirty: false });
-        lastSavedRef.current = normalizedData;
-        queuedSaveRef.current = null;
+				workspaceForm.reset(normalizedData, { keepDirty: false });
+				lastSavedRef.current = normalizedData;
+				queuedSaveRef.current = null;
 
-        await queryClient.invalidateQueries({
-          queryKey: ["active-organization"],
-        });
-        toast.success(t("settings:workspaceGeneral.toastUpdated"));
-      } catch (error) {
-        toast.error(
-          error instanceof Error
-            ? error.message
-            : t("settings:workspaceGeneral.toastUpdateError"),
-        );
-      } finally {
-        isSavingRef.current = false;
+				await queryClient.invalidateQueries({
+					queryKey: ["active-organization"],
+				});
+				toast.success(t("settings:workspaceGeneral.toastUpdated"));
+			} catch (error) {
+				toast.error(
+					error instanceof Error
+						? error.message
+						: t("settings:workspaceGeneral.toastUpdateError"),
+				);
+			} finally {
+				isSavingRef.current = false;
 
         if (queuedSaveRef.current) {
           const queuedData = queuedSaveRef.current;
@@ -256,41 +256,41 @@ function RouteComponent() {
     }
   }, [workspace?.id, currentOwnerMember, selectedMember, transferOwnership, t]);
 
-  const handleDeleteWorkspace = useCallback(async () => {
-    if (!workspace?.id) return;
+	const handleDeleteWorkspace = useCallback(async () => {
+		if (!workspace?.id) return;
 
-    try {
-      await deleteWorkspace({ workspaceId: workspace.id });
-      toast.success(t("settings:workspaceGeneral.toastDeleted"));
+		try {
+			await deleteWorkspace({ workspaceId: workspace.id });
+			toast.success(t("settings:workspaceGeneral.toastDeleted"));
 
-      // Invalidate all workspace-related queries
-      await queryClient.invalidateQueries({ queryKey: ["workspaces"] });
-      await queryClient.invalidateQueries({
-        queryKey: ["active-organization"],
-      });
+			// Invalidate all workspace-related queries
+			await queryClient.invalidateQueries({ queryKey: ["workspaces"] });
+			await queryClient.invalidateQueries({
+				queryKey: ["active-organization"],
+			});
 
-      navigate({ to: "/dashboard" });
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : t("settings:workspaceGeneral.toastDeleteError"),
-      );
-    }
-  }, [workspace?.id, deleteWorkspace, queryClient, navigate, t]);
+			navigate({ to: "/dashboard" });
+		} catch (error) {
+			toast.error(
+				error instanceof Error
+					? error.message
+					: t("settings:workspaceGeneral.toastDeleteError"),
+			);
+		}
+	}, [workspace?.id, deleteWorkspace, queryClient, navigate, t]);
 
-  const debouncedSave = useCallback(
-    (data: WorkspaceFormValues) => {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
+	const debouncedSave = useCallback(
+		(data: WorkspaceFormValues) => {
+			if (debounceTimeoutRef.current) {
+				clearTimeout(debounceTimeoutRef.current);
+			}
 
-      debounceTimeoutRef.current = setTimeout(() => {
-        saveWorkspace(data);
-      }, 1000);
-    },
-    [saveWorkspace],
-  );
+			debounceTimeoutRef.current = setTimeout(() => {
+				saveWorkspace(data);
+			}, 1000);
+		},
+		[saveWorkspace],
+	);
 
   useEffect(() => {
     if (!canEdit) return;
@@ -303,36 +303,36 @@ function RouteComponent() {
     return () => subscription.unsubscribe();
   }, [workspaceForm, debouncedSave, canEdit]);
 
-  useEffect(() => {
-    return () => {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
-    };
-  }, []);
+	useEffect(() => {
+		return () => {
+			if (debounceTimeoutRef.current) {
+				clearTimeout(debounceTimeoutRef.current);
+			}
+		};
+	}, []);
 
-  return (
-    <>
-      <PageTitle title={t("settings:workspaceGeneral.pageTitle")} />
-      <div className="max-w-4xl mx-auto space-y-8">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold">
-            {t("settings:workspaceGeneral.title")}
-          </h1>
-          <p className="text-muted-foreground">
-            {t("settings:workspaceGeneral.subtitle")}
-          </p>
-        </div>
+	return (
+		<>
+			<PageTitle title={t("settings:workspaceGeneral.pageTitle")} />
+			<div className="max-w-4xl mx-auto space-y-8">
+				<div className="space-y-2">
+					<h1 className="text-2xl font-semibold">
+						{t("settings:workspaceGeneral.title")}
+					</h1>
+					<p className="text-muted-foreground">
+						{t("settings:workspaceGeneral.subtitle")}
+					</p>
+				</div>
 
-        <div className="space-y-6">
-          <div className="space-y-1">
-            <h2 className="text-md font-medium">
-              {t("settings:workspaceGeneral.workspaceInfoTitle")}
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              {t("settings:workspaceGeneral.workspaceInfoSubtitle")}
-            </p>
-          </div>
+				<div className="space-y-6">
+					<div className="space-y-1">
+						<h2 className="text-md font-medium">
+							{t("settings:workspaceGeneral.workspaceInfoTitle")}
+						</h2>
+						<p className="text-xs text-muted-foreground">
+							{t("settings:workspaceGeneral.workspaceInfoSubtitle")}
+						</p>
+					</div>
 
           <div className="space-y-4 border border-border rounded-md p-4 bg-sidebar">
             <Form {...workspaceForm}>
@@ -367,7 +367,7 @@ function RouteComponent() {
                   )}
                 />
 
-                <Separator />
+								<Separator />
 
                 <FormField
                   control={workspaceForm.control}
@@ -580,41 +580,41 @@ function RouteComponent() {
           </AlertDialogContent>
         </AlertDialog>
 
-        <AlertDialog
-          open={isDeleteModalOpen}
-          onOpenChange={setIsDeleteModalOpen}
-        >
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {t("settings:workspaceGeneral.deleteModalTitle")}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {t("settings:workspaceGeneral.deleteModalDescription", {
-                  name: workspace?.name ?? "",
-                })}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogClose>
-                <Button variant="outline" size="sm">
-                  {t("common:actions.cancel")}
-                </Button>
-              </AlertDialogClose>
-              <AlertDialogClose
-                onClick={handleDeleteWorkspace}
-                disabled={isDeleting}
-              >
-                <Button variant="destructive" size="sm" disabled={isDeleting}>
-                  {isDeleting
-                    ? t("common:actions.deleting")
-                    : t("settings:workspaceGeneral.deleteModalConfirm")}
-                </Button>
-              </AlertDialogClose>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    </>
-  );
+				<AlertDialog
+					open={isDeleteModalOpen}
+					onOpenChange={setIsDeleteModalOpen}
+				>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>
+								{t("settings:workspaceGeneral.deleteModalTitle")}
+							</AlertDialogTitle>
+							<AlertDialogDescription>
+								{t("settings:workspaceGeneral.deleteModalDescription", {
+									name: workspace?.name ?? "",
+								})}
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogClose>
+								<Button variant="outline" size="sm">
+									{t("common:actions.cancel")}
+								</Button>
+							</AlertDialogClose>
+							<AlertDialogClose
+								onClick={handleDeleteWorkspace}
+								disabled={isDeleting}
+							>
+								<Button variant="destructive" size="sm" disabled={isDeleting}>
+									{isDeleting
+										? t("common:actions.deleting")
+										: t("settings:workspaceGeneral.deleteModalConfirm")}
+								</Button>
+							</AlertDialogClose>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			</div>
+		</>
+	);
 }

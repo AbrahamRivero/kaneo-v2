@@ -3,17 +3,17 @@ import db from "../../database";
 import { githubIntegrationTable } from "../../database/schema";
 
 async function getGithubIntegrationByRepositoryId(
-  repositoryOwner: string,
-  repositoryName: string,
+	repositoryOwner: string,
+	repositoryName: string,
 ) {
-  const integration = await db.query.githubIntegrationTable.findFirst({
-    where: and(
-      eq(githubIntegrationTable.repositoryOwner, repositoryOwner),
-      eq(githubIntegrationTable.repositoryName, repositoryName),
-    ),
-  });
+	const integration = await db.query.githubIntegrationTable.findFirst({
+		where: and(
+			eq(githubIntegrationTable.repositoryOwner, repositoryOwner),
+			eq(githubIntegrationTable.repositoryName, repositoryName),
+		),
+	});
 
-  return integration;
+	return integration;
 }
 
 export default getGithubIntegrationByRepositoryId;

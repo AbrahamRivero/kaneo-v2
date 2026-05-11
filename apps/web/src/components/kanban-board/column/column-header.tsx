@@ -12,7 +12,7 @@ import type { ProjectWithTasks } from "@/types/project";
 import { ArchiveTasksModal } from "../../shared/modals/archive-tasks-modal";
 
 type ColumnHeaderProps = {
-  column: ProjectWithTasks["columns"][number];
+	column: ProjectWithTasks["columns"][number];
 };
 
 export function ColumnHeader({ column }: ColumnHeaderProps) {
@@ -23,32 +23,32 @@ export function ColumnHeader({ column }: ColumnHeaderProps) {
   const canTask = canManageTasks();
   const canCreate = canCreateTasks();
 
-  const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+	const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
+	const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
-  const handleConfirmArchive = () => {
-    if (!column.isFinal || !project) return;
+	const handleConfirmArchive = () => {
+		if (!column.isFinal || !project) return;
 
-    const updatedProject = produce(project, (draft) => {
-      const archivedColumn = draft?.columns?.find(
-        (col) => col.id === column.id,
-      );
-      if (!archivedColumn) return;
+		const updatedProject = produce(project, (draft) => {
+			const archivedColumn = draft?.columns?.find(
+				(col) => col.id === column.id,
+			);
+			if (!archivedColumn) return;
 
-      for (const task of archivedColumn.tasks) {
-        updateTask({
-          ...task,
-          status: "archived",
-        });
-      }
+			for (const task of archivedColumn.tasks) {
+				updateTask({
+					...task,
+					status: "archived",
+				});
+			}
 
-      archivedColumn.tasks = [];
-    });
+			archivedColumn.tasks = [];
+		});
 
-    setProject(updatedProject);
-    toast.success(t("tasks:archive.success", { count: column.tasks.length }));
-    setIsArchiveModalOpen(false);
-  };
+		setProject(updatedProject);
+		toast.success(t("tasks:archive.success", { count: column.tasks.length }));
+		setIsArchiveModalOpen(false);
+	};
 
   return (
     <div className="flex items-center justify-between gap-2">
@@ -87,19 +87,19 @@ export function ColumnHeader({ column }: ColumnHeaderProps) {
         )}
       </div>
 
-      <CreateTaskModal
-        open={isTaskModalOpen}
-        onClose={() => setIsTaskModalOpen(false)}
-        projectId={project?.id}
-        status={column.id}
-      />
+			<CreateTaskModal
+				open={isTaskModalOpen}
+				onClose={() => setIsTaskModalOpen(false)}
+				projectId={project?.id}
+				status={column.id}
+			/>
 
-      <ArchiveTasksModal
-        open={isArchiveModalOpen}
-        onClose={() => setIsArchiveModalOpen(false)}
-        onConfirm={handleConfirmArchive}
-        taskCount={column.tasks.length}
-      />
-    </div>
-  );
+			<ArchiveTasksModal
+				open={isArchiveModalOpen}
+				onClose={() => setIsArchiveModalOpen(false)}
+				onConfirm={handleConfirmArchive}
+				taskCount={column.tasks.length}
+			/>
+		</div>
+	);
 }

@@ -3,9 +3,9 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
 } from "@/components/ui/popover";
 import { ShortcutNumber } from "@/components/ui/shortcut-number";
 import { useUpdateTaskStatus } from "@/hooks/mutations/task/use-update-task-status";
@@ -18,15 +18,15 @@ import { toast } from "@/lib/toast";
 import type Task from "@/types/task";
 
 type SubtaskStatusPopoverProps = {
-  tasks: Task[];
-  projectId: string;
-  children: React.ReactNode;
+	tasks: Task[];
+	projectId: string;
+	children: React.ReactNode;
 };
 
 export default function SubtaskStatusPopover({
-  tasks,
-  projectId,
-  children,
+	tasks,
+	projectId,
+	children,
 }: SubtaskStatusPopoverProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -41,40 +41,40 @@ export default function SubtaskStatusPopover({
   const { canManageTasks } = useWorkspacePermission();
   const canEdit = canManageTasks();
 
-  const allSameStatus =
-    tasks.length > 0 && tasks.every((t) => t.status === tasks[0].status);
-  const currentStatus = allSameStatus ? tasks[0].status : null;
+	const allSameStatus =
+		tasks.length > 0 && tasks.every((t) => t.status === tasks[0].status);
+	const currentStatus = allSameStatus ? tasks[0].status : null;
 
-  const handleStatusChange = useCallback(
-    async (newStatus: string) => {
-      try {
-        await Promise.all(
-          tasks.map((task) =>
-            updateTaskStatus({
-              ...task,
-              status: newStatus,
-            }),
-          ),
-        );
-        setOpen(false);
-      } catch (error) {
-        toast.error(
-          error instanceof Error
-            ? error.message
-            : t("tasks:popover.status.updateError"),
-        );
-      }
-    },
-    [t, tasks, updateTaskStatus],
-  );
+	const handleStatusChange = useCallback(
+		async (newStatus: string) => {
+			try {
+				await Promise.all(
+					tasks.map((task) =>
+						updateTaskStatus({
+							...task,
+							status: newStatus,
+						}),
+					),
+				);
+				setOpen(false);
+			} catch (error) {
+				toast.error(
+					error instanceof Error
+						? error.message
+						: t("tasks:popover.status.updateError"),
+				);
+			}
+		},
+		[t, tasks, updateTaskStatus],
+	);
 
-  const shortcutOptions = useMemo(
-    () =>
-      statusOptions.map((status) => ({
-        onSelect: () => handleStatusChange(status.value),
-      })),
-    [handleStatusChange, statusOptions],
-  );
+	const shortcutOptions = useMemo(
+		() =>
+			statusOptions.map((status) => ({
+				onSelect: () => handleStatusChange(status.value),
+			})),
+		[handleStatusChange, statusOptions],
+	);
 
   useNumberedShortcuts(open, shortcutOptions);
 

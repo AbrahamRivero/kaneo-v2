@@ -7,18 +7,18 @@ import { slackPlugin } from "./slack";
 import { telegramPlugin } from "./telegram";
 
 export function initializePlugins() {
-  console.log("Initializing plugins...");
+	console.log("Initializing plugins...");
 
-  registerPlugin(githubPlugin);
-  registerPlugin(giteaPlugin);
-  registerPlugin(slackPlugin);
-  registerPlugin(discordPlugin);
-  registerPlugin(genericWebhookPlugin);
-  registerPlugin(telegramPlugin);
-  initializeGitHubPlugin();
-  initializeEventSubscriptions();
+	registerPlugin(githubPlugin);
+	registerPlugin(giteaPlugin);
+	registerPlugin(slackPlugin);
+	registerPlugin(discordPlugin);
+	registerPlugin(genericWebhookPlugin);
+	registerPlugin(telegramPlugin);
+	initializeGitHubPlugin();
+	initializeEventSubscriptions();
 
-  console.log("✅ Plugins initialized");
+	console.log("✅ Plugins initialized");
 }
 
 export * from "./registry";

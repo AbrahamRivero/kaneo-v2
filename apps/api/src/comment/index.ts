@@ -10,9 +10,9 @@ import getComments from "./controllers/get-comments";
 import updateComment from "./controllers/update-comment";
 
 const comment = new Hono<{
-  Variables: {
-    userId: string;
-  };
+	Variables: {
+		userId: string;
+	};
 }>()
   .get(
     "/:taskId",

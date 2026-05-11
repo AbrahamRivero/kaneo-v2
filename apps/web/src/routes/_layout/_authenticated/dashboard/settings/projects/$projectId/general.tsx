@@ -1,9 +1,9 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  createFileRoute,
-  useNavigate,
-  useParams,
+	createFileRoute,
+	useNavigate,
+	useParams,
 } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -12,28 +12,28 @@ import { z } from "zod";
 import PageTitle from "@/components/page-title";
 import { TasksImportExport } from "@/components/project/tasks-import-export.tsx";
 import {
-  AlertDialog,
-  AlertDialogClose,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+	AlertDialog,
+	AlertDialogClose,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import icons from "@/constants/project-icons";
@@ -47,79 +47,79 @@ import { toast } from "@/lib/toast";
 import useProjectStore from "@/store/project.ts";
 
 export const Route = createFileRoute(
-  "/_layout/_authenticated/dashboard/settings/projects/$projectId/general",
+	"/_layout/_authenticated/dashboard/settings/projects/$projectId/general",
 )({
-  component: RouteComponent,
+	component: RouteComponent,
 });
 
 type ProjectFormValues = {
-  name: string;
-  slug: string;
-  description?: string;
-  icon: string;
+	name: string;
+	slug: string;
+	description?: string;
+	icon: string;
 };
 
 type NormalizedProjectValues = {
-  name: string;
-  slug: string;
-  description: string;
-  icon: string;
+	name: string;
+	slug: string;
+	description: string;
+	icon: string;
 };
 
 function normalizeProjectValues(
-  data: ProjectFormValues,
+	data: ProjectFormValues,
 ): NormalizedProjectValues {
-  return {
-    name: data.name.trim(),
-    slug: data.slug.trim(),
-    description: (data.description ?? "").trim(),
-    icon: data.icon || "Layout",
-  };
+	return {
+		name: data.name.trim(),
+		slug: data.slug.trim(),
+		description: (data.description ?? "").trim(),
+		icon: data.icon || "Layout",
+	};
 }
 
 function RouteComponent() {
-  const { t } = useTranslation();
-  const projectSchema = useMemo(
-    () =>
-      z.object({
-        name: z
-          .string()
-          .min(1, t("settings:projectGeneral.validation.nameRequired"))
-          .min(2, t("settings:projectGeneral.validation.nameShort")),
-        slug: z
-          .string()
-          .min(1, t("settings:projectGeneral.validation.keyRequired"))
-          .min(2, t("settings:projectGeneral.validation.keyShort"))
-          .max(8, t("settings:projectGeneral.validation.keyMax")),
-        description: z.string().optional(),
-        icon: z
-          .string()
-          .min(1, t("settings:projectGeneral.validation.iconRequired")),
-      }),
-    [t],
-  );
+	const { t } = useTranslation();
+	const projectSchema = useMemo(
+		() =>
+			z.object({
+				name: z
+					.string()
+					.min(1, t("settings:projectGeneral.validation.nameRequired"))
+					.min(2, t("settings:projectGeneral.validation.nameShort")),
+				slug: z
+					.string()
+					.min(1, t("settings:projectGeneral.validation.keyRequired"))
+					.min(2, t("settings:projectGeneral.validation.keyShort"))
+					.max(8, t("settings:projectGeneral.validation.keyMax")),
+				description: z.string().optional(),
+				icon: z
+					.string()
+					.min(1, t("settings:projectGeneral.validation.iconRequired")),
+			}),
+		[t],
+	);
 
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const isSavingRef = useRef(false);
-  const queuedSaveRef = useRef<ProjectFormValues | null>(null);
-  const lastSavedRef = useRef<NormalizedProjectValues | null>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [iconPopoverOpen, setIconPopoverOpen] = useState(false);
-  const [iconSearch, setIconSearch] = useState("");
+	const queryClient = useQueryClient();
+	const navigate = useNavigate();
+	const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const isSavingRef = useRef(false);
+	const queuedSaveRef = useRef<ProjectFormValues | null>(null);
+	const lastSavedRef = useRef<NormalizedProjectValues | null>(null);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [iconPopoverOpen, setIconPopoverOpen] = useState(false);
+	const [iconSearch, setIconSearch] = useState("");
 
-  const { data: workspace } = useActiveWorkspace();
-  const { projectId: rawProjectId } = useParams({ strict: false });
-  const projectId = rawProjectId ?? "";
-  const { data: fetchedProject } = useGetTasks(projectId);
-  const { project, setProject } = useProjectStore();
+	const { data: workspace } = useActiveWorkspace();
+	const { projectId: rawProjectId } = useParams({ strict: false });
+	const projectId = rawProjectId ?? "";
+	const { data: fetchedProject } = useGetTasks(projectId);
+	const { project, setProject } = useProjectStore();
 
-  useEffect(() => {
-    if (fetchedProject) {
-      setProject(fetchedProject);
-    }
-  }, [fetchedProject, setProject]);
+	useEffect(() => {
+		if (fetchedProject) {
+			setProject(fetchedProject);
+		}
+	}, [fetchedProject, setProject]);
 
   const { mutateAsync: updateProject } = useUpdateProject();
   const { mutateAsync: deleteProject, isPending: isDeleting } =
@@ -128,137 +128,137 @@ function RouteComponent() {
   const canEdit = canManageProjects();
   const canDelete = canDeleteProjects();
 
-  const projectForm = useForm<ProjectFormValues>({
-    resolver: standardSchemaResolver(projectSchema),
-    mode: "onChange",
-    defaultValues: {
-      name: project?.name || "",
-      slug: project?.slug || "",
-      description: project?.description || "",
-      icon: project?.icon || "Layout",
-    },
-  });
+	const projectForm = useForm<ProjectFormValues>({
+		resolver: standardSchemaResolver(projectSchema),
+		mode: "onChange",
+		defaultValues: {
+			name: project?.name || "",
+			slug: project?.slug || "",
+			description: project?.description || "",
+			icon: project?.icon || "Layout",
+		},
+	});
 
-  useEffect(() => {
-    if (!project) return;
+	useEffect(() => {
+		if (!project) return;
 
-    const nextValues = {
-      name: project.name || "",
-      slug: project.slug || "",
-      description: project.description || "",
-      icon: project.icon || "Layout",
-    };
-    lastSavedRef.current = normalizeProjectValues(nextValues);
+		const nextValues = {
+			name: project.name || "",
+			slug: project.slug || "",
+			description: project.description || "",
+			icon: project.icon || "Layout",
+		};
+		lastSavedRef.current = normalizeProjectValues(nextValues);
 
-    if (projectForm.formState.isDirty) return;
+		if (projectForm.formState.isDirty) return;
 
-    projectForm.reset(nextValues, {
-      keepDirty: false,
-      keepTouched: false,
-      keepIsValid: true,
-    });
-  }, [project, projectForm]);
+		projectForm.reset(nextValues, {
+			keepDirty: false,
+			keepTouched: false,
+			keepIsValid: true,
+		});
+	}, [project, projectForm]);
 
-  const saveProject = useCallback(
-    async (data: ProjectFormValues) => {
-      if (!project?.id) return;
+	const saveProject = useCallback(
+		async (data: ProjectFormValues) => {
+			if (!project?.id) return;
 
-      const normalizedData = normalizeProjectValues(data);
-      const nameChanged = lastSavedRef.current?.name !== normalizedData.name;
-      const slugChanged = lastSavedRef.current?.slug !== normalizedData.slug;
-      const descriptionChanged =
-        lastSavedRef.current?.description !== normalizedData.description;
-      const iconChanged = lastSavedRef.current?.icon !== normalizedData.icon;
-      const hasChanges =
-        nameChanged || slugChanged || descriptionChanged || iconChanged;
+			const normalizedData = normalizeProjectValues(data);
+			const nameChanged = lastSavedRef.current?.name !== normalizedData.name;
+			const slugChanged = lastSavedRef.current?.slug !== normalizedData.slug;
+			const descriptionChanged =
+				lastSavedRef.current?.description !== normalizedData.description;
+			const iconChanged = lastSavedRef.current?.icon !== normalizedData.icon;
+			const hasChanges =
+				nameChanged || slugChanged || descriptionChanged || iconChanged;
 
-      if (!hasChanges) return;
+			if (!hasChanges) return;
 
-      if (isSavingRef.current) {
-        queuedSaveRef.current = data;
-        return;
-      }
+			if (isSavingRef.current) {
+				queuedSaveRef.current = data;
+				return;
+			}
 
-      isSavingRef.current = true;
+			isSavingRef.current = true;
 
-      try {
-        const updatePayload = {
-          id: project.id,
-          name: nameChanged ? normalizedData.name : project.name,
-          slug: slugChanged ? normalizedData.slug : project.slug,
-          description: descriptionChanged
-            ? normalizedData.description
-            : (project.description ?? ""),
-          icon: iconChanged ? normalizedData.icon : (project.icon ?? "Layout"),
-          isPublic: !!project.isPublic,
-        };
+			try {
+				const updatePayload = {
+					id: project.id,
+					name: nameChanged ? normalizedData.name : project.name,
+					slug: slugChanged ? normalizedData.slug : project.slug,
+					description: descriptionChanged
+						? normalizedData.description
+						: (project.description ?? ""),
+					icon: iconChanged ? normalizedData.icon : (project.icon ?? "Layout"),
+					isPublic: !!project.isPublic,
+				};
 
-        await updateProject(updatePayload);
+				await updateProject(updatePayload);
 
-        projectForm.reset(normalizedData, { keepDirty: false });
-        lastSavedRef.current = normalizedData;
-        queuedSaveRef.current = null;
+				projectForm.reset(normalizedData, { keepDirty: false });
+				lastSavedRef.current = normalizedData;
+				queuedSaveRef.current = null;
 
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ["projects"] }),
-          queryClient.invalidateQueries({
-            queryKey: ["projects", workspace?.id],
-          }),
-          queryClient.invalidateQueries({
-            queryKey: ["projects", workspace?.id, project.id],
-          }),
-        ]);
-        toast.success(t("settings:projectGeneral.toastUpdated"));
-      } catch (error) {
-        toast.error(
-          error instanceof Error
-            ? error.message
-            : t("settings:projectGeneral.toastUpdateError"),
-        );
-      } finally {
-        isSavingRef.current = false;
+				await Promise.all([
+					queryClient.invalidateQueries({ queryKey: ["projects"] }),
+					queryClient.invalidateQueries({
+						queryKey: ["projects", workspace?.id],
+					}),
+					queryClient.invalidateQueries({
+						queryKey: ["projects", workspace?.id, project.id],
+					}),
+				]);
+				toast.success(t("settings:projectGeneral.toastUpdated"));
+			} catch (error) {
+				toast.error(
+					error instanceof Error
+						? error.message
+						: t("settings:projectGeneral.toastUpdateError"),
+				);
+			} finally {
+				isSavingRef.current = false;
 
-        if (queuedSaveRef.current) {
-          const queuedData = queuedSaveRef.current;
-          queuedSaveRef.current = null;
-          await saveProject(queuedData);
-        }
-      }
-    },
-    [
-      project?.id,
-      project?.isPublic,
-      project?.name,
-      project?.slug,
-      project?.description,
-      project?.icon,
-      updateProject,
-      queryClient,
-      workspace?.id,
-      projectForm,
-      t,
-    ],
-  );
+				if (queuedSaveRef.current) {
+					const queuedData = queuedSaveRef.current;
+					queuedSaveRef.current = null;
+					await saveProject(queuedData);
+				}
+			}
+		},
+		[
+			project?.id,
+			project?.isPublic,
+			project?.name,
+			project?.slug,
+			project?.description,
+			project?.icon,
+			updateProject,
+			queryClient,
+			workspace?.id,
+			projectForm,
+			t,
+		],
+	);
 
-  const saveProjectRef = useRef(saveProject);
-  const projectFormRef = useRef(projectForm);
-  saveProjectRef.current = saveProject;
-  projectFormRef.current = projectForm;
+	const saveProjectRef = useRef(saveProject);
+	const projectFormRef = useRef(projectForm);
+	saveProjectRef.current = saveProject;
+	projectFormRef.current = projectForm;
 
-  const debouncedSave = useCallback(() => {
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
+	const debouncedSave = useCallback(() => {
+		if (debounceTimeoutRef.current) {
+			clearTimeout(debounceTimeoutRef.current);
+		}
 
-    debounceTimeoutRef.current = setTimeout(async () => {
-      const isValid = await projectForm.trigger();
-      if (isValid) {
-        // Always save latest values to avoid staleness while typing
-        const latest = projectForm.getValues();
-        saveProject(latest as ProjectFormValues);
-      }
-    }, 800);
-  }, [projectForm, saveProject]);
+		debounceTimeoutRef.current = setTimeout(async () => {
+			const isValid = await projectForm.trigger();
+			if (isValid) {
+				// Always save latest values to avoid staleness while typing
+				const latest = projectForm.getValues();
+				saveProject(latest as ProjectFormValues);
+			}
+		}, 800);
+	}, [projectForm, saveProject]);
 
   useEffect(() => {
     if (!canEdit) return;
@@ -271,77 +271,77 @@ function RouteComponent() {
     return () => subscription.unsubscribe();
   }, [projectForm, debouncedSave, canEdit]);
 
-  useEffect(() => {
-    return () => {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-        debounceTimeoutRef.current = null;
-      }
-      // Flush pending edits if the user navigates away before the debounce fires.
-      void (async () => {
-        const latest = projectFormRef.current.getValues() as ProjectFormValues;
-        const normalized = normalizeProjectValues(latest);
-        const last = lastSavedRef.current;
-        const hasPendingChanges =
-          !last ||
-          last.name !== normalized.name ||
-          last.slug !== normalized.slug ||
-          last.description !== normalized.description ||
-          last.icon !== normalized.icon;
-        if (!hasPendingChanges) return;
+	useEffect(() => {
+		return () => {
+			if (debounceTimeoutRef.current) {
+				clearTimeout(debounceTimeoutRef.current);
+				debounceTimeoutRef.current = null;
+			}
+			// Flush pending edits if the user navigates away before the debounce fires.
+			void (async () => {
+				const latest = projectFormRef.current.getValues() as ProjectFormValues;
+				const normalized = normalizeProjectValues(latest);
+				const last = lastSavedRef.current;
+				const hasPendingChanges =
+					!last ||
+					last.name !== normalized.name ||
+					last.slug !== normalized.slug ||
+					last.description !== normalized.description ||
+					last.icon !== normalized.icon;
+				if (!hasPendingChanges) return;
 
-        const isValid = await projectFormRef.current.trigger();
-        if (isValid) {
-          await saveProjectRef.current(latest);
-        }
-      })();
-    };
-  }, []);
+				const isValid = await projectFormRef.current.trigger();
+				if (isValid) {
+					await saveProjectRef.current(latest);
+				}
+			})();
+		};
+	}, []);
 
-  const handleDeleteProject = useCallback(async () => {
-    if (!project?.id) return;
+	const handleDeleteProject = useCallback(async () => {
+		if (!project?.id) return;
 
-    try {
-      await deleteProject({ id: project.id });
-      toast.success(t("settings:projectGeneral.toastDeleted"));
+		try {
+			await deleteProject({ id: project.id });
+			toast.success(t("settings:projectGeneral.toastDeleted"));
 
-      await queryClient.invalidateQueries({ queryKey: ["projects"] });
+			await queryClient.invalidateQueries({ queryKey: ["projects"] });
 
-      navigate({
-        to: "/dashboard/workspace/$workspaceId",
-        params: { workspaceId: workspace?.id || "" },
-      });
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : t("settings:projectGeneral.toastDeleteError"),
-      );
-    }
-  }, [project?.id, deleteProject, queryClient, navigate, workspace?.id, t]);
+			navigate({
+				to: "/dashboard/workspace/$workspaceId",
+				params: { workspaceId: workspace?.id || "" },
+			});
+		} catch (error) {
+			toast.error(
+				error instanceof Error
+					? error.message
+					: t("settings:projectGeneral.toastDeleteError"),
+			);
+		}
+	}, [project?.id, deleteProject, queryClient, navigate, workspace?.id, t]);
 
-  return (
-    <>
-      <PageTitle title={t("settings:projectGeneral.pageTitle")} />
-      <div className="max-w-4xl mx-auto space-y-8">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold">
-            {t("settings:projectGeneral.title")}
-          </h1>
-          <p className="text-muted-foreground">
-            {t("settings:projectGeneral.subtitle")}
-          </p>
-        </div>
+	return (
+		<>
+			<PageTitle title={t("settings:projectGeneral.pageTitle")} />
+			<div className="max-w-4xl mx-auto space-y-8">
+				<div className="space-y-2">
+					<h1 className="text-2xl font-semibold">
+						{t("settings:projectGeneral.title")}
+					</h1>
+					<p className="text-muted-foreground">
+						{t("settings:projectGeneral.subtitle")}
+					</p>
+				</div>
 
-        <div className="space-y-6">
-          <div className="space-y-1">
-            <h2 className="text-md font-medium">
-              {t("settings:projectGeneral.projectInfoTitle")}
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              {t("settings:projectGeneral.projectInfoSubtitle")}
-            </p>
-          </div>
+				<div className="space-y-6">
+					<div className="space-y-1">
+						<h2 className="text-md font-medium">
+							{t("settings:projectGeneral.projectInfoTitle")}
+						</h2>
+						<p className="text-xs text-muted-foreground">
+							{t("settings:projectGeneral.projectInfoSubtitle")}
+						</p>
+					</div>
 
           <div className="space-y-4 border border-border rounded-md p-4 bg-sidebar">
             <div className="flex items-center justify-between">
@@ -437,7 +437,7 @@ function RouteComponent() {
               </div>
             </div>
 
-            <Separator />
+						<Separator />
 
             <Form {...projectForm}>
               <form className="space-y-4">
@@ -471,7 +471,7 @@ function RouteComponent() {
                   )}
                 />
 
-                <Separator />
+								<Separator />
 
                 <FormField
                   control={projectForm.control}
@@ -505,7 +505,7 @@ function RouteComponent() {
                   )}
                 />
 
-                <Separator />
+								<Separator />
 
                 <FormField
                   control={projectForm.control}
@@ -589,41 +589,41 @@ function RouteComponent() {
           </div>
         )}
 
-        <AlertDialog
-          open={isDeleteModalOpen}
-          onOpenChange={setIsDeleteModalOpen}
-        >
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {t("settings:projectGeneral.deleteModalTitle")}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {t("settings:projectGeneral.deleteModalDescription", {
-                  name: project?.name ?? "",
-                })}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogClose>
-                <Button variant="outline" size="sm">
-                  {t("common:actions.cancel")}
-                </Button>
-              </AlertDialogClose>
-              <AlertDialogClose
-                onClick={handleDeleteProject}
-                disabled={isDeleting}
-              >
-                <Button variant="destructive" size="sm" disabled={isDeleting}>
-                  {isDeleting
-                    ? t("common:actions.deleting")
-                    : t("settings:projectGeneral.deleteModalConfirm")}
-                </Button>
-              </AlertDialogClose>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    </>
-  );
+				<AlertDialog
+					open={isDeleteModalOpen}
+					onOpenChange={setIsDeleteModalOpen}
+				>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>
+								{t("settings:projectGeneral.deleteModalTitle")}
+							</AlertDialogTitle>
+							<AlertDialogDescription>
+								{t("settings:projectGeneral.deleteModalDescription", {
+									name: project?.name ?? "",
+								})}
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogClose>
+								<Button variant="outline" size="sm">
+									{t("common:actions.cancel")}
+								</Button>
+							</AlertDialogClose>
+							<AlertDialogClose
+								onClick={handleDeleteProject}
+								disabled={isDeleting}
+							>
+								<Button variant="destructive" size="sm" disabled={isDeleting}>
+									{isDeleting
+										? t("common:actions.deleting")
+										: t("settings:projectGeneral.deleteModalConfirm")}
+								</Button>
+							</AlertDialogClose>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			</div>
+		</>
+	);
 }

@@ -28,9 +28,9 @@ export function resolveGithubPrivateKey(): string {
 }
 
 export function getGithubApp(): App | null {
-  if (githubAppInstance) {
-    return githubAppInstance;
-  }
+	if (githubAppInstance) {
+		return githubAppInstance;
+	}
 
   const privateKey = resolveGithubPrivateKey();
   if (
@@ -49,31 +49,31 @@ export function getGithubApp(): App | null {
     },
   });
 
-  return githubAppInstance;
+	return githubAppInstance;
 }
 
 export async function getInstallationOctokit(installationId: number) {
-  const app = getGithubApp();
-  if (!app) {
-    throw new Error("GitHub App not configured");
-  }
-  return app.getInstallationOctokit(installationId);
+	const app = getGithubApp();
+	if (!app) {
+		throw new Error("GitHub App not configured");
+	}
+	return app.getInstallationOctokit(installationId);
 }
 
 export async function getInstallationIdForRepo(
-  owner: string,
-  repo: string,
+	owner: string,
+	repo: string,
 ): Promise<number> {
-  const app = getGithubApp();
-  if (!app) {
-    throw new Error("GitHub App not configured");
-  }
+	const app = getGithubApp();
+	if (!app) {
+		throw new Error("GitHub App not configured");
+	}
 
-  const { data: installation } =
-    await app.octokit.rest.apps.getRepoInstallation({
-      owner,
-      repo,
-    });
+	const { data: installation } =
+		await app.octokit.rest.apps.getRepoInstallation({
+			owner,
+			repo,
+		});
 
-  return installation.id;
+	return installation.id;
 }

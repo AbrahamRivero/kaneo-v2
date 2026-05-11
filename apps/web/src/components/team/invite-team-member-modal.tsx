@@ -18,22 +18,22 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
 
 type Props = {
-  open: boolean;
-  onClose: () => void;
+	open: boolean;
+	onClose: () => void;
 };
 
 const teamMemberSchema = z.object({
-  email: z.string(),
+	email: z.string(),
 });
 
 type TeamMemberFormValues = z.infer<typeof teamMemberSchema>;
@@ -47,12 +47,12 @@ function InviteTeamMemberModal({ open, onClose }: Props) {
   const { canInviteUsers } = useWorkspacePermission();
   const canInvite = canInviteUsers();
 
-  const form = useForm<TeamMemberFormValues>({
-    resolver: standardSchemaResolver(teamMemberSchema),
-    defaultValues: {
-      email: "",
-    },
-  });
+	const form = useForm<TeamMemberFormValues>({
+		resolver: standardSchemaResolver(teamMemberSchema),
+		defaultValues: {
+			email: "",
+		},
+	});
 
   const onSubmit = async ({ email }: TeamMemberFormValues) => {
     if (!workspaceId) {
@@ -72,16 +72,16 @@ function InviteTeamMemberModal({ open, onClose }: Props) {
         queryKey: ["workspace-users", workspaceId],
       });
 
-      toast.success(t("team:inviteModal.success"));
+			toast.success(t("team:inviteModal.success"));
 
-      resetInviteTeamMember();
-      onClose();
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t("team:inviteModal.error"),
-      );
-    }
-  };
+			resetInviteTeamMember();
+			onClose();
+		} catch (error) {
+			toast.error(
+				error instanceof Error ? error.message : t("team:inviteModal.error"),
+			);
+		}
+	};
 
   const resetInviteTeamMember = async () => {
     if (workspaceId) {
@@ -92,10 +92,10 @@ function InviteTeamMemberModal({ open, onClose }: Props) {
     form.reset();
   };
 
-  const resetAndCloseModal = () => {
-    resetInviteTeamMember();
-    onClose();
-  };
+	const resetAndCloseModal = () => {
+		resetInviteTeamMember();
+		onClose();
+	};
 
   return (
     <Dialog open={open} onOpenChange={resetAndCloseModal}>

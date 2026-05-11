@@ -34,38 +34,38 @@ console.log(`
 `);
 
 const router = createRouter({
-  routeTree,
-  defaultPreload: "intent",
-  defaultPreloadStaleTime: 0,
-  context: {
-    user: null,
-    queryClient,
-  },
+	routeTree,
+	defaultPreload: "intent",
+	defaultPreloadStaleTime: 0,
+	context: {
+		user: null,
+		queryClient,
+	},
 });
 
 function App() {
-  const { user } = useAuth();
+	const { user } = useAuth();
 
-  return <RouterProvider router={router} context={{ user }} />;
+	return <RouterProvider router={router} context={{ user }} />;
 }
 
 const rootElement = document.getElementById("root") as HTMLElement;
 if (!rootElement.innerHTML) {
-  const root = createRoot(rootElement);
-  root.render(
-    <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <AuthProvider>
-            <AppI18nProvider>
-              <KeyboardShortcutsProvider>
-                <App />
-                <KeyboardShortcutsHelp />
-              </KeyboardShortcutsProvider>
-            </AppI18nProvider>
-          </AuthProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
-    </StrictMode>,
-  );
+	const root = createRoot(rootElement);
+	root.render(
+		<StrictMode>
+			<QueryClientProvider client={queryClient}>
+				<ThemeProvider>
+					<AuthProvider>
+						<AppI18nProvider>
+							<KeyboardShortcutsProvider>
+								<App />
+								<KeyboardShortcutsHelp />
+							</KeyboardShortcutsProvider>
+						</AppI18nProvider>
+					</AuthProvider>
+				</ThemeProvider>
+			</QueryClientProvider>
+		</StrictMode>,
+	);
 }

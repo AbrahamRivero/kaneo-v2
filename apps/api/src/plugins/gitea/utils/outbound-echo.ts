@@ -2,10 +2,10 @@
 export const OUTBOUND_STATE_ECHO_WINDOW_MS = 5000;
 
 export function parseIssueUpdatedAtMs(issue: {
-  updated_at?: string;
+	updated_at?: string;
 }): number | null {
-  const raw = issue.updated_at;
-  if (!raw || typeof raw !== "string") return null;
-  const t = Date.parse(raw);
-  return Number.isNaN(t) ? null : t;
+	const raw = issue.updated_at;
+	if (!raw || typeof raw !== "string") return null;
+	const t = Date.parse(raw);
+	return Number.isNaN(t) ? null : t;
 }

@@ -1,8 +1,8 @@
 import { apiKey } from "@better-auth/api-key";
 import {
-  sendMagicLinkEmail,
-  sendOtpEmail,
-  sendWorkspaceInvitationEmail,
+	sendMagicLinkEmail,
+	sendOtpEmail,
+	sendWorkspaceInvitationEmail,
 } from "@kaneo/email";
 import {
   ac,
@@ -50,102 +50,102 @@ const githubSso = getGithubSsoOAuthCredentials();
 
 const isRegistrationDisabled = process.env.DISABLE_REGISTRATION === "true";
 const isPasswordRegistrationDisabled =
-  process.env.DISABLE_PASSWORD_REGISTRATION === "true";
+	process.env.DISABLE_PASSWORD_REGISTRATION === "true";
 
 const apiUrl = process.env.KANEO_API_URL || "http://localhost:1337";
 const clientUrl = process.env.KANEO_CLIENT_URL || "http://localhost:5173";
 const isHttps = apiUrl.startsWith("https://");
 const isCrossSubdomain = (() => {
-  try {
-    const apiHost = new URL(apiUrl).hostname;
-    const clientHost = new URL(clientUrl).hostname;
-    return (
-      apiHost !== clientHost &&
-      apiHost !== "localhost" &&
-      clientHost !== "localhost"
-    );
-  } catch {
-    return false;
-  }
+	try {
+		const apiHost = new URL(apiUrl).hostname;
+		const clientHost = new URL(clientUrl).hostname;
+		return (
+			apiHost !== clientHost &&
+			apiHost !== "localhost" &&
+			clientHost !== "localhost"
+		);
+	} catch {
+		return false;
+	}
 })();
 
 const trustedOrigins = [clientUrl];
 try {
-  const apiOrigin = new URL(apiUrl);
-  const apiOriginString = `${apiOrigin.protocol}//${apiOrigin.host}`;
-  if (!trustedOrigins.includes(apiOriginString)) {
-    trustedOrigins.push(apiOriginString);
-  }
+	const apiOrigin = new URL(apiUrl);
+	const apiOriginString = `${apiOrigin.protocol}//${apiOrigin.host}`;
+	if (!trustedOrigins.includes(apiOriginString)) {
+		trustedOrigins.push(apiOriginString);
+	}
 } catch {}
 
 const baseURLWithoutPath = (() => {
-  try {
-    const url = new URL(apiUrl);
-    return `${url.protocol}//${url.host}`;
-  } catch {
-    return apiUrl.split("/").slice(0, 3).join("/"); // Get protocol://host
-  }
+	try {
+		const url = new URL(apiUrl);
+		return `${url.protocol}//${url.host}`;
+	} catch {
+		return apiUrl.split("/").slice(0, 3).join("/"); // Get protocol://host
+	}
 })();
 
 if (process.env.AUTH_SECRET && process.env.AUTH_SECRET.length < 32) {
-  console.error(
-    "AUTH_SECRET is less than 32 characters, please generate a new one.",
-  );
-  process.exit(1);
+	console.error(
+		"AUTH_SECRET is less than 32 characters, please generate a new one.",
+	);
+	process.exit(1);
 }
 
 async function getUserLocale(email: string) {
-  const [user] = await db
-    .select({ locale: schema.userTable.locale })
-    .from(schema.userTable)
-    .where(eq(schema.userTable.email, email))
-    .limit(1);
+	const [user] = await db
+		.select({ locale: schema.userTable.locale })
+		.from(schema.userTable)
+		.where(eq(schema.userTable.email, email))
+		.limit(1);
 
-  return user?.locale ?? null;
+	return user?.locale ?? null;
 }
 
 function getLocaleKey(locale?: string | null) {
-  return locale?.toLowerCase().startsWith("de") ? "de" : "en";
+	return locale?.toLowerCase().startsWith("de") ? "de" : "en";
 }
 
 function getAuthEmailCopy(locale?: string | null) {
-  return getLocaleKey(locale) === "de"
-    ? {
-        magicLinkSubject: "Anmeldelink fuer Kaneo",
-        otpSubject: "Bestaetigungscode fuer Kaneo",
-      }
-    : {
-        magicLinkSubject: "Login for Kaneo",
-        otpSubject: "Authentication code for Kaneo",
-      };
+	return getLocaleKey(locale) === "de"
+		? {
+				magicLinkSubject: "Anmeldelink fuer Kaneo",
+				otpSubject: "Bestaetigungscode fuer Kaneo",
+			}
+		: {
+				magicLinkSubject: "Login for Kaneo",
+				otpSubject: "Authentication code for Kaneo",
+			};
 }
 
 function getDeviceAuthClientIds(): Set<string> {
-  const raw = process.env.DEVICE_AUTH_CLIENT_IDS?.trim();
-  if (raw) {
-    return new Set(
-      raw
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean),
-    );
-  }
-  return new Set(["kaneo-cli", "kaneo-mcp"]);
+	const raw = process.env.DEVICE_AUTH_CLIENT_IDS?.trim();
+	if (raw) {
+		return new Set(
+			raw
+				.split(",")
+				.map((s) => s.trim())
+				.filter(Boolean),
+		);
+	}
+	return new Set(["kaneo-cli", "kaneo-mcp"]);
 }
 
 function getDeviceAuthVerificationUri(): string {
-  const base = clientUrl.replace(/\/$/, "");
-  return `${base}/device`;
+	const base = clientUrl.replace(/\/$/, "");
+	return `${base}/device`;
 }
 
 function getInvitationEmailSubject(
-  locale: string | null,
-  inviterName: string,
-  workspaceName: string,
+	locale: string | null,
+	inviterName: string,
+	workspaceName: string,
 ) {
-  return getLocaleKey(locale) === "de"
-    ? `${inviterName} hat dich eingeladen, ${workspaceName} auf Kaneo beizutreten`
-    : `${inviterName} invited you to join ${workspaceName} on Kaneo`;
+	return getLocaleKey(locale) === "de"
+		? `${inviterName} hat dich eingeladen, ${workspaceName} auf Kaneo beizutreten`
+		: `${inviterName} invited you to join ${workspaceName} on Kaneo`;
 }
 
 export const auth = betterAuth({
@@ -385,22 +385,22 @@ export const auth = betterAuth({
         const inviteLink = `${process.env.KANEO_CLIENT_URL}/invitation/accept/${data.id}`;
         const locale = await getUserLocale(data.email);
 
-        const result = await sendWorkspaceInvitationEmail(
-          data.email,
-          getInvitationEmailSubject(
-            locale,
-            data.inviter.user.name,
-            data.organization.name,
-          ),
-          {
-            inviterEmail: data.inviter.user.email,
-            inviterName: data.inviter.user.name,
-            locale,
-            workspaceName: data.organization.name,
-            invitationLink: inviteLink,
-            to: data.email,
-          },
-        );
+				const result = await sendWorkspaceInvitationEmail(
+					data.email,
+					getInvitationEmailSubject(
+						locale,
+						data.inviter.user.name,
+						data.organization.name,
+					),
+					{
+						inviterEmail: data.inviter.user.email,
+						inviterName: data.inviter.user.name,
+						locale,
+						workspaceName: data.organization.name,
+						invitationLink: inviteLink,
+						to: data.email,
+					},
+				);
 
         if (
           result?.success === false &&
@@ -627,54 +627,54 @@ export const auth = betterAuth({
         return;
       }
 
-      const email =
-        ctx.body?.email ||
-        ctx.query?.email ||
-        ctx.headers?.get("x-invitation-email");
-      const invitationId =
-        ctx.body?.invitationId ||
-        ctx.query?.invitationId ||
-        ctx.headers?.get("x-invitation-id");
+			const email =
+				ctx.body?.email ||
+				ctx.query?.email ||
+				ctx.headers?.get("x-invitation-email");
+			const invitationId =
+				ctx.body?.invitationId ||
+				ctx.query?.invitationId ||
+				ctx.headers?.get("x-invitation-id");
 
-      if (ctx.path === "/sign-up/email") {
-        const result = await checkRegistrationAllowed(email, invitationId);
-        if (!result.allowed) {
-          throw new APIError("FORBIDDEN", {
-            message: result.reason,
-          });
-        }
-      }
-    }),
-    after: createAuthMiddleware(async (ctx) => {
-      if (ctx.path.startsWith("/sign-up") || ctx.path.startsWith("/sign-in")) {
-        const newSession = ctx.context.newSession;
-        if (newSession) {
-          const workspaceMember = await db
-            .select({ workspaceId: schema.workspaceUserTable.workspaceId })
-            .from(schema.workspaceUserTable)
-            .where(eq(schema.workspaceUserTable.userId, newSession.user.id))
-            .limit(1);
+			if (ctx.path === "/sign-up/email") {
+				const result = await checkRegistrationAllowed(email, invitationId);
+				if (!result.allowed) {
+					throw new APIError("FORBIDDEN", {
+						message: result.reason,
+					});
+				}
+			}
+		}),
+		after: createAuthMiddleware(async (ctx) => {
+			if (ctx.path.startsWith("/sign-up") || ctx.path.startsWith("/sign-in")) {
+				const newSession = ctx.context.newSession;
+				if (newSession) {
+					const workspaceMember = await db
+						.select({ workspaceId: schema.workspaceUserTable.workspaceId })
+						.from(schema.workspaceUserTable)
+						.where(eq(schema.workspaceUserTable.userId, newSession.user.id))
+						.limit(1);
 
-          const activeWorkspaceId = workspaceMember[0]?.workspaceId || null;
+					const activeWorkspaceId = workspaceMember[0]?.workspaceId || null;
 
-          if (activeWorkspaceId) {
-            await db
-              .update(schema.sessionTable)
-              .set({ activeOrganizationId: activeWorkspaceId })
-              .where(eq(schema.sessionTable.id, newSession.session.id));
-          }
-        }
-      }
-    }),
-  },
-  advanced: {
-    defaultCookieAttributes: {
-      // For cross-subdomain auth with HTTPS, use sameSite: "none" with secure: true
-      // For same-domain or HTTP deployments, use sameSite: "lax" with secure: false
-      sameSite: isCrossSubdomain && isHttps ? "none" : "lax",
-      secure: isCrossSubdomain && isHttps, // must be true when sameSite is "none"
-      partitioned: isCrossSubdomain && isHttps,
-      domain: process.env.COOKIE_DOMAIN || undefined, // Optional: e.g., ".andrej.com" for explicit cross-subdomain cookies
-    },
-  },
+					if (activeWorkspaceId) {
+						await db
+							.update(schema.sessionTable)
+							.set({ activeOrganizationId: activeWorkspaceId })
+							.where(eq(schema.sessionTable.id, newSession.session.id));
+					}
+				}
+			}
+		}),
+	},
+	advanced: {
+		defaultCookieAttributes: {
+			// For cross-subdomain auth with HTTPS, use sameSite: "none" with secure: true
+			// For same-domain or HTTP deployments, use sameSite: "lax" with secure: false
+			sameSite: isCrossSubdomain && isHttps ? "none" : "lax",
+			secure: isCrossSubdomain && isHttps, // must be true when sameSite is "none"
+			partitioned: isCrossSubdomain && isHttps,
+			domain: process.env.COOKIE_DOMAIN || undefined, // Optional: e.g., ".andrej.com" for explicit cross-subdomain cookies
+		},
+	},
 });

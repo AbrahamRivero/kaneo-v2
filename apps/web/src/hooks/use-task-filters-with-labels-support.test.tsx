@@ -3,21 +3,21 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { useTaskFiltersWithLabelsSupport } from "./use-task-filters-with-labels-support";
 
 describe("useTaskFiltersWithLabelsSupport", () => {
-  const storageKey = "kaneo:board-filters:project-1";
+	const storageKey = "kaneo:board-filters:project-1";
 
-  beforeEach(() => {
-    window.localStorage.clear();
-  });
+	beforeEach(() => {
+		window.localStorage.clear();
+	});
 
-  afterEach(() => {
-    window.localStorage.clear();
-  });
+	afterEach(() => {
+		window.localStorage.clear();
+	});
 
-  it("restores persisted label filters from storage and matches tasks from project data", async () => {
-    window.localStorage.setItem(
-      storageKey,
-      JSON.stringify({ labels: ["label-bug"] }),
-    );
+	it("restores persisted label filters from storage and matches tasks from project data", async () => {
+		window.localStorage.setItem(
+			storageKey,
+			JSON.stringify({ labels: ["label-bug"] }),
+		);
 
     const project = {
       id: "project-1",
@@ -90,17 +90,17 @@ describe("useTaskFiltersWithLabelsSupport", () => {
       archivedTasks: [],
     };
 
-    const { result } = renderHook(() =>
-      useTaskFiltersWithLabelsSupport(project, "project-1"),
-    );
+		const { result } = renderHook(() =>
+			useTaskFiltersWithLabelsSupport(project, "project-1"),
+		);
 
-    await waitFor(() => {
-      expect(result.current.filters.labels).toEqual(["label-bug"]);
-    });
+		await waitFor(() => {
+			expect(result.current.filters.labels).toEqual(["label-bug"]);
+		});
 
-    expect(result.current.filteredProject?.columns[0]?.tasks).toHaveLength(1);
-    expect(result.current.filteredProject?.columns[0]?.tasks[0]?.id).toBe(
-      "task-1",
-    );
-  });
+		expect(result.current.filteredProject?.columns[0]?.tasks).toHaveLength(1);
+		expect(result.current.filteredProject?.columns[0]?.tasks[0]?.id).toBe(
+			"task-1",
+		);
+	});
 });

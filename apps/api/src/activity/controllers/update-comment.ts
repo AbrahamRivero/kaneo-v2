@@ -28,17 +28,17 @@ async function updateComment(userId: string, id: string, content: string) {
     .where(and(eq(activityTable.id, id), eq(activityTable.userId, userId)))
     .returning();
 
-  if (!updated) {
-    throw new HTTPException(404, {
-      message: "Comment not found or you are not the author",
-    });
-  }
+	if (!updated) {
+		throw new HTTPException(404, {
+			message: "Comment not found or you are not the author",
+		});
+	}
 
-  const [task] = await db
-    .select({ projectId: taskTable.projectId })
-    .from(taskTable)
-    .where(eq(taskTable.id, updated.taskId))
-    .limit(1);
+	const [task] = await db
+		.select({ projectId: taskTable.projectId })
+		.from(taskTable)
+		.where(eq(taskTable.id, updated.taskId))
+		.limit(1);
 
   if (task) {
     await publishEvent("comment.updated", {
@@ -52,7 +52,7 @@ async function updateComment(userId: string, id: string, content: string) {
     taskId: existing.taskId,
   }).catch(() => {});
 
-  return updated;
+	return updated;
 }
 
 export default updateComment;

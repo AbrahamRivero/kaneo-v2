@@ -5,17 +5,17 @@ import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
 import db from "../database";
 import {
-  assetTable,
-  projectTable,
-  taskTable,
-  workspaceTable,
+	assetTable,
+	projectTable,
+	taskTable,
+	workspaceTable,
 } from "../database/schema";
 import { taskSchema } from "../schemas";
 import {
-  assertTaskImageKeyMatchesContext,
-  createTaskImageUploadUrl,
-  isImageContentType,
-  validateTaskAssetUploadInput,
+	assertTaskImageKeyMatchesContext,
+	createTaskImageUploadUrl,
+	isImageContentType,
+	validateTaskAssetUploadInput,
 } from "../storage/s3";
 import { normalizeApiServerUrl } from "../utils/openapi-spec";
 import { requireWorkspacePermission } from "../utils/require-workspace-permission";
@@ -38,123 +38,123 @@ import updateTaskTitle from "./controllers/update-task-title";
 import { VALID_PRIORITIES } from "./validate-task-fields";
 
 const task = new Hono<{
-  Variables: {
-    userId: string;
-  };
+	Variables: {
+		userId: string;
+	};
 }>()
-  .get(
-    "/tasks/:projectId",
-    describeRoute({
-      operationId: "listTasks",
-      tags: ["Tasks"],
-      description: "Get all tasks for a specific project",
-      responses: {
-        200: {
-          description: "Project with tasks organized by columns",
-          content: {
-            "application/json": { schema: resolver(v.any()) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ projectId: v.string() })),
-    validator(
-      "query",
-      v.optional(
-        v.object({
-          status: v.optional(v.string()),
-          priority: v.optional(v.string()),
-          assigneeId: v.optional(v.string()),
-          page: v.optional(v.pipe(v.string(), v.transform(Number))),
-          limit: v.optional(v.pipe(v.string(), v.transform(Number))),
-          sortBy: v.optional(
-            v.picklist([
-              "createdAt",
-              "priority",
-              "dueDate",
-              "position",
-              "title",
-              "number",
-            ]),
-          ),
-          sortOrder: v.optional(v.picklist(["asc", "desc"])),
-          dueBefore: v.optional(v.string()),
-          dueAfter: v.optional(v.string()),
-        }),
-      ),
-    ),
-    workspaceAccess.fromProject("projectId"),
-    async (c) => {
-      const { projectId } = c.req.valid("param");
-      const filters = c.req.valid("query") || {};
+	.get(
+		"/tasks/:projectId",
+		describeRoute({
+			operationId: "listTasks",
+			tags: ["Tasks"],
+			description: "Get all tasks for a specific project",
+			responses: {
+				200: {
+					description: "Project with tasks organized by columns",
+					content: {
+						"application/json": { schema: resolver(v.any()) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ projectId: v.string() })),
+		validator(
+			"query",
+			v.optional(
+				v.object({
+					status: v.optional(v.string()),
+					priority: v.optional(v.string()),
+					assigneeId: v.optional(v.string()),
+					page: v.optional(v.pipe(v.string(), v.transform(Number))),
+					limit: v.optional(v.pipe(v.string(), v.transform(Number))),
+					sortBy: v.optional(
+						v.picklist([
+							"createdAt",
+							"priority",
+							"dueDate",
+							"position",
+							"title",
+							"number",
+						]),
+					),
+					sortOrder: v.optional(v.picklist(["asc", "desc"])),
+					dueBefore: v.optional(v.string()),
+					dueAfter: v.optional(v.string()),
+				}),
+			),
+		),
+		workspaceAccess.fromProject("projectId"),
+		async (c) => {
+			const { projectId } = c.req.valid("param");
+			const filters = c.req.valid("query") || {};
 
-      const tasks = await getTasks(projectId, filters);
+			const tasks = await getTasks(projectId, filters);
 
-      return c.json(tasks);
-    },
-  )
-  .patch(
-    "/bulk",
-    describeRoute({
-      operationId: "bulkUpdateTasks",
-      tags: ["Tasks"],
-      description: "Perform bulk operations on multiple tasks",
-      responses: {
-        200: {
-          description: "Bulk operation completed successfully",
-          content: {
-            "application/json": {
-              schema: resolver(
-                v.object({
-                  success: v.boolean(),
-                  updatedCount: v.number(),
-                }),
-              ),
-            },
-          },
-        },
-      },
-    }),
-    validator(
-      "json",
-      v.object({
-        taskIds: v.pipe(v.array(v.string()), v.minLength(1)),
-        operation: v.picklist([
-          "updateStatus",
-          "updatePriority",
-          "updateAssignee",
-          "delete",
-          "addLabel",
-          "removeLabel",
-          "updateDueDate",
-        ] as const),
-        value: v.optional(v.nullable(v.string())),
-      }),
-    ),
-    async (c) => {
-      const { taskIds, operation, value } = c.req.valid("json");
-      const userId = c.get("userId");
+			return c.json(tasks);
+		},
+	)
+	.patch(
+		"/bulk",
+		describeRoute({
+			operationId: "bulkUpdateTasks",
+			tags: ["Tasks"],
+			description: "Perform bulk operations on multiple tasks",
+			responses: {
+				200: {
+					description: "Bulk operation completed successfully",
+					content: {
+						"application/json": {
+							schema: resolver(
+								v.object({
+									success: v.boolean(),
+									updatedCount: v.number(),
+								}),
+							),
+						},
+					},
+				},
+			},
+		}),
+		validator(
+			"json",
+			v.object({
+				taskIds: v.pipe(v.array(v.string()), v.minLength(1)),
+				operation: v.picklist([
+					"updateStatus",
+					"updatePriority",
+					"updateAssignee",
+					"delete",
+					"addLabel",
+					"removeLabel",
+					"updateDueDate",
+				] as const),
+				value: v.optional(v.nullable(v.string())),
+			}),
+		),
+		async (c) => {
+			const { taskIds, operation, value } = c.req.valid("json");
+			const userId = c.get("userId");
 
-      if (!userId) {
-        throw new HTTPException(401, { message: "Unauthorized" });
-      }
+			if (!userId) {
+				throw new HTTPException(401, { message: "Unauthorized" });
+			}
 
-      if (
-        operation !== "delete" &&
-        operation !== "updateDueDate" &&
-        value === undefined
-      ) {
-        throw new HTTPException(400, {
-          message: "Value is required for this operation",
-        });
-      }
+			if (
+				operation !== "delete" &&
+				operation !== "updateDueDate" &&
+				value === undefined
+			) {
+				throw new HTTPException(400, {
+					message: "Value is required for this operation",
+				});
+			}
 
-      const result = await bulkUpdateTasks({
-        taskIds,
-        operation,
-        value,
-        userId,
-      });
+			const result = await bulkUpdateTasks({
+				taskIds,
+				operation,
+				value,
+				userId,
+			});
 
       return c.json(result);
     },
@@ -200,42 +200,42 @@ const task = new Hono<{
         userId,
       } = c.req.valid("json");
 
-      const task = await createTask({
-        projectId,
-        currentUserId: c.get("userId"),
-        userId: userId,
-        title,
-        description,
-        startDate: startDate ? new Date(startDate) : undefined,
-        dueDate: dueDate ? new Date(dueDate) : undefined,
-        priority,
-        status,
-      });
+			const task = await createTask({
+				projectId,
+				currentUserId: c.get("userId"),
+				userId: userId,
+				title,
+				description,
+				startDate: startDate ? new Date(startDate) : undefined,
+				dueDate: dueDate ? new Date(dueDate) : undefined,
+				priority,
+				status,
+			});
 
-      return c.json(task);
-    },
-  )
-  .get(
-    "/:id",
-    describeRoute({
-      operationId: "getTask",
-      tags: ["Tasks"],
-      description: "Get a specific task by ID",
-      responses: {
-        200: {
-          description: "Task details",
-          content: {
-            "application/json": { schema: resolver(taskSchema) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ id: v.string() })),
-    workspaceAccess.fromTask(),
-    async (c) => {
-      const { id } = c.req.valid("param");
+			return c.json(task);
+		},
+	)
+	.get(
+		"/:id",
+		describeRoute({
+			operationId: "getTask",
+			tags: ["Tasks"],
+			description: "Get a specific task by ID",
+			responses: {
+				200: {
+					description: "Task details",
+					content: {
+						"application/json": { schema: resolver(taskSchema) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		workspaceAccess.fromTask(),
+		async (c) => {
+			const { id } = c.req.valid("param");
 
-      const task = await getTask(id);
+			const task = await getTask(id);
 
       return c.json(task);
     },
@@ -278,12 +278,12 @@ const task = new Hono<{
       const { destinationProjectId, destinationStatus } = c.req.valid("json");
       const currentUserId = c.get("userId");
 
-      const result = await moveTask({
-        taskId: id,
-        destinationProjectId,
-        destinationStatus,
-        currentUserId,
-      });
+			const result = await moveTask({
+				taskId: id,
+				destinationProjectId,
+				destinationStatus,
+				currentUserId,
+			});
 
       return c.json(result);
     },
@@ -334,46 +334,46 @@ const task = new Hono<{
         userId,
       } = c.req.valid("json");
 
-      const currentUserId = c.get("userId");
+			const currentUserId = c.get("userId");
 
-      const task = await updateTask(
-        id,
-        title,
-        status,
-        startDate ? new Date(startDate) : undefined,
-        dueDate ? new Date(dueDate) : undefined,
-        projectId,
-        description,
-        priority,
-        position,
-        userId,
-        currentUserId,
-      );
+			const task = await updateTask(
+				id,
+				title,
+				status,
+				startDate ? new Date(startDate) : undefined,
+				dueDate ? new Date(dueDate) : undefined,
+				projectId,
+				description,
+				priority,
+				position,
+				userId,
+				currentUserId,
+			);
 
-      return c.json(task);
-    },
-  )
-  .get(
-    "/export/:projectId",
-    describeRoute({
-      operationId: "exportTasks",
-      tags: ["Tasks"],
-      description: "Export all tasks from a project",
-      responses: {
-        200: {
-          description: "Exported tasks data",
-          content: {
-            "application/json": { schema: resolver(v.any()) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ projectId: v.string() })),
-    workspaceAccess.fromProject("projectId"),
-    async (c) => {
-      const { projectId } = c.req.valid("param");
+			return c.json(task);
+		},
+	)
+	.get(
+		"/export/:projectId",
+		describeRoute({
+			operationId: "exportTasks",
+			tags: ["Tasks"],
+			description: "Export all tasks from a project",
+			responses: {
+				200: {
+					description: "Exported tasks data",
+					content: {
+						"application/json": { schema: resolver(v.any()) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ projectId: v.string() })),
+		workspaceAccess.fromProject("projectId"),
+		async (c) => {
+			const { projectId } = c.req.valid("param");
 
-      const exportData = await exportTasks(projectId);
+			const exportData = await exportTasks(projectId);
 
       return c.json(exportData);
     },
@@ -417,7 +417,7 @@ const task = new Hono<{
       const { tasks } = c.req.valid("json");
       const currentUserId = c.get("userId");
 
-      const result = await importTasks(projectId, tasks, currentUserId);
+			const result = await importTasks(projectId, tasks, currentUserId);
 
       return c.json(result);
     },
@@ -443,8 +443,8 @@ const task = new Hono<{
     async (c) => {
       const { id } = c.req.valid("param");
 
-      const currentUserId = c.get("userId");
-      const task = await deleteTask(id, currentUserId);
+			const currentUserId = c.get("userId");
+			const task = await deleteTask(id, currentUserId);
 
       return c.json(task);
     },
@@ -473,7 +473,7 @@ const task = new Hono<{
       const { status } = c.req.valid("json");
       const currentUserId = c.get("userId");
 
-      const task = await updateTaskStatus({ id, status, currentUserId });
+			const task = await updateTaskStatus({ id, status, currentUserId });
 
       return c.json(task);
     },
@@ -502,7 +502,7 @@ const task = new Hono<{
       const { priority } = c.req.valid("json");
       const currentUserId = c.get("userId");
 
-      const task = await updateTaskPriority({ id, priority, currentUserId });
+			const task = await updateTaskPriority({ id, priority, currentUserId });
 
       return c.json(task);
     },
@@ -531,7 +531,7 @@ const task = new Hono<{
       const { userId } = c.req.valid("json");
       const currentUserId = c.get("userId");
 
-      const task = await updateTaskAssignee({ id, userId, currentUserId });
+			const task = await updateTaskAssignee({ id, userId, currentUserId });
 
       return c.json(task);
     },
@@ -560,15 +560,15 @@ const task = new Hono<{
       const { dueDate = null } = c.req.valid("json");
       const currentUserId = c.get("userId");
 
-      const task = await updateTaskDueDate({
-        id,
-        dueDate: dueDate ? new Date(dueDate) : null,
-        currentUserId,
-      });
+			const task = await updateTaskDueDate({
+				id,
+				dueDate: dueDate ? new Date(dueDate) : null,
+				currentUserId,
+			});
 
-      return c.json(task);
-    },
-  )
+			return c.json(task);
+		},
+	)
 
   .put(
     "/title/:id",
@@ -594,11 +594,11 @@ const task = new Hono<{
       const { title } = c.req.valid("json");
       const currentUserId = c.get("userId");
 
-      const task = await updateTaskTitle({ id, title, currentUserId });
+			const task = await updateTaskTitle({ id, title, currentUserId });
 
-      return c.json(task);
-    },
-  )
+			return c.json(task);
+		},
+	)
 
   .put(
     "/image-upload/:id",
@@ -632,45 +632,45 @@ const task = new Hono<{
       const { id } = c.req.valid("param");
       const { filename, contentType, size, surface } = c.req.valid("json");
 
-      try {
-        validateTaskAssetUploadInput(contentType, size);
-      } catch (error) {
-        throw new HTTPException(400, {
-          message:
-            error instanceof Error
-              ? error.message
-              : "Invalid image upload request",
-        });
-      }
+			try {
+				validateTaskAssetUploadInput(contentType, size);
+			} catch (error) {
+				throw new HTTPException(400, {
+					message:
+						error instanceof Error
+							? error.message
+							: "Invalid image upload request",
+				});
+			}
 
-      const [taskContext] = await db
-        .select({
-          taskId: taskTable.id,
-          projectId: taskTable.projectId,
-          workspaceId: workspaceTable.id,
-        })
-        .from(taskTable)
-        .innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
-        .innerJoin(
-          workspaceTable,
-          eq(projectTable.workspaceId, workspaceTable.id),
-        )
-        .where(eq(taskTable.id, id))
-        .limit(1);
+			const [taskContext] = await db
+				.select({
+					taskId: taskTable.id,
+					projectId: taskTable.projectId,
+					workspaceId: workspaceTable.id,
+				})
+				.from(taskTable)
+				.innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
+				.innerJoin(
+					workspaceTable,
+					eq(projectTable.workspaceId, workspaceTable.id),
+				)
+				.where(eq(taskTable.id, id))
+				.limit(1);
 
-      if (!taskContext) {
-        throw new HTTPException(404, { message: "Task not found" });
-      }
+			if (!taskContext) {
+				throw new HTTPException(404, { message: "Task not found" });
+			}
 
-      try {
-        const upload = await createTaskImageUploadUrl({
-          workspaceId: taskContext.workspaceId,
-          projectId: taskContext.projectId,
-          taskId: taskContext.taskId,
-          surface,
-          filename,
-          contentType,
-        });
+			try {
+				const upload = await createTaskImageUploadUrl({
+					workspaceId: taskContext.workspaceId,
+					projectId: taskContext.projectId,
+					taskId: taskContext.taskId,
+					surface,
+					filename,
+					contentType,
+				});
 
         return c.json(upload);
       } catch (error) {
@@ -717,91 +717,91 @@ const task = new Hono<{
       const { key, filename, contentType, size, surface } = c.req.valid("json");
       const userId = c.get("userId");
 
-      try {
-        validateTaskAssetUploadInput(contentType, size);
-      } catch (error) {
-        throw new HTTPException(400, {
-          message:
-            error instanceof Error
-              ? error.message
-              : "Invalid image upload request",
-        });
-      }
+			try {
+				validateTaskAssetUploadInput(contentType, size);
+			} catch (error) {
+				throw new HTTPException(400, {
+					message:
+						error instanceof Error
+							? error.message
+							: "Invalid image upload request",
+				});
+			}
 
-      const [taskContext] = await db
-        .select({
-          taskId: taskTable.id,
-          projectId: taskTable.projectId,
-          workspaceId: workspaceTable.id,
-        })
-        .from(taskTable)
-        .innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
-        .innerJoin(
-          workspaceTable,
-          eq(projectTable.workspaceId, workspaceTable.id),
-        )
-        .where(eq(taskTable.id, id))
-        .limit(1);
+			const [taskContext] = await db
+				.select({
+					taskId: taskTable.id,
+					projectId: taskTable.projectId,
+					workspaceId: workspaceTable.id,
+				})
+				.from(taskTable)
+				.innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
+				.innerJoin(
+					workspaceTable,
+					eq(projectTable.workspaceId, workspaceTable.id),
+				)
+				.where(eq(taskTable.id, id))
+				.limit(1);
 
-      if (!taskContext) {
-        throw new HTTPException(404, { message: "Task not found" });
-      }
+			if (!taskContext) {
+				throw new HTTPException(404, { message: "Task not found" });
+			}
 
-      const normalizedKey = key.trim();
-      if (
-        !assertTaskImageKeyMatchesContext(normalizedKey, {
-          workspaceId: taskContext.workspaceId,
-          projectId: taskContext.projectId,
-          taskId: taskContext.taskId,
-          surface,
-        })
-      ) {
-        throw new HTTPException(400, {
-          message: "Image upload key does not match the task context.",
-        });
-      }
+			const normalizedKey = key.trim();
+			if (
+				!assertTaskImageKeyMatchesContext(normalizedKey, {
+					workspaceId: taskContext.workspaceId,
+					projectId: taskContext.projectId,
+					taskId: taskContext.taskId,
+					surface,
+				})
+			) {
+				throw new HTTPException(400, {
+					message: "Image upload key does not match the task context.",
+				});
+			}
 
-      const [existingAsset] = await db
-        .select({ id: assetTable.id })
-        .from(assetTable)
-        .where(eq(assetTable.objectKey, normalizedKey))
-        .limit(1);
+			const [existingAsset] = await db
+				.select({ id: assetTable.id })
+				.from(assetTable)
+				.where(eq(assetTable.objectKey, normalizedKey))
+				.limit(1);
 
-      const [asset] = existingAsset
-        ? await db
-            .update(assetTable)
-            .set({
-              workspaceId: taskContext.workspaceId,
-              projectId: taskContext.projectId,
-              taskId: taskContext.taskId,
-              filename,
-              mimeType: contentType,
-              size,
-              kind: isImageContentType(contentType) ? "image" : "attachment",
-              surface,
-              createdBy: userId || null,
-            })
-            .where(eq(assetTable.id, existingAsset.id))
-            .returning({
-              id: assetTable.id,
-            })
-        : await db
-            .insert(assetTable)
-            .values({
-              workspaceId: taskContext.workspaceId,
-              projectId: taskContext.projectId,
-              taskId: taskContext.taskId,
-              objectKey: normalizedKey,
-              filename,
-              mimeType: contentType,
-              size,
-              kind: isImageContentType(contentType) ? "image" : "attachment",
-              surface,
-              createdBy: userId || null,
-            })
-            .returning({
-              id: assetTable.id,
-            });
+			const [asset] = existingAsset
+				? await db
+						.update(assetTable)
+						.set({
+							workspaceId: taskContext.workspaceId,
+							projectId: taskContext.projectId,
+							taskId: taskContext.taskId,
+							filename,
+							mimeType: contentType,
+							size,
+							kind: isImageContentType(contentType) ? "image" : "attachment",
+							surface,
+							createdBy: userId || null,
+						})
+						.where(eq(assetTable.id, existingAsset.id))
+						.returning({
+							id: assetTable.id,
+						})
+				: await db
+						.insert(assetTable)
+						.values({
+							workspaceId: taskContext.workspaceId,
+							projectId: taskContext.projectId,
+							taskId: taskContext.taskId,
+							objectKey: normalizedKey,
+							filename,
+							mimeType: contentType,
+							size,
+							kind: isImageContentType(contentType) ? "image" : "attachment",
+							surface,
+							createdBy: userId || null,
+						})
+						.returning({
+							id: assetTable.id,
+						});
 
       const apiBaseUrl = normalizeApiServerUrl(
         process.env.KANEO_API_URL || new URL(c.req.url).origin,
@@ -836,14 +836,14 @@ const task = new Hono<{
       const { description } = c.req.valid("json");
       const currentUserId = c.get("userId");
 
-      const task = await updateTaskDescription({
-        id,
-        description,
-        currentUserId,
-      });
+			const task = await updateTaskDescription({
+				id,
+				description,
+				currentUserId,
+			});
 
-      return c.json(task);
-    },
-  );
+			return c.json(task);
+		},
+	);
 
 export default task;

@@ -8,22 +8,22 @@ import CreateProjectModal from "@/components/shared/modals/create-project-modal"
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
+	Empty,
+	EmptyContent,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
 } from "@/components/ui/empty";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
 } from "@/components/ui/table";
 import icons from "@/constants/project-icons";
 import { shortcuts } from "@/constants/shortcuts";
@@ -33,9 +33,9 @@ import { useWorkspacePermission } from "@/hooks/use-workspace-permission";
 import { formatDateMedium } from "@/lib/format";
 
 export const Route = createFileRoute(
-  "/_layout/_authenticated/dashboard/workspace/$workspaceId/",
+	"/_layout/_authenticated/dashboard/workspace/$workspaceId/",
 )({
-  component: RouteComponent,
+	component: RouteComponent,
 });
 
 function RouteComponent() {
@@ -54,20 +54,20 @@ function RouteComponent() {
     setIsCreateProjectOpen(true);
   };
 
-  useRegisterShortcuts({
-    sequentialShortcuts: {
-      [shortcuts.project.prefix]: {
-        [shortcuts.project.create]: handleCreateProject,
-      },
-    },
-  });
+	useRegisterShortcuts({
+		sequentialShortcuts: {
+			[shortcuts.project.prefix]: {
+				[shortcuts.project.create]: handleCreateProject,
+			},
+		},
+	});
 
-  const handleProjectClick = (projectId: string) => {
-    navigate({
-      to: "/dashboard/workspace/$workspaceId/project/$projectId/board",
-      params: { workspaceId, projectId },
-    });
-  };
+	const handleProjectClick = (projectId: string) => {
+		navigate({
+			to: "/dashboard/workspace/$workspaceId/project/$projectId/board",
+			params: { workspaceId, projectId },
+		});
+	};
 
   if (isLoading) {
     return (
@@ -176,13 +176,13 @@ function RouteComponent() {
           </Empty>
         </WorkspaceLayout>
 
-        <CreateProjectModal
-          open={isCreateProjectOpen}
-          onClose={() => setIsCreateProjectOpen(false)}
-        />
-      </>
-    );
-  }
+				<CreateProjectModal
+					open={isCreateProjectOpen}
+					onClose={() => setIsCreateProjectOpen(false)}
+				/>
+			</>
+		);
+	}
 
   return (
     <>
@@ -224,70 +224,70 @@ function RouteComponent() {
             {projects?.map((project) => {
               if (!project || !project.id || !project.statistics) return null;
 
-              const IconComponent =
-                icons[project.icon as keyof typeof icons] || icons.Layout;
+							const IconComponent =
+								icons[project.icon as keyof typeof icons] || icons.Layout;
 
-              const getStatusText = () => {
-                if (project.statistics.totalTasks === 0)
-                  return t("workspace:projects.projectStatus.notStarted");
-                if (project.statistics.completionPercentage === 100)
-                  return t("workspace:projects.projectStatus.complete");
-                return t("workspace:projects.projectStatus.inProgress");
-              };
+							const getStatusText = () => {
+								if (project.statistics.totalTasks === 0)
+									return t("workspace:projects.projectStatus.notStarted");
+								if (project.statistics.completionPercentage === 100)
+									return t("workspace:projects.projectStatus.complete");
+								return t("workspace:projects.projectStatus.inProgress");
+							};
 
-              const getStatusVariant = () => {
-                if (project.statistics.totalTasks === 0) return "secondary";
-                if (project.statistics.completionPercentage === 100)
-                  return "default";
-                return "outline";
-              };
+							const getStatusVariant = () => {
+								if (project.statistics.totalTasks === 0) return "secondary";
+								if (project.statistics.completionPercentage === 100)
+									return "default";
+								return "outline";
+							};
 
-              return (
-                <TableRow
-                  key={project.id}
-                  className="cursor-pointer"
-                  onClick={() => handleProjectClick(project.id)}
-                >
-                  <TableCell className="py-3">
-                    <div className="flex items-center gap-3">
-                      <IconComponent className="w-5 h-5 text-muted-foreground" />
-                      <span className="font-medium">{project.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-3">
-                    <div className="flex items-center gap-2">
-                      <Progress
-                        value={project.statistics.completionPercentage}
-                        className="w-16 h-2"
-                      />
-                      <span className="text-sm text-muted-foreground">
-                        {project.statistics.completionPercentage}%
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-3">
-                    <span className="text-sm text-muted-foreground">
-                      {project.statistics.dueDate
-                        ? formatDateMedium(project.statistics.dueDate)
-                        : t("workspace:projects.noDueDate")}
-                    </span>
-                  </TableCell>
-                  <TableCell className="py-3">
-                    <Badge variant={getStatusVariant()}>
-                      {getStatusText()}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </WorkspaceLayout>
+							return (
+								<TableRow
+									key={project.id}
+									className="cursor-pointer"
+									onClick={() => handleProjectClick(project.id)}
+								>
+									<TableCell className="py-3">
+										<div className="flex items-center gap-3">
+											<IconComponent className="w-5 h-5 text-muted-foreground" />
+											<span className="font-medium">{project.name}</span>
+										</div>
+									</TableCell>
+									<TableCell className="py-3">
+										<div className="flex items-center gap-2">
+											<Progress
+												value={project.statistics.completionPercentage}
+												className="w-16 h-2"
+											/>
+											<span className="text-sm text-muted-foreground">
+												{project.statistics.completionPercentage}%
+											</span>
+										</div>
+									</TableCell>
+									<TableCell className="py-3">
+										<span className="text-sm text-muted-foreground">
+											{project.statistics.dueDate
+												? formatDateMedium(project.statistics.dueDate)
+												: t("workspace:projects.noDueDate")}
+										</span>
+									</TableCell>
+									<TableCell className="py-3">
+										<Badge variant={getStatusVariant()}>
+											{getStatusText()}
+										</Badge>
+									</TableCell>
+								</TableRow>
+							);
+						})}
+					</TableBody>
+				</Table>
+			</WorkspaceLayout>
 
-      <CreateProjectModal
-        open={isCreateProjectOpen}
-        onClose={() => setIsCreateProjectOpen(false)}
-      />
-    </>
-  );
+			<CreateProjectModal
+				open={isCreateProjectOpen}
+				onClose={() => setIsCreateProjectOpen(false)}
+			/>
+		</>
+	);
 }

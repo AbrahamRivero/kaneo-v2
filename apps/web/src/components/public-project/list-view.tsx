@@ -4,12 +4,12 @@ import type Task from "@/types/task";
 import { PublicTaskRow } from "./task-row";
 
 type PublicListViewProps = {
-  project: ProjectWithTasks;
-  onTaskClick: (task: Task) => void;
+	project: ProjectWithTasks;
+	onTaskClick: (task: Task) => void;
 };
 
 export function PublicListView({ project, onTaskClick }: PublicListViewProps) {
-  const columns = project.columns ?? [];
+	const columns = project.columns ?? [];
 
   return (
     <div className="flex-1 min-h-0 overflow-y-auto">
@@ -18,7 +18,7 @@ export function PublicListView({ project, onTaskClick }: PublicListViewProps) {
           return (
             <div key={column.id} className="space-y-4">
               <div className="flex items-center gap-3 px-2">
-                <span className="flex [&_svg]:!h-5 [&_svg]:!w-5">
+                <span className="flex [&_svg]:h-5! [&_svg]:w-5!">
                   {getColumnIcon(column.id, column.isFinal, column.icon)}
                 </span>
                 <h3 className="font-semibold text-lg text-foreground">
@@ -29,15 +29,15 @@ export function PublicListView({ project, onTaskClick }: PublicListViewProps) {
                 </span>
               </div>
 
-              <div className="space-y-2">
-                {column.tasks.map((task) => (
-                  <PublicTaskRow
-                    key={task.id}
-                    task={task}
-                    projectSlug={project.slug}
-                    onTaskClick={onTaskClick}
-                  />
-                ))}
+							<div className="space-y-2">
+								{column.tasks.map((task) => (
+									<PublicTaskRow
+										key={task.id}
+										task={task}
+										projectSlug={project.slug}
+										onTaskClick={onTaskClick}
+									/>
+								))}
 
                 {column.tasks.length === 0 && (
                   <div className="text-center text-sm text-muted-foreground py-8 bg-muted/50 rounded-lg border border-dashed border-border">

@@ -1,35 +1,35 @@
 import { authClient } from "@/lib/auth-client";
 
 export type GetWorkspaceUsersRequest = {
-  workspaceId: string;
-  limit?: number;
-  offset?: number;
-  sortBy?: string;
-  sortDirection?: "asc" | "desc";
+	workspaceId: string;
+	limit?: number;
+	offset?: number;
+	sortBy?: string;
+	sortDirection?: "asc" | "desc";
 };
 
 async function getWorkspaceUsers({
-  workspaceId,
-  limit,
-  offset,
-  sortBy,
-  sortDirection,
+	workspaceId,
+	limit,
+	offset,
+	sortBy,
+	sortDirection,
 }: GetWorkspaceUsersRequest) {
-  const { data, error } = await authClient.organization.listMembers({
-    query: {
-      organizationId: workspaceId,
-      limit,
-      offset,
-      sortBy,
-      sortDirection,
-    },
-  });
+	const { data, error } = await authClient.organization.listMembers({
+		query: {
+			organizationId: workspaceId,
+			limit,
+			offset,
+			sortBy,
+			sortDirection,
+		},
+	});
 
-  if (error) {
-    throw new Error(error.message || "Failed to fetch workspace users");
-  }
+	if (error) {
+		throw new Error(error.message || "Failed to fetch workspace users");
+	}
 
-  return data || [];
+	return data || [];
 }
 
 export default getWorkspaceUsers;

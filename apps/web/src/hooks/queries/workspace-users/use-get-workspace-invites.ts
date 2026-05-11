@@ -2,26 +2,26 @@ import { useQuery } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
 
 type GetWorkspaceInvitesRequest = {
-  workspaceId?: string;
+	workspaceId?: string;
 };
 
 function useGetWorkspaceInvites({ workspaceId }: GetWorkspaceInvitesRequest) {
-  return useQuery({
-    queryKey: ["workspace-invites", workspaceId],
-    queryFn: async () => {
-      const { data, error } = await authClient.organization.listInvitations({
-        query: {
-          organizationId: workspaceId,
-        },
-      });
+	return useQuery({
+		queryKey: ["workspace-invites", workspaceId],
+		queryFn: async () => {
+			const { data, error } = await authClient.organization.listInvitations({
+				query: {
+					organizationId: workspaceId,
+				},
+			});
 
-      if (error) {
-        throw new Error(error.message || "Failed to get workspace invites");
-      }
+			if (error) {
+				throw new Error(error.message || "Failed to get workspace invites");
+			}
 
-      return data;
-    },
-  });
+			return data;
+		},
+	});
 }
 
 export default useGetWorkspaceInvites;

@@ -4,13 +4,13 @@ import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar } from "@/components/ui/calendar";
 import {
-  ContextMenuCheckboxItem,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuSeparator,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
+	ContextMenuCheckboxItem,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuSeparator,
+	ContextMenuSub,
+	ContextMenuSubContent,
+	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { useUpdateTask } from "@/hooks/mutations/task/use-update-task";
 import { useUpdateTaskAssignee } from "@/hooks/mutations/task/use-update-task-assignee";
@@ -31,20 +31,20 @@ import useProjectStore from "@/store/project";
 import type Task from "@/types/task";
 
 type TaskCardContext = {
-  worskpaceId: string;
-  projectId: string;
+	worskpaceId: string;
+	projectId: string;
 };
 
 type TaskCardContextMenuContentProps = {
-  task: Task;
-  taskCardContext: TaskCardContext;
-  onDeleteClick: () => void;
+	task: Task;
+	taskCardContext: TaskCardContext;
+	onDeleteClick: () => void;
 };
 
 export default function TaskCardContextMenuContent({
-  task,
-  taskCardContext,
-  onDeleteClick,
+	task,
+	taskCardContext,
+	onDeleteClick,
 }: TaskCardContextMenuContentProps) {
   const { t } = useTranslation();
   const { project } = useProjectStore();
@@ -77,64 +77,64 @@ export default function TaskCardContextMenuContent({
   const canEdit = canManageTasks();
   const canAssign = canAssignTasks();
 
-  const usersOptions = useMemo(() => {
-    return workspaceUsers?.members?.map((member) => ({
-      label: member?.user?.name ?? member.userId,
-      value: member.userId,
-      image: member?.user?.image ?? "",
-      name: member?.user?.name ?? "",
-    }));
-  }, [workspaceUsers]);
+	const usersOptions = useMemo(() => {
+		return workspaceUsers?.members?.map((member) => ({
+			label: member?.user?.name ?? member.userId,
+			value: member.userId,
+			image: member?.user?.image ?? "",
+			name: member?.user?.name ?? "",
+		}));
+	}, [workspaceUsers]);
 
-  const handleCopyTaskLink = () => {
-    const path = `/dashboard/workspace/${taskCardContext.worskpaceId}/project/${taskCardContext.projectId}/task/${task.id}`;
-    const taskLink = generateLink(path);
+	const handleCopyTaskLink = () => {
+		const path = `/dashboard/workspace/${taskCardContext.worskpaceId}/project/${taskCardContext.projectId}/task/${task.id}`;
+		const taskLink = generateLink(path);
 
-    navigator.clipboard.writeText(taskLink);
-    toast.success(t("tasks:contextMenu.copyLinkSuccess"));
-  };
+		navigator.clipboard.writeText(taskLink);
+		toast.success(t("tasks:contextMenu.copyLinkSuccess"));
+	};
 
-  const handleChange = async (field: keyof Task, value: string | Date) => {
-    try {
-      switch (field) {
-        case "priority":
-          await updateTaskPriority({ ...task, priority: value as string });
-          break;
-        case "status":
-          await updateTaskStatus({ ...task, status: value as string });
-          break;
-        case "userId":
-          await updateTaskAssignee({ ...task, userId: value as string });
-          break;
-        case "title":
-          await updateTaskTitle({ ...task, title: value as string });
-          break;
-        case "description":
-          await updateTaskDescription({
-            ...task,
-            description: value as string,
-          });
-          break;
-        default:
-          await updateTask({
-            ...task,
-            [field]: value,
-          });
-      }
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t("tasks:update.error"),
-      );
-    } finally {
-      toast.success(t("tasks:update.success"));
-    }
-  };
+	const handleChange = async (field: keyof Task, value: string | Date) => {
+		try {
+			switch (field) {
+				case "priority":
+					await updateTaskPriority({ ...task, priority: value as string });
+					break;
+				case "status":
+					await updateTaskStatus({ ...task, status: value as string });
+					break;
+				case "userId":
+					await updateTaskAssignee({ ...task, userId: value as string });
+					break;
+				case "title":
+					await updateTaskTitle({ ...task, title: value as string });
+					break;
+				case "description":
+					await updateTaskDescription({
+						...task,
+						description: value as string,
+					});
+					break;
+				default:
+					await updateTask({
+						...task,
+						[field]: value,
+					});
+			}
+		} catch (error) {
+			toast.error(
+				error instanceof Error ? error.message : t("tasks:update.error"),
+			);
+		} finally {
+			toast.success(t("tasks:update.success"));
+		}
+	};
 
-  return (
-    <ContextMenuContent className="w-46">
-      <ContextMenuItem onClick={handleCopyTaskLink}>
-        <span>{t("tasks:contextMenu.copyLink")}</span>
-      </ContextMenuItem>
+	return (
+		<ContextMenuContent className="w-46">
+			<ContextMenuItem onClick={handleCopyTaskLink}>
+				<span>{t("tasks:contextMenu.copyLink")}</span>
+			</ContextMenuItem>
 
       {(canEdit || canAssign) && <ContextMenuSeparator />}
 
@@ -285,12 +285,12 @@ export default function TaskCardContextMenuContent({
                   </AvatarFallback>
                 </Avatar>
 
-                {user.label}
-              </ContextMenuCheckboxItem>
-            ))}
-          </ContextMenuSubContent>
-        </ContextMenuSub>
-      )}
+								{user.label}
+							</ContextMenuCheckboxItem>
+						))}
+					</ContextMenuSubContent>
+				</ContextMenuSub>
+			)}
 
       {canEdit && (
         <>

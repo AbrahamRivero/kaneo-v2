@@ -3,9 +3,9 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
 } from "@/components/ui/popover";
 import { ShortcutNumber } from "@/components/ui/shortcut-number";
 import { useUpdateTaskStatus } from "@/hooks/mutations/task/use-update-task-status";
@@ -18,13 +18,13 @@ import useProjectStore from "@/store/project";
 import type Task from "@/types/task";
 
 type TaskStatusPopoverProps = {
-  task: Task;
-  children: React.ReactNode;
+	task: Task;
+	children: React.ReactNode;
 };
 
 export default function TaskStatusPopover({
-  task,
-  children,
+	task,
+	children,
 }: TaskStatusPopoverProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -40,32 +40,32 @@ export default function TaskStatusPopover({
   const { canManageTasks } = useWorkspacePermission();
   const canEdit = canManageTasks();
 
-  const handleStatusChange = useCallback(
-    async (newStatus: string) => {
-      try {
-        await updateTaskStatus({
-          ...task,
-          status: newStatus,
-        });
-        setOpen(false);
-      } catch (error) {
-        toast.error(
-          error instanceof Error
-            ? error.message
-            : t("tasks:popover.status.updateError"),
-        );
-      }
-    },
-    [t, task, updateTaskStatus],
-  );
+	const handleStatusChange = useCallback(
+		async (newStatus: string) => {
+			try {
+				await updateTaskStatus({
+					...task,
+					status: newStatus,
+				});
+				setOpen(false);
+			} catch (error) {
+				toast.error(
+					error instanceof Error
+						? error.message
+						: t("tasks:popover.status.updateError"),
+				);
+			}
+		},
+		[t, task, updateTaskStatus],
+	);
 
-  const shortcutOptions = useMemo(
-    () =>
-      statusOptions.map((status) => ({
-        onSelect: () => handleStatusChange(status.value),
-      })),
-    [handleStatusChange, statusOptions],
-  );
+	const shortcutOptions = useMemo(
+		() =>
+			statusOptions.map((status) => ({
+				onSelect: () => handleStatusChange(status.value),
+			})),
+		[handleStatusChange, statusOptions],
+	);
 
   useNumberedShortcuts(open, shortcutOptions);
 

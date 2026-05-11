@@ -13,11 +13,11 @@ import deleteTaskRelation from "./controllers/delete-task-relation";
 import getTaskRelations from "./controllers/get-task-relations";
 
 const taskRelationSchema = v.object({
-  id: v.string(),
-  sourceTaskId: v.string(),
-  targetTaskId: v.string(),
-  relationType: v.string(),
-  createdAt: v.date(),
+	id: v.string(),
+	sourceTaskId: v.string(),
+	targetTaskId: v.string(),
+	relationType: v.string(),
+	createdAt: v.date(),
 });
 
 const taskRelation = new Hono<{

@@ -1,0 +1,58 @@
+export type TaskPriority = "no-priority" | "low" | "medium" | "high" | "urgent";
+
+export interface Task {
+	id: string;
+	projectId: string;
+	userId: string | null;
+	title: string;
+	description: string | null;
+	status: string;
+	priority: TaskPriority;
+	startDate: Date | null;
+	dueDate: Date | null;
+	position: number | null;
+	number: number | null;
+	columnId: string | null;
+	createdAt: Date;
+	updatedAt: Date;
+}
+
+export interface TaskWithRelations extends Task {
+	assigneeName: string | null;
+	columnName?: string | null;
+	labels?: Array<{ id: string; name: string; color: string }>;
+	externalLinks?: Array<{
+		id: string;
+		taskId: string;
+		integrationId: string;
+		resourceType: string;
+		externalId: string;
+		url: string;
+		title: string | null;
+		metadata: Record<string, unknown> | null;
+	}>;
+	assets?: Array<{
+		id: string;
+		workspaceId: string;
+		projectId: string;
+		taskId: string | null;
+		objectKey: string;
+		filename: string;
+		mimeType: string;
+		size: number;
+		kind: string;
+		surface: string;
+		url: string;
+		createdBy: string | null;
+		createdAt: Date;
+		updatedAt?: Date;
+	}>;
+}
+
+export const VALID_PRIORITIES: TaskPriority[] = [
+	"no-priority",
+	"low",
+	"medium",
+	"high",
+	"urgent",
+];

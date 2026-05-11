@@ -4,57 +4,57 @@ import type { GiteaConfig } from "../config";
 import { createGiteaClient } from "../utils/gitea-api";
 
 export async function handleTaskCommentCreated(
-  event: TaskCommentCreatedEvent,
-  context: PluginContext,
+	event: TaskCommentCreatedEvent,
+	context: PluginContext,
 ): Promise<void> {
-  const config = context.config as GiteaConfig;
-  if (!config.baseUrl || !config.accessToken) {
-    return;
-  }
+	const config = context.config as GiteaConfig;
+	if (!config.baseUrl || !config.accessToken) {
+		return;
+	}
 
-  const { repositoryOwner, repositoryName } = config;
+	const { repositoryOwner, repositoryName } = config;
 
-  const existingLink = await findExternalLinkByTaskAndType(
-    event.taskId,
-    context.integrationId,
-    "issue",
-  );
+	const existingLink = await findExternalLinkByTaskAndType(
+		event.taskId,
+		context.integrationId,
+		"issue",
+	);
 
-  if (!existingLink) {
-    return;
-  }
+	if (!existingLink) {
+		return;
+	}
 
-  try {
-    const client = createGiteaClient(config);
-    if (!/^\d+$/.test(existingLink.externalId)) {
-      console.error(
-        "Skipping Gitea comment sync for invalid external issue id",
-        {
-          taskId: event.taskId,
-          externalId: existingLink.externalId,
-        },
-      );
-      return;
-    }
+	try {
+		const client = createGiteaClient(config);
+		if (!/^\d+$/.test(existingLink.externalId)) {
+			console.error(
+				"Skipping Gitea comment sync for invalid external issue id",
+				{
+					taskId: event.taskId,
+					externalId: existingLink.externalId,
+				},
+			);
+			return;
+		}
 
-    const issueNumber = Number(existingLink.externalId);
+		const issueNumber = Number(existingLink.externalId);
 
-    if (!Number.isFinite(issueNumber) || issueNumber < 1) {
-      console.error("Skipping Gitea comment sync for invalid issue number", {
-        taskId: event.taskId,
-        externalId: existingLink.externalId,
-        issueNumber,
-      });
-      return;
-    }
+		if (!Number.isFinite(issueNumber) || issueNumber < 1) {
+			console.error("Skipping Gitea comment sync for invalid issue number", {
+				taskId: event.taskId,
+				externalId: existingLink.externalId,
+				issueNumber,
+			});
+			return;
+		}
 
-    await client.createIssueComment(
-      repositoryOwner,
-      repositoryName,
-      issueNumber,
-      event.comment,
-    );
-  } catch (error) {
-    console.error("Failed to create Gitea comment:", error);
-  }
+		await client.createIssueComment(
+			repositoryOwner,
+			repositoryName,
+			issueNumber,
+			event.comment,
+		);
+	} catch (error) {
+		console.error("Failed to create Gitea comment:", error);
+	}
 }

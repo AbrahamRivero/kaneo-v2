@@ -13,10 +13,10 @@ import unarchiveProjectCtrl from "./controllers/unarchive-project";
 import updateProjectCtrl from "./controllers/update-project";
 
 const project = new Hono<{
-  Variables: {
-    userId: string;
-    workspaceId: string;
-  };
+	Variables: {
+		userId: string;
+		workspaceId: string;
+	};
 }>()
   .get(
     "/",

@@ -4,20 +4,20 @@ import PageTitle from "@/components/page-title";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 
 export const Route = createFileRoute("/_layout/_authenticated/dashboard")({
-  component: DashboardLayoutComponent,
+	component: DashboardLayoutComponent,
 });
 
 function DashboardLayoutComponent() {
-  const { t } = useTranslation();
-  const { data: workspace } = useActiveWorkspace();
+	const { t } = useTranslation();
+	const { data: workspace } = useActiveWorkspace();
 
-  return (
-    <>
-      <PageTitle
-        title={t("navigation:page.projectsTitle")}
-        hideAppName={!workspace?.name}
-      />
-      <Outlet />
-    </>
-  );
+	return (
+		<>
+			<PageTitle
+				title={t("navigation:page.projectsTitle")}
+				hideAppName={!workspace?.name}
+			/>
+			<Outlet />
+		</>
+	);
 }

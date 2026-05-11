@@ -1,7 +1,7 @@
 import {
-  createFileRoute,
-  useNavigate,
-  useSearch,
+	createFileRoute,
+	useNavigate,
+	useSearch,
 } from "@tanstack/react-router";
 import { UserCheck } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -25,13 +25,13 @@ const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as
   | undefined;
 
 const signUpSearchSchema = z.object({
-  invitationId: z.string().optional(),
-  email: z.string().optional(),
+	invitationId: z.string().optional(),
+	email: z.string().optional(),
 });
 
 export const Route = createFileRoute("/auth/sign-up")({
-  component: SignUp,
-  validateSearch: signUpSearchSchema,
+	component: SignUp,
+	validateSearch: signUpSearchSchema,
 });
 
 function SignUp() {

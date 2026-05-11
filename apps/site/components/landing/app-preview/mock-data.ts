@@ -5,40 +5,40 @@ import type Task from "@/types/task";
 // Extended task type – same base Task but with embedded labels and
 // optional external links (just like the real API returns them).
 export type TaskWithExtras = Task & {
-  labels?: Array<{ id: string; name: string; color: string }>;
-  externalLinks?: Array<ExternalLink>;
+	labels?: Array<{ id: string; name: string; color: string }>;
+	externalLinks?: Array<ExternalLink>;
 };
 
 // ------------------------------------------------------------------
 // Mock workspace
 // ------------------------------------------------------------------
 export const MOCK_WORKSPACE = {
-  id: "ws-preview",
-  name: "Dunder Mifflin",
-  slug: "dunder",
+	id: "ws-preview",
+	name: "Dunder Mifflin",
+	slug: "dunder",
 };
 
 // ------------------------------------------------------------------
 // Mock workspace labels
 // ------------------------------------------------------------------
 export const MOCK_WORKSPACE_LABELS = [
-  { id: "lbl-1", name: "urgent", color: "#ef4444" },
-  { id: "lbl-2", name: "sales", color: "#6366f1" },
-  { id: "lbl-3", name: "hr", color: "#10b981" },
-  { id: "lbl-4", name: "bears", color: "#f59e0b" },
-  { id: "lbl-5", name: "cinema", color: "#8b5cf6" },
+	{ id: "lbl-1", name: "urgent", color: "#ef4444" },
+	{ id: "lbl-2", name: "sales", color: "#6366f1" },
+	{ id: "lbl-3", name: "hr", color: "#10b981" },
+	{ id: "lbl-4", name: "bears", color: "#f59e0b" },
+	{ id: "lbl-5", name: "cinema", color: "#8b5cf6" },
 ];
 
 // ------------------------------------------------------------------
 // Mock users
 // ------------------------------------------------------------------
 export const MOCK_USERS = {
-  members: [
-    { userId: "u-1", user: { name: "Michael Scott", image: null } },
-    { userId: "u-2", user: { name: "Dwight Schrute", image: null } },
-    { userId: "u-3", user: { name: "Jim Halpert", image: null } },
-    { userId: "u-4", user: { name: "Pam Beesly", image: null } },
-  ],
+	members: [
+		{ userId: "u-1", user: { name: "Michael Scott", image: null } },
+		{ userId: "u-2", user: { name: "Dwight Schrute", image: null } },
+		{ userId: "u-3", user: { name: "Jim Halpert", image: null } },
+		{ userId: "u-4", user: { name: "Pam Beesly", image: null } },
+	],
 };
 
 // ------------------------------------------------------------------
@@ -48,9 +48,9 @@ const CREATED_AT = "2024-01-01T00:00:00.000Z";
 const UPDATED_AT = "2024-07-01T00:00:00.000Z";
 
 const d = (offset: number): string => {
-  const dt = new Date();
-  dt.setDate(dt.getDate() + offset);
-  return dt.toISOString();
+	const dt = new Date();
+	dt.setDate(dt.getDate() + offset);
+	return dt.toISOString();
 };
 
 // ------------------------------------------------------------------
@@ -203,49 +203,49 @@ const scrTasks: TaskWithExtras[] = [
 ];
 
 export const WEB_PROJECT: ProjectWithTasks = {
-  id: SCR_ID,
-  name: "Scranton Branch",
-  slug: "SCR",
-  description: "Day-to-day operations of the Scranton office.",
-  icon: null,
-  workspaceId: WS_ID,
-  isPublic: false,
-  createdAt: CREATED_AT,
-  updatedAt: UPDATED_AT,
-  columns: [
-    {
-      id: "to-do",
-      name: "To Do",
-      order: 0,
-      isFinal: false,
-      projectId: SCR_ID,
-      tasks: scrTasks.filter((t) => t.status === "to-do"),
-    },
-    {
-      id: "in-progress",
-      name: "In Progress",
-      order: 1,
-      isFinal: false,
-      projectId: SCR_ID,
-      tasks: scrTasks.filter((t) => t.status === "in-progress"),
-    },
-    {
-      id: "in-review",
-      name: "In Review",
-      order: 2,
-      isFinal: false,
-      projectId: SCR_ID,
-      tasks: scrTasks.filter((t) => t.status === "in-review"),
-    },
-    {
-      id: "done",
-      name: "Done",
-      order: 3,
-      isFinal: true,
-      projectId: SCR_ID,
-      tasks: scrTasks.filter((t) => t.status === "done"),
-    },
-  ],
+	id: SCR_ID,
+	name: "Scranton Branch",
+	slug: "SCR",
+	description: "Day-to-day operations of the Scranton office.",
+	icon: null,
+	workspaceId: WS_ID,
+	isPublic: false,
+	createdAt: CREATED_AT,
+	updatedAt: UPDATED_AT,
+	columns: [
+		{
+			id: "to-do",
+			name: "To Do",
+			order: 0,
+			isFinal: false,
+			projectId: SCR_ID,
+			tasks: scrTasks.filter((t) => t.status === "to-do"),
+		},
+		{
+			id: "in-progress",
+			name: "In Progress",
+			order: 1,
+			isFinal: false,
+			projectId: SCR_ID,
+			tasks: scrTasks.filter((t) => t.status === "in-progress"),
+		},
+		{
+			id: "in-review",
+			name: "In Review",
+			order: 2,
+			isFinal: false,
+			projectId: SCR_ID,
+			tasks: scrTasks.filter((t) => t.status === "in-review"),
+		},
+		{
+			id: "done",
+			name: "Done",
+			order: 3,
+			isFinal: true,
+			projectId: SCR_ID,
+			tasks: scrTasks.filter((t) => t.status === "done"),
+		},
+	],
 };
 
 // ------------------------------------------------------------------
@@ -358,49 +358,49 @@ const tlmTasks: TaskWithExtras[] = [
 ];
 
 export const MOB_PROJECT: ProjectWithTasks = {
-  id: TLM_ID,
-  name: "Threat Level Midnight",
-  slug: "TLM",
-  description: "Michael Scott's magnum opus. In production since 1996.",
-  icon: null,
-  workspaceId: WS_ID,
-  isPublic: false,
-  createdAt: CREATED_AT,
-  updatedAt: UPDATED_AT,
-  columns: [
-    {
-      id: "to-do",
-      name: "To Do",
-      order: 0,
-      isFinal: false,
-      projectId: TLM_ID,
-      tasks: tlmTasks.filter((t) => t.status === "to-do"),
-    },
-    {
-      id: "in-progress",
-      name: "In Progress",
-      order: 1,
-      isFinal: false,
-      projectId: TLM_ID,
-      tasks: tlmTasks.filter((t) => t.status === "in-progress"),
-    },
-    {
-      id: "in-review",
-      name: "In Review",
-      order: 2,
-      isFinal: false,
-      projectId: TLM_ID,
-      tasks: tlmTasks.filter((t) => t.status === "in-review"),
-    },
-    {
-      id: "done",
-      name: "Done",
-      order: 3,
-      isFinal: true,
-      projectId: TLM_ID,
-      tasks: tlmTasks.filter((t) => t.status === "done"),
-    },
-  ],
+	id: TLM_ID,
+	name: "Threat Level Midnight",
+	slug: "TLM",
+	description: "Michael Scott's magnum opus. In production since 1996.",
+	icon: null,
+	workspaceId: WS_ID,
+	isPublic: false,
+	createdAt: CREATED_AT,
+	updatedAt: UPDATED_AT,
+	columns: [
+		{
+			id: "to-do",
+			name: "To Do",
+			order: 0,
+			isFinal: false,
+			projectId: TLM_ID,
+			tasks: tlmTasks.filter((t) => t.status === "to-do"),
+		},
+		{
+			id: "in-progress",
+			name: "In Progress",
+			order: 1,
+			isFinal: false,
+			projectId: TLM_ID,
+			tasks: tlmTasks.filter((t) => t.status === "in-progress"),
+		},
+		{
+			id: "in-review",
+			name: "In Review",
+			order: 2,
+			isFinal: false,
+			projectId: TLM_ID,
+			tasks: tlmTasks.filter((t) => t.status === "in-review"),
+		},
+		{
+			id: "done",
+			name: "Done",
+			order: 3,
+			isFinal: true,
+			projectId: TLM_ID,
+			tasks: tlmTasks.filter((t) => t.status === "done"),
+		},
+	],
 };
 
 export const MOCK_PROJECTS: ProjectWithTasks[] = [WEB_PROJECT, MOB_PROJECT];

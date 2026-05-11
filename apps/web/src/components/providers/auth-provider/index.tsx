@@ -6,11 +6,11 @@ import { LoadingSkeleton } from "../../ui/loading-skeleton";
 const { useSession } = authClient;
 
 export const AuthContext = createContext<{
-  user: User | null | undefined;
-  isLoading: boolean;
+	user: User | null | undefined;
+	isLoading: boolean;
 }>({
-  user: undefined,
-  isLoading: true,
+	user: undefined,
+	isLoading: true,
 });
 
 function AuthProvider({ children }: PropsWithChildren) {
@@ -29,16 +29,16 @@ function AuthProvider({ children }: PropsWithChildren) {
     return <LoadingSkeleton />;
   }
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user: (data?.user as User | null | undefined) ?? null,
-        isLoading: isPending,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+	return (
+		<AuthContext.Provider
+			value={{
+				user: (data?.user as User | null | undefined) ?? null,
+				isLoading: isPending,
+			}}
+		>
+			{children}
+		</AuthContext.Provider>
+	);
 }
 
 export default AuthProvider;

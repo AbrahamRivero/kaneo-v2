@@ -8,13 +8,13 @@ import { deleteOrphanedAssets } from "../../storage/cleanup-assets";
 import { parseMentionIds } from "../../utils/parse-mentions";
 
 async function updateTaskDescription({
-  id,
-  description,
-  currentUserId,
+	id,
+	description,
+	currentUserId,
 }: {
-  id: string;
-  description: string;
-  currentUserId: string;
+	id: string;
+	description: string;
+	currentUserId: string;
 }) {
   const existingTask = await db.query.taskTable.findFirst({
     where: eq(taskTable.id, id),

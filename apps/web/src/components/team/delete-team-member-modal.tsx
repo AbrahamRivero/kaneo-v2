@@ -7,13 +7,13 @@ import { Button } from "../ui/button";
 import { Dialog, DialogClose, DialogPopup, DialogTitle } from "../ui/dialog";
 
 function DeleteTeamMemberModal({
-  userId,
-  open,
-  onClose,
+	userId,
+	open,
+	onClose,
 }: {
-  userId: string;
-  open: boolean;
-  onClose: () => void;
+	userId: string;
+	open: boolean;
+	onClose: () => void;
 }) {
   const { data: workspace } = useActiveWorkspace();
   const workspaceId = workspace?.id ?? "";
@@ -29,35 +29,35 @@ function DeleteTeamMemberModal({
       userId,
     });
 
-    queryClient.invalidateQueries({
-      queryKey: ["workspace-users"],
-    });
+		queryClient.invalidateQueries({
+			queryKey: ["workspace-users"],
+		});
 
-    onClose();
-  };
+		onClose();
+	};
 
-  return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogPopup className="w-full max-w-md">
-        <div className="bg-card rounded-lg shadow-xl">
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            <DialogTitle className="text-lg font-semibold text-foreground">
-              Remove Team Member
-            </DialogTitle>
-            <DialogClose
-              className="text-muted-foreground hover:text-foreground"
-              render={<button type="button" />}
-            >
-              <X size={20} />
-            </DialogClose>
-          </div>
+	return (
+		<Dialog open={open} onOpenChange={onClose}>
+			<DialogPopup className="w-full max-w-md">
+				<div className="bg-card rounded-lg shadow-xl">
+					<div className="flex items-center justify-between p-4 border-b border-border">
+						<DialogTitle className="text-lg font-semibold text-foreground">
+							Remove Team Member
+						</DialogTitle>
+						<DialogClose
+							className="text-muted-foreground hover:text-foreground"
+							render={<button type="button" />}
+						>
+							<X size={20} />
+						</DialogClose>
+					</div>
 
-          <div className="p-4">
-            <p className="text-sm text-muted-foreground mb-6">
-              Are you sure you want to remove{" "}
-              <span className="font-medium text-foreground">{userId}</span> from
-              the team? This action cannot be undone.
-            </p>
+					<div className="p-4">
+						<p className="text-sm text-muted-foreground mb-6">
+							Are you sure you want to remove{" "}
+							<span className="font-medium text-foreground">{userId}</span> from
+							the team? This action cannot be undone.
+						</p>
 
             <div className="flex justify-end gap-2">
               <DialogClose

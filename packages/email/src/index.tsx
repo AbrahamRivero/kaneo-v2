@@ -1,7 +1,7 @@
 export {
-  sendMagicLinkEmail,
-  sendNotificationEmail,
-  sendOtpEmail,
-  sendPasswordResetEmail,
-  sendWorkspaceInvitationEmail,
+	sendMagicLinkEmail,
+	sendNotificationEmail,
+	sendOtpEmail,
+	sendPasswordResetEmail,
+	sendWorkspaceInvitationEmail,
 } from "./send-email";

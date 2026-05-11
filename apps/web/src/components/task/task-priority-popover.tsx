@@ -3,9 +3,9 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
 } from "@/components/ui/popover";
 import { ShortcutNumber } from "@/components/ui/shortcut-number";
 import { useUpdateTaskPriority } from "@/hooks/mutations/task/use-update-task-status-priority";
@@ -17,21 +17,21 @@ import { toast } from "@/lib/toast";
 import type Task from "@/types/task";
 
 type TaskPriorityPopoverProps = {
-  task: Task;
-  children: React.ReactNode;
+	task: Task;
+	children: React.ReactNode;
 };
 
 const priorityOptions = [
-  { value: "no-priority" },
-  { value: "low" },
-  { value: "medium" },
-  { value: "high" },
-  { value: "urgent" },
+	{ value: "no-priority" },
+	{ value: "low" },
+	{ value: "medium" },
+	{ value: "high" },
+	{ value: "urgent" },
 ];
 
 export default function TaskPriorityPopover({
-  task,
-  children,
+	task,
+	children,
 }: TaskPriorityPopoverProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -39,32 +39,32 @@ export default function TaskPriorityPopover({
   const { canManageTasks } = useWorkspacePermission();
   const canEdit = canManageTasks();
 
-  const handlePriorityChange = useCallback(
-    async (newPriority: string) => {
-      try {
-        await updateTaskPriority({
-          ...task,
-          priority: newPriority,
-        });
-        setOpen(false);
-      } catch (error) {
-        toast.error(
-          error instanceof Error
-            ? error.message
-            : t("tasks:popover.priority.updateError"),
-        );
-      }
-    },
-    [t, task, updateTaskPriority],
-  );
+	const handlePriorityChange = useCallback(
+		async (newPriority: string) => {
+			try {
+				await updateTaskPriority({
+					...task,
+					priority: newPriority,
+				});
+				setOpen(false);
+			} catch (error) {
+				toast.error(
+					error instanceof Error
+						? error.message
+						: t("tasks:popover.priority.updateError"),
+				);
+			}
+		},
+		[t, task, updateTaskPriority],
+	);
 
-  const shortcutOptions = useMemo(
-    () =>
-      priorityOptions.map((priority) => ({
-        onSelect: () => handlePriorityChange(priority.value),
-      })),
-    [handlePriorityChange],
-  );
+	const shortcutOptions = useMemo(
+		() =>
+			priorityOptions.map((priority) => ({
+				onSelect: () => handlePriorityChange(priority.value),
+			})),
+		[handlePriorityChange],
+	);
 
   useNumberedShortcuts(open, shortcutOptions);
 
@@ -72,32 +72,32 @@ export default function TaskPriorityPopover({
   // still sees the current priority but can't open the popover.
   if (!canEdit) return <>{children}</>;
 
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent className="w-48 p-0" align="start">
-        <div>
-          {priorityOptions.map((priority, index) => (
-            <Button
-              key={priority.value}
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start gap-2 h-8 px-2 rounded-none first:rounded-t-md last:rounded-b-md"
-              onClick={() => handlePriorityChange(priority.value)}
-            >
-              {getPriorityIcon(priority.value)}
-              <span className="text-sm">
-                {getPriorityLabel(priority.value)}
-              </span>
-              {task.priority === priority.value ? (
-                <Check className="ml-auto h-4 w-4" />
-              ) : (
-                <ShortcutNumber number={index + 1} />
-              )}
-            </Button>
-          ))}
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
+	return (
+		<Popover open={open} onOpenChange={setOpen}>
+			<PopoverTrigger asChild>{children}</PopoverTrigger>
+			<PopoverContent className="w-48 p-0" align="start">
+				<div>
+					{priorityOptions.map((priority, index) => (
+						<Button
+							key={priority.value}
+							variant="ghost"
+							size="sm"
+							className="w-full justify-start gap-2 h-8 px-2 rounded-none first:rounded-t-md last:rounded-b-md"
+							onClick={() => handlePriorityChange(priority.value)}
+						>
+							{getPriorityIcon(priority.value)}
+							<span className="text-sm">
+								{getPriorityLabel(priority.value)}
+							</span>
+							{task.priority === priority.value ? (
+								<Check className="ml-auto h-4 w-4" />
+							) : (
+								<ShortcutNumber number={index + 1} />
+							)}
+						</Button>
+					))}
+				</div>
+			</PopoverContent>
+		</Popover>
+	);
 }

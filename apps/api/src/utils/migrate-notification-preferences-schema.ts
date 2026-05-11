@@ -6,10 +6,10 @@ import db from "../database";
  * drift left the schema partially applied.
  */
 export async function migrateNotificationPreferencesSchema() {
-  console.log("🔄 Checking notification preference schema...");
+	console.log("🔄 Checking notification preference schema...");
 
-  try {
-    await db.execute(sql`
+	try {
+		await db.execute(sql`
       CREATE TABLE IF NOT EXISTS "user_notification_preference" (
         "id" text PRIMARY KEY NOT NULL,
         "user_id" text NOT NULL,
@@ -29,7 +29,7 @@ export async function migrateNotificationPreferencesSchema() {
       );
     `);
 
-    await db.execute(sql`
+		await db.execute(sql`
       ALTER TABLE "user_notification_preference"
       ADD COLUMN IF NOT EXISTS "email_enabled" boolean DEFAULT false NOT NULL,
       ADD COLUMN IF NOT EXISTS "ntfy_enabled" boolean DEFAULT false NOT NULL,
@@ -46,7 +46,7 @@ export async function migrateNotificationPreferencesSchema() {
       ADD COLUMN IF NOT EXISTS "updated_at" timestamp DEFAULT now() NOT NULL;
     `);
 
-    await db.execute(sql`
+		await db.execute(sql`
       CREATE TABLE IF NOT EXISTS "user_notification_workspace_rule" (
         "id" text PRIMARY KEY NOT NULL,
         "user_id" text NOT NULL,
@@ -62,7 +62,7 @@ export async function migrateNotificationPreferencesSchema() {
       );
     `);
 
-    await db.execute(sql`
+		await db.execute(sql`
       ALTER TABLE "user_notification_workspace_rule"
       ADD COLUMN IF NOT EXISTS "is_active" boolean DEFAULT true NOT NULL,
       ADD COLUMN IF NOT EXISTS "email_enabled" boolean DEFAULT false NOT NULL,
@@ -74,7 +74,7 @@ export async function migrateNotificationPreferencesSchema() {
       ADD COLUMN IF NOT EXISTS "updated_at" timestamp DEFAULT now() NOT NULL;
     `);
 
-    await db.execute(sql`
+		await db.execute(sql`
       CREATE TABLE IF NOT EXISTS "user_notification_workspace_project" (
         "id" text PRIMARY KEY NOT NULL,
         "workspace_id" text NOT NULL,
@@ -85,46 +85,46 @@ export async function migrateNotificationPreferencesSchema() {
       );
     `);
 
-    await db.execute(sql`
+		await db.execute(sql`
       ALTER TABLE "user_notification_workspace_project"
       ADD COLUMN IF NOT EXISTS "created_at" timestamp DEFAULT now() NOT NULL,
       ADD COLUMN IF NOT EXISTS "updated_at" timestamp DEFAULT now() NOT NULL;
     `);
 
-    await db.execute(sql`
+		await db.execute(sql`
       CREATE UNIQUE INDEX IF NOT EXISTS "user_notification_preference_user_id_unique"
       ON "user_notification_preference" ("user_id");
     `);
-    await db.execute(sql`
+		await db.execute(sql`
       CREATE UNIQUE INDEX IF NOT EXISTS "user_notification_workspace_rule_user_workspace_unique"
       ON "user_notification_workspace_rule" ("user_id", "workspace_id");
     `);
-    await db.execute(sql`
+		await db.execute(sql`
       CREATE UNIQUE INDEX IF NOT EXISTS "user_notification_workspace_rule_workspace_id_id_unique"
       ON "user_notification_workspace_rule" ("workspace_id", "id");
     `);
-    await db.execute(sql`
+		await db.execute(sql`
       CREATE UNIQUE INDEX IF NOT EXISTS "user_notification_workspace_project_rule_project_unique"
       ON "user_notification_workspace_project" ("workspace_rule_id", "project_id");
     `);
-    await db.execute(sql`
+		await db.execute(sql`
       CREATE INDEX IF NOT EXISTS "user_notification_workspace_rule_userId_idx"
       ON "user_notification_workspace_rule" ("user_id");
     `);
-    await db.execute(sql`
+		await db.execute(sql`
       CREATE INDEX IF NOT EXISTS "user_notification_workspace_rule_workspaceId_idx"
       ON "user_notification_workspace_rule" ("workspace_id");
     `);
-    await db.execute(sql`
+		await db.execute(sql`
       CREATE INDEX IF NOT EXISTS "user_notification_workspace_project_ruleId_idx"
       ON "user_notification_workspace_project" ("workspace_rule_id");
     `);
-    await db.execute(sql`
+		await db.execute(sql`
       CREATE INDEX IF NOT EXISTS "user_notification_workspace_project_projectId_idx"
       ON "user_notification_workspace_project" ("project_id");
     `);
 
-    await db.execute(sql`
+		await db.execute(sql`
       DO $$
       BEGIN
         IF NOT EXISTS (
@@ -139,7 +139,7 @@ export async function migrateNotificationPreferencesSchema() {
       END $$;
     `);
 
-    await db.execute(sql`
+		await db.execute(sql`
       DO $$
       BEGIN
         IF NOT EXISTS (
@@ -154,7 +154,7 @@ export async function migrateNotificationPreferencesSchema() {
       END $$;
     `);
 
-    await db.execute(sql`
+		await db.execute(sql`
       DO $$
       BEGIN
         IF NOT EXISTS (
@@ -169,7 +169,7 @@ export async function migrateNotificationPreferencesSchema() {
       END $$;
     `);
 
-    await db.execute(sql`
+		await db.execute(sql`
       DO $$
       BEGIN
         IF NOT EXISTS (
@@ -184,9 +184,9 @@ export async function migrateNotificationPreferencesSchema() {
       END $$;
     `);
 
-    console.log("✅ Notification preference schema check complete!");
-  } catch (error) {
-    console.error("❌ Error during notification preference migration:", error);
-    throw error;
-  }
+		console.log("✅ Notification preference schema check complete!");
+	} catch (error) {
+		console.error("❌ Error during notification preference migration:", error);
+		throw error;
+	}
 }

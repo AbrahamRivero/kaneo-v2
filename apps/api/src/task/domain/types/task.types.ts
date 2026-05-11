@@ -1,0 +1,104 @@
+import type { TaskPriority } from "../entities/task.entity";
+
+export interface CreateTaskInput {
+	projectId: string;
+	currentUserId: string;
+	userId?: string;
+	title: string;
+	description?: string;
+	startDate?: Date;
+	dueDate?: Date;
+	priority?: TaskPriority;
+	status: string;
+}
+
+export interface UpdateTaskInput {
+	id: string;
+	currentUserId: string;
+	title?: string;
+	description?: string;
+	startDate?: Date | null;
+	dueDate?: Date | null;
+	priority?: TaskPriority;
+	status?: string;
+	projectId?: string;
+	position?: number;
+	userId?: string | null;
+}
+
+export interface TaskFilters {
+	status?: string;
+	priority?: string;
+	assigneeId?: string;
+	page?: number;
+	limit?: number;
+	sortBy?:
+		| "createdAt"
+		| "priority"
+		| "dueDate"
+		| "position"
+		| "title"
+		| "number";
+	sortOrder?: "asc" | "desc";
+	dueBefore?: string;
+	dueAfter?: string;
+}
+
+export interface TaskListResult {
+	tasks: import("../entities/task.entity").TaskWithRelations[];
+	total: number;
+	page: number;
+	limit: number;
+}
+
+export interface BulkOperationInput {
+	taskIds: string[];
+	operation:
+		| "updateStatus"
+		| "updatePriority"
+		| "updateAssignee"
+		| "delete"
+		| "addLabel"
+		| "removeLabel"
+		| "updateDueDate";
+	value?: string | null;
+	currentUserId: string;
+}
+
+export interface BulkOperationResult {
+	success: boolean;
+	updatedCount: number;
+}
+
+export interface MoveTaskInput {
+	taskId: string;
+	destinationProjectId: string;
+	destinationStatus?: string;
+	currentUserId: string;
+}
+
+export interface MoveTaskResult {
+	task: import("../entities/task.entity").Task;
+	sourceProjectId: string;
+	destinationProjectId: string;
+}
+
+export interface ExportTask {
+	title: string;
+	description: string | null;
+	status: string;
+	priority: string;
+	startDate: string | null;
+	dueDate: string | null;
+	assigneeName: string | null;
+}
+
+export interface ImportTask {
+	title: string;
+	description?: string;
+	status: string;
+	priority?: string;
+	startDate?: string | null;
+	dueDate?: string | null;
+	userId?: string | null;
+}

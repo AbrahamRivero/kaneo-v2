@@ -20,44 +20,44 @@ import listGiteaRepositories from "./controllers/list-gitea-repositories";
 import verifyGiteaAccess from "./controllers/verify-gitea-access";
 
 const giteaRepositorySchema = v.object({
-  id: v.number(),
-  name: v.string(),
-  full_name: v.string(),
-  owner: v.object({
-    login: v.string(),
-  }),
-  private: v.boolean(),
-  html_url: v.string(),
+	id: v.number(),
+	name: v.string(),
+	full_name: v.string(),
+	owner: v.object({
+		login: v.string(),
+	}),
+	private: v.boolean(),
+	html_url: v.string(),
 });
 
 const verificationResultSchema = v.object({
-  isInstalled: v.boolean(),
-  hasRequiredPermissions: v.boolean(),
-  repositoryExists: v.boolean(),
-  repositoryPrivate: v.nullable(v.boolean()),
-  missingPermissions: v.array(v.string()),
-  message: v.string(),
+	isInstalled: v.boolean(),
+	hasRequiredPermissions: v.boolean(),
+	repositoryExists: v.boolean(),
+	repositoryPrivate: v.nullable(v.boolean()),
+	missingPermissions: v.array(v.string()),
+	message: v.string(),
 });
 
 const importResultSchema = v.object({
-  imported: v.number(),
-  updated: v.number(),
-  skipped: v.number(),
-  errors: v.optional(v.array(v.string())),
+	imported: v.number(),
+	updated: v.number(),
+	skipped: v.number(),
+	errors: v.optional(v.array(v.string())),
 });
 
 const nullableGiteaIntegrationSchema = v.nullable(giteaIntegrationSchema);
 
 const giteaIntegration = new Hono<{
-  Variables: {
-    userId: string;
-    workspaceId: string;
-    apiKey?: {
-      id: string;
-      userId: string;
-      enabled: boolean;
-    };
-  };
+	Variables: {
+		userId: string;
+		workspaceId: string;
+		apiKey?: {
+			id: string;
+			userId: string;
+			enabled: boolean;
+		};
+	};
 }>()
   .post(
     "/repositories",
@@ -230,54 +230,54 @@ const giteaIntegration = new Hono<{
       const { projectId } = c.req.valid("param");
       const body = c.req.valid("json");
 
-      const row = await db.query.integrationTable.findFirst({
-        where: and(
-          eq(integrationTable.projectId, projectId),
-          eq(integrationTable.type, "gitea"),
-        ),
-      });
+			const row = await db.query.integrationTable.findFirst({
+				where: and(
+					eq(integrationTable.projectId, projectId),
+					eq(integrationTable.type, "gitea"),
+				),
+			});
 
-      if (!row) {
-        return c.json({ error: "Integration not found" }, 404);
-      }
+			if (!row) {
+				return c.json({ error: "Integration not found" }, 404);
+			}
 
-      let config: GiteaConfig;
-      try {
-        config = JSON.parse(row.config) as GiteaConfig;
-      } catch {
-        throw new HTTPException(500, { message: "Invalid integration config" });
-      }
+			let config: GiteaConfig;
+			try {
+				config = JSON.parse(row.config) as GiteaConfig;
+			} catch {
+				throw new HTTPException(500, { message: "Invalid integration config" });
+			}
 
-      if (body.commentTaskLinkOnGiteaIssue !== undefined) {
-        config = {
-          ...config,
-          commentTaskLinkOnGiteaIssue: body.commentTaskLinkOnGiteaIssue,
-        };
-      }
+			if (body.commentTaskLinkOnGiteaIssue !== undefined) {
+				config = {
+					...config,
+					commentTaskLinkOnGiteaIssue: body.commentTaskLinkOnGiteaIssue,
+				};
+			}
 
-      const validation = await validateGiteaConfig(config);
-      if (!validation.valid) {
-        throw new HTTPException(400, {
-          message: validation.errors?.join(", ") ?? "Invalid config",
-        });
-      }
+			const validation = await validateGiteaConfig(config);
+			if (!validation.valid) {
+				throw new HTTPException(400, {
+					message: validation.errors?.join(", ") ?? "Invalid config",
+				});
+			}
 
-      await db
-        .update(integrationTable)
-        .set({
-          config: JSON.stringify(config),
-          isActive:
-            body.isActive !== undefined
-              ? body.isActive
-              : (row.isActive ?? true),
-          updatedAt: new Date(),
-        })
-        .where(
-          and(
-            eq(integrationTable.projectId, projectId),
-            eq(integrationTable.type, "gitea"),
-          ),
-        );
+			await db
+				.update(integrationTable)
+				.set({
+					config: JSON.stringify(config),
+					isActive:
+						body.isActive !== undefined
+							? body.isActive
+							: (row.isActive ?? true),
+					updatedAt: new Date(),
+				})
+				.where(
+					and(
+						eq(integrationTable.projectId, projectId),
+						eq(integrationTable.type, "gitea"),
+					),
+				);
 
       const updated = await getGiteaIntegration(projectId);
       if (!updated) {
@@ -346,23 +346,23 @@ const giteaIntegration = new Hono<{
         throw new HTTPException(401, { message: "Unauthorized" });
       }
 
-      const { projectId } = c.req.valid("json");
+			const { projectId } = c.req.valid("json");
 
-      const [project] = await db
-        .select({ workspaceId: projectTable.workspaceId })
-        .from(projectTable)
-        .where(eq(projectTable.id, projectId))
-        .limit(1);
+			const [project] = await db
+				.select({ workspaceId: projectTable.workspaceId })
+				.from(projectTable)
+				.where(eq(projectTable.id, projectId))
+				.limit(1);
 
-      if (!project) {
-        throw new HTTPException(404, { message: "Project not found" });
-      }
+			if (!project) {
+				throw new HTTPException(404, { message: "Project not found" });
+			}
 
-      const apiKey = c.get("apiKey");
-      const apiKeyId = apiKey?.id;
+			const apiKey = c.get("apiKey");
+			const apiKeyId = apiKey?.id;
 
-      await validateWorkspaceAccess(userId, project.workspaceId, apiKeyId);
-      c.set("workspaceId", project.workspaceId);
+			await validateWorkspaceAccess(userId, project.workspaceId, apiKeyId);
+			c.set("workspaceId", project.workspaceId);
 
       return next();
     },
@@ -375,34 +375,34 @@ const giteaIntegration = new Hono<{
   );
 
 export async function handleGiteaWebhookRoute(c: Context) {
-  const integrationId = c.req.param("integrationId");
-  if (!integrationId) {
-    return c.json({ error: "Missing integration id" }, 400);
-  }
+	const integrationId = c.req.param("integrationId");
+	if (!integrationId) {
+		return c.json({ error: "Missing integration id" }, 400);
+	}
 
-  const arrayBuffer = await c.req.arrayBuffer();
-  const body = Buffer.from(arrayBuffer).toString("utf8");
+	const arrayBuffer = await c.req.arrayBuffer();
+	const body = Buffer.from(arrayBuffer).toString("utf8");
 
-  const signature =
-    c.req.header("x-gitea-signature") || c.req.header("X-Gitea-Signature");
+	const signature =
+		c.req.header("x-gitea-signature") || c.req.header("X-Gitea-Signature");
 
-  const eventName =
-    c.req.header("x-gitea-event") ||
-    c.req.header("X-Gitea-Event") ||
-    c.req.header("x-github-event");
+	const eventName =
+		c.req.header("x-gitea-event") ||
+		c.req.header("X-Gitea-Event") ||
+		c.req.header("x-github-event");
 
-  const result = await handleGiteaWebhookRequest(
-    integrationId,
-    body,
-    signature,
-    eventName,
-  );
+	const result = await handleGiteaWebhookRequest(
+		integrationId,
+		body,
+		signature,
+		eventName,
+	);
 
-  if (!result.success) {
-    return c.json({ error: result.error }, 400);
-  }
+	if (!result.success) {
+		return c.json({ error: result.error }, 400);
+	}
 
-  return c.json({ status: "success" });
+	return c.json({ status: "success" });
 }
 
 export default giteaIntegration;

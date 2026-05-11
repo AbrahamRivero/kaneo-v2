@@ -10,9 +10,9 @@ import getTimeEntry from "./controllers/get-time-entry";
 import updateTimeEntry from "./controllers/update-time-entry";
 
 const timeEntry = new Hono<{
-  Variables: {
-    userId: string;
-  };
+	Variables: {
+		userId: string;
+	};
 }>()
   .get(
     "/task/:taskId",

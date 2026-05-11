@@ -9,7 +9,7 @@ import { useWorkspacePermission } from "@/hooks/use-workspace-permission";
 import debounce from "@/lib/debounce";
 
 type TaskTitleProps = {
-  taskId: string;
+	taskId: string;
 };
 
 export default function TaskTitle({ taskId }: TaskTitleProps) {
@@ -22,57 +22,57 @@ export default function TaskTitle({ taskId }: TaskTitleProps) {
   const taskRef = useRef(task);
   const updateTaskRef = useRef(updateTaskTitle);
 
-  useEffect(() => {
-    taskRef.current = task;
-    updateTaskRef.current = updateTaskTitle;
-  }, [task, updateTaskTitle]);
+	useEffect(() => {
+		taskRef.current = task;
+		updateTaskRef.current = updateTaskTitle;
+	}, [task, updateTaskTitle]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: taskId is not needed here
-  useEffect(() => {
-    isInitializedRef.current = false;
-  }, [taskId]);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: taskId is not needed here
+	useEffect(() => {
+		isInitializedRef.current = false;
+	}, [taskId]);
 
-  const form = useForm<{
-    title: string;
-  }>({
-    values: {
-      title: task?.title || "",
-    },
-  });
+	const form = useForm<{
+		title: string;
+	}>({
+		values: {
+			title: task?.title || "",
+		},
+	});
 
-  useEffect(() => {
-    if (task?.title !== undefined) isInitializedRef.current = true;
-  }, [task?.title]);
+	useEffect(() => {
+		if (task?.title !== undefined) isInitializedRef.current = true;
+	}, [task?.title]);
 
-  const debouncedUpdate = useCallback(
-    debounce(async (title: string) => {
-      if (!isInitializedRef.current) return;
+	const debouncedUpdate = useCallback(
+		debounce(async (title: string) => {
+			if (!isInitializedRef.current) return;
 
-      const currentTask = taskRef.current;
-      const updateTaskFn = updateTaskRef.current;
+			const currentTask = taskRef.current;
+			const updateTaskFn = updateTaskRef.current;
 
-      if (!currentTask || !updateTaskFn) return;
+			if (!currentTask || !updateTaskFn) return;
 
-      try {
-        await updateTaskFn({
-          ...currentTask,
-          title,
-        });
-      } catch (error) {
-        console.error("Failed to update title:", error);
-      }
-    }, 800),
-    [],
-  );
+			try {
+				await updateTaskFn({
+					...currentTask,
+					title,
+				});
+			} catch (error) {
+				console.error("Failed to update title:", error);
+			}
+		}, 800),
+		[],
+	);
 
-  const handleTitleChange = useCallback(
-    (value: string) => {
-      if (!isInitializedRef.current) return;
+	const handleTitleChange = useCallback(
+		(value: string) => {
+			if (!isInitializedRef.current) return;
 
-      debouncedUpdate(value);
-    },
-    [debouncedUpdate],
-  );
+			debouncedUpdate(value);
+		},
+		[debouncedUpdate],
+	);
 
   return (
     <Form {...form}>

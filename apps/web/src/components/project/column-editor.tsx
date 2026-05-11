@@ -23,7 +23,7 @@ import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 
 type ColumnEditorProps = {
-  projectId: string;
+	projectId: string;
 };
 
 export default function ColumnEditor({ projectId }: ColumnEditorProps) {
@@ -63,18 +63,18 @@ export default function ColumnEditor({ projectId }: ColumnEditorProps) {
     }
   };
 
-  const handleRename = async (id: string, name: string) => {
-    try {
-      await updateColumn({ id, projectId, data: { name } });
-      toast.success(t("settings:columnEditor.toastRenamed"));
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : t("settings:columnEditor.toastRenameError"),
-      );
-    }
-  };
+	const handleRename = async (id: string, name: string) => {
+		try {
+			await updateColumn({ id, projectId, data: { name } });
+			toast.success(t("settings:columnEditor.toastRenamed"));
+		} catch (error) {
+			toast.error(
+				error instanceof Error
+					? error.message
+					: t("settings:columnEditor.toastRenameError"),
+			);
+		}
+	};
 
   const handleToggleFinal = async (id: string, isFinal: boolean) => {
     try {
@@ -108,35 +108,35 @@ export default function ColumnEditor({ projectId }: ColumnEditorProps) {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteColumn({ id, projectId });
-      toast.success(t("settings:columnEditor.toastDeleted"));
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : t("settings:columnEditor.toastDeleteError"),
-      );
-    }
-  };
+	const handleDelete = async (id: string) => {
+		try {
+			await deleteColumn({ id, projectId });
+			toast.success(t("settings:columnEditor.toastDeleted"));
+		} catch (error) {
+			toast.error(
+				error instanceof Error
+					? error.message
+					: t("settings:columnEditor.toastDeleteError"),
+			);
+		}
+	};
 
-  const handleDragStart = (index: number) => {
-    setDraggedIndex(index);
-  };
+	const handleDragStart = (index: number) => {
+		setDraggedIndex(index);
+	};
 
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    if (draggedIndex === null || draggedIndex === index || !columns) return;
+	const handleDragOver = (e: React.DragEvent, index: number) => {
+		e.preventDefault();
+		if (draggedIndex === null || draggedIndex === index || !columns) return;
 
-    const reordered = [...columns];
-    const [removed] = reordered.splice(draggedIndex, 1);
-    reordered.splice(index, 0, removed);
+		const reordered = [...columns];
+		const [removed] = reordered.splice(draggedIndex, 1);
+		reordered.splice(index, 0, removed);
 
-    const updates = reordered.map((col, i) => ({ id: col.id, position: i }));
-    reorderColumns({ projectId, columns: updates });
-    setDraggedIndex(index);
-  };
+		const updates = reordered.map((col, i) => ({ id: col.id, position: i }));
+		reorderColumns({ projectId, columns: updates });
+		setDraggedIndex(index);
+	};
 
   const handleDragEnd = () => {
     setDraggedIndex(null);
@@ -146,13 +146,13 @@ export default function ColumnEditor({ projectId }: ColumnEditorProps) {
     iconName.toLowerCase().includes(iconSearch.trim().toLowerCase()),
   );
 
-  if (isLoading) {
-    return (
-      <div className="text-sm text-muted-foreground">
-        {t("settings:columnEditor.loading")}
-      </div>
-    );
-  }
+	if (isLoading) {
+		return (
+			<div className="text-sm text-muted-foreground">
+				{t("settings:columnEditor.loading")}
+			</div>
+		);
+	}
 
   return (
     <div className="space-y-3">
@@ -199,7 +199,7 @@ export default function ColumnEditor({ projectId }: ColumnEditorProps) {
                     )}
                     className="h-8 text-xs"
                   />
-                  <div className="max-h-[280px] overflow-y-auto pr-1">
+                  <div className="max-h-70 overflow-y-auto pr-1">
                     <div className="grid grid-cols-6 gap-1.5">
                       {filteredIcons.map(([iconName, Icon]) => {
                         const selectedIconName =
@@ -325,7 +325,7 @@ export default function ColumnEditor({ projectId }: ColumnEditorProps) {
                   )}
                   className="h-8 text-xs"
                 />
-                <div className="max-h-[280px] overflow-y-auto pr-1">
+                <div className="max-h-70 overflow-y-auto pr-1">
                   <div className="grid grid-cols-6 gap-1.5">
                     {filteredIcons.map(([iconName, Icon]) => {
                       const isSelected = newColumnIcon === iconName;
