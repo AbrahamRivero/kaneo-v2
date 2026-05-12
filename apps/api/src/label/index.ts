@@ -83,15 +83,21 @@ const label = new Hono<{
 			v.object({
 				name: v.string(),
 				color: v.string(),
-				workspaceId: v.string(),
 				taskId: v.optional(v.string()),
 			}),
 		),
-		workspaceAccess.fromBody(),
+		workspaceAccess.fromQuery(),
 		async (c) => {
-			const { name, color, workspaceId, taskId } = c.req.valid("json");
+			const { name, color, taskId } = c.req.valid("json");
+			const workspaceId = c.req.query("workspaceId") || "";
 			const userId = c.get("userId");
-			const label = await createLabel(name, color, taskId, workspaceId, userId);
+			const label = await createLabel({
+				name,
+				color,
+				taskId,
+				workspaceId,
+				currentUserId: userId,
+			});
 			return c.json(label);
 		},
 	)

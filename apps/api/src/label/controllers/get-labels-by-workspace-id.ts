@@ -1,12 +1,9 @@
-import { eq } from "drizzle-orm";
-import db from "../../database";
-import { labelTable } from "../../database/schema";
+import { createLabelUseCases } from "../application";
 
-function getLabelsByWorkspaceId(workspaceId: string) {
-	return db
-		.select()
-		.from(labelTable)
-		.where(eq(labelTable.workspaceId, workspaceId));
+const { getLabelsByWorkspace } = createLabelUseCases();
+
+async function getLabelsByWorkspaceIdController(workspaceId: string) {
+	return getLabelsByWorkspace.execute(workspaceId);
 }
 
-export default getLabelsByWorkspaceId;
+export default getLabelsByWorkspaceIdController;

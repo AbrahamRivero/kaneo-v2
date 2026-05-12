@@ -1,18 +1,9 @@
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
+import { createLabelUseCases } from "../application";
 
-function getLabel(id: string) {
-	const label = db.query.labelTable.findFirst({
-		where: (label, { eq }) => eq(label.id, id),
-	});
+const { getLabel } = createLabelUseCases();
 
-	if (!label) {
-		throw new HTTPException(404, {
-			message: "Label not found",
-		});
-	}
-
-	return label;
+async function getLabelController(id: string) {
+	return getLabel.execute(id);
 }
 
-export default getLabel;
+export default getLabelController;
