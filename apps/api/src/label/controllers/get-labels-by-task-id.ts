@@ -1,11 +1,9 @@
-import db from "../../database";
+import { createLabelUseCases } from "../application";
 
-async function getLabelsByTaskId(taskId: string) {
-	const labels = await db.query.labelTable.findMany({
-		where: (label, { eq }) => eq(label.taskId, taskId),
-	});
+const { getLabelsByTask } = createLabelUseCases();
 
-	return labels;
+async function getLabelsByTaskIdController(taskId: string) {
+	return getLabelsByTask.execute(taskId);
 }
 
-export default getLabelsByTaskId;
+export default getLabelsByTaskIdController;

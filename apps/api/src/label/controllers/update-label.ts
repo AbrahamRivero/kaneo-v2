@@ -1,26 +1,9 @@
-import { eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { labelTable } from "../../database/schema";
+import { createLabelUseCases } from "../application";
 
-async function updateLabel(id: string, name: string, color: string) {
-	const label = await db.query.labelTable.findFirst({
-		where: (label, { eq }) => eq(label.id, id),
-	});
+const { updateLabel } = createLabelUseCases();
 
-	if (!label) {
-		throw new HTTPException(404, {
-			message: "Label not found",
-		});
-	}
-
-	const [updatedLabel] = await db
-		.update(labelTable)
-		.set({ name, color })
-		.where(eq(labelTable.id, id))
-		.returning();
-
-	return updatedLabel;
+async function updateLabelController(id: string, name: string, color: string) {
+	return updateLabel.execute({ id, name, color });
 }
 
-export default updateLabel;
+export default updateLabelController;

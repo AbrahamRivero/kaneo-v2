@@ -36,17 +36,19 @@ describe("API integration: labels", () => {
 		mockAuthenticatedSession(member.user);
 		const { app } = createApp();
 
-		const response = await app.request("/api/label", {
-			method: "POST",
-			headers: {
-				"content-type": "application/json",
+		const response = await app.request(
+			`/api/label?workspaceId=${member.workspace.id}`,
+			{
+				method: "POST",
+				headers: {
+					"content-type": "application/json",
+				},
+				body: JSON.stringify({
+					name: "Bug",
+					color: "#ef4444",
+				}),
 			},
-			body: JSON.stringify({
-				name: "Bug",
-				color: "#ef4444",
-				workspaceId: member.workspace.id,
-			}),
-		});
+		);
 
 		expect(response.status).toBe(200);
 		const payload =
@@ -87,17 +89,19 @@ describe("API integration: labels", () => {
 		mockAuthenticatedSession(outsider);
 		const { app } = createApp();
 
-		const response = await app.request("/api/label", {
-			method: "POST",
-			headers: {
-				"content-type": "application/json",
+		const response = await app.request(
+			`/api/label?workspaceId=${member.workspace.id}`,
+			{
+				method: "POST",
+				headers: {
+					"content-type": "application/json",
+				},
+				body: JSON.stringify({
+					name: "Blocked",
+					color: "#6b7280",
+				}),
 			},
-			body: JSON.stringify({
-				name: "Blocked",
-				color: "#6b7280",
-				workspaceId: member.workspace.id,
-			}),
-		});
+		);
 
 		expect(response.status).toBe(403);
 		await expect(response.text()).resolves.toBe(
