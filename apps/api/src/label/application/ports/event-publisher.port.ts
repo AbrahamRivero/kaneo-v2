@@ -1,3 +1,1 @@
-export interface EventPublisher {
-	publish(eventType: string, data: unknown): Promise<void>;
-}
+export type { EventPublisher } from "../../../common/ports/event-publisher.port";

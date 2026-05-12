@@ -1,5 +1,5 @@
+import type { EventPublisher } from "../../../common/ports/event-publisher.port";
 import type { CreateTaskInput, TaskWithRelations } from "../../domain";
-import type { EventPublisher } from "../ports/event-publisher.port";
 import type { TaskRepository } from "../ports/task-repository.port";
 
 export class CreateTaskUseCase {
