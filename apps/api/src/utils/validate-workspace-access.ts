@@ -1,6 +1,7 @@
 import { and, eq, or } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db, { schema } from "../database";
+import { workspaceRepository } from "../workspace/infrastructure/repositories/drizzle-workspace.repository";
 
 export async function validateWorkspaceAccess(
 	userId: string,
@@ -40,18 +41,9 @@ export async function validateWorkspaceAccess(
     return;
   }
 
-	const membership = await db
-		.select()
-		.from(schema.workspaceUserTable)
-		.where(
-			and(
-				eq(schema.workspaceUserTable.userId, userId),
-				eq(schema.workspaceUserTable.workspaceId, workspaceId),
-			),
-		)
-		.limit(1);
+	const membership = await workspaceRepository.findMember(workspaceId, userId);
 
-	if (membership.length === 0) {
+	if (!membership) {
 		throw new HTTPException(403, {
 			message: "You don't have access to this workspace",
 		});

@@ -1,7 +1,5 @@
-import { and, eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { projectTable } from "../../database/schema";
+import { projectRepository } from "../infrastructure/repositories/drizzle-project.repository";
 
 async function updateProject(
 	id: string,
@@ -12,35 +10,27 @@ async function updateProject(
 	isPublic: boolean,
 	workspaceId: string,
 ) {
-	const [existingProject] = await db
-		.select()
-		.from(projectTable)
-		.where(
-			and(eq(projectTable.id, id), eq(projectTable.workspaceId, workspaceId)),
-		);
+	const existingProject = await projectRepository.findByIdAndWorkspace(
+		id,
+		workspaceId,
+	);
 
-	const isProjectExisting = Boolean(existingProject);
-
-	if (!isProjectExisting) {
+	if (!existingProject) {
 		throw new HTTPException(404, {
 			message:
 				"Project doesn't exist or doesn't belong to the specified workspace",
 		});
 	}
 
-	const [updatedWorkspace] = await db
-		.update(projectTable)
-		.set({
-			name,
-			icon,
-			slug,
-			description,
-			isPublic,
-		})
-		.where(eq(projectTable.id, id))
-		.returning();
+	const updatedProject = await projectRepository.update(id, {
+		name,
+		icon,
+		slug,
+		description,
+		isPublic,
+	});
 
-	return updatedWorkspace;
+	return updatedProject;
 }
 
 export default updateProject;

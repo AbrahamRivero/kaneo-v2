@@ -1,13 +1,9 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
-import {
-	labelTable,
-	projectTable,
-	taskTable,
-	workspaceUserTable,
-} from "../../database/schema";
+import { labelTable, projectTable, taskTable } from "../../database/schema";
 import { publishEvent } from "../../events";
+import { workspaceRepository } from "../../workspace/infrastructure/repositories/drizzle-workspace.repository";
 import { createTaskUseCases } from "../application";
 
 const { bulkUpdateTasks: bulkUpdateTasksUseCase } = createTaskUseCases();
@@ -64,16 +60,7 @@ async function bulkUpdateTasks({
 		});
 	}
 
-	const [membership] = await db
-		.select({ id: workspaceUserTable.id })
-		.from(workspaceUserTable)
-		.where(
-			and(
-				eq(workspaceUserTable.userId, userId),
-				eq(workspaceUserTable.workspaceId, workspaceId),
-			),
-		)
-		.limit(1);
+	const membership = await workspaceRepository.findMember(workspaceId, userId);
 
 	if (!membership) {
 		throw new HTTPException(403, {

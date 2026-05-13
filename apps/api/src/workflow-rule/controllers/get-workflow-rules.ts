@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
+import { columnRepository } from "../../column/infrastructure/repositories/drizzle-column.repository";
 import db from "../../database";
-import { columnTable, workflowRuleTable } from "../../database/schema";
+import { workflowRuleTable } from "../../database/schema";
 
 async function getWorkflowRules(projectId: string) {
 	const rules = await db
@@ -10,16 +11,26 @@ async function getWorkflowRules(projectId: string) {
 			integrationType: workflowRuleTable.integrationType,
 			eventType: workflowRuleTable.eventType,
 			columnId: workflowRuleTable.columnId,
-			columnName: columnTable.name,
-			columnSlug: columnTable.slug,
 			createdAt: workflowRuleTable.createdAt,
 			updatedAt: workflowRuleTable.updatedAt,
 		})
 		.from(workflowRuleTable)
-		.leftJoin(columnTable, eq(workflowRuleTable.columnId, columnTable.id))
 		.where(eq(workflowRuleTable.projectId, projectId));
 
-	return rules;
+	const rulesWithColumnInfo = await Promise.all(
+		rules.map(async (rule) => {
+			const column = rule.columnId
+				? await columnRepository.findById(rule.columnId)
+				: null;
+			return {
+				...rule,
+				columnName: column?.name ?? null,
+				columnSlug: column?.slug ?? null,
+			};
+		}),
+	);
+
+	return rulesWithColumnInfo;
 }
 
 export default getWorkflowRules;

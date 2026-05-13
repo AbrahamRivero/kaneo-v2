@@ -1,6 +1,7 @@
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
+import { columnRepository } from "../../../column/infrastructure/repositories/drizzle-column.repository";
 import db from "../../../database";
-import { columnTable, projectTable, taskTable } from "../../../database/schema";
+import { projectTable, taskTable } from "../../../database/schema";
 import getNextTaskNumber from "../../../task/controllers/get-next-task-number";
 import type { GitHubConfig } from "../config";
 import { createExternalLink, findExternalLink } from "../services/link-manager";
@@ -85,12 +86,8 @@ export async function handleIssueOpened(payload: IssueOpenedPayload) {
 		);
 
 		const targetStatus = resolvedStatus;
-		const targetColumn = await db.query.columnTable.findFirst({
-			where: and(
-				eq(columnTable.projectId, projectId),
-				eq(columnTable.slug, targetStatus),
-			),
-		});
+		const columns = await columnRepository.findByProjectId(projectId);
+		const targetColumn = columns.find((c) => c.slug === targetStatus);
 
 		const taskValues: typeof taskTable.$inferInsert = {
 			projectId,

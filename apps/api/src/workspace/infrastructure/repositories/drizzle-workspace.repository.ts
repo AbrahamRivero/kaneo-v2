@@ -62,3 +62,5 @@ export class DrizzleWorkspaceRepository implements WorkspaceRepository {
 		return member ?? null;
 	}
 }
+
+export const workspaceRepository = new DrizzleWorkspaceRepository();

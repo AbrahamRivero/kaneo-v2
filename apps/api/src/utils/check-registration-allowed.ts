@@ -1,6 +1,4 @@
-import { and, eq, gt } from "drizzle-orm";
-import db from "../database";
-import { invitationTable, userTable, workspaceTable } from "../database/schema";
+import { invitationRepository } from "../invitation/infrastructure/repositories/drizzle-invitation.repository";
 
 type RegistrationCheckResult = {
 	allowed: boolean;
@@ -58,110 +56,82 @@ async function findValidInvitation(
 	email?: string,
 	invitationId?: string,
 ): Promise<RegistrationCheckResult["invitation"] | null> {
-	const now = new Date();
-
-	const conditions = [
-		eq(invitationTable.status, "pending"),
-		gt(invitationTable.expiresAt, now),
-	];
-
-	if (invitationId) {
-		conditions.push(eq(invitationTable.id, invitationId));
-	}
-
-	if (email) {
-		conditions.push(eq(invitationTable.email, email.toLowerCase()));
-	}
-
 	if (!invitationId && !email) {
 		return null;
 	}
 
-	const result = await db
-		.select({
-			id: invitationTable.id,
-			email: invitationTable.email,
-			workspaceId: invitationTable.workspaceId,
-			workspaceName: workspaceTable.name,
-			inviterName: userTable.name,
-			expiresAt: invitationTable.expiresAt,
-			status: invitationTable.status,
-		})
-		.from(invitationTable)
-		.innerJoin(
-			workspaceTable,
-			eq(invitationTable.workspaceId, workspaceTable.id),
-		)
-		.innerJoin(userTable, eq(invitationTable.inviterId, userTable.id))
-		.where(and(...conditions))
-		.limit(1);
+	if (invitationId) {
+		const invitation =
+			await invitationRepository.findWithDetailsById(invitationId);
 
-	const row = result[0];
-	if (!row) {
-		return null;
+		if (!invitation) {
+			return null;
+		}
+
+		const now = new Date();
+		if (invitation.status !== "pending" || invitation.expiresAt <= now) {
+			return null;
+		}
+
+		return {
+			id: invitation.id,
+			email: invitation.email,
+			workspaceId: invitation.workspaceId,
+			workspaceName: invitation.workspaceName,
+			inviterName: invitation.inviterName,
+			expiresAt: invitation.expiresAt,
+			status: invitation.status,
+		};
 	}
 
-	return row;
+	if (email) {
+		const invitations = await invitationRepository.findByEmailAndStatus(
+			email.toLowerCase(),
+			"pending",
+		);
+
+		if (invitations.length === 0) {
+			return null;
+		}
+
+		const invitation = invitations[0];
+		return {
+			id: invitation.id,
+			email: invitation.email,
+			workspaceId: invitation.workspaceId,
+			workspaceName: invitation.workspaceName,
+			inviterName: invitation.inviterName,
+			expiresAt: invitation.expiresAt,
+			status: invitation.status,
+		};
+	}
+
+	return null;
 }
 
-type InvitationDetails = {
-	id: string;
-	email: string;
-	workspaceName: string;
-	inviterName: string;
-	expiresAt: Date;
-	status: string;
-	expired: boolean;
-};
+export async function getInvitationDetails(invitationId: string) {
+	const invitation =
+		await invitationRepository.findWithDetailsById(invitationId);
 
-type InvitationDetailsResult = {
-	valid: boolean;
-	invitation?: InvitationDetails;
-	error?: string;
-};
-
-export async function getInvitationDetails(
-	invitationId: string,
-): Promise<InvitationDetailsResult> {
-	const now = new Date();
-
-	const result = await db
-		.select({
-			id: invitationTable.id,
-			email: invitationTable.email,
-			workspaceName: workspaceTable.name,
-			inviterName: userTable.name,
-			expiresAt: invitationTable.expiresAt,
-			status: invitationTable.status,
-		})
-		.from(invitationTable)
-		.innerJoin(
-			workspaceTable,
-			eq(invitationTable.workspaceId, workspaceTable.id),
-		)
-		.innerJoin(userTable, eq(invitationTable.inviterId, userTable.id))
-		.where(eq(invitationTable.id, invitationId))
-		.limit(1);
-
-	const row = result[0];
-	if (!row) {
+	if (!invitation) {
 		return {
 			valid: false,
 			error: "Invitation not found",
 		};
 	}
 
-	const expired = row.expiresAt < now;
-	const isAccepted = row.status === "accepted";
-	const isCanceled = row.status === "canceled";
+	const now = new Date();
+	const expired = invitation.expiresAt < now;
+	const isAccepted = invitation.status === "accepted";
+	const isCanceled = invitation.status === "canceled";
 
-	const baseInvitation: InvitationDetails = {
-		id: row.id,
-		email: row.email,
-		workspaceName: row.workspaceName,
-		inviterName: row.inviterName,
-		expiresAt: row.expiresAt,
-		status: row.status,
+	const baseInvitation = {
+		id: invitation.id,
+		email: invitation.email,
+		workspaceName: invitation.workspaceName,
+		inviterName: invitation.inviterName,
+		expiresAt: invitation.expiresAt,
+		status: invitation.status,
 		expired,
 	};
 
@@ -194,33 +164,8 @@ export async function getInvitationDetails(
 }
 
 export async function getUserPendingInvitations(userEmail: string) {
-	const now = new Date();
-
-	const result = await db
-		.select({
-			id: invitationTable.id,
-			email: invitationTable.email,
-			workspaceId: invitationTable.workspaceId,
-			workspaceName: workspaceTable.name,
-			inviterName: userTable.name,
-			expiresAt: invitationTable.expiresAt,
-			createdAt: invitationTable.createdAt,
-			status: invitationTable.status,
-		})
-		.from(invitationTable)
-		.innerJoin(
-			workspaceTable,
-			eq(invitationTable.workspaceId, workspaceTable.id),
-		)
-		.innerJoin(userTable, eq(invitationTable.inviterId, userTable.id))
-		.where(
-			and(
-				eq(invitationTable.email, userEmail.toLowerCase()),
-				eq(invitationTable.status, "pending"),
-				gt(invitationTable.expiresAt, now),
-			),
-		)
-		.orderBy(invitationTable.createdAt);
-
-	return result;
+	return invitationRepository.findByEmailAndStatus(
+		userEmail.toLowerCase(),
+		"pending",
+	);
 }

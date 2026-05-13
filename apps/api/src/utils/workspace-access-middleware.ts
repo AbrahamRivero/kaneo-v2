@@ -195,18 +195,14 @@ async function lookupWorkspaceId(
 			}
 
 			case "column": {
-				const [column] = await db
-					.select({
-						workspaceId: schema.projectTable.workspaceId,
-					})
-					.from(schema.columnTable)
-					.innerJoin(
-						schema.projectTable,
-						eq(schema.columnTable.projectId, schema.projectTable.id),
-					)
-					.where(eq(schema.columnTable.id, id))
-					.limit(1);
-				return column?.workspaceId || null;
+				const column = await db.query.columnTable.findFirst({
+					where: eq(schema.columnTable.id, id),
+				});
+				if (!column) return null;
+				const project = await db.query.projectTable.findFirst({
+					where: eq(schema.projectTable.id, column.projectId),
+				});
+				return project?.workspaceId || null;
 			}
 
 			case "workflowRule": {
