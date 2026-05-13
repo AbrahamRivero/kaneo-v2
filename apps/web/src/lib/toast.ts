@@ -51,12 +51,13 @@ const warning: ToastFn = (title, options) =>
 	addToast(title, "warning", options);
 const message: ToastFn = (title, options) =>
 	addToast(title, undefined, options);
-const loading: ToastFn = (title, options) =>
-	toastManager.add({
+const loading: ToastFn = (title, options) => {
+	return toastManager.add({
 		title,
 		description: options?.description,
 		type: "loading",
 	});
+};
 const dismiss = (id?: ToastId) => {
 	if (!id) return;
 	toastManager.close(id);

@@ -32,8 +32,9 @@ export function TasksImportExport({ project }: TasksImportExportProps) {
 		useImportTasks();
 
 	const handleExport = async () => {
+		let loadingId: string | undefined;
 		try {
-			toast.loading(t("settings:tasksImportExport.exporting"));
+			loadingId = toast.loading(t("settings:tasksImportExport.exporting"));
 			const exportData = await exportTasksMutation(project.id);
 
 			const blob = new Blob([JSON.stringify(exportData, null, 2)], {
@@ -42,10 +43,10 @@ export function TasksImportExport({ project }: TasksImportExportProps) {
 
 			saveAs(blob, `${project.slug}-tasks-export.json`);
 
-			toast.dismiss();
+			toast.dismiss(loadingId);
 			toast.success(t("settings:tasksImportExport.exportSuccess"));
 		} catch (error) {
-			toast.dismiss();
+			toast.dismiss(loadingId);
 			toast.error(t("settings:tasksImportExport.exportError"));
 			console.error(error);
 		}
