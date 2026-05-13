@@ -6,9 +6,9 @@ import {
 	userNotificationPreferenceTable,
 	userNotificationWorkspaceProjectTable,
 	userNotificationWorkspaceRuleTable,
-	workspaceUserTable,
 } from "../database/schema";
 import { assertPublicWebhookDestination } from "../plugins/generic-webhook/config";
+import { workspaceRepository } from "../workspace/infrastructure/repositories/drizzle-workspace.repository";
 import { decryptSecret, encryptSecret } from "./secrets";
 
 export type NotificationPreferenceProjectMode = "all" | "selected";
@@ -107,16 +107,7 @@ function normalizeSecretInput(
 }
 
 async function assertWorkspaceMembership(userId: string, workspaceId: string) {
-	const [membership] = await db
-		.select({ workspaceId: workspaceUserTable.workspaceId })
-		.from(workspaceUserTable)
-		.where(
-			and(
-				eq(workspaceUserTable.userId, userId),
-				eq(workspaceUserTable.workspaceId, workspaceId),
-			),
-		)
-		.limit(1);
+	const membership = await workspaceRepository.findMember(workspaceId, userId);
 
 	if (!membership) {
 		throw new HTTPException(403, {

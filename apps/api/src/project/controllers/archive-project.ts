@@ -1,15 +1,10 @@
-import { and, eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { projectTable } from "../../database/schema";
+import { projectRepository } from "../infrastructure/repositories/drizzle-project.repository";
 
 async function archiveProject(id: string, workspaceId: string) {
-	const [existingProject] = await db
-		.select()
-		.from(projectTable)
-		.where(
-			and(eq(projectTable.id, id), eq(projectTable.workspaceId, workspaceId)),
-		);
+	const existingProject = await projectRepository.findByIdAndWorkspace(
+		id,
+		workspaceId,
+	);
 
 	if (!existingProject) {
 		throw new HTTPException(404, {
@@ -18,19 +13,7 @@ async function archiveProject(id: string, workspaceId: string) {
 		});
 	}
 
-	const [archivedProject] = await db
-		.update(projectTable)
-		.set({ archivedAt: new Date() })
-		.where(eq(projectTable.id, id))
-		.returning();
-
-	if (!archivedProject) {
-		throw new HTTPException(500, {
-			message: "Failed to archive project",
-		});
-	}
-
-	return archivedProject;
+	return projectRepository.archive(id);
 }
 
 export default archiveProject;

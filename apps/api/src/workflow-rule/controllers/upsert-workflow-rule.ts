@@ -1,7 +1,8 @@
 import { and, eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import { columnRepository } from "../../column/infrastructure/repositories/drizzle-column.repository";
 import db from "../../database";
-import { columnTable, workflowRuleTable } from "../../database/schema";
+import { workflowRuleTable } from "../../database/schema";
 
 async function upsertWorkflowRule({
 	projectId,
@@ -14,14 +15,9 @@ async function upsertWorkflowRule({
 	eventType: string;
 	columnId: string;
 }) {
-	const targetColumn = await db.query.columnTable.findFirst({
-		where: and(
-			eq(columnTable.id, columnId),
-			eq(columnTable.projectId, projectId),
-		),
-	});
+	const targetColumn = await columnRepository.findById(columnId);
 
-	if (!targetColumn) {
+	if (!targetColumn || targetColumn.projectId !== projectId) {
 		throw new HTTPException(400, {
 			message: "Column does not belong to the provided project",
 		});

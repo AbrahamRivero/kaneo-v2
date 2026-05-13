@@ -1,8 +1,8 @@
-import { asc, eq, inArray } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import { columnRepository } from "../../column/infrastructure/repositories/drizzle-column.repository";
 import db from "../../database";
 import {
-	columnTable,
 	externalLinkTable,
 	labelTable,
 	projectTable,
@@ -96,11 +96,7 @@ async function getTasks(projectId: string, filters?: TaskFilters) {
 		externalLinks: taskExternalLinksMap.get(task.id) || [],
 	}));
 
-	const projectColumns = await db
-		.select()
-		.from(columnTable)
-		.where(eq(columnTable.projectId, projectId))
-		.orderBy(asc(columnTable.position));
+	const projectColumns = await columnRepository.findByProjectId(projectId);
 
 	const columns = projectColumns.map((column) => ({
 		id: column.slug,

@@ -1,7 +1,9 @@
-import { getInvitationDetails } from "../../utils/check-registration-allowed";
+import { createInvitationUseCases } from "../application";
 
-export default async function getInvitationDetailsController(
-	invitationId: string,
-) {
-	return await getInvitationDetails(invitationId);
+const { getInvitationDetails } = createInvitationUseCases();
+
+async function getInvitationDetailsController(invitationId: string) {
+	return getInvitationDetails.execute(invitationId);
 }
+
+export default getInvitationDetailsController;

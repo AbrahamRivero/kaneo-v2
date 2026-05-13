@@ -1,15 +1,9 @@
-import { asc, eq } from "drizzle-orm";
-import db from "../../database";
-import { columnTable } from "../../database/schema";
+import { GetColumnsUseCase } from "../application/use-cases/get-columns.usecase";
+import { columnRepository } from "../infrastructure/repositories/drizzle-column.repository";
 
 async function getColumns(projectId: string) {
-	const columns = await db
-		.select()
-		.from(columnTable)
-		.where(eq(columnTable.projectId, projectId))
-		.orderBy(asc(columnTable.position));
-
-	return columns;
+	const useCase = new GetColumnsUseCase(columnRepository);
+	return useCase.execute(projectId);
 }
 
 export default getColumns;

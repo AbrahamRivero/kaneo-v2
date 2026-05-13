@@ -1,7 +1,8 @@
-import { and, desc, eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import { columnRepository } from "../../../column/infrastructure/repositories/drizzle-column.repository";
 import db from "../../../database";
-import { columnTable, projectTable, taskTable } from "../../../database/schema";
+import { projectTable, taskTable } from "../../../database/schema";
 import { publishEvent } from "../../../events";
 import type { ImportTask } from "../../domain";
 import {
@@ -68,12 +69,8 @@ export class ImportTasksUseCase {
 					(w): w is string => !!w,
 				);
 
-				const column = await db.query.columnTable.findFirst({
-					where: and(
-						eq(columnTable.projectId, input.projectId),
-						eq(columnTable.slug, status),
-					),
-				});
+				const columns = await columnRepository.findByProjectId(input.projectId);
+				const column = columns.find((c) => c.slug === status);
 
 				const [createdTask] = await db
 					.insert(taskTable)

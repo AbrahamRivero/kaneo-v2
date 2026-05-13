@@ -444,7 +444,11 @@ export function createApp() {
 
 	api.use("*", async (c, next) => {
 		const path = c.req.path;
-		if (path.startsWith("/api/mcp") || path.startsWith("/api/.well-known/")) {
+		if (
+			path.startsWith("/api/mcp") ||
+			path.startsWith("/api/.well-known/") ||
+			path.startsWith("/api/ws")
+		) {
 			return next();
 		}
 		try {
@@ -513,7 +517,9 @@ export function createApp() {
 		),
 	);
 
-	api.get(
+	app.route("/api", api);
+
+	app.get(
 		"/ws/:projectId",
 		upgradeWebSocket(async (c) => {
 			const projectId = c.req.param("projectId");
@@ -562,8 +568,6 @@ export function createApp() {
 			};
 		}),
 	);
-
-	app.route("/api", api);
 
 	return {
 		app,

@@ -1,20 +1,14 @@
-import { and, asc, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { columnRepository } from "../../../column/infrastructure/repositories/drizzle-column.repository";
 import db from "../../../database";
-import { columnTable, workflowRuleTable } from "../../../database/schema";
+import { workflowRuleTable } from "../../../database/schema";
 
 export async function resolveTargetStatus(
 	projectId: string,
 	eventType: string,
 	fallbackStatus: string,
 ): Promise<string> {
-	const projectColumns = await db
-		.select({
-			id: columnTable.id,
-			slug: columnTable.slug,
-		})
-		.from(columnTable)
-		.where(eq(columnTable.projectId, projectId))
-		.orderBy(asc(columnTable.position));
+	const projectColumns = await columnRepository.findByProjectId(projectId);
 
 	if (projectColumns.length === 0) {
 		return fallbackStatus;

@@ -86,6 +86,8 @@ const task = new Hono<{
 			const { projectId } = c.req.valid("param");
 			const filters = c.req.valid("query") || {};
 
+			console.log("[GET /tasks/:projectId] projectId:", projectId);
+
 			const tasks = await getTasks(projectId, filters);
 
 			return c.json(tasks);

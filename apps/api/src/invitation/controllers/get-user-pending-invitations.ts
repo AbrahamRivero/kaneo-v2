@@ -1,5 +1,15 @@
-import { getUserPendingInvitations as getUserPendingInvitationsUtil } from "../../utils/check-registration-allowed";
+import { createInvitationUseCases } from "../application";
 
-export default async function getUserPendingInvitations(userEmail: string) {
-	return await getUserPendingInvitationsUtil(userEmail);
+const { getUserPendingInvitations } = createInvitationUseCases();
+
+async function getUserPendingInvitationsController(userEmail: string) {
+	if (!userEmail) {
+		console.error(
+			"getUserPendingInvitationsController: userEmail is empty or undefined",
+		);
+		throw new Error("userEmail is required");
+	}
+	return getUserPendingInvitations.execute({ userEmail });
 }
+
+export default getUserPendingInvitationsController;

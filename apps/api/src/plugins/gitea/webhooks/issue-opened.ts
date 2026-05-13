@@ -1,6 +1,7 @@
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
+import { columnRepository } from "../../../column/infrastructure/repositories/drizzle-column.repository";
 import db from "../../../database";
-import { columnTable, projectTable, taskTable } from "../../../database/schema";
+import { projectTable, taskTable } from "../../../database/schema";
 import { publishEvent } from "../../../events";
 import getNextTaskNumber from "../../../task/controllers/get-next-task-number";
 import {
@@ -92,12 +93,8 @@ export async function handleGiteaIssueOpened(payload: IssueOpenedPayload) {
 			status || "to-do",
 		);
 
-		const targetColumn = await db.query.columnTable.findFirst({
-			where: and(
-				eq(columnTable.projectId, projectId),
-				eq(columnTable.slug, resolvedStatus),
-			),
-		});
+		const columns = await columnRepository.findByProjectId(projectId);
+		const targetColumn = columns.find((c) => c.slug === resolvedStatus);
 
 		const taskValues: typeof taskTable.$inferInsert = {
 			projectId,

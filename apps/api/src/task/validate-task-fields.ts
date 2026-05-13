@@ -1,7 +1,5 @@
-import { asc, eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
-import db from "../database";
-import { columnTable } from "../database/schema";
+import { columnRepository } from "../column/infrastructure/repositories/drizzle-column.repository";
 
 export const VALID_PRIORITIES = [
 	"no-priority",
@@ -24,11 +22,7 @@ export function assertValidPriority(priority: string): void {
 export async function getValidTaskStatuses(
 	projectId: string,
 ): Promise<string[]> {
-	const columns = await db
-		.select({ slug: columnTable.slug })
-		.from(columnTable)
-		.where(eq(columnTable.projectId, projectId))
-		.orderBy(asc(columnTable.position));
+	const columns = await columnRepository.findByProjectId(projectId);
 
 	return [...columns.map((c) => c.slug), ...VIRTUAL_STATUSES];
 }

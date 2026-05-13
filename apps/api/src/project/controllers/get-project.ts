@@ -1,26 +1,9 @@
-import { and, eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { projectTable } from "../../database/schema";
+import { GetProjectUseCase } from "../application/use-cases/get-project.usecase";
+import { projectRepository } from "../infrastructure/repositories/drizzle-project.repository";
 
 async function getProject(id: string, workspaceId: string) {
-	const project = await db.query.projectTable.findFirst({
-		where: and(
-			eq(projectTable.id, id),
-			eq(projectTable.workspaceId, workspaceId),
-		),
-		with: {
-			tasks: true,
-		},
-	});
-
-	if (!project) {
-		throw new HTTPException(404, {
-			message: "Project not found",
-		});
-	}
-
-	return project;
+	const useCase = new GetProjectUseCase(projectRepository);
+	return useCase.execute(id, workspaceId);
 }
 
 export default getProject;
