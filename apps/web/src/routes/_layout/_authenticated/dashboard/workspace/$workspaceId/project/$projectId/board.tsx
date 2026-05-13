@@ -12,7 +12,7 @@ import TaskDetailsSheet from "@/components/task/task-details-sheet";
 import { Input } from "@/components/ui/input";
 import { shortcuts } from "@/constants/shortcuts";
 import useGetLabelsByWorkspace from "@/hooks/queries/label/use-get-labels-by-workspace";
-import { useGetTasks } from "@/hooks/queries/task/use-get-tasks";
+import { useProjectWithTasks } from "@/hooks/queries/project/use-project-with-tasks";
 import { useGetActiveWorkspaceUsers } from "@/hooks/queries/workspace-users/use-get-active-workspace-users";
 import { useRegisterShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { useTaskFiltersWithLabelsSupport } from "@/hooks/use-task-filters-with-labels-support";
@@ -79,9 +79,18 @@ function RouteComponent() {
 	const { projectId, workspaceId } = Route.useParams();
 	const { taskId } = Route.useSearch();
 	const navigate = useNavigate();
-	const { data } = useGetTasks(projectId);
-	const { project, setProject } = useProjectStore();
+	const { project, projectName } = useProjectWithTasks({
+		projectId,
+		workspaceId,
+	});
+	const { setProject } = useProjectStore();
 	const { viewMode, setViewMode } = useUserPreferencesStore();
+
+	useEffect(() => {
+		if (project) {
+			setProject(project);
+		}
+	}, [project, setProject]);
 	const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 	const [boardSearchQuery, setBoardSearchQuery] = useState("");
 	const [isBoardSearchMounted, setIsBoardSearchMounted] = useState(false);
@@ -122,12 +131,6 @@ function RouteComponent() {
 			},
 		},
 	});
-
-	useEffect(() => {
-		if (data) {
-			setProject(data);
-		}
-	}, [data, setProject]);
 
 	const openBoardSearch = useCallback(() => {
 		setIsBoardSearchMounted(true);
@@ -181,7 +184,7 @@ function RouteComponent() {
 
 	const boardHeaderSearch = isBoardSearchMounted ? (
 		<div
-			className={`relative w-[240px] origin-top transition-all duration-180 ease-out ${
+			className={`relative w-60 origin-top transition-all duration-180 ease-out ${
 				isBoardSearchVisible
 					? "translate-y-0 scale-y-100 opacity-100"
 					: "pointer-events-none -translate-y-1 scale-y-95 opacity-0"
@@ -203,7 +206,7 @@ function RouteComponent() {
 					}
 				}}
 				placeholder={t("tasks:boardSearchPlaceholder")}
-				className="h-7.5 [&_[data-slot=input]]:h-7 [&_[data-slot=input]]:leading-7 [&_[data-slot=input]]:pl-8 [&_[data-slot=input]]:text-xs [&_[data-slot=input]]:placeholder:text-xs [&_[data-slot=input]]:placeholder:leading-7"
+				className="h-7.5 **:data-[slot=input]:h-7 **:data-[slot=input]:leading-7 **:data-[slot=input]:pl-8 **:data-[slot=input]:text-xs **:data-[slot=input]:placeholder:text-xs **:data-[slot=input]:placeholder:leading-7"
 			/>
 		</div>
 	) : null;
@@ -216,7 +219,7 @@ function RouteComponent() {
 			headerActions={boardHeaderSearch}
 		>
 			<PageTitle
-				title={`${project?.name} — ${viewMode === "board" ? t("tasks:view.board") : t("tasks:view.list")}`}
+				title={`${projectName ?? ""} — ${viewMode === "board" ? t("tasks:view.board") : t("tasks:view.list")}`}
 				hideAppName
 			/>
 			<div className="relative flex flex-col h-full min-h-0 overflow-hidden">

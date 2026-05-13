@@ -20,7 +20,7 @@ import PageTitle from "@/components/page-title";
 import TaskDetailsSheet from "@/components/task/task-details-sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useGetTasks } from "@/hooks/queries/task/use-get-tasks";
+import { useProjectWithTasks } from "@/hooks/queries/project/use-project-with-tasks";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/cn";
 import { getStatusLabel } from "@/lib/i18n/domain";
@@ -50,7 +50,10 @@ function RouteComponent() {
 	const { projectId, workspaceId } = Route.useParams();
 	const { taskId } = Route.useSearch();
 	const navigate = useNavigate();
-	const { data: project } = useGetTasks(projectId);
+	const { project, projectName } = useProjectWithTasks({
+		projectId,
+		workspaceId,
+	});
 	const weekStartsOn = useUserPreferencesStore((state) => state.weekStartsOn);
 	const [searchQuery, setSearchQuery] = useState("");
 	const isMobile = useIsMobile();
@@ -175,7 +178,7 @@ function RouteComponent() {
 			activeView="gantt"
 		>
 			<PageTitle
-				title={t("tasks:gantt.pageTitle", { name: project?.name })}
+				title={t("tasks:gantt.pageTitle", { name: projectName ?? "" })}
 				hideAppName
 			/>
 			<div className="flex h-full min-h-0 flex-col bg-background">
@@ -193,7 +196,7 @@ function RouteComponent() {
 								value={searchQuery}
 								onChange={(event) => setSearchQuery(event.target.value)}
 								placeholder={t("tasks:gantt.searchPlaceholder")}
-								className="h-9 min-h-11 touch-manipulation sm:h-8 sm:min-h-0 [&_[data-slot=input]]:pl-8 [&_[data-slot=input]]:text-xs"
+								className="h-9 min-h-11 touch-manipulation sm:h-8 sm:min-h-0 **:data-[slot=input]:pl-8 **:data-[slot=input]:text-xs"
 							/>
 						</div>
 
@@ -331,10 +334,10 @@ function RouteComponent() {
 												}}
 											>
 												{showTaskRail ? (
-													<div className="sticky left-0 z-[11] h-full border-r border-border bg-background">
+													<div className="sticky left-0 z-11 h-full border-r border-border bg-background">
 														<button
 															type="button"
-															className="flex min-h-[44px] w-full min-w-0 flex-col items-start justify-center gap-0.5 px-2 py-2 text-left transition-colors hover:bg-muted sm:min-h-0 sm:px-3 sm:py-1.5"
+															className="flex min-h-11 w-full min-w-0 flex-col items-start justify-center gap-0.5 px-2 py-2 text-left transition-colors hover:bg-muted sm:min-h-0 sm:px-3 sm:py-1.5"
 															onClick={() =>
 																navigate({
 																	to: ".",
@@ -344,7 +347,7 @@ function RouteComponent() {
 															}
 														>
 															<div className="flex w-full items-center gap-1.5">
-																<span className="max-w-[7rem] truncate rounded-full bg-secondary px-1.5 py-px text-[10px] font-medium uppercase tracking-wide text-secondary-foreground sm:max-w-none">
+																<span className="max-w-28 truncate rounded-full bg-secondary px-1.5 py-px text-[10px] font-medium uppercase tracking-wide text-secondary-foreground sm:max-w-none">
 																	{getStatusLabel(task.status)}
 																</span>
 																<span className="truncate text-[10px] text-muted-foreground">

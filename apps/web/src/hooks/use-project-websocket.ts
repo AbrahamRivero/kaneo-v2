@@ -11,7 +11,7 @@ export function getWsUrl(projectId: string) {
 }
 
 const MAX_RETRIES = 5;
-const BASE_DELAY = 1000; // 1 second
+const BASE_DELAY = 1000;
 
 export function useProjectWebSocket(projectId: string) {
 	const queryClient = useQueryClient();
@@ -19,22 +19,32 @@ export function useProjectWebSocket(projectId: string) {
 	const wsRef = useRef<WebSocket | null>(null);
 	const retriesRef = useRef(0);
 	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const instanceIdRef = useRef(0);
 
 	useEffect(() => {
 		if (!projectId || !session?.user?.id) return;
 
 		retriesRef.current = 0;
+		const currentInstance = ++instanceIdRef.current;
 
 		function connect() {
+			if (currentInstance !== instanceIdRef.current) return;
+
 			const url = getWsUrl(projectId);
 			const ws = new WebSocket(url);
 			wsRef.current = ws;
 
 			ws.onopen = () => {
-				retriesRef.current = 0; // Reset retries on successful connection
+				if (currentInstance !== instanceIdRef.current) {
+					ws.close();
+					return;
+				}
+				retriesRef.current = 0;
 			};
 
 			ws.onmessage = (event) => {
+				if (currentInstance !== instanceIdRef.current) return;
+
 				try {
 					const message = JSON.parse(event.data);
 					if (
@@ -98,11 +108,16 @@ export function useProjectWebSocket(projectId: string) {
 				}
 			};
 
+			ws.onerror = () => {
+				// Browser WebSocket errors are expected during unmount/cleanup
+			};
+
 			ws.onclose = () => {
+				if (currentInstance !== instanceIdRef.current) return;
 				wsRef.current = null;
 
 				if (retriesRef.current < MAX_RETRIES) {
-					const delay = BASE_DELAY * 2 ** retriesRef.current; // 1s, 2s, 4s, 8s, 16s
+					const delay = BASE_DELAY * 2 ** retriesRef.current;
 					retriesRef.current += 1;
 					timeoutRef.current = setTimeout(connect, delay);
 				}
@@ -111,11 +126,17 @@ export function useProjectWebSocket(projectId: string) {
 		connect();
 
 		return () => {
-			retriesRef.current = MAX_RETRIES; // Prevent reconnect after unmount
+			instanceIdRef.current = MAX_RETRIES;
 			if (timeoutRef.current) {
 				clearTimeout(timeoutRef.current);
 			}
-			wsRef.current?.close();
+			if (wsRef.current) {
+				const ws = wsRef.current;
+				if (ws.readyState === 1) {
+					ws.close();
+				}
+				wsRef.current = null;
+			}
 		};
 	}, [projectId, session?.user?.id, queryClient]);
 }

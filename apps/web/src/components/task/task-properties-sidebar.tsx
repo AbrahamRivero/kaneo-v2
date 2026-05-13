@@ -80,7 +80,9 @@ export default function TaskPropertiesSidebar({
 	compact = false,
 }: TaskPropertiesSidebarProps) {
 	const { t } = useTranslation();
-	const { data: task } = useGetTask(taskId ?? "");
+	const { data: task } = useGetTask(
+		taskId && taskId.length > 0 ? taskId : null,
+	);
 	const { data: project } = useGetProject({ id: projectId, workspaceId });
 	const { data: columns = [] } = useGetColumns(projectId);
 	const { data: workspaceUsers } = useGetActiveWorkspaceUsers(workspaceId);

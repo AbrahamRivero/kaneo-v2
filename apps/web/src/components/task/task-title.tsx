@@ -13,7 +13,9 @@ type TaskTitleProps = {
 
 export default function TaskTitle({ taskId }: TaskTitleProps) {
 	const { t } = useTranslation();
-	const { data: task } = useGetTask(taskId);
+	const { data: task } = useGetTask(
+		taskId && taskId.length > 0 ? taskId : null,
+	);
 	const { mutateAsync: updateTaskTitle } = useUpdateTaskTitle();
 	const isInitializedRef = useRef(false);
 	const taskRef = useRef(task);

@@ -254,7 +254,9 @@ const SLASH_COMMANDS: SlashCommand[] = [
 
 export default function TaskDescription({ taskId }: TaskDescriptionProps) {
 	const { t } = useTranslation();
-	const { data: task } = useGetTask(taskId);
+	const { data: task } = useGetTask(
+		taskId && taskId.length > 0 ? taskId : null,
+	);
 	const { mutateAsync: updateTaskDescription } = useUpdateTaskDescription();
 
 	const editorShellRef = useRef<HTMLDivElement | null>(null);
@@ -544,6 +546,7 @@ export default function TaskDescription({ taskId }: TaskDescriptionProps) {
 					},
 					trailingNode: false,
 					heading: { levels: [1, 2, 3] },
+					link: false,
 				}),
 				Link.configure({
 					autolink: true,
