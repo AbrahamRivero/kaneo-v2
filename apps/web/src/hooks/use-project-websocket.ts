@@ -38,6 +38,8 @@ export function useProjectWebSocket(projectId: string) {
 		}
 
 		function connect() {
+			if (currentInstance !== instanceIdRef.current) return;
+
 			const url = getWsUrl(projectId);
 			const ws = new WebSocket(url);
 			wsRef.current = ws;
@@ -54,6 +56,8 @@ export function useProjectWebSocket(projectId: string) {
 			};
 
 			ws.onmessage = (event) => {
+				if (currentInstance !== instanceIdRef.current) return;
+
 				try {
 					const message = JSON.parse(event.data);
 					if (
@@ -117,12 +121,16 @@ export function useProjectWebSocket(projectId: string) {
 				}
 			};
 
+			ws.onerror = () => {
+				// Browser WebSocket errors are expected during unmount/cleanup
+			};
+
 			ws.onclose = () => {
 				clearPing();
 				wsRef.current = null;
 
 				if (retriesRef.current < MAX_RETRIES) {
-					const delay = BASE_DELAY * 2 ** retriesRef.current; // 1s, 2s, 4s, 8s, 16s
+					const delay = BASE_DELAY * 2 ** retriesRef.current;
 					retriesRef.current += 1;
 					timeoutRef.current = setTimeout(connect, delay);
 				}
@@ -136,7 +144,13 @@ export function useProjectWebSocket(projectId: string) {
 			if (timeoutRef.current) {
 				clearTimeout(timeoutRef.current);
 			}
-			wsRef.current?.close();
+			if (wsRef.current) {
+				const ws = wsRef.current;
+				if (ws.readyState === 1) {
+					ws.close();
+				}
+				wsRef.current = null;
+			}
 		};
 	}, [projectId, session?.user?.id, queryClient]);
 }

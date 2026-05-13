@@ -34,7 +34,9 @@ export default function TaskDetailsSheet({
 		taskId,
 	);
 
-	const { data: task } = useGetTask(currentTaskId ?? "");
+	const { data: task } = useGetTask(
+		currentTaskId && currentTaskId.length > 0 ? currentTaskId : null,
+	);
 	const { data: project } = useGetProject({ id: projectId, workspaceId });
 
 	useEffect(() => {

@@ -39,7 +39,7 @@ import { Separator } from "@/components/ui/separator";
 import icons from "@/constants/project-icons";
 import useDeleteProject from "@/hooks/mutations/project/use-delete-project";
 import useUpdateProject from "@/hooks/mutations/project/use-update-project";
-import { useGetTasks } from "@/hooks/queries/task/use-get-tasks";
+import { useProjectWithTasks } from "@/hooks/queries/project/use-project-with-tasks";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 import { useWorkspacePermission } from "@/hooks/use-workspace-permission";
 import { cn } from "@/lib/cn";
@@ -112,14 +112,18 @@ function RouteComponent() {
 	const { data: workspace } = useActiveWorkspace();
 	const { projectId: rawProjectId } = useParams({ strict: false });
 	const projectId = rawProjectId ?? "";
-	const { data: fetchedProject } = useGetTasks(projectId);
 	const { project, setProject } = useProjectStore();
 
+	const { project: projectFromHook } = useProjectWithTasks({
+		projectId,
+		workspaceId: workspace?.id ?? "",
+	});
+
 	useEffect(() => {
-		if (fetchedProject) {
-			setProject(fetchedProject);
+		if (projectFromHook) {
+			setProject(projectFromHook);
 		}
-	}, [fetchedProject, setProject]);
+	}, [projectFromHook, setProject]);
 
   const { mutateAsync: updateProject } = useUpdateProject();
   const { mutateAsync: deleteProject, isPending: isDeleting } =
@@ -161,7 +165,7 @@ function RouteComponent() {
 
 	const saveProject = useCallback(
 		async (data: ProjectFormValues) => {
-			if (!project?.id) return;
+			if (!projectFromHook?.id) return;
 
 			const normalizedData = normalizeProjectValues(data);
 			const nameChanged = lastSavedRef.current?.name !== normalizedData.name;
@@ -183,14 +187,20 @@ function RouteComponent() {
 
 			try {
 				const updatePayload = {
-					id: project.id,
-					name: nameChanged ? normalizedData.name : project.name,
-					slug: slugChanged ? normalizedData.slug : project.slug,
+					id: projectFromHook.id,
+					name: nameChanged
+						? normalizedData.name
+						: (projectFromHook.name ?? ""),
+					slug: slugChanged
+						? normalizedData.slug
+						: (projectFromHook.slug ?? ""),
 					description: descriptionChanged
 						? normalizedData.description
-						: (project.description ?? ""),
-					icon: iconChanged ? normalizedData.icon : (project.icon ?? "Layout"),
-					isPublic: !!project.isPublic,
+						: (projectFromHook.description ?? ""),
+					icon: iconChanged
+						? normalizedData.icon
+						: (projectFromHook.icon ?? "Layout"),
+					isPublic: !!projectFromHook.isPublic,
 				};
 
 				await updateProject(updatePayload);
@@ -205,7 +215,7 @@ function RouteComponent() {
 						queryKey: ["projects", workspace?.id],
 					}),
 					queryClient.invalidateQueries({
-						queryKey: ["projects", workspace?.id, project.id],
+						queryKey: ["projects", workspace?.id, projectFromHook?.id],
 					}),
 				]);
 				toast.success(t("settings:projectGeneral.toastUpdated"));
@@ -226,12 +236,12 @@ function RouteComponent() {
 			}
 		},
 		[
-			project?.id,
-			project?.isPublic,
-			project?.name,
-			project?.slug,
-			project?.description,
-			project?.icon,
+			projectFromHook?.id,
+			projectFromHook?.isPublic,
+			projectFromHook?.name,
+			projectFromHook?.slug,
+			projectFromHook?.description,
+			projectFromHook?.icon,
 			updateProject,
 			queryClient,
 			workspace?.id,
@@ -299,10 +309,10 @@ function RouteComponent() {
 	}, []);
 
 	const handleDeleteProject = useCallback(async () => {
-		if (!project?.id) return;
+		if (!projectFromHook?.id) return;
 
 		try {
-			await deleteProject({ id: project.id });
+			await deleteProject({ id: projectFromHook.id });
 			toast.success(t("settings:projectGeneral.toastDeleted"));
 
 			await queryClient.invalidateQueries({ queryKey: ["projects"] });
@@ -318,7 +328,14 @@ function RouteComponent() {
 					: t("settings:projectGeneral.toastDeleteError"),
 			);
 		}
-	}, [project?.id, deleteProject, queryClient, navigate, workspace?.id, t]);
+	}, [
+		projectFromHook?.id,
+		deleteProject,
+		queryClient,
+		navigate,
+		workspace?.id,
+		t,
+	]);
 
 	return (
 		<>

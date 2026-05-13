@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { produce } from "immer";
 import { ArrowRight, Calendar, Filter, Plus, User, X } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import BacklogListView from "@/components/backlog-list-view";
 import ProjectLayout from "@/components/common/project-layout";
@@ -26,7 +26,7 @@ import labelColors from "@/constants/label-colors";
 import { shortcuts } from "@/constants/shortcuts";
 import { useUpdateTask } from "@/hooks/mutations/task/use-update-task";
 import useGetLabelsByWorkspace from "@/hooks/queries/label/use-get-labels-by-workspace";
-import { useGetTasks } from "@/hooks/queries/task/use-get-tasks";
+import { useProjectWithTasks } from "@/hooks/queries/project/use-project-with-tasks";
 import { useGetActiveWorkspaceUsers } from "@/hooks/queries/workspace-users/use-get-active-workspace-users";
 import { useRegisterShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { DUE_DATE_FILTER_VALUES } from "@/hooks/use-task-filters";
@@ -57,8 +57,11 @@ function RouteComponent() {
 	const { projectId, workspaceId } = Route.useParams();
 	const { taskId } = Route.useSearch();
 	const navigate = useNavigate();
-	const { data } = useGetTasks(projectId);
-	const { project, setProject } = useProjectStore();
+	const { project, projectName } = useProjectWithTasks({
+		projectId,
+		workspaceId,
+	});
+	const { setProject } = useProjectStore();
 	const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 	const { mutate: updateTask } = useUpdateTask();
 	const [sort, setSort] = useState<SortConfig>({
@@ -140,12 +143,6 @@ function RouteComponent() {
 	const hasActiveFilters = Object.values(filters).some((filter) =>
 		Array.isArray(filter) ? filter.length > 0 : filter !== null,
 	);
-
-	useEffect(() => {
-		if (data) {
-			setProject(data);
-		}
-	}, [data, setProject]);
 
 	const getAssigneeDisplayName = (userId: string) => {
 		const member = users?.members?.find((m) => m.userId === userId);
@@ -355,10 +352,10 @@ function RouteComponent() {
 			activeView="backlog"
 		>
 			<PageTitle
-				title={t("tasks:backlog.pageTitle", { name: project?.name })}
+				title={t("tasks:backlog.pageTitle", { name: projectName ?? "" })}
 			/>
 			<div className="relative flex flex-col h-full min-h-0 overflow-hidden">
-				<div className="border-border/80 border-b bg-card/80 backdrop-blur supports-[backdrop-filter]:bg-card/70">
+				<div className="border-border/80 border-b bg-card/80 backdrop-blur supports-backdrop-filter:bg-card/70">
 					<div className="flex min-h-12 items-center px-3 py-2 md:px-4">
 						<div className="flex w-full items-center gap-2">
 							<div className="flex w-full flex-wrap items-center gap-1.5">
@@ -491,7 +488,7 @@ function RouteComponent() {
 												className="h-7 rounded-md px-2 text-xs font-medium gap-1.5"
 											>
 												<span
-													className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+													className="w-2.5 h-2.5 rounded-full shrink-0"
 													style={{
 														backgroundColor:
 															labelColors.find((c) => c.value === label.color)
@@ -657,7 +654,7 @@ function RouteComponent() {
 														className="h-8 rounded-md text-sm"
 													>
 														<span
-															className="w-3 h-3 rounded-full flex-shrink-0"
+															className="w-3 h-3 rounded-full shrink-0"
 															style={{
 																backgroundColor:
 																	labelColors.find(

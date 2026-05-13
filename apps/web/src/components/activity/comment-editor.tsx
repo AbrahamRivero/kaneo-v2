@@ -599,6 +599,7 @@ export default function CommentEditor({
 				StarterKit.configure({
 					heading: { levels: [1, 2, 3] },
 					trailingNode: false,
+					link: false,
 					codeBlock: {
 						HTMLAttributes: { class: "kaneo-tiptap-codeblock" },
 					},

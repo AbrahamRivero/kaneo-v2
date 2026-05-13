@@ -6,6 +6,9 @@ export type GetTaskRequest = InferRequestType<
 >["param"];
 
 async function getTask(taskId: string) {
+	if (!taskId || taskId.trim().length === 0) {
+		throw new Error("taskId is required");
+	}
 	const response = await client.task[":id"].$get({ param: { id: taskId } });
 
 	if (!response.ok) {

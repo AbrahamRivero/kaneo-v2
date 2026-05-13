@@ -36,7 +36,9 @@ export default function TaskLayout({
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { data: project } = useGetProject({ id: projectId, workspaceId });
-	const { data: task } = useGetTask(taskId);
+	const { data: task } = useGetTask(
+		taskId && taskId.length > 0 ? taskId : null,
+	);
 
 	useProjectWebSocket(projectId);
 

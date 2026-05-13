@@ -554,6 +554,7 @@ export default function TaskDescription({ taskId }: TaskDescriptionProps) {
 					},
 					trailingNode: false,
 					heading: { levels: [1, 2, 3] },
+					link: false,
 				}),
 				Link.configure({
 					autolink: true,
