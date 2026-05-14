@@ -1,15 +1,10 @@
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import type { Context } from "hono";
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
 import db from "../database";
-import { integrationTable, projectTable } from "../database/schema";
-import {
-	type GitHubConfig,
-	validateGitHubConfig,
-} from "../plugins/github/config";
+import { projectTable } from "../database/schema";
 import { handleGitHubWebhook } from "../plugins/github/webhook-handler";
 import { githubIntegrationSchema } from "../schemas";
 import { requireWorkspacePermission } from "../utils/require-workspace-permission";
@@ -20,6 +15,7 @@ import deleteGithubIntegration from "./controllers/delete-github-integration";
 import getGithubIntegration from "./controllers/get-github-integration";
 import { importIssues } from "./controllers/import-issues";
 import listUserRepositories from "./controllers/list-user-repositories";
+import updateGithubIntegration from "./controllers/update-github-integration";
 import verifyGithubInstallation from "./controllers/verify-github-installation";
 
 const githubAppInfoSchema = v.object({
@@ -193,149 +189,99 @@ const githubIntegration = new Hono<{
 				repositoryName,
 			});
 
-      return c.json(integration);
-    },
-  )
-  .patch(
-    "/project/:projectId",
-    describeRoute({
-      operationId: "updateGitHubIntegration",
-      tags: ["GitHub"],
-      description: "Update GitHub integration settings",
-      responses: {
-        200: {
-          description: "Integration updated successfully",
-          content: {
-            "application/json": { schema: resolver(githubIntegrationSchema) },
-          },
-        },
-        404: {
-          description: "Integration not found",
-          content: {
-            "application/json": {
-              schema: resolver(v.object({ error: v.string() })),
-            },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ projectId: v.string() })),
-    validator(
-      "json",
-      v.object({
-        isActive: v.optional(v.boolean()),
-        commentTaskLinkOnGitHubIssue: v.optional(v.boolean()),
-      }),
-    ),
-    workspaceAccess.fromProject("projectId"),
-    requireWorkspacePermission({ workspace: ["manage_settings"] }),
-    async (c) => {
-      const { projectId } = c.req.valid("param");
-      const body = c.req.valid("json");
-
-			const row = await db.query.integrationTable.findFirst({
-				where: and(
-					eq(integrationTable.projectId, projectId),
-					eq(integrationTable.type, "github"),
-				),
-			});
-
-			if (!row) {
-				return c.json({ error: "Integration not found" }, 404);
+			return c.json(integration);
+		},
+	)
+	.patch(
+		"/project/:projectId",
+		describeRoute({
+			operationId: "updateGitHubIntegration",
+			tags: ["GitHub"],
+			description: "Update GitHub integration settings",
+			responses: {
+				200: {
+					description: "Integration updated successfully",
+					content: {
+						"application/json": { schema: resolver(githubIntegrationSchema) },
+					},
+				},
+				404: {
+					description: "Integration not found",
+					content: {
+						"application/json": {
+							schema: resolver(v.object({ error: v.string() })),
+						},
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ projectId: v.string() })),
+		validator(
+			"json",
+			v.object({
+				isActive: v.optional(v.boolean()),
+				commentTaskLinkOnGitHubIssue: v.optional(v.boolean()),
+			}),
+		),
+		workspaceAccess.fromProject("projectId"),
+		requireWorkspacePermission({ workspace: ["manage_settings"] }),
+		async (c) => {
+			const { projectId } = c.req.valid("param");
+			const body = c.req.valid("json");
+			const result = await updateGithubIntegration(projectId, body);
+			return c.json(result, 200);
+		},
+	)
+	.delete(
+		"/project/:projectId",
+		describeRoute({
+			operationId: "deleteGitHubIntegration",
+			tags: ["GitHub"],
+			description: "Delete GitHub integration for a project",
+			responses: {
+				200: {
+					description: "Integration deleted successfully",
+					content: {
+						"application/json": { schema: resolver(githubIntegrationSchema) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ projectId: v.string() })),
+		workspaceAccess.fromProject("projectId"),
+		requireWorkspacePermission({ workspace: ["manage_settings"] }),
+		async (c) => {
+			const { projectId } = c.req.valid("param");
+			const result = await deleteGithubIntegration(projectId);
+			return c.json(result);
+		},
+	)
+	.post(
+		"/import-issues",
+		describeRoute({
+			operationId: "importGitHubIssues",
+			tags: ["GitHub"],
+			description: "Import GitHub issues as tasks",
+			responses: {
+				200: {
+					description: "Issues imported successfully",
+					content: {
+						"application/json": { schema: resolver(importResultSchema) },
+					},
+				},
+			},
+		}),
+		validator(
+			"json",
+			v.object({
+				projectId: v.string(),
+			}),
+		),
+		async (c, next) => {
+			const userId = c.get("userId");
+			if (!userId) {
+				throw new HTTPException(401, { message: "Unauthorized" });
 			}
-
-			let config: GitHubConfig;
-			try {
-				config = JSON.parse(row.config) as GitHubConfig;
-			} catch {
-				throw new HTTPException(500, { message: "Invalid integration config" });
-			}
-
-			if (body.commentTaskLinkOnGitHubIssue !== undefined) {
-				config = {
-					...config,
-					commentTaskLinkOnGitHubIssue: body.commentTaskLinkOnGitHubIssue,
-				};
-			}
-
-			const validation = await validateGitHubConfig(config);
-			if (!validation.valid) {
-				throw new HTTPException(400, {
-					message: validation.errors?.join(", ") ?? "Invalid config",
-				});
-			}
-
-			await db
-				.update(integrationTable)
-				.set({
-					config: JSON.stringify(config),
-					isActive:
-						body.isActive !== undefined
-							? body.isActive
-							: (row.isActive ?? true),
-					updatedAt: new Date(),
-				})
-				.where(
-					and(
-						eq(integrationTable.projectId, projectId),
-						eq(integrationTable.type, "github"),
-					),
-				);
-
-      const updated = await getGithubIntegration(projectId);
-      return c.json(updated, 200);
-    },
-  )
-  .delete(
-    "/project/:projectId",
-    describeRoute({
-      operationId: "deleteGitHubIntegration",
-      tags: ["GitHub"],
-      description: "Delete GitHub integration for a project",
-      responses: {
-        200: {
-          description: "Integration deleted successfully",
-          content: {
-            "application/json": { schema: resolver(githubIntegrationSchema) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ projectId: v.string() })),
-    workspaceAccess.fromProject("projectId"),
-    requireWorkspacePermission({ workspace: ["manage_settings"] }),
-    async (c) => {
-      const { projectId } = c.req.valid("param");
-      const result = await deleteGithubIntegration(projectId);
-      return c.json(result);
-    },
-  )
-  .post(
-    "/import-issues",
-    describeRoute({
-      operationId: "importGitHubIssues",
-      tags: ["GitHub"],
-      description: "Import GitHub issues as tasks",
-      responses: {
-        200: {
-          description: "Issues imported successfully",
-          content: {
-            "application/json": { schema: resolver(importResultSchema) },
-          },
-        },
-      },
-    }),
-    validator(
-      "json",
-      v.object({
-        projectId: v.string(),
-      }),
-    ),
-    async (c, next) => {
-      const userId = c.get("userId");
-      if (!userId) {
-        throw new HTTPException(401, { message: "Unauthorized" });
-      }
 
 			const { projectId } = c.req.valid("json");
 
