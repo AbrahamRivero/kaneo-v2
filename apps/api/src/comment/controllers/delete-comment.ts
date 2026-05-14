@@ -1,7 +1,3 @@
-import { eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { commentTable, taskTable } from "../../database/schema";
 import { publishEvent } from "../../events";
 import { deleteOrphanedAssets } from "../../storage/cleanup-assets";
 
@@ -57,4 +53,4 @@ async function deleteComment(userId: string, id: string) {
 	return deleted;
 }
 
-export default deleteComment;
+export default deleteCommentController;

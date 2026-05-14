@@ -1,45 +1,26 @@
-import { eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { activityTable, taskTable, userTable } from "../../database/schema";
 import { publishEvent } from "../../events";
+import { DrizzleTaskRepository } from "../../task/infrastructure/repositories/drizzle-task.repository";
+import { CreateCommentUseCase } from "../application/use-cases";
+import { activityRepository } from "../infrastructure/repositories/drizzle-activity.repository";
+import { DrizzleUserRepository } from "../infrastructure/repositories/drizzle-user.repository";
 
-async function createComment(taskId: string, userId: string, content: string) {
-	const [activity] = await db
-		.insert(activityTable)
-		.values({
-			taskId,
-			type: "comment",
-			userId,
-			content,
-		})
-		.returning();
+const createComment = new CreateCommentUseCase(
+	activityRepository,
+	new DrizzleTaskRepository(),
+	new DrizzleUserRepository(),
+	{
+		publish: async (eventType, data) => {
+			await publishEvent(eventType, data);
+		},
+	},
+);
 
-	if (!activity) {
-		throw new HTTPException(500, {
-			message: "Failed to create activity",
-		});
-	}
-
-	const [user] = await db
-		.select({ name: userTable.name })
-		.from(userTable)
-		.where(eq(userTable.id, userId));
-
-	const [task] = await db
-		.select({ projectId: taskTable.projectId })
-		.from(taskTable)
-		.where(eq(taskTable.id, taskId));
-
-	if (task) {
-		await publishEvent("task.comment_created", {
-			...activity,
-			comment: `"${user?.name}" commented: ${content}`,
-			projectId: task.projectId,
-		});
-	}
-
-	return activity;
+async function createCommentController(
+	taskId: string,
+	userId: string,
+	content: string,
+) {
+	return createComment.execute({ taskId, userId, content });
 }
 
-export default createComment;
+export default createCommentController;
