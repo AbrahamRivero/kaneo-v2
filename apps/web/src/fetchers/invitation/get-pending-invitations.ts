@@ -1,9 +1,17 @@
 import { client } from "@kaneo/libs";
-import type { WorkspaceUserInvitation } from "@/types/workspace-user";
 
-export async function getPendingInvitations(): Promise<
-	WorkspaceUserInvitation[]
-> {
+export type PendingInvitation = {
+	id: string;
+	email: string;
+	workspaceId: string;
+	workspaceName: string;
+	inviterName: string;
+	expiresAt: string;
+	createdAt: string;
+	status: string;
+};
+
+export async function getPendingInvitations(): Promise<PendingInvitation[]> {
 	const response = await client.invitation.pending.$get();
 
 	if (!response.ok) {
