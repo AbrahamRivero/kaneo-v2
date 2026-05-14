@@ -1,69 +1,19 @@
-import { and, eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
 import { columnRepository } from "../../column/infrastructure/repositories/drizzle-column.repository";
-import db from "../../database";
-import { workflowRuleTable } from "../../database/schema";
+import { UpsertWorkflowRuleUseCase } from "../application/use-cases";
+import { workflowRuleRepository } from "../infrastructure/repositories/drizzle-workflow-rule.repository";
 
-async function upsertWorkflowRule({
-	projectId,
-	integrationType,
-	eventType,
-	columnId,
-}: {
+const upsertWorkflowRule = new UpsertWorkflowRuleUseCase(
+	workflowRuleRepository,
+	columnRepository,
+);
+
+async function upsertWorkflowRuleController(input: {
 	projectId: string;
 	integrationType: string;
 	eventType: string;
 	columnId: string;
 }) {
-	const targetColumn = await columnRepository.findById(columnId);
-
-	if (!targetColumn || targetColumn.projectId !== projectId) {
-		throw new HTTPException(400, {
-			message: "Column does not belong to the provided project",
-		});
-	}
-
-	const existing = await db.query.workflowRuleTable.findFirst({
-		where: and(
-			eq(workflowRuleTable.projectId, projectId),
-			eq(workflowRuleTable.integrationType, integrationType),
-			eq(workflowRuleTable.eventType, eventType),
-		),
-	});
-
-	if (existing) {
-		const [updated] = await db
-			.update(workflowRuleTable)
-			.set({ columnId })
-			.where(eq(workflowRuleTable.id, existing.id))
-			.returning();
-
-		if (!updated) {
-			throw new HTTPException(500, {
-				message: "Failed to update workflow rule",
-			});
-		}
-
-		return updated;
-	}
-
-	const [created] = await db
-		.insert(workflowRuleTable)
-		.values({
-			projectId,
-			integrationType,
-			eventType,
-			columnId,
-		})
-		.returning();
-
-	if (!created) {
-		throw new HTTPException(500, {
-			message: "Failed to create workflow rule",
-		});
-	}
-
-	return created;
+	return upsertWorkflowRule.execute(input);
 }
 
-export default upsertWorkflowRule;
+export default upsertWorkflowRuleController;
