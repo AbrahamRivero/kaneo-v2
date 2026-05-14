@@ -1,7 +1,3 @@
-import { eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { commentTable, taskTable } from "../../database/schema";
 import { publishEvent } from "../../events";
 import { deleteOrphanedAssets } from "../../storage/cleanup-assets";
 
@@ -58,4 +54,4 @@ async function updateComment(userId: string, id: string, content: string) {
 	return updated;
 }
 
-export default updateComment;
+export default updateCommentController;

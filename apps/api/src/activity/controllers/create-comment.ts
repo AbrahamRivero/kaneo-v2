@@ -1,7 +1,3 @@
-import { eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { activityTable, taskTable, userTable } from "../../database/schema";
 import { publishEvent } from "../../events";
 import createNotification from "../../notification/controllers/create-notification";
 import { parseMentionIds } from "../../utils/parse-mentions";
@@ -59,4 +55,4 @@ async function createComment(taskId: string, userId: string, content: string) {
 	return activity;
 }
 
-export default createComment;
+export default createCommentController;

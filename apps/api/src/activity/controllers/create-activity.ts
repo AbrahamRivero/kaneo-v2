@@ -1,24 +1,16 @@
-import db from "../../database";
-import { activityTable } from "../../database/schema";
+import { CreateActivityUseCase } from "../application/use-cases";
+import { activityRepository } from "../infrastructure/repositories/drizzle-activity.repository";
 
-async function createActivity(
+const createActivity = new CreateActivityUseCase(activityRepository);
+
+async function createActivityController(
 	taskId: string,
 	type: string,
 	userId: string,
 	content: string | null,
 	eventData?: Record<string, unknown> | null,
 ) {
-	const [activity] = await db
-		.insert(activityTable)
-		.values({
-			taskId,
-			type,
-			userId,
-			content,
-			eventData: eventData ?? null,
-		})
-		.returning();
-	return activity;
+	return createActivity.execute({ taskId, type, userId, content, eventData });
 }
 
-export default createActivity;
+export default createActivityController;

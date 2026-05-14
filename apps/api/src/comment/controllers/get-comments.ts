@@ -1,36 +1,10 @@
-import { asc, eq } from "drizzle-orm";
-import db from "../../database";
-import { commentTable, userTable } from "../../database/schema";
+import { GetCommentsUseCase } from "../application/use-cases";
+import { commentRepository } from "../infrastructure/repositories/drizzle-comment.repository";
 
-async function getComments(taskId: string) {
-	const comments = await db
-		.select({
-			id: commentTable.id,
-			taskId: commentTable.taskId,
-			userId: commentTable.userId,
-			content: commentTable.content,
-			createdAt: commentTable.createdAt,
-			updatedAt: commentTable.updatedAt,
-			userName: userTable.name,
-			userImage: userTable.image,
-		})
-		.from(commentTable)
-		.leftJoin(userTable, eq(commentTable.userId, userTable.id))
-		.where(eq(commentTable.taskId, taskId))
-		.orderBy(asc(commentTable.createdAt));
+const getComments = new GetCommentsUseCase(commentRepository);
 
-	return comments.map((c) => ({
-		id: c.id,
-		taskId: c.taskId,
-		userId: c.userId,
-		content: c.content,
-		createdAt: c.createdAt,
-		updatedAt: c.updatedAt,
-		user: {
-			name: c.userName ?? "",
-			image: c.userImage,
-		},
-	}));
+async function getCommentsController(taskId: string) {
+	return getComments.execute(taskId);
 }
 
-export default getComments;
+export default getCommentsController;

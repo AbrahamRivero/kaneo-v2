@@ -1,20 +1,10 @@
-import { desc, eq } from "drizzle-orm";
-import db from "../../database";
-import { activityTable } from "../../database/schema";
+import { GetActivitiesUseCase } from "../application/use-cases";
+import { activityRepository } from "../infrastructure/repositories/drizzle-activity.repository";
 
-async function getActivitiesFromTaskId(taskId: string) {
-	const activities = await db.query.activityTable.findMany({
-		where: eq(activityTable.taskId, taskId),
-		orderBy: [desc(activityTable.createdAt)],
-	});
+const getActivities = new GetActivitiesUseCase(activityRepository);
 
-	activities.forEach((x) => {
-		if (x.content) {
-			x.content = x.content.replace(/\n+/g, "\n");
-		}
-	});
-
-	return activities;
+async function getActivitiesController(taskId: string) {
+	return getActivities.execute(taskId);
 }
 
-export default getActivitiesFromTaskId;
+export default getActivitiesController;
