@@ -1,10 +1,8 @@
-import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
-import db from "../database";
-import { externalLinkTable } from "../database/schema";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
+import getExternalLinks from "./controllers/get-external-links";
 
 const externalLinkSchema = v.object({
 	id: v.string(),
@@ -45,20 +43,8 @@ const externalLink = new Hono<{
 	workspaceAccess.fromTaskId("taskId"),
 	async (c) => {
 		const { taskId } = c.req.valid("param");
-
-		const links = await db.query.externalLinkTable.findMany({
-			where: eq(externalLinkTable.taskId, taskId),
-			with: {
-				integration: true,
-			},
-		});
-
-		const formattedLinks = links.map((link) => ({
-			...link,
-			metadata: link.metadata ? JSON.parse(link.metadata) : null,
-		}));
-
-		return c.json(formattedLinks);
+		const links = await getExternalLinks(taskId);
+		return c.json(links);
 	},
 );
 
