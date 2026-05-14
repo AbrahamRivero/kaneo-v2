@@ -19,6 +19,8 @@ export interface Task {
 
 export interface TaskWithRelations extends Task {
 	assigneeName: string | null;
+	assigneeId: string | null;
+	assigneeImage: string | null;
 	columnName?: string | null;
 	labels?: Array<{ id: string; name: string; color: string }>;
 	externalLinks?: Array<{
