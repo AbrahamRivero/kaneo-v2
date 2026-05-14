@@ -1,27 +1,10 @@
-import { eq } from "drizzle-orm";
-import db from "../../database";
-import { timeEntryTable, userTable } from "../../database/schema";
+import { GetTimeEntriesUseCase } from "../application/use-cases";
+import { timeEntryRepository } from "../infrastructure/repositories/drizzle-time-entry.repository";
 
-async function getTimeEntriesByTaskId(taskId: string) {
-	const timeEntries = await db
-		.select({
-			id: timeEntryTable.id,
-			taskId: timeEntryTable.taskId,
-			userId: timeEntryTable.userId,
-			userName: userTable.name,
-			description: timeEntryTable.description,
-			startTime: timeEntryTable.startTime,
-			endTime: timeEntryTable.endTime,
-			duration: timeEntryTable.duration,
-			createdAt: timeEntryTable.createdAt,
-			updatedAt: timeEntryTable.updatedAt,
-		})
-		.from(timeEntryTable)
-		.leftJoin(userTable, eq(timeEntryTable.userId, userTable.id))
-		.where(eq(timeEntryTable.taskId, taskId))
-		.orderBy(timeEntryTable.startTime);
+const getTimeEntriesUseCase = new GetTimeEntriesUseCase(timeEntryRepository);
 
-	return timeEntries;
+async function getTimeEntriesByTaskIdController(taskId: string) {
+	return getTimeEntriesUseCase.execute(taskId);
 }
 
-export default getTimeEntriesByTaskId;
+export default getTimeEntriesByTaskIdController;
