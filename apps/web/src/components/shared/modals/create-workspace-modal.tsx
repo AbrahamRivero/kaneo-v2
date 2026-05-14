@@ -18,7 +18,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import useCreateWorkspace from "@/hooks/queries/workspace/use-create-workspace";
+import useCreateWorkspace from "@/hooks/mutations/workspace/use-create-workspace";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/lib/toast";
 
@@ -110,7 +110,7 @@ function CreateWorkspaceModal({ open, onClose }: CreateWorkspaceModalProps) {
 							value={name}
 							onChange={(e) => setName(e.target.value)}
 							placeholder={t("common:modals.createWorkspace.namePlaceholder")}
-							className="w-full [&_[data-slot=input]]:h-auto [&_[data-slot=input]]:px-0 [&_[data-slot=input]]:py-2 [&_[data-slot=input]]:text-2xl [&_[data-slot=input]]:leading-tight [&_[data-slot=input]]:font-semibold [&_[data-slot=input]]:tracking-tight [&_[data-slot=input]]:text-foreground [&_[data-slot=input]]:placeholder:text-muted-foreground [&_[data-slot=input]]:outline-none"
+							className="w-full **:data-[slot=input]:h-auto **:data-[slot=input]:px-0 **:data-[slot=input]:py-2 **:data-[slot=input]:text-2xl **:data-[slot=input]:leading-tight **:data-[slot=input]:font-semibold **:data-[slot=input]:tracking-tight **:data-[slot=input]:text-foreground **:data-[slot=input]:placeholder:text-muted-foreground **:data-[slot=input]:outline-none"
 							required
 						/>
 
@@ -121,7 +121,7 @@ function CreateWorkspaceModal({ open, onClose }: CreateWorkspaceModalProps) {
 							placeholder={t(
 								"common:modals.createWorkspace.descriptionPlaceholder",
 							)}
-							className="w-full [&_[data-slot=input]]:h-auto [&_[data-slot=input]]:px-0 [&_[data-slot=input]]:py-2 [&_[data-slot=input]]:text-base [&_[data-slot=input]]:leading-relaxed [&_[data-slot=input]]:text-foreground [&_[data-slot=input]]:placeholder:text-muted-foreground [&_[data-slot=input]]:outline-none"
+							className="w-full **:data-[slot=input]:h-auto **:data-[slot=input]:px-0 **:data-[slot=input]:py-2 **:data-[slot=input]:text-base **:data-[slot=input]:leading-relaxed **:data-[slot=input]:text-foreground **:data-[slot=input]:placeholder:text-muted-foreground **:data-[slot=input]:outline-none"
 						/>
 					</div>
 

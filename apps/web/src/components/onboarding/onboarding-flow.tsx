@@ -20,7 +20,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useCreateWorkspace from "@/hooks/queries/workspace/use-create-workspace";
+import useCreateWorkspace from "@/hooks/mutations/workspace/use-create-workspace";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/lib/toast";
 

@@ -7,7 +7,7 @@ import PageTitle from "@/components/page-title";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import useCreateWorkspace from "@/hooks/queries/workspace/use-create-workspace";
+import useCreateWorkspace from "@/hooks/mutations/workspace/use-create-workspace";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/lib/toast";
 
