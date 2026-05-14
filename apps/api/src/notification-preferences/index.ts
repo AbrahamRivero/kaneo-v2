@@ -2,12 +2,10 @@ import { Hono } from "hono";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
 import { notificationPreferenceSchema } from "../schemas";
-import {
-	deleteWorkspaceRule,
-	getNotificationPreferences,
-	updateNotificationPreferences,
-	upsertWorkspaceRule,
-} from "./service";
+import deleteWorkspaceRuleController from "./controllers/delete-workspace-rule";
+import getNotificationPreferencesController from "./controllers/get-notification-preferences";
+import updateNotificationPreferencesController from "./controllers/update-notification-preferences";
+import upsertWorkspaceRuleController from "./controllers/upsert-workspace-rule";
 
 const httpErrorSchema = v.object({ message: v.string() });
 
@@ -68,7 +66,7 @@ notificationPreferences
 			const userId = c.get("userId");
 			const userEmail = c.get("userEmail");
 			return c.json(
-				await getNotificationPreferences(userId, userEmail || null),
+				await getNotificationPreferencesController(userId, userEmail || null),
 			);
 		},
 	)
@@ -129,7 +127,11 @@ notificationPreferences
 			const body = c.req.valid("json");
 
 			return c.json(
-				await updateNotificationPreferences(userId, userEmail || null, body),
+				await updateNotificationPreferencesController(
+					userId,
+					userEmail || null,
+					body,
+				),
 			);
 		},
 	)
@@ -177,7 +179,12 @@ notificationPreferences
 			const body = c.req.valid("json");
 
 			return c.json(
-				await upsertWorkspaceRule(userId, workspaceId, userEmail || null, body),
+				await upsertWorkspaceRuleController(
+					userId,
+					workspaceId,
+					userEmail || null,
+					body,
+				),
 			);
 		},
 	)
@@ -229,7 +236,11 @@ notificationPreferences
 			const { workspaceId } = c.req.valid("param");
 
 			return c.json(
-				await deleteWorkspaceRule(userId, workspaceId, userEmail || null),
+				await deleteWorkspaceRuleController(
+					userId,
+					workspaceId,
+					userEmail || null,
+				),
 			);
 		},
 	);
