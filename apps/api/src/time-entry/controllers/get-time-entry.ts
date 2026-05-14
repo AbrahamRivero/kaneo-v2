@@ -1,14 +1,15 @@
-import { eq } from "drizzle-orm";
-import db from "../../database";
-import { timeEntryTable } from "../../database/schema";
+import { HTTPException } from "hono/http-exception";
+import { GetTimeEntryUseCase } from "../application/use-cases";
+import { timeEntryRepository } from "../infrastructure/repositories/drizzle-time-entry.repository";
 
-async function getTimeEntry(id: string) {
-	const [timeEntry] = await db
-		.select()
-		.from(timeEntryTable)
-		.where(eq(timeEntryTable.id, id));
+const getTimeEntryUseCase = new GetTimeEntryUseCase(timeEntryRepository);
 
-	return timeEntry;
+async function getTimeEntryController(id: string) {
+	const entry = await getTimeEntryUseCase.execute(id);
+	if (!entry) {
+		throw new HTTPException(404, { message: "Time entry not found" });
+	}
+	return entry;
 }
 
-export default getTimeEntry;
+export default getTimeEntryController;

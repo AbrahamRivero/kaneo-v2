@@ -1,60 +1,40 @@
-import { createId } from "@paralleldrive/cuid2";
-import { eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { taskTable, timeEntryTable } from "../../database/schema";
 import { publishEvent } from "../../events";
+import { DrizzleTaskRepository } from "../../task/infrastructure/repositories/drizzle-task.repository";
+import { CreateTimeEntryUseCase } from "../application/use-cases";
+import { timeEntryRepository } from "../infrastructure/repositories/drizzle-time-entry.repository";
 
-async function createTimeEntry({
+const taskRepository = new DrizzleTaskRepository();
+
+const createTimeEntryUseCase = new CreateTimeEntryUseCase(
+	timeEntryRepository,
+	taskRepository,
+	{
+		publish: async (eventType, data) => {
+			await publishEvent(eventType, data);
+		},
+	},
+);
+
+async function createTimeEntryController({
 	taskId,
 	userId,
 	description,
 	startTime,
 	endTime,
-	duration,
 }: {
 	taskId: string;
 	userId: string;
 	description?: string;
 	startTime: Date;
 	endTime?: Date;
-	duration?: number;
 }) {
-	const [createdTimeEntry] = await db
-		.insert(timeEntryTable)
-		.values({
-			id: createId(),
-			taskId,
-			userId,
-			description: description || "",
-			startTime,
-			endTime: endTime || null,
-			duration: duration || 0,
-		})
-		.returning();
-
-	if (!createdTimeEntry) {
-		throw new HTTPException(500, {
-			message: "Failed to create time entry",
-		});
-	}
-
-	const [task] = await db
-		.select({ userId: taskTable.userId, title: taskTable.title })
-		.from(taskTable)
-		.where(eq(taskTable.id, taskId));
-
-	await publishEvent("time-entry.created", {
-		timeEntryId: createdTimeEntry.id,
-		taskId: createdTimeEntry.taskId,
+	return createTimeEntryUseCase.execute({
+		taskId,
 		userId,
-		type: "create",
-		content: "started time tracking",
-		taskOwnerId: task?.userId,
-		taskTitle: task?.title,
+		description,
+		startTime,
+		endTime,
 	});
-
-	return createdTimeEntry;
 }
 
-export default createTimeEntry;
+export default createTimeEntryController;
