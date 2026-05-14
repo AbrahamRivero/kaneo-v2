@@ -1,15 +1,10 @@
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import type { Context } from "hono";
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
 import db from "../database";
-import { integrationTable, projectTable } from "../database/schema";
-import {
-	type GitHubConfig,
-	validateGitHubConfig,
-} from "../plugins/github/config";
+import { projectTable } from "../database/schema";
 import { handleGitHubWebhook } from "../plugins/github/webhook-handler";
 import { githubIntegrationSchema } from "../schemas";
 import { validateWorkspaceAccess } from "../utils/validate-workspace-access";
@@ -19,6 +14,7 @@ import deleteGithubIntegration from "./controllers/delete-github-integration";
 import getGithubIntegration from "./controllers/get-github-integration";
 import { importIssues } from "./controllers/import-issues";
 import listUserRepositories from "./controllers/list-user-repositories";
+import updateGithubIntegration from "./controllers/update-github-integration";
 import verifyGithubInstallation from "./controllers/verify-github-installation";
 
 const githubAppInfoSchema = v.object({
@@ -229,58 +225,8 @@ const githubIntegration = new Hono<{
 		async (c) => {
 			const { projectId } = c.req.valid("param");
 			const body = c.req.valid("json");
-
-			const row = await db.query.integrationTable.findFirst({
-				where: and(
-					eq(integrationTable.projectId, projectId),
-					eq(integrationTable.type, "github"),
-				),
-			});
-
-			if (!row) {
-				return c.json({ error: "Integration not found" }, 404);
-			}
-
-			let config: GitHubConfig;
-			try {
-				config = JSON.parse(row.config) as GitHubConfig;
-			} catch {
-				throw new HTTPException(500, { message: "Invalid integration config" });
-			}
-
-			if (body.commentTaskLinkOnGitHubIssue !== undefined) {
-				config = {
-					...config,
-					commentTaskLinkOnGitHubIssue: body.commentTaskLinkOnGitHubIssue,
-				};
-			}
-
-			const validation = await validateGitHubConfig(config);
-			if (!validation.valid) {
-				throw new HTTPException(400, {
-					message: validation.errors?.join(", ") ?? "Invalid config",
-				});
-			}
-
-			await db
-				.update(integrationTable)
-				.set({
-					config: JSON.stringify(config),
-					isActive:
-						body.isActive !== undefined
-							? body.isActive
-							: (row.isActive ?? true),
-					updatedAt: new Date(),
-				})
-				.where(
-					and(
-						eq(integrationTable.projectId, projectId),
-						eq(integrationTable.type, "github"),
-					),
-				);
-
-			const updated = await getGithubIntegration(projectId);
-			return c.json(updated, 200);
+			const result = await updateGithubIntegration(projectId, body);
+			return c.json(result, 200);
 		},
 	)
 	.delete(
