@@ -1,18 +1,12 @@
-import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
-import db from "../database";
-import { integrationTable } from "../database/schema";
-import {
-	defaultSlackEvents,
-	normalizeSlackConfig,
-	type SlackConfig,
-	validateSlackConfig,
-} from "../plugins/slack/config";
 import { slackIntegrationSchema } from "../schemas";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
+import createSlackIntegration from "./controllers/create-slack-integration";
+import deleteSlackIntegration from "./controllers/delete-slack-integration";
+import getSlackIntegration from "./controllers/get-slack-integration";
+import updateSlackIntegration from "./controllers/update-slack-integration";
 
 const slackIntegration = new Hono<{
 	Variables: {
@@ -25,62 +19,6 @@ const slackIntegration = new Hono<{
 		};
 	};
 }>();
-
-function maskWebhookUrl(value: string): string {
-	try {
-		const url = new URL(value);
-		const parts = url.pathname.split("/").filter(Boolean);
-		const last = parts[parts.length - 1] ?? "";
-		const maskedLast =
-			last.length > 8 ? `${last.slice(0, 4)}…${last.slice(-4)}` : "••••";
-		return `${url.origin}/${parts.slice(0, -1).join("/")}/${maskedLast}`;
-	} catch {
-		return "Configured";
-	}
-}
-
-function toResponse(integration: {
-	id: string;
-	projectId: string;
-	config: string;
-	isActive: boolean | null;
-	createdAt: Date;
-	updatedAt: Date;
-}) {
-	const config = normalizeSlackConfig(
-		JSON.parse(integration.config) as SlackConfig,
-	);
-
-	return {
-		id: integration.id,
-		projectId: integration.projectId,
-		channelName: config.channelName ?? null,
-		webhookConfigured: Boolean(config.webhookUrl),
-		maskedWebhookUrl: maskWebhookUrl(config.webhookUrl),
-		events: {
-			...defaultSlackEvents,
-			...(config.events ?? {}),
-		},
-		isActive: integration.isActive,
-		createdAt: integration.createdAt,
-		updatedAt: integration.updatedAt,
-	};
-}
-
-async function getSlackIntegration(projectId: string) {
-	const integration = await db.query.integrationTable.findFirst({
-		where: and(
-			eq(integrationTable.projectId, projectId),
-			eq(integrationTable.type, "slack"),
-		),
-	});
-
-	if (!integration) {
-		return null;
-	}
-
-	return toResponse(integration);
-}
 
 const nullableSlackIntegrationSchema = v.nullable(slackIntegrationSchema);
 
@@ -147,47 +85,8 @@ slackIntegration
 		async (c) => {
 			const { projectId } = c.req.valid("param");
 			const body = c.req.valid("json");
-
-			const config = normalizeSlackConfig({
-				webhookUrl: body.webhookUrl,
-				channelName: body.channelName,
-				events: body.events,
-			});
-
-			const validation = await validateSlackConfig(config);
-			if (!validation.valid) {
-				throw new HTTPException(400, {
-					message: validation.errors?.join(", ") ?? "Invalid config",
-				});
-			}
-
-			const existing = await db.query.integrationTable.findFirst({
-				where: and(
-					eq(integrationTable.projectId, projectId),
-					eq(integrationTable.type, "slack"),
-				),
-			});
-
-			if (existing) {
-				await db
-					.update(integrationTable)
-					.set({
-						config: JSON.stringify(config),
-						isActive: true,
-						updatedAt: new Date(),
-					})
-					.where(eq(integrationTable.id, existing.id));
-			} else {
-				await db.insert(integrationTable).values({
-					projectId,
-					type: "slack",
-					config: JSON.stringify(config),
-					isActive: true,
-				});
-			}
-
-			const integration = await getSlackIntegration(projectId);
-			return c.json(integration);
+			const result = await createSlackIntegration(projectId, body);
+			return c.json(result);
 		},
 	)
 	.patch(
@@ -228,56 +127,8 @@ slackIntegration
 		async (c) => {
 			const { projectId } = c.req.valid("param");
 			const body = c.req.valid("json");
-
-			const existing = await db.query.integrationTable.findFirst({
-				where: and(
-					eq(integrationTable.projectId, projectId),
-					eq(integrationTable.type, "slack"),
-				),
-			});
-
-			if (!existing) {
-				throw new HTTPException(404, {
-					message: "Slack integration not found",
-				});
-			}
-
-			const currentConfig = normalizeSlackConfig(
-				JSON.parse(existing.config) as SlackConfig,
-			);
-			const nextConfig = normalizeSlackConfig({
-				webhookUrl: body.webhookUrl?.trim() || currentConfig.webhookUrl,
-				channelName:
-					body.channelName === undefined
-						? currentConfig.channelName
-						: (body.channelName ?? undefined),
-				events: {
-					...(currentConfig.events ?? {}),
-					...(body.events ?? {}),
-				},
-			});
-
-			const validation = await validateSlackConfig(nextConfig);
-			if (!validation.valid) {
-				throw new HTTPException(400, {
-					message: validation.errors?.join(", ") ?? "Invalid config",
-				});
-			}
-
-			await db
-				.update(integrationTable)
-				.set({
-					config: JSON.stringify(nextConfig),
-					isActive:
-						body.isActive !== undefined
-							? body.isActive
-							: (existing.isActive ?? true),
-					updatedAt: new Date(),
-				})
-				.where(eq(integrationTable.id, existing.id));
-
-			const integration = await getSlackIntegration(projectId);
-			return c.json(integration);
+			const result = await updateSlackIntegration(projectId, body);
+			return c.json(result);
 		},
 	)
 	.delete(
@@ -301,23 +152,7 @@ slackIntegration
 		workspaceAccess.fromProject("projectId"),
 		async (c) => {
 			const { projectId } = c.req.valid("param");
-
-			const existing = await db.query.integrationTable.findFirst({
-				where: and(
-					eq(integrationTable.projectId, projectId),
-					eq(integrationTable.type, "slack"),
-				),
-			});
-
-			if (!existing) {
-				throw new HTTPException(404, {
-					message: "Slack integration not found",
-				});
-			}
-
-			await db
-				.delete(integrationTable)
-				.where(eq(integrationTable.id, existing.id));
+			await deleteSlackIntegration(projectId);
 			return c.json({ success: true });
 		},
 	);
