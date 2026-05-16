@@ -44,7 +44,7 @@ export class DrizzleTimeEntryRepository implements TimeEntryRepository {
 		return row ? mapToTimeEntry(row) : null;
 	}
 
-	async create(input: CreateTimeEntryInput): Promise<TimeEntry | null> {
+	async create(input: CreateTimeEntryInput): Promise<TimeEntry> {
 		const [row] = await db
 			.insert(timeEntryTable)
 			.values({
@@ -57,7 +57,11 @@ export class DrizzleTimeEntryRepository implements TimeEntryRepository {
 			})
 			.returning();
 
-		return row ? mapToTimeEntry(row) : null;
+		if (!row) {
+			throw new HTTPException(500, { message: "Failed to create time entry" });
+		}
+
+		return mapToTimeEntry(row);
 	}
 
 	async update(input: UpdateTimeEntryInput): Promise<TimeEntry> {
