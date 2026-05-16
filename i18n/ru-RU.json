@@ -1160,6 +1160,14 @@
 				"title": "Трекинг времени начат",
 				"contentWithTask": "Трекинг времени начат для задачи: {{taskTitle}}",
 				"contentWithoutTask": "Трекинг времени начат для задачи"
+			},
+			"due_date_reminder": {
+				"title": "Задача скоро истекает",
+				"content": "Задача \"{{taskTitle}}\" скоро истекает"
+			},
+			"task_overdue": {
+				"title": "Задача просрочена",
+				"content": "Задача \"{{taskTitle}}\" просрочена"
 			}
 		}
 	},

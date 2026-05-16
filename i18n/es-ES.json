@@ -938,6 +938,14 @@
 				"title": "Monitoreo de tiempo activado",
 				"contentWithTask": "El monitoreo de la tarea se ha activado para: {{taskTitle}}",
 				"contentWithoutTask": "Se ha activado el monitoreo de una tarea"
+			},
+			"due_date_reminder": {
+				"title": "Tarea próxima a vencer",
+				"content": "La tarea \"{{taskTitle}}\" está próxima a vencer"
+			},
+			"task_overdue": {
+				"title": "Tarea vencida",
+				"content": "La tarea \"{{taskTitle}}\" está vencida"
 			}
 		}
 	},

@@ -24,21 +24,43 @@ export default function TaskDueDatePopover({
 	const { t } = useTranslation();
 	const [open, setOpen] = useState(false);
 	const { mutateAsync: updateTaskDueDate } = useUpdateTaskDueDate();
+	const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+		task.dueDate ? new Date(task.dueDate) : undefined,
+	);
 
 	const handleDateChange = async (date: Date | undefined) => {
-		try {
-			await updateTaskDueDate({
-				...task,
-				dueDate: date?.toISOString() || null,
-			});
-			toast.success(t("tasks:popover.dueDate.updateSuccess"));
-			setOpen(false);
-		} catch (error) {
-			toast.error(
-				error instanceof Error
-					? error.message
-					: t("tasks:popover.dueDate.updateError"),
-			);
+		setSelectedDate(date);
+		if (date) {
+			const dueDate = date.toISOString();
+			try {
+				await updateTaskDueDate({
+					...task,
+					dueDate,
+				});
+				toast.success(t("tasks:popover.dueDate.updateSuccess"));
+				setOpen(false);
+			} catch (error) {
+				toast.error(
+					error instanceof Error
+						? error.message
+						: t("tasks:popover.dueDate.updateError"),
+				);
+			}
+		} else {
+			try {
+				await updateTaskDueDate({
+					...task,
+					dueDate: null,
+				});
+				toast.success(t("tasks:popover.dueDate.updateSuccess"));
+				setOpen(false);
+			} catch (error) {
+				toast.error(
+					error instanceof Error
+						? error.message
+						: t("tasks:popover.dueDate.updateError"),
+				);
+			}
 		}
 	};
 
@@ -48,14 +70,14 @@ export default function TaskDueDatePopover({
 			<PopoverContent className="p-0" align="start">
 				<Calendar
 					mode="single"
-					selected={task.dueDate ? new Date(task.dueDate) : undefined}
+					selected={selectedDate}
 					onSelect={handleDateChange}
 					disabled={
 						task.startDate ? { before: new Date(task.startDate) } : undefined
 					}
 					className="w-full bg-popover"
 				/>
-				{task.dueDate && (
+				{selectedDate && (
 					<div className="pt-2 border-t border-border">
 						<Button
 							variant="ghost"

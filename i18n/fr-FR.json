@@ -1153,6 +1153,14 @@
 				"title": "Suivi du temps démarré",
 				"contentWithTask": "Le suivi du temps a démarré sur la tâche : {{taskTitle}}",
 				"contentWithoutTask": "Le suivi du temps a démarré sur une tâche"
+			},
+			"due_date_reminder": {
+				"title": "Tâche bientôt due",
+				"content": "La tâche \"{{taskTitle}}\" est bientôt due"
+			},
+			"task_overdue": {
+				"title": "Tâche en retard",
+				"content": "La tâche \"{{taskTitle}}\" est en retard"
 			}
 		}
 	},

@@ -233,7 +233,9 @@ function CreateTaskModal({
 		setPriority("no-priority");
 		setAssigneeId("");
 		setStartDate(undefined);
+		setStartTime(getDefaultTime());
 		setDueDate(undefined);
+		setDueTime(getDefaultTime());
 		setCreateMore(false);
 		setLabels([]);
 		setLabelsStep("select");
@@ -329,8 +331,8 @@ function CreateTaskModal({
 			userId: assigneeId,
 			priority,
 			projectId: resolvedProjectId,
-			startDate: startDate ? startDate.toISOString() : undefined,
-			dueDate: dueDate ? dueDate.toISOString() : undefined,
+			startDate: startDate?.toISOString(),
+			dueDate: dueDate?.toISOString(),
 			status: draftStatus,
 		}).then((task) => normalizeTask(task));
 
@@ -380,8 +382,8 @@ function CreateTaskModal({
 							userId: assigneeId || null,
 							status: taskStatus,
 							priority,
-							startDate: startDate ? startDate.toISOString() : null,
-							dueDate: dueDate ? dueDate.toISOString() : null,
+							startDate: startDate?.toISOString() ?? null,
+							dueDate: dueDate?.toISOString() ?? null,
 							projectId: resolvedProjectId,
 						}),
 					)
@@ -392,8 +394,8 @@ function CreateTaskModal({
 							userId: assigneeId,
 							priority,
 							projectId: resolvedProjectId,
-							startDate: startDate ? startDate.toISOString() : undefined,
-							dueDate: dueDate ? dueDate.toISOString() : undefined,
+							startDate: startDate?.toISOString(),
+							dueDate: dueDate?.toISOString(),
 							status: taskStatus,
 						}),
 					);
@@ -582,7 +584,7 @@ function CreateTaskModal({
 				className="kaneo-create-task-modal max-w-2xl max-h-[90vh] flex flex-col overflow-hidden"
 				showCloseButton={false}
 			>
-				<DialogHeader className="flex-shrink-0">
+				<DialogHeader className="shrink-0">
 					<DialogTitle asChild>
 						<Breadcrumb>
 							<BreadcrumbList>
@@ -613,11 +615,11 @@ function CreateTaskModal({
 							onChange={(e) => setTitle(e.target.value)}
 							autoFocus
 							placeholder={t("common:modals.createTask.taskTitlePlaceholder")}
-							className="w-full [&_[data-slot=input]]:h-auto [&_[data-slot=input]]:px-0 [&_[data-slot=input]]:py-3 [&_[data-slot=input]]:text-2xl [&_[data-slot=input]]:leading-tight [&_[data-slot=input]]:font-semibold [&_[data-slot=input]]:tracking-tight [&_[data-slot=input]]:text-foreground [&_[data-slot=input]]:placeholder:text-muted-foreground [&_[data-slot=input]]:outline-none"
+							className="w-full **:data-[slot=input]:h-auto **:data-[slot=input]:px-0 **:data-[slot=input]:py-3 **:data-[slot=input]:text-2xl **:data-[slot=input]:leading-tight **:data-[slot=input]:font-semibold **:data-[slot=input]:tracking-tight **:data-[slot=input]:text-foreground **:data-[slot=input]:placeholder:text-muted-foreground **:data-[slot=input]:outline-none"
 							required
 						/>
 
-						<div className="min-h-[200px]">
+						<div className="min-h-50">
 							<TaskDescriptionEditor
 								value={description}
 								onChange={setDescription}
@@ -682,18 +684,21 @@ function CreateTaskModal({
 									<Calendar
 										mode="single"
 										selected={startDate}
-										onSelect={setStartDate}
+										onSelect={(date) => {
+											setStartDate(date);
+										}}
 										className="w-full bg-popover"
 									/>
 									{startDate && (
-										<div className="p-2 border-t border-border">
+										<div className="pt-2 border-t border-border">
 											<Button
 												type="button"
-												variant="outline"
+												variant="ghost"
 												size="sm"
-												className="w-full text-xs"
+												className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
 												onClick={() => setStartDate(undefined)}
 											>
+												<X className="h-4 w-4" />
 												{t("common:modals.createTask.clearStartDate")}
 											</Button>
 										</div>
@@ -845,18 +850,21 @@ function CreateTaskModal({
 									<Calendar
 										mode="single"
 										selected={dueDate}
-										onSelect={setDueDate}
+										onSelect={(date) => {
+											setDueDate(date);
+										}}
 										className="w-full bg-popover"
 									/>
 									{dueDate && (
-										<div className="p-2 border-t border-border">
+										<div className="pt-2 border-t border-border">
 											<Button
 												type="button"
-												variant="outline"
+												variant="ghost"
 												size="sm"
-												className="w-full text-xs"
+												className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
 												onClick={() => setDueDate(undefined)}
 											>
+												<X className="h-4 w-4" />
 												{t("common:modals.createTask.clearDueDate")}
 											</Button>
 										</div>
@@ -909,13 +917,13 @@ function CreateTaskModal({
 														className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-accent/50 text-left"
 														onClick={() => toggleLabel(label.name)}
 													>
-														<div className="flex-shrink-0 w-3 flex justify-center">
+														<div className="shrink-0 w-3 flex justify-center">
 															{labels.some((l) => l.name === label.name) && (
 																<Check className="w-3 h-3" />
 															)}
 														</div>
 														<span
-															className="w-2 h-2 rounded-full flex-shrink-0"
+															className="w-2 h-2 rounded-full shrink-0"
 															style={{
 																backgroundColor:
 																	labelColors.find(
@@ -938,11 +946,11 @@ function CreateTaskModal({
 														className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-accent/50 text-left"
 														onClick={handleCreateNewClick}
 													>
-														<div className="flex-shrink-0 w-3 flex justify-center">
+														<div className="shrink-0 w-3 flex justify-center">
 															<Plus className="w-3 h-3" />
 														</div>
 														<span
-															className="w-2 h-2 rounded-full flex-shrink-0"
+															className="w-2 h-2 rounded-full shrink-0"
 															style={{
 																backgroundColor:
 																	labelColors.find(
@@ -989,7 +997,7 @@ function CreateTaskModal({
 														}
 													>
 														<span
-															className="w-2 h-2 rounded-full flex-shrink-0"
+															className="w-2 h-2 rounded-full shrink-0"
 															style={{ backgroundColor: color.color }}
 														/>
 														<span className="truncate">{color.label}</span>
@@ -1006,7 +1014,7 @@ function CreateTaskModal({
 						</div>
 					</div>
 
-					<DialogFooter className="flex-shrink-0 border-t border-border bg-background px-6 py-4">
+					<DialogFooter className="shrink-0 border-t border-border bg-background px-6 py-4">
 						<div className="flex items-center gap-3 mr-auto">
 							<label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
 								<input

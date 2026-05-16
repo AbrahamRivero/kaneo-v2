@@ -1155,6 +1155,14 @@
 				"title": "Zeiterfassung gestartet",
 				"contentWithTask": "Die Zeiterfassung für die Aufgabe \"{{taskTitle}}\" wurde gestartet",
 				"contentWithoutTask": "Die Zeiterfassung für eine Aufgabe wurde gestartet"
+			},
+			"due_date_reminder": {
+				"title": "Aufgabe bald fällig",
+				"content": "Aufgabe \"{{taskTitle}}\" ist bald fällig"
+			},
+			"task_overdue": {
+				"title": "Aufgabe überfällig",
+				"content": "Aufgabe \"{{taskTitle}}\" ist überfällig"
 			}
 		}
 	},

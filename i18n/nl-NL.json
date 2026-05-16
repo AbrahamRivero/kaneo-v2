@@ -939,6 +939,14 @@
 				"title": "Tijdregistratie gestart",
 				"contentWithTask": "Tijdregistratie gestart voor taak: {{taskTitle}}",
 				"contentWithoutTask": "Tijdregistratie gestart voor een taak"
+			},
+			"due_date_reminder": {
+				"title": "Taak bijna vervallen",
+				"content": "Taak \"{{taskTitle}}\" is bijna vervallen"
+			},
+			"task_overdue": {
+				"title": "Taak verlopen",
+				"content": "Taak \"{{taskTitle}}\" is verlopen"
 			}
 		}
 	},

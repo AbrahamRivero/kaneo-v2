@@ -1155,6 +1155,14 @@
 				"title": "Time tracking started",
 				"contentWithTask": "Time tracking started on task: {{taskTitle}}",
 				"contentWithoutTask": "Time tracking started on a task"
+			},
+			"due_date_reminder": {
+				"title": "Task due soon",
+				"content": "Task \"{{taskTitle}}\" is due soon"
+			},
+			"task_overdue": {
+				"title": "Task overdue",
+				"content": "Task \"{{taskTitle}}\" is past its due date"
 			}
 		}
 	},
