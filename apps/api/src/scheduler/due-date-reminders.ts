@@ -5,7 +5,7 @@ import {
 	taskReminderSentTable,
 	taskTable,
 } from "../database/schema";
-import createNotification from "../notification/controllers/create-notification";
+import { publishEvent } from "../events";
 
 type ReminderType = "one_day_before" | "one_hour_before" | "overdue";
 
@@ -107,7 +107,7 @@ async function processReminder(
 		return;
 	}
 
-	await createNotification({
+	await publishEvent("due_date_reminder.due", {
 		userId: task.userId,
 		type: notificationType,
 		eventData: {

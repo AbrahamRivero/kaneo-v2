@@ -317,4 +317,22 @@ subscribeToEvent<{
 	}
 });
 
+subscribeToEvent<{
+	userId: string;
+	type: string;
+	eventData: Record<string, unknown>;
+	resourceId: string;
+	resourceType: string;
+}>("due_date_reminder.due", async (data) => {
+	if (data.userId) {
+		await createNotification({
+			userId: data.userId,
+			type: data.type,
+			eventData: data.eventData,
+			resourceId: data.resourceId,
+			resourceType: data.resourceType,
+		});
+	}
+});
+
 export default notification;
