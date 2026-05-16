@@ -1,20 +1,9 @@
-import { HTTPException } from "hono/http-exception";
+import { UnarchiveProjectUseCase } from "../application/use-cases/unarchive-project.usecase";
 import { projectRepository } from "../infrastructure/repositories/drizzle-project.repository";
 
 async function unarchiveProject(id: string, workspaceId: string) {
-	const existingProject = await projectRepository.findByIdAndWorkspace(
-		id,
-		workspaceId,
-	);
-
-	if (!existingProject) {
-		throw new HTTPException(404, {
-			message:
-				"Project doesn't exist or doesn't belong to the specified workspace",
-		});
-	}
-
-	return projectRepository.unarchive(id);
+	const useCase = new UnarchiveProjectUseCase(projectRepository);
+	return useCase.execute(id, workspaceId);
 }
 
 export default unarchiveProject;

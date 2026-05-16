@@ -1,4 +1,4 @@
-import { HTTPException } from "hono/http-exception";
+import { UpdateProjectUseCase } from "../application/use-cases/update-project.usecase";
 import { projectRepository } from "../infrastructure/repositories/drizzle-project.repository";
 
 async function updateProject(
@@ -10,27 +10,14 @@ async function updateProject(
 	isPublic: boolean,
 	workspaceId: string,
 ) {
-	const existingProject = await projectRepository.findByIdAndWorkspace(
-		id,
-		workspaceId,
-	);
-
-	if (!existingProject) {
-		throw new HTTPException(404, {
-			message:
-				"Project doesn't exist or doesn't belong to the specified workspace",
-		});
-	}
-
-	const updatedProject = await projectRepository.update(id, {
+	const useCase = new UpdateProjectUseCase(projectRepository);
+	return useCase.execute(id, workspaceId, {
 		name,
 		icon,
 		slug,
 		description,
 		isPublic,
 	});
-
-	return updatedProject;
 }
 
 export default updateProject;
