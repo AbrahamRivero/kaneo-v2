@@ -1,12 +1,11 @@
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import type { Context } from "hono";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
 import db from "../database";
-import { integrationTable, projectTable } from "../database/schema";
-import { type GiteaConfig, validateGiteaConfig } from "../plugins/gitea/config";
+import { projectTable } from "../database/schema";
 import { handleGiteaWebhookRequest } from "../plugins/gitea/webhook-handler";
 import { giteaIntegrationSchema } from "../schemas";
 import { validateWorkspaceAccess } from "../utils/validate-workspace-access";
@@ -16,6 +15,7 @@ import deleteGiteaIntegration from "./controllers/delete-gitea-integration";
 import getGiteaIntegration from "./controllers/get-gitea-integration";
 import { importGiteaIssues } from "./controllers/import-gitea-issues";
 import listGiteaRepositories from "./controllers/list-gitea-repositories";
+import updateGiteaIntegration from "./controllers/update-gitea-integration";
 import verifyGiteaAccess from "./controllers/verify-gitea-access";
 
 const giteaRepositorySchema = v.object({
@@ -226,61 +226,8 @@ const giteaIntegration = new Hono<{
 		async (c) => {
 			const { projectId } = c.req.valid("param");
 			const body = c.req.valid("json");
-
-			const row = await db.query.integrationTable.findFirst({
-				where: and(
-					eq(integrationTable.projectId, projectId),
-					eq(integrationTable.type, "gitea"),
-				),
-			});
-
-			if (!row) {
-				return c.json({ error: "Integration not found" }, 404);
-			}
-
-			let config: GiteaConfig;
-			try {
-				config = JSON.parse(row.config) as GiteaConfig;
-			} catch {
-				throw new HTTPException(500, { message: "Invalid integration config" });
-			}
-
-			if (body.commentTaskLinkOnGiteaIssue !== undefined) {
-				config = {
-					...config,
-					commentTaskLinkOnGiteaIssue: body.commentTaskLinkOnGiteaIssue,
-				};
-			}
-
-			const validation = await validateGiteaConfig(config);
-			if (!validation.valid) {
-				throw new HTTPException(400, {
-					message: validation.errors?.join(", ") ?? "Invalid config",
-				});
-			}
-
-			await db
-				.update(integrationTable)
-				.set({
-					config: JSON.stringify(config),
-					isActive:
-						body.isActive !== undefined
-							? body.isActive
-							: (row.isActive ?? true),
-					updatedAt: new Date(),
-				})
-				.where(
-					and(
-						eq(integrationTable.projectId, projectId),
-						eq(integrationTable.type, "gitea"),
-					),
-				);
-
-			const updated = await getGiteaIntegration(projectId);
-			if (!updated) {
-				throw new HTTPException(500, { message: "Failed to load integration" });
-			}
-			return c.json(updated, 200);
+			const result = await updateGiteaIntegration(projectId, body);
+			return c.json(result, 200);
 		},
 	)
 	.delete(
