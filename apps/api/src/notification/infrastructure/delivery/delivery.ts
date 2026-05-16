@@ -1,7 +1,7 @@
 import { createHmac } from "node:crypto";
 import { sendNotificationEmail } from "@kaneo/email";
 import { and, eq } from "drizzle-orm";
-import db from "../database";
+import db from "../../../database";
 import {
 	notificationTable,
 	projectTable,
@@ -10,9 +10,9 @@ import {
 	userNotificationWorkspaceRuleTable,
 	userTable,
 	workspaceTable,
-} from "../database/schema";
-import { assertPublicWebhookDestination } from "../plugins/generic-webhook/config";
-import { decryptSecret } from "./secrets";
+} from "../../../database/schema";
+import { decryptSecret } from "../../../notification-preferences/secrets";
+import { assertPublicWebhookDestination } from "../../../plugins/generic-webhook/config";
 
 const DEFAULT_OUTBOUND_FETCH_TIMEOUT_MS = 15_000;
 
@@ -265,7 +265,6 @@ async function sendGotifyNotification(input: {
 }) {
 	await assertPublicWebhookDestination(input.serverUrl);
 
-	// Gotify expects the app token in the query string; that can surface in logs, proxies, and browser history — factor this into Gotify placement and log handling.
 	const response = await fetchWithTimeout(
 		`${input.serverUrl.replace(/\/+$/, "")}/message?token=${encodeURIComponent(
 			input.token,
@@ -455,7 +454,7 @@ export async function deliverNotification(
 		},
 	};
 
-	const deliveries: Array<Promise<void>> = [];
+	const deliveries: Array<Promise<unknown>> = [];
 
 	if (decryptedPreference.emailEnabled && rule.emailEnabled && user.email) {
 		deliveries.push(

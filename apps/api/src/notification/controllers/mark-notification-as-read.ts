@@ -1,24 +1,12 @@
-import { and, eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { notificationTable } from "../../database/schema";
+import { MarkNotificationAsReadUseCase } from "../application/use-cases";
+import { notificationRepository } from "../infrastructure/repositories/drizzle-notification.repository";
+
+const markNotificationAsReadUseCase = new MarkNotificationAsReadUseCase(
+	notificationRepository,
+);
 
 async function markNotificationAsRead(id: string, userId: string) {
-	const [notification] = await db
-		.update(notificationTable)
-		.set({ isRead: true })
-		.where(
-			and(eq(notificationTable.id, id), eq(notificationTable.userId, userId)),
-		)
-		.returning();
-
-	if (!notification) {
-		throw new HTTPException(404, {
-			message: "Notification not found",
-		});
-	}
-
-	return notification;
+	return markNotificationAsReadUseCase.execute(id, userId);
 }
 
 export default markNotificationAsRead;
