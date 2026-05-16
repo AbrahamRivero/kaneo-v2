@@ -1,14 +1,12 @@
-import { eq } from "drizzle-orm";
-import db from "../../database";
-import { notificationTable } from "../../database/schema";
+import { MarkAllNotificationsAsReadUseCase } from "../application/use-cases";
+import { notificationRepository } from "../infrastructure/repositories/drizzle-notification.repository";
+
+const markAllNotificationsAsReadUseCase = new MarkAllNotificationsAsReadUseCase(
+	notificationRepository,
+);
 
 async function markAllNotificationsAsRead(userId: string) {
-	await db
-		.update(notificationTable)
-		.set({ isRead: true })
-		.where(eq(notificationTable.userId, userId));
-
-	return { success: true };
+	return markAllNotificationsAsReadUseCase.execute(userId);
 }
 
 export default markAllNotificationsAsRead;

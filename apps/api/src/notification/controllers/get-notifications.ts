@@ -1,16 +1,12 @@
-import { desc, eq } from "drizzle-orm";
-import db from "../../database";
-import { notificationTable } from "../../database/schema";
+import { GetNotificationsUseCase } from "../application/use-cases";
+import { notificationRepository } from "../infrastructure/repositories/drizzle-notification.repository";
+
+const getNotificationsUseCase = new GetNotificationsUseCase(
+	notificationRepository,
+);
 
 async function getNotifications(userId: string) {
-	const notifications = await db
-		.select()
-		.from(notificationTable)
-		.where(eq(notificationTable.userId, userId))
-		.orderBy(desc(notificationTable.createdAt))
-		.limit(50);
-
-	return notifications;
+	return getNotificationsUseCase.execute(userId);
 }
 
 export default getNotifications;

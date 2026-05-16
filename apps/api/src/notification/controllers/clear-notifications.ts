@@ -1,13 +1,12 @@
-import { eq } from "drizzle-orm";
-import db from "../../database";
-import { notificationTable } from "../../database/schema";
+import { ClearNotificationsUseCase } from "../application/use-cases";
+import { notificationRepository } from "../infrastructure/repositories/drizzle-notification.repository";
+
+const clearNotificationsUseCase = new ClearNotificationsUseCase(
+	notificationRepository,
+);
 
 async function clearNotifications(userId: string) {
-	await db
-		.delete(notificationTable)
-		.where(eq(notificationTable.userId, userId));
-
-	return { success: true };
+	return clearNotificationsUseCase.execute(userId);
 }
 
 export default clearNotifications;
