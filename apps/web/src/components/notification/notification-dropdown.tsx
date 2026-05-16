@@ -88,6 +88,16 @@ function getNotificationTitle(
 					...eventData,
 					defaultValue: notification.title ?? notification.type,
 				});
+			case "due_date_reminder":
+				return t("notifications:events.due_date_reminder.title", {
+					...eventData,
+					defaultValue: notification.title ?? notification.type,
+				});
+			case "task_overdue":
+				return t("notifications:events.task_overdue.title", {
+					...eventData,
+					defaultValue: notification.title ?? notification.type,
+				});
 			default:
 				break;
 		}
@@ -137,6 +147,16 @@ function getNotificationContent(
 						});
 			case "task_mention":
 				return t("notifications:events.task_mention.content", {
+					...eventData,
+					defaultValue: notification.content ?? "",
+				});
+			case "due_date_reminder":
+				return t("notifications:events.due_date_reminder.content", {
+					...eventData,
+					defaultValue: notification.content ?? "",
+				});
+			case "task_overdue":
+				return t("notifications:events.task_overdue.content", {
 					...eventData,
 					defaultValue: notification.content ?? "",
 				});

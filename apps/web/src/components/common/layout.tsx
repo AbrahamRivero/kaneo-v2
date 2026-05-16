@@ -2,6 +2,7 @@ import type React from "react";
 import type { ReactNode } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { DemoAlert } from "@/components/demo-alert";
+import NotificationDropdown from "@/components/notification/notification-dropdown";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { isDemoMode } from "@/constants/urls";
 import { useUserPreferencesEffects } from "@/hooks/use-user-preferences-effects";
@@ -32,6 +33,9 @@ function LayoutHeader({ children, className }: HeaderProps) {
 			)}
 		>
 			{children}
+			<div className="ml-auto">
+				<NotificationDropdown />
+			</div>
 		</header>
 	);
 }

@@ -53,14 +53,14 @@ export default function TaskDueDatePopover({
 			<PopoverContent className="p-0" align="start">
 				<Calendar
 					mode="single"
-					selected={task.dueDate ? new Date(task.dueDate) : undefined}
+					selected={selectedDate}
 					onSelect={handleDateChange}
 					disabled={
 						task.startDate ? { before: new Date(task.startDate) } : undefined
 					}
 					className="w-full bg-popover"
 				/>
-				{task.dueDate && (
+				{selectedDate && (
 					<div className="pt-2 border-t border-border">
 						<Button
 							variant="ghost"
