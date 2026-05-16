@@ -1,18 +1,12 @@
-import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
-import db from "../database";
-import { integrationTable } from "../database/schema";
-import {
-	type DiscordConfig,
-	defaultDiscordEvents,
-	normalizeDiscordConfig,
-	validateDiscordConfig,
-} from "../plugins/discord/config";
 import { discordIntegrationSchema } from "../schemas";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
+import createDiscordIntegration from "./controllers/create-discord-integration";
+import deleteDiscordIntegration from "./controllers/delete-discord-integration";
+import getDiscordIntegration from "./controllers/get-discord-integration";
+import updateDiscordIntegration from "./controllers/update-discord-integration";
 
 const discordIntegration = new Hono<{
 	Variables: {
@@ -25,64 +19,6 @@ const discordIntegration = new Hono<{
 		};
 	};
 }>();
-
-function maskWebhookUrl(value: string): string {
-	try {
-		const url = new URL(value);
-		const parts = url.pathname.split("/").filter(Boolean);
-		const last = parts[parts.length - 1] ?? "";
-		const maskedLast =
-			last.length > 8 ? `${last.slice(0, 4)}…${last.slice(-4)}` : "••••";
-		return `${url.origin}/${parts.slice(0, -1).join("/")}/${maskedLast}`;
-	} catch {
-		return "Configured";
-	}
-}
-
-function toResponse(integration: {
-	id: string;
-	projectId: string;
-	config: string;
-	isActive: boolean | null;
-	createdAt: Date;
-	updatedAt: Date;
-}) {
-	const config = normalizeDiscordConfig(
-		JSON.parse(integration.config) as DiscordConfig,
-	);
-
-	return {
-		id: integration.id,
-		projectId: integration.projectId,
-		channelName: config.channelName ?? null,
-		webhookConfigured: Boolean(config.webhookUrl),
-		maskedWebhookUrl: config.webhookUrl
-			? maskWebhookUrl(config.webhookUrl)
-			: "",
-		events: {
-			...defaultDiscordEvents,
-			...(config.events ?? {}),
-		},
-		isActive: integration.isActive,
-		createdAt: integration.createdAt,
-		updatedAt: integration.updatedAt,
-	};
-}
-
-async function getDiscordIntegration(projectId: string) {
-	const integration = await db.query.integrationTable.findFirst({
-		where: and(
-			eq(integrationTable.projectId, projectId),
-			eq(integrationTable.type, "discord"),
-		),
-	});
-
-	if (!integration) {
-		return null;
-	}
-
-	return toResponse(integration);
-}
 
 const discordEventsSchema = v.object({
 	taskCreated: v.optional(v.boolean()),
@@ -151,39 +87,8 @@ discordIntegration
 		async (c) => {
 			const { projectId } = c.req.valid("param");
 			const body = c.req.valid("json");
-
-			const config = normalizeDiscordConfig({
-				webhookUrl: body.webhookUrl,
-				channelName: body.channelName,
-				events: body.events,
-			});
-
-			const validation = await validateDiscordConfig(config);
-			if (!validation.valid) {
-				throw new HTTPException(400, {
-					message: validation.errors?.join(", ") ?? "Invalid config",
-				});
-			}
-
-			await db
-				.insert(integrationTable)
-				.values({
-					projectId,
-					type: "discord",
-					config: JSON.stringify(config),
-					isActive: true,
-				})
-				.onConflictDoUpdate({
-					target: [integrationTable.projectId, integrationTable.type],
-					set: {
-						config: JSON.stringify(config),
-						isActive: true,
-						updatedAt: new Date(),
-					},
-				});
-
-			const integration = await getDiscordIntegration(projectId);
-			return c.json(integration);
+			const result = await createDiscordIntegration(projectId, body);
+			return c.json(result);
 		},
 	)
 	.patch(
@@ -215,56 +120,8 @@ discordIntegration
 		async (c) => {
 			const { projectId } = c.req.valid("param");
 			const body = c.req.valid("json");
-
-			const existing = await db.query.integrationTable.findFirst({
-				where: and(
-					eq(integrationTable.projectId, projectId),
-					eq(integrationTable.type, "discord"),
-				),
-			});
-
-			if (!existing) {
-				throw new HTTPException(404, {
-					message: "Discord integration not found",
-				});
-			}
-
-			const currentConfig = normalizeDiscordConfig(
-				JSON.parse(existing.config) as DiscordConfig,
-			);
-			const nextConfig = normalizeDiscordConfig({
-				webhookUrl: body.webhookUrl?.trim() || currentConfig.webhookUrl,
-				channelName:
-					body.channelName === undefined
-						? currentConfig.channelName
-						: (body.channelName ?? undefined),
-				events: {
-					...(currentConfig.events ?? {}),
-					...(body.events ?? {}),
-				},
-			});
-
-			const validation = await validateDiscordConfig(nextConfig);
-			if (!validation.valid) {
-				throw new HTTPException(400, {
-					message: validation.errors?.join(", ") ?? "Invalid config",
-				});
-			}
-
-			await db
-				.update(integrationTable)
-				.set({
-					config: JSON.stringify(nextConfig),
-					isActive:
-						body.isActive !== undefined
-							? body.isActive
-							: (existing.isActive ?? true),
-					updatedAt: new Date(),
-				})
-				.where(eq(integrationTable.id, existing.id));
-
-			const integration = await getDiscordIntegration(projectId);
-			return c.json(integration);
+			const result = await updateDiscordIntegration(projectId, body);
+			return c.json(result);
 		},
 	)
 	.delete(
@@ -288,23 +145,7 @@ discordIntegration
 		workspaceAccess.fromProject("projectId"),
 		async (c) => {
 			const { projectId } = c.req.valid("param");
-
-			const existing = await db.query.integrationTable.findFirst({
-				where: and(
-					eq(integrationTable.projectId, projectId),
-					eq(integrationTable.type, "discord"),
-				),
-			});
-
-			if (!existing) {
-				throw new HTTPException(404, {
-					message: "Discord integration not found",
-				});
-			}
-
-			await db
-				.delete(integrationTable)
-				.where(eq(integrationTable.id, existing.id));
+			await deleteDiscordIntegration(projectId);
 			return c.json({ success: true });
 		},
 	);
