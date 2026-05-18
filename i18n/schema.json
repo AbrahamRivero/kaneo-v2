@@ -2276,6 +2276,66 @@
 								"keyMax",
 								"iconRequired"
 							]
+						},
+						"importExportTasks": {
+							"type": "string"
+						},
+						"importExportTasksDescription": {
+							"type": "string"
+						},
+						"projectStatus": {
+							"type": "string"
+						},
+						"projectStatusSubtitle": {
+							"type": "string"
+						},
+						"archiveProject": {
+							"type": "string"
+						},
+						"archiveProjectDescription": {
+							"type": "string"
+						},
+						"archiveModalTitle": {
+							"type": "string"
+						},
+						"archiveModalDescription": {
+							"type": "string"
+						},
+						"archiveModalConfirm": {
+							"type": "string"
+						},
+						"archivingProject": {
+							"type": "string"
+						},
+						"unarchiveProject": {
+							"type": "string"
+						},
+						"unarchiveProjectDescription": {
+							"type": "string"
+						},
+						"unarchiveModalTitle": {
+							"type": "string"
+						},
+						"unarchiveModalDescription": {
+							"type": "string"
+						},
+						"unarchiveModalConfirm": {
+							"type": "string"
+						},
+						"unarchivingProject": {
+							"type": "string"
+						},
+						"toastArchived": {
+							"type": "string"
+						},
+						"toastArchiveError": {
+							"type": "string"
+						},
+						"toastUnarchived": {
+							"type": "string"
+						},
+						"toastUnarchiveError": {
+							"type": "string"
 						}
 					},
 					"required": [
@@ -2308,6 +2368,26 @@
 						"toastUpdateError",
 						"toastDeleted",
 						"toastDeleteError",
+						"importExportTasks",
+						"importExportTasksDescription",
+						"projectStatus",
+						"projectStatusSubtitle",
+						"archiveProject",
+						"archiveProjectDescription",
+						"archiveModalTitle",
+						"archiveModalDescription",
+						"archiveModalConfirm",
+						"archivingProject",
+						"unarchiveProject",
+						"unarchiveProjectDescription",
+						"unarchiveModalTitle",
+						"unarchiveModalDescription",
+						"unarchiveModalConfirm",
+						"unarchivingProject",
+						"toastArchived",
+						"toastArchiveError",
+						"toastUnarchived",
+						"toastUnarchiveError",
 						"validation"
 					]
 				},
@@ -3661,6 +3741,30 @@
 						"addProject": {
 							"type": "string"
 						},
+						"archiveProject": {
+							"type": "string"
+						},
+						"unarchiveProject": {
+							"type": "string"
+						},
+						"archiveConfirmTitle": {
+							"type": "string"
+						},
+						"archiveConfirmDescription": {
+							"type": "string"
+						},
+						"archivedToast": {
+							"type": "string"
+						},
+						"unarchiveConfirmTitle": {
+							"type": "string"
+						},
+						"unarchiveConfirmDescription": {
+							"type": "string"
+						},
+						"unarchivedToast": {
+							"type": "string"
+						},
 						"deleteConfirmTitle": {
 							"type": "string"
 						},
@@ -3680,6 +3784,14 @@
 						"projectSettings",
 						"linkCopied",
 						"addProject",
+						"archiveProject",
+						"unarchiveProject",
+						"archiveConfirmTitle",
+						"archiveConfirmDescription",
+						"archivedToast",
+						"unarchiveConfirmTitle",
+						"unarchiveConfirmDescription",
+						"unarchivedToast",
 						"deleteConfirmTitle",
 						"deleteConfirmDescription",
 						"deletedToast",

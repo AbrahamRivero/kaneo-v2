@@ -1,6 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import {
+	Archive,
+	ArchiveRestore,
 	ChevronRight,
 	Folder,
 	Forward,
@@ -31,11 +33,12 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
+import useArchiveProject from "@/hooks/mutations/project/use-archive-project";
 import useDeleteProject from "@/hooks/mutations/project/use-delete-project";
+import useUnarchiveProject from "@/hooks/mutations/project/use-unarchive-project";
 import useGetProjects from "@/hooks/queries/project/use-get-projects";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 import { toast } from "@/lib/toast";
-import type { ProjectWithTasks } from "@/types/project";
 import CreateProjectModal from "./shared/modals/create-project-modal";
 import {
 	AlertDialog,
@@ -55,8 +58,18 @@ export function NavProjects() {
 	const { data: projects } = useGetProjects({
 		workspaceId: workspace?.id || "",
 	});
+	const { data: allProjects } = useGetProjects({
+		workspaceId: workspace?.id || "",
+		includeArchived: true,
+	});
+
+	const archivedProjects = allProjects?.filter((p) => p.archivedAt) ?? [];
 	const queryClient = useQueryClient();
 	const { mutateAsync: deleteProject } = useDeleteProject();
+	const { mutateAsync: archiveProject, isPending: isArchiving } =
+		useArchiveProject();
+	const { mutateAsync: unarchiveProject, isPending: isUnarchiving } =
+		useUnarchiveProject();
 	const navigate = useNavigate();
 	const { workspaceId: currentWorkspaceId, projectId: currentProjectId } =
 		useParams({
@@ -70,6 +83,14 @@ export function NavProjects() {
 	const [projectToDeleteId, setProjectToDeleteID] = useState<string | null>(
 		null,
 	);
+	const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
+	const [projectToArchiveId, setProjectToArchiveId] = useState<string | null>(
+		null,
+	);
+	const [isUnarchiveModalOpen, setIsUnarchiveModalOpen] = useState(false);
+	const [projectToUnarchiveId, setProjectToUnarchiveId] = useState<
+		string | null
+	>(null);
 
 	const isCurrentProject = (projectId: string) => {
 		return (
@@ -77,7 +98,7 @@ export function NavProjects() {
 		);
 	};
 
-	const handleProjectClick = (project: ProjectWithTasks) => {
+	const handleProjectClick = (project: { id: string }) => {
 		navigate({
 			to: "/dashboard/workspace/$workspaceId/project/$projectId/board",
 			params: {
@@ -176,6 +197,33 @@ export function NavProjects() {
 														</span>
 													</DropdownMenuItem>
 													<DropdownMenuSeparator />
+													{project.archivedAt ? (
+														<DropdownMenuItem
+															className="h-7 items-start cursor-pointer text-sm"
+															onClick={() => {
+																setProjectToUnarchiveId(project.id);
+																setIsUnarchiveModalOpen(true);
+															}}
+														>
+															<ArchiveRestore className="text-muted-foreground" />
+															<span>
+																{t("navigation:projectList.unarchiveProject")}
+															</span>
+														</DropdownMenuItem>
+													) : (
+														<DropdownMenuItem
+															className="h-7 items-start cursor-pointer text-sm"
+															onClick={() => {
+																setProjectToArchiveId(project.id);
+																setIsArchiveModalOpen(true);
+															}}
+														>
+															<Archive className="text-muted-foreground" />
+															<span>
+																{t("navigation:projectList.archiveProject")}
+															</span>
+														</DropdownMenuItem>
+													)}
 													<DropdownMenuItem
 														className="h-7 items-start text-destructive cursor-pointer text-sm"
 														onClick={() => {
@@ -208,6 +256,88 @@ export function NavProjects() {
 					</CollapsiblePanel>
 				</SidebarGroup>
 			</Collapsible>
+
+			{archivedProjects.length > 0 && (
+				<Collapsible className="group/collapsible">
+					<SidebarGroup className="group-data-[collapsible=icon]:hidden gap-1 p-2 pt-1">
+						<CollapsibleTrigger
+							className="data-panel-open:[&_svg]:rotate-90"
+							render={
+								<SidebarGroupLabel className="h-7 cursor-pointer justify-between px-0 text-sidebar-accent-foreground" />
+							}
+						>
+							<span>{t("navigation:sidebar.archivedProjects")}</span>
+							<ChevronRight className="h-3.5 w-3.5 text-sidebar-foreground/60 transition-transform duration-200" />
+						</CollapsibleTrigger>
+						<CollapsiblePanel>
+							<SidebarGroupContent>
+								<SidebarMenu className="gap-0.5">
+									{archivedProjects.map((project) => {
+										return (
+											<SidebarMenuItem key={project.id}>
+												<SidebarMenuButton
+													isActive={isCurrentProject(project.id)}
+													size="default"
+													className="h-8 gap-0 ps-3.5 text-sm hover:bg-transparent hover:text-sidebar-accent-foreground active:bg-transparent"
+													onClick={() => handleProjectClick(project)}
+												>
+													<span>{project.name}</span>
+												</SidebarMenuButton>
+
+												<DropdownMenu>
+													<DropdownMenuTrigger
+														render={
+															<button
+																type="button"
+																className="absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-lg p-0 text-sidebar-foreground outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 peer-hover/menu-button:text-sidebar-accent-foreground after:-inset-2 after:absolute md:after:hidden peer-data-[size=sm]/menu-button:top-1 peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 group-data-[collapsible=icon]:hidden group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0"
+															/>
+														}
+													>
+														<MoreHorizontal />
+														<span className="sr-only">
+															{t("navigation:sidebar.more")}
+														</span>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent
+														className="w-44 rounded-lg"
+														side={isMobile ? "bottom" : "right"}
+														align={isMobile ? "end" : "start"}
+													>
+														<DropdownMenuItem
+															className="h-7 items-start cursor-pointer text-sm"
+															onClick={() => {
+																setProjectToUnarchiveId(project.id);
+																setIsUnarchiveModalOpen(true);
+															}}
+														>
+															<ArchiveRestore className="text-muted-foreground" />
+															<span>
+																{t("navigation:projectList.unarchiveProject")}
+															</span>
+														</DropdownMenuItem>
+														<DropdownMenuItem
+															className="h-7 items-start text-destructive cursor-pointer text-sm"
+															onClick={() => {
+																setProjectToDeleteID(project.id);
+																setIsDeleteProjectModalOpen(true);
+															}}
+														>
+															<Trash2 className="text-destructive" />
+															<span>
+																{t("navigation:projectList.deleteProject")}
+															</span>
+														</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</SidebarMenuItem>
+										);
+									})}
+								</SidebarMenu>
+							</SidebarGroupContent>
+						</CollapsiblePanel>
+					</SidebarGroup>
+				</Collapsible>
+			)}
 
 			<CreateProjectModal
 				open={isCreateProjectModalOpen}
@@ -252,6 +382,76 @@ export function NavProjects() {
 						>
 							<Button variant="destructive" size="sm">
 								{t("navigation:projectList.deleteProject")}
+							</Button>
+						</AlertDialogClose>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+
+			<AlertDialog
+				open={isArchiveModalOpen}
+				onOpenChange={setIsArchiveModalOpen}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							{t("navigation:projectList.archiveConfirmTitle")}
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							{t("navigation:projectList.archiveConfirmDescription")}
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogClose>
+							<Button variant="outline" size="sm">
+								{t("common:actions.cancel")}
+							</Button>
+						</AlertDialogClose>
+						<AlertDialogClose
+							onClick={async () => {
+								await archiveProject({ id: projectToArchiveId || "" });
+								toast.success(t("navigation:projectList.archivedToast"));
+								queryClient.invalidateQueries({ queryKey: ["projects"] });
+							}}
+							disabled={isArchiving}
+						>
+							<Button variant="outline" size="sm" disabled={isArchiving}>
+								{t("navigation:projectList.archiveProject")}
+							</Button>
+						</AlertDialogClose>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+
+			<AlertDialog
+				open={isUnarchiveModalOpen}
+				onOpenChange={setIsUnarchiveModalOpen}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							{t("navigation:projectList.unarchiveConfirmTitle")}
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							{t("navigation:projectList.unarchiveConfirmDescription")}
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogClose>
+							<Button variant="outline" size="sm">
+								{t("common:actions.cancel")}
+							</Button>
+						</AlertDialogClose>
+						<AlertDialogClose
+							onClick={async () => {
+								await unarchiveProject({ id: projectToUnarchiveId || "" });
+								toast.success(t("navigation:projectList.unarchivedToast"));
+								queryClient.invalidateQueries({ queryKey: ["projects"] });
+							}}
+							disabled={isUnarchiving}
+						>
+							<Button variant="outline" size="sm" disabled={isUnarchiving}>
+								{t("navigation:projectList.unarchiveProject")}
 							</Button>
 						</AlertDialogClose>
 					</AlertDialogFooter>

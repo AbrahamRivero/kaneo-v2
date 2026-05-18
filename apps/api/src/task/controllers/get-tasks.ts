@@ -124,6 +124,7 @@ async function getTasks(projectId: string, filters?: TaskFilters) {
 			description: project.description,
 			isPublic: project.isPublic,
 			workspaceId: project.workspaceId,
+			archivedAt: project.archivedAt,
 			columns,
 			archivedTasks,
 			plannedTasks,
