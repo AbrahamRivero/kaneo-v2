@@ -37,7 +37,9 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import icons from "@/constants/project-icons";
+import useArchiveProject from "@/hooks/mutations/project/use-archive-project";
 import useDeleteProject from "@/hooks/mutations/project/use-delete-project";
+import useUnarchiveProject from "@/hooks/mutations/project/use-unarchive-project";
 import useUpdateProject from "@/hooks/mutations/project/use-update-project";
 import { useProjectWithTasks } from "@/hooks/queries/project/use-project-with-tasks";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
@@ -106,6 +108,8 @@ function RouteComponent() {
 	const queuedSaveRef = useRef<ProjectFormValues | null>(null);
 	const lastSavedRef = useRef<NormalizedProjectValues | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
+	const [isUnarchiveModalOpen, setIsUnarchiveModalOpen] = useState(false);
 	const [iconPopoverOpen, setIconPopoverOpen] = useState(false);
 	const [iconSearch, setIconSearch] = useState("");
 
@@ -307,6 +311,44 @@ function RouteComponent() {
 			})();
 		};
 	}, []);
+
+	const handleArchiveProject = useCallback(async () => {
+		if (!projectFromHook?.id) return;
+
+		try {
+			await archiveProject({ id: projectFromHook.id });
+			toast.success(t("settings:projectGeneral.toastArchived"));
+
+			await queryClient.invalidateQueries({ queryKey: ["projects"] });
+
+			setIsArchiveModalOpen(false);
+		} catch (error) {
+			toast.error(
+				error instanceof Error
+					? error.message
+					: t("settings:projectGeneral.toastArchiveError"),
+			);
+		}
+	}, [projectFromHook?.id, archiveProject, queryClient, t]);
+
+	const handleUnarchiveProject = useCallback(async () => {
+		if (!projectFromHook?.id) return;
+
+		try {
+			await unarchiveProject({ id: projectFromHook.id });
+			toast.success(t("settings:projectGeneral.toastUnarchived"));
+
+			await queryClient.invalidateQueries({ queryKey: ["projects"] });
+
+			setIsUnarchiveModalOpen(false);
+		} catch (error) {
+			toast.error(
+				error instanceof Error
+					? error.message
+					: t("settings:projectGeneral.toastUnarchiveError"),
+			);
+		}
+	}, [projectFromHook?.id, unarchiveProject, queryClient, t]);
 
 	const handleDeleteProject = useCallback(async () => {
 		if (!projectFromHook?.id) return;
@@ -635,6 +677,76 @@ function RouteComponent() {
 									{isDeleting
 										? t("common:actions.deleting")
 										: t("settings:projectGeneral.deleteModalConfirm")}
+								</Button>
+							</AlertDialogClose>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+
+				<AlertDialog
+					open={isArchiveModalOpen}
+					onOpenChange={setIsArchiveModalOpen}
+				>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>
+								{t("settings:projectGeneral.archiveModalTitle")}
+							</AlertDialogTitle>
+							<AlertDialogDescription>
+								{t("settings:projectGeneral.archiveModalDescription", {
+									name: project?.name ?? "",
+								})}
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogClose>
+								<Button variant="outline" size="sm">
+									{t("common:actions.cancel")}
+								</Button>
+							</AlertDialogClose>
+							<AlertDialogClose
+								onClick={handleArchiveProject}
+								disabled={isArchiving}
+							>
+								<Button variant="outline" size="sm" disabled={isArchiving}>
+									{isArchiving
+										? t("settings:projectGeneral.archivingProject")
+										: t("settings:projectGeneral.archiveModalConfirm")}
+								</Button>
+							</AlertDialogClose>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+
+				<AlertDialog
+					open={isUnarchiveModalOpen}
+					onOpenChange={setIsUnarchiveModalOpen}
+				>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>
+								{t("settings:projectGeneral.unarchiveModalTitle")}
+							</AlertDialogTitle>
+							<AlertDialogDescription>
+								{t("settings:projectGeneral.unarchiveModalDescription", {
+									name: project?.name ?? "",
+								})}
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogClose>
+								<Button variant="outline" size="sm">
+									{t("common:actions.cancel")}
+								</Button>
+							</AlertDialogClose>
+							<AlertDialogClose
+								onClick={handleUnarchiveProject}
+								disabled={isUnarchiving}
+							>
+								<Button variant="outline" size="sm" disabled={isUnarchiving}>
+									{isUnarchiving
+										? t("settings:projectGeneral.unarchivingProject")
+										: t("settings:projectGeneral.unarchiveModalConfirm")}
 								</Button>
 							</AlertDialogClose>
 						</AlertDialogFooter>

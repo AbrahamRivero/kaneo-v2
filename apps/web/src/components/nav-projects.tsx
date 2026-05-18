@@ -1,6 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import {
+	Archive,
+	ArchiveRestore,
 	ChevronRight,
 	Folder,
 	Forward,
@@ -31,12 +33,13 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
+import useArchiveProject from "@/hooks/mutations/project/use-archive-project";
 import useDeleteProject from "@/hooks/mutations/project/use-delete-project";
+import useUnarchiveProject from "@/hooks/mutations/project/use-unarchive-project";
 import useGetProjects from "@/hooks/queries/project/use-get-projects";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 import { useWorkspacePermission } from "@/hooks/use-workspace-permission";
 import { toast } from "@/lib/toast";
-import type { ProjectWithTasks } from "@/types/project";
 import CreateProjectModal from "./shared/modals/create-project-modal";
 import {
 	AlertDialog,
@@ -74,6 +77,14 @@ export function NavProjects() {
 	const [projectToDeleteId, setProjectToDeleteID] = useState<string | null>(
 		null,
 	);
+	const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
+	const [projectToArchiveId, setProjectToArchiveId] = useState<string | null>(
+		null,
+	);
+	const [isUnarchiveModalOpen, setIsUnarchiveModalOpen] = useState(false);
+	const [projectToUnarchiveId, setProjectToUnarchiveId] = useState<
+		string | null
+	>(null);
 
 	const isCurrentProject = (projectId: string) => {
 		return (
@@ -81,7 +92,7 @@ export function NavProjects() {
 		);
 	};
 
-	const handleProjectClick = (project: ProjectWithTasks) => {
+	const handleProjectClick = (project: { id: string }) => {
 		navigate({
 			to: "/dashboard/workspace/$workspaceId/project/$projectId/board",
 			params: {
@@ -262,6 +273,76 @@ export function NavProjects() {
 						>
 							<Button variant="destructive" size="sm">
 								{t("navigation:projectList.deleteProject")}
+							</Button>
+						</AlertDialogClose>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+
+			<AlertDialog
+				open={isArchiveModalOpen}
+				onOpenChange={setIsArchiveModalOpen}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							{t("navigation:projectList.archiveConfirmTitle")}
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							{t("navigation:projectList.archiveConfirmDescription")}
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogClose>
+							<Button variant="outline" size="sm">
+								{t("common:actions.cancel")}
+							</Button>
+						</AlertDialogClose>
+						<AlertDialogClose
+							onClick={async () => {
+								await archiveProject({ id: projectToArchiveId || "" });
+								toast.success(t("navigation:projectList.archivedToast"));
+								queryClient.invalidateQueries({ queryKey: ["projects"] });
+							}}
+							disabled={isArchiving}
+						>
+							<Button variant="outline" size="sm" disabled={isArchiving}>
+								{t("navigation:projectList.archiveProject")}
+							</Button>
+						</AlertDialogClose>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+
+			<AlertDialog
+				open={isUnarchiveModalOpen}
+				onOpenChange={setIsUnarchiveModalOpen}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							{t("navigation:projectList.unarchiveConfirmTitle")}
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							{t("navigation:projectList.unarchiveConfirmDescription")}
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogClose>
+							<Button variant="outline" size="sm">
+								{t("common:actions.cancel")}
+							</Button>
+						</AlertDialogClose>
+						<AlertDialogClose
+							onClick={async () => {
+								await unarchiveProject({ id: projectToUnarchiveId || "" });
+								toast.success(t("navigation:projectList.unarchivedToast"));
+								queryClient.invalidateQueries({ queryKey: ["projects"] });
+							}}
+							disabled={isUnarchiving}
+						>
+							<Button variant="outline" size="sm" disabled={isUnarchiving}>
+								{t("navigation:projectList.unarchiveProject")}
 							</Button>
 						</AlertDialogClose>
 					</AlertDialogFooter>
