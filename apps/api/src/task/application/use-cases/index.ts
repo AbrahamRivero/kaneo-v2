@@ -1,6 +1,7 @@
 export * from "./bulk-update-tasks.usecase";
 export * from "./create-task.usecase";
 export * from "./delete-task.usecase";
+export * from "./export-tasks.usecase";
 export * from "./get-task.usecase";
 export * from "./get-tasks.usecase";
 export * from "./import-tasks.usecase";

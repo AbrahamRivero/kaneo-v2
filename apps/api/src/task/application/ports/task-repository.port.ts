@@ -2,6 +2,7 @@ import type {
 	BulkOperationInput,
 	BulkOperationResult,
 	CreateTaskInput,
+	ExportTasksResult,
 	MoveTaskInput,
 	MoveTaskResult,
 	Task,
@@ -12,6 +13,8 @@ import type {
 } from "../../domain";
 
 export interface TaskRepository {
+	exportTasks(projectId: string): Promise<ExportTasksResult>;
+	getProjectWorkspaceId(projectId: string): Promise<string | null>;
 	findById(id: string): Promise<TaskWithRelations | null>;
 	findByProjectId(
 		projectId: string,
