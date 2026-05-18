@@ -93,6 +93,24 @@ export interface ExportTask {
 	assigneeName: string | null;
 }
 
+export interface ExportTasksResult {
+	project: {
+		name: string;
+		slug: string;
+		description: string | null;
+		exportedAt: string;
+	};
+	tasks: Array<{
+		title: string;
+		description: string;
+		status: string;
+		priority: string;
+		dueDate: string | null;
+		startDate: string | null;
+		userId: string | null;
+	}>;
+}
+
 export interface ImportTask {
 	title: string;
 	description?: string;

@@ -28,6 +28,7 @@ import type {
 	BulkOperationInput,
 	BulkOperationResult,
 	CreateTaskInput,
+	ExportTasksResult,
 	MoveTaskInput,
 	MoveTaskResult,
 	Task,
@@ -39,6 +40,69 @@ import type {
 import { assertValidTaskStatus } from "../../validate-task-fields";
 
 export class DrizzleTaskRepository implements TaskRepository {
+	async exportTasks(projectId: string): Promise<ExportTasksResult> {
+		const project = await db.query.projectTable.findFirst({
+			where: eq(projectTable.id, projectId),
+		});
+
+		if (!project) {
+			throw new HTTPException(404, {
+				message: "Project not found",
+			});
+		}
+
+		const tasks = await db
+			.select({
+				id: taskTable.id,
+				title: taskTable.title,
+				number: taskTable.number,
+				description: taskTable.description,
+				status: taskTable.status,
+				priority: taskTable.priority,
+				startDate: taskTable.startDate,
+				dueDate: taskTable.dueDate,
+				position: taskTable.position,
+				createdAt: taskTable.createdAt,
+				userId: taskTable.userId,
+				assigneeName: userTable.name,
+				assigneeId: userTable.id,
+			})
+			.from(taskTable)
+			.leftJoin(userTable, eq(taskTable.userId, userTable.id))
+			.where(eq(taskTable.projectId, projectId))
+			.orderBy(taskTable.position);
+
+		return {
+			project: {
+				name: project.name,
+				slug: project.slug,
+				description: project.description,
+				exportedAt: new Date().toISOString(),
+			},
+			tasks: tasks.map((task) => ({
+				title: task.title,
+				description: task.description || "",
+				status: task.status,
+				priority: task.priority || "low",
+				dueDate: task.dueDate ? new Date(task.dueDate).toISOString() : null,
+				startDate: task.startDate
+					? new Date(task.startDate).toISOString()
+					: null,
+				userId: task.userId || null,
+			})),
+		};
+	}
+
+	async getProjectWorkspaceId(projectId: string): Promise<string | null> {
+		const project = await db
+			.select({ workspaceId: projectTable.workspaceId })
+			.from(projectTable)
+			.where(eq(projectTable.id, projectId))
+			.limit(1);
+
+		return project[0]?.workspaceId ?? null;
+	}
+
 	async findById(id: string): Promise<TaskWithRelations | null> {
 		const task = await db.query.taskTable.findFirst({
 			where: eq(taskTable.id, id),
@@ -307,7 +371,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 
 		const [assignee] = input.userId
 			? await db
-					.select({ name: userTable.name })
+					.select({ name: userTable.name, image: userTable.image })
 					.from(userTable)
 					.where(eq(userTable.id, input.userId))
 			: [null];
@@ -367,6 +431,8 @@ export class DrizzleTaskRepository implements TaskRepository {
 			...createdTask,
 			priority: (createdTask.priority ?? "no-priority") as Task["priority"],
 			assigneeName: assignee?.name ?? null,
+			assigneeId: createdTask.userId,
+			assigneeImage: assignee?.image ?? null,
 		};
 	}
 
@@ -405,7 +471,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 
 		const [assignee] = updatedTask.userId
 			? await db
-					.select({ name: userTable.name })
+					.select({ name: userTable.name, image: userTable.image })
 					.from(userTable)
 					.where(eq(userTable.id, updatedTask.userId))
 			: [null];
@@ -414,6 +480,8 @@ export class DrizzleTaskRepository implements TaskRepository {
 			...updatedTask,
 			priority: (updatedTask.priority ?? "no-priority") as Task["priority"],
 			assigneeName: assignee?.name ?? null,
+			assigneeId: updatedTask.userId,
+			assigneeImage: assignee?.image ?? null,
 		};
 	}
 
@@ -545,6 +613,13 @@ export class DrizzleTaskRepository implements TaskRepository {
 
 		const nextPosition = (maxPositionResult?.maxPosition ?? 0) + 1;
 
+		const [maxNumberResult] = await db
+			.select({ maxNumber: max(taskTable.number) })
+			.from(taskTable)
+			.where(eq(taskTable.projectId, input.destinationProjectId));
+
+		const nextNumber = (maxNumberResult?.maxNumber ?? 0) + 1;
+
 		const [updatedTask] = await db
 			.update(taskTable)
 			.set({
@@ -552,6 +627,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 				columnId: destinationColumn?.id ?? null,
 				status: destinationStatus,
 				position: nextPosition,
+				number: nextNumber,
 			})
 			.where(eq(taskTable.id, input.taskId))
 			.returning();
