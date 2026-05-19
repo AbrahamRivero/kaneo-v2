@@ -1,10 +1,7 @@
-import { eq } from "drizzle-orm";
 import type { Context } from "hono";
 import { Hono } from "hono";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
-import db from "../database";
-import { projectTable } from "../database/schema";
 import { handleGitHubWebhook } from "../plugins/github/webhook-handler";
 import { githubIntegrationSchema } from "../schemas";
 import { requireWorkspacePermission } from "../utils/require-workspace-permission";

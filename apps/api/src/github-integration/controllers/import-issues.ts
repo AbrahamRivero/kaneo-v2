@@ -22,6 +22,7 @@ import {
 import { formatTaskDescriptionFromIssue } from "../../plugins/github/utils/format";
 import { getInstallationOctokit } from "../../plugins/github/utils/github-app";
 import getNextTaskNumber from "../../task/controllers/get-next-task-number";
+import { validateWorkspaceAccess } from "../../utils/validate-workspace-access";
 
 type ImportResult = {
 	imported: number;
@@ -59,7 +60,11 @@ type GitHubPullRequest = {
 	user: { login: string; avatar_url: string } | null;
 };
 
-export async function importIssues(projectId: string): Promise<ImportResult> {
+export async function importIssues(
+	projectId: string,
+	userId: string,
+	apiKeyId?: string,
+): Promise<ImportResult> {
 	const errors: string[] = [];
 	let imported = 0;
 	let updated = 0;
@@ -72,6 +77,8 @@ export async function importIssues(projectId: string): Promise<ImportResult> {
 	if (!project) {
 		throw new HTTPException(404, { message: "Project not found" });
 	}
+
+	await validateWorkspaceAccess(userId, project.workspaceId, apiKeyId);
 
 	const integration = await db.query.integrationTable.findFirst({
 		where: and(

@@ -1,11 +1,8 @@
-import { eq } from "drizzle-orm";
 import type { Context } from "hono";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
-import db from "../database";
-import { projectTable } from "../database/schema";
 import { handleGiteaWebhookRequest } from "../plugins/gitea/webhook-handler";
 import { giteaIntegrationSchema } from "../schemas";
 import { requireWorkspacePermission } from "../utils/require-workspace-permission";

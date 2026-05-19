@@ -1,5 +1,6 @@
 import { HTTPException } from "hono/http-exception";
 import type { TaskRepository } from "../../../task/application/ports";
+import { validateWorkspaceAccess } from "../../../utils/validate-workspace-access";
 import type { TaskRelation } from "../../domain";
 import type { EventPublisher, TaskRelationRepository } from "../ports";
 
@@ -28,6 +29,16 @@ export class CreateTaskRelationUseCase {
 			throw new HTTPException(404, { message: "Source task not found" });
 		}
 
+		const workspaceId = await this.taskRepository.getProjectWorkspaceId(
+			sourceTask.projectId,
+		);
+
+		if (!workspaceId) {
+			throw new HTTPException(404, { message: "Source project not found" });
+		}
+
+		await validateWorkspaceAccess(input.userId, workspaceId);
+
 		const targetTask = await this.taskRepository.findById(input.targetTaskId);
 
 		if (!targetTask) {
@@ -51,6 +62,12 @@ export class CreateTaskRelationUseCase {
 			targetTaskId: input.targetTaskId,
 			relationType: input.relationType,
 		});
+
+		if (!relation) {
+			throw new HTTPException(500, {
+				message: "Failed to create task relation",
+			});
+		}
 
 		await this.eventPublisher.publish("task-relation.created", {
 			...relation,
