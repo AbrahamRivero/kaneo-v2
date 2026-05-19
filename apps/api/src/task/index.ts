@@ -1,27 +1,15 @@
-import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
-import db from "../database";
-import {
-	assetTable,
-	projectTable,
-	taskTable,
-	workspaceTable,
-} from "../database/schema";
 import { taskSchema } from "../schemas";
-import {
-	assertTaskImageKeyMatchesContext,
-	createTaskImageUploadUrl,
-	isImageContentType,
-	validateTaskAssetUploadInput,
-} from "../storage/s3";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import bulkUpdateTasks from "./controllers/bulk-update-tasks";
 import createTask from "./controllers/create-task";
+import createTaskImageUpload from "./controllers/create-task-image-upload";
 import deleteTask from "./controllers/delete-task";
 import exportTasks from "./controllers/export-tasks";
+import finalizeTaskImageUpload from "./controllers/finalize-task-image-upload";
 import getTask from "./controllers/get-task";
 import getTasks from "./controllers/get-tasks";
 import importTasks from "./controllers/import-tasks";
@@ -621,55 +609,15 @@ const task = new Hono<{
 			const { id } = c.req.valid("param");
 			const { filename, contentType, size, surface } = c.req.valid("json");
 
-			try {
-				validateTaskAssetUploadInput(contentType, size);
-			} catch (error) {
-				throw new HTTPException(400, {
-					message:
-						error instanceof Error
-							? error.message
-							: "Invalid image upload request",
-				});
-			}
+			const upload = await createTaskImageUpload({
+				taskId: id,
+				filename,
+				contentType,
+				size,
+				surface,
+			});
 
-			const [taskContext] = await db
-				.select({
-					taskId: taskTable.id,
-					projectId: taskTable.projectId,
-					workspaceId: workspaceTable.id,
-				})
-				.from(taskTable)
-				.innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
-				.innerJoin(
-					workspaceTable,
-					eq(projectTable.workspaceId, workspaceTable.id),
-				)
-				.where(eq(taskTable.id, id))
-				.limit(1);
-
-			if (!taskContext) {
-				throw new HTTPException(404, { message: "Task not found" });
-			}
-
-			try {
-				const upload = await createTaskImageUploadUrl({
-					workspaceId: taskContext.workspaceId,
-					projectId: taskContext.projectId,
-					taskId: taskContext.taskId,
-					surface,
-					filename,
-					contentType,
-				});
-
-				return c.json(upload);
-			} catch (error) {
-				throw new HTTPException(503, {
-					message:
-						error instanceof Error
-							? error.message
-							: "Image uploads are not configured",
-				});
-			}
+			return c.json(upload);
 		},
 	)
 	.post(
@@ -705,101 +653,19 @@ const task = new Hono<{
 			const { key, filename, contentType, size, surface } = c.req.valid("json");
 			const userId = c.get("userId");
 
-			try {
-				validateTaskAssetUploadInput(contentType, size);
-			} catch (error) {
-				throw new HTTPException(400, {
-					message:
-						error instanceof Error
-							? error.message
-							: "Invalid image upload request",
-				});
-			}
-
-			const [taskContext] = await db
-				.select({
-					taskId: taskTable.id,
-					projectId: taskTable.projectId,
-					workspaceId: workspaceTable.id,
-				})
-				.from(taskTable)
-				.innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
-				.innerJoin(
-					workspaceTable,
-					eq(projectTable.workspaceId, workspaceTable.id),
-				)
-				.where(eq(taskTable.id, id))
-				.limit(1);
-
-			if (!taskContext) {
-				throw new HTTPException(404, { message: "Task not found" });
-			}
-
-			const normalizedKey = key.trim();
-			if (
-				!assertTaskImageKeyMatchesContext(normalizedKey, {
-					workspaceId: taskContext.workspaceId,
-					projectId: taskContext.projectId,
-					taskId: taskContext.taskId,
-					surface,
-				})
-			) {
-				throw new HTTPException(400, {
-					message: "Image upload key does not match the task context.",
-				});
-			}
-
-			const [existingAsset] = await db
-				.select({ id: assetTable.id })
-				.from(assetTable)
-				.where(eq(assetTable.objectKey, normalizedKey))
-				.limit(1);
-
-			const [asset] = existingAsset
-				? await db
-						.update(assetTable)
-						.set({
-							workspaceId: taskContext.workspaceId,
-							projectId: taskContext.projectId,
-							taskId: taskContext.taskId,
-							filename,
-							mimeType: contentType,
-							size,
-							kind: isImageContentType(contentType) ? "image" : "attachment",
-							surface,
-							createdBy: userId || null,
-						})
-						.where(eq(assetTable.id, existingAsset.id))
-						.returning({
-							id: assetTable.id,
-						})
-				: await db
-						.insert(assetTable)
-						.values({
-							workspaceId: taskContext.workspaceId,
-							projectId: taskContext.projectId,
-							taskId: taskContext.taskId,
-							objectKey: normalizedKey,
-							filename,
-							mimeType: contentType,
-							size,
-							kind: isImageContentType(contentType) ? "image" : "attachment",
-							surface,
-							createdBy: userId || null,
-						})
-						.returning({
-							id: assetTable.id,
-						});
-
-			if (!asset) {
-				throw new HTTPException(500, {
-					message: "Failed to create or update asset",
-				});
-			}
+			const result = await finalizeTaskImageUpload({
+				taskId: id,
+				key,
+				filename,
+				contentType,
+				size,
+				surface,
+				userId: userId || null,
+			});
 
 			return c.json({
-				id: asset.id,
-				url: new URL(`/api/asset/${asset.id}`, c.req.url).toString(),
+				id: result.id,
+				url: new URL(`/api/asset/${result.id}`, c.req.url).toString(),
 			});
 		},
 	)

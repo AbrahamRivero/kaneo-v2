@@ -5,9 +5,11 @@ import { publishEvent } from "../../events";
 import { DrizzleTaskRepository } from "../infrastructure/repositories/drizzle-task.repository";
 import {
 	BulkUpdateTasksUseCase,
+	CreateTaskImageUploadUseCase,
 	CreateTaskUseCase,
 	DeleteTaskUseCase,
 	ExportTasksUseCase,
+	FinalizeTaskImageUploadUseCase,
 	GetTasksUseCase,
 	GetTaskUseCase,
 	ImportTasksUseCase,
@@ -56,5 +58,7 @@ export const createTaskUseCases = () => ({
 	exportTasks: new ExportTasksUseCase(taskRepository),
 	bulkUpdateTasks: new BulkUpdateTasksUseCase(taskRepository, eventPublisher),
 	moveTask: new MoveTaskUseCase(taskRepository, eventPublisher),
-	importTasks: new ImportTasksUseCase(taskRepository),
+	importTasks: new ImportTasksUseCase(taskRepository, eventPublisher),
+	createTaskImageUpload: new CreateTaskImageUploadUseCase(taskRepository),
+	finalizeTaskImageUpload: new FinalizeTaskImageUploadUseCase(taskRepository),
 });

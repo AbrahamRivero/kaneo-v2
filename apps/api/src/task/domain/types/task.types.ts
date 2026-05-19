@@ -120,3 +120,24 @@ export interface ImportTask {
 	dueDate?: string | null;
 	userId?: string | null;
 }
+
+export interface TaskContext {
+	taskId: string;
+	projectId: string;
+	workspaceId: string;
+}
+
+export type UploadSurface = "description" | "comment";
+
+export interface UpsertTaskAssetInput {
+	workspaceId: string;
+	projectId: string;
+	taskId: string;
+	objectKey: string;
+	filename: string;
+	mimeType: string;
+	size: number;
+	kind: string;
+	surface: string;
+	createdBy: string | null;
+}

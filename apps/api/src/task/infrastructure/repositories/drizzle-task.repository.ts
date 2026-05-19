@@ -21,6 +21,7 @@ import {
 	taskRelationTable,
 	taskTable,
 	userTable,
+	workspaceTable,
 } from "../../../database/schema";
 import { publishEvent } from "../../../events";
 import type { TaskRepository } from "../../application/ports/task-repository.port";
@@ -32,10 +33,12 @@ import type {
 	MoveTaskInput,
 	MoveTaskResult,
 	Task,
+	TaskContext,
 	TaskFilters,
 	TaskListResult,
 	TaskWithRelations,
 	UpdateTaskInput,
+	UpsertTaskAssetInput,
 } from "../../domain";
 import { assertValidTaskStatus } from "../../validate-task-fields";
 
@@ -896,6 +899,52 @@ export class DrizzleTaskRepository implements TaskRepository {
 		};
 	}
 
+	async getProject(
+		projectId: string,
+	): Promise<{ id: string; name: string; slug: string } | null> {
+		const project = await db.query.projectTable.findFirst({
+			where: eq(projectTable.id, projectId),
+			columns: { id: true, name: true, slug: true },
+		});
+
+		return project ?? null;
+	}
+
+	async getNextTaskNumber(projectId: string): Promise<number> {
+		const [lastTask] = await db
+			.select({ number: taskTable.number })
+			.from(taskTable)
+			.where(eq(taskTable.projectId, projectId))
+			.orderBy(desc(taskTable.number))
+			.limit(1);
+
+		return lastTask?.number ?? 0;
+	}
+
+	async insertTask(data: {
+		projectId: string;
+		userId: string | null;
+		title: string;
+		status: string;
+		columnId: string | null;
+		startDate: Date | null;
+		dueDate: Date | null;
+		description: string;
+		priority: string;
+		number: number;
+	}): Promise<Task> {
+		const [createdTask] = await db.insert(taskTable).values(data).returning();
+
+		if (!createdTask) {
+			throw new HTTPException(500, { message: "Failed to create task" });
+		}
+
+		return {
+			...createdTask,
+			priority: (createdTask.priority ?? "no-priority") as Task["priority"],
+		};
+	}
+
 	async updateDescription(
 		taskId: string,
 		description: string,
@@ -917,5 +966,74 @@ export class DrizzleTaskRepository implements TaskRepository {
 			...updatedTask,
 			priority: (updatedTask.priority ?? "no-priority") as Task["priority"],
 		};
+	}
+
+	async findTaskContext(taskId: string): Promise<TaskContext | null> {
+		const [taskContext] = await db
+			.select({
+				taskId: taskTable.id,
+				projectId: taskTable.projectId,
+				workspaceId: workspaceTable.id,
+			})
+			.from(taskTable)
+			.innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
+			.innerJoin(
+				workspaceTable,
+				eq(projectTable.workspaceId, workspaceTable.id),
+			)
+			.where(eq(taskTable.id, taskId))
+			.limit(1);
+
+		return taskContext ?? null;
+	}
+
+	async upsertTaskAsset(
+		input: UpsertTaskAssetInput,
+	): Promise<{ id: string; url: string }> {
+		const [existingAsset] = await db
+			.select({ id: assetTable.id })
+			.from(assetTable)
+			.where(eq(assetTable.objectKey, input.objectKey))
+			.limit(1);
+
+		const [asset] = existingAsset
+			? await db
+					.update(assetTable)
+					.set({
+						workspaceId: input.workspaceId,
+						projectId: input.projectId,
+						taskId: input.taskId,
+						filename: input.filename,
+						mimeType: input.mimeType,
+						size: input.size,
+						kind: input.kind,
+						surface: input.surface,
+						createdBy: input.createdBy,
+					})
+					.where(eq(assetTable.id, existingAsset.id))
+					.returning({ id: assetTable.id })
+			: await db
+					.insert(assetTable)
+					.values({
+						workspaceId: input.workspaceId,
+						projectId: input.projectId,
+						taskId: input.taskId,
+						objectKey: input.objectKey,
+						filename: input.filename,
+						mimeType: input.mimeType,
+						size: input.size,
+						kind: input.kind,
+						surface: input.surface,
+						createdBy: input.createdBy,
+					})
+					.returning({ id: assetTable.id });
+
+		if (!asset) {
+			throw new HTTPException(500, {
+				message: "Failed to create or update asset",
+			});
+		}
+
+		return { id: asset.id, url: `/api/asset/${asset.id}` };
 	}
 }
