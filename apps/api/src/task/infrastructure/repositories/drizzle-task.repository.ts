@@ -526,6 +526,14 @@ export class DrizzleTaskRepository implements TaskRepository {
 	}
 
 	async bulkUpdate(input: BulkOperationInput): Promise<BulkOperationResult> {
+		if (input.operation === "addLabel") {
+			return this.bulkAddLabel(input);
+		}
+
+		if (input.operation === "removeLabel") {
+			return this.bulkRemoveLabel(input);
+		}
+
 		let updatedCount = 0;
 
 		for (const taskId of input.taskIds) {
@@ -573,6 +581,105 @@ export class DrizzleTaskRepository implements TaskRepository {
 			} catch {
 				// Skip failed tasks and continue
 			}
+		}
+
+		return { success: true, updatedCount };
+	}
+
+	private async bulkAddLabel(
+		input: BulkOperationInput,
+	): Promise<BulkOperationResult> {
+		if (!input.value) {
+			throw new HTTPException(400, { message: "Label ID is required" });
+		}
+
+		const label = await db.query.labelTable.findFirst({
+			where: eq(labelTable.id, input.value),
+		});
+
+		if (!label) {
+			throw new HTTPException(404, { message: "Label not found" });
+		}
+
+		const tasks = await db
+			.select({
+				id: taskTable.id,
+				projectId: taskTable.projectId,
+				workspaceId: projectTable.workspaceId,
+			})
+			.from(taskTable)
+			.innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
+			.where(inArray(taskTable.id, input.taskIds));
+
+		let updatedCount = 0;
+
+		for (const task of tasks) {
+			const existing = await db.query.labelTable.findFirst({
+				where: and(
+					eq(labelTable.name, label.name),
+					eq(labelTable.taskId, task.id),
+				),
+			});
+
+			if (!existing) {
+				await db
+					.insert(labelTable)
+					.values({
+						name: label.name,
+						color: label.color,
+						workspaceId: task.workspaceId,
+						taskId: task.id,
+					})
+					.onConflictDoNothing({
+						target: [labelTable.taskId, labelTable.name],
+					});
+				updatedCount++;
+
+				await publishEvent("task.label_assigned", {
+					projectId: task.projectId,
+					taskId: task.id,
+					userId: input.currentUserId,
+					type: "label_assigned",
+				});
+			}
+		}
+
+		return { success: true, updatedCount };
+	}
+
+	private async bulkRemoveLabel(
+		input: BulkOperationInput,
+	): Promise<BulkOperationResult> {
+		if (!input.value) {
+			throw new HTTPException(400, { message: "Label ID is required" });
+		}
+
+		const tasks = await db
+			.select({ id: taskTable.id, projectId: taskTable.projectId })
+			.from(taskTable)
+			.where(inArray(taskTable.id, input.taskIds));
+
+		const taskIds = tasks.map((t) => t.id);
+
+		const result = await db
+			.update(labelTable)
+			.set({ taskId: null })
+			.where(
+				and(
+					eq(labelTable.id, input.value),
+					inArray(labelTable.taskId, taskIds),
+				),
+			);
+
+		const updatedCount = result.rowCount ?? taskIds.length;
+
+		for (const task of tasks) {
+			await publishEvent("task.label_unassigned", {
+				projectId: task.projectId,
+				taskId: task.id,
+				userId: input.currentUserId,
+				type: "label_unassigned",
+			});
 		}
 
 		return { success: true, updatedCount };
