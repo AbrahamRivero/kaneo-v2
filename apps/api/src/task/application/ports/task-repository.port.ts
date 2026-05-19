@@ -6,10 +6,12 @@ import type {
 	MoveTaskInput,
 	MoveTaskResult,
 	Task,
+	TaskContext,
 	TaskFilters,
 	TaskListResult,
 	TaskWithRelations,
 	UpdateTaskInput,
+	UpsertTaskAssetInput,
 } from "../../domain";
 
 export interface TaskRepository {
@@ -52,4 +54,24 @@ export interface TaskRepository {
 		description: string,
 		currentUserId: string,
 	): Promise<Task>;
+	getProject(
+		projectId: string,
+	): Promise<{ id: string; name: string; slug: string } | null>;
+	findTaskContext(taskId: string): Promise<TaskContext | null>;
+	upsertTaskAsset(
+		input: UpsertTaskAssetInput,
+	): Promise<{ id: string; url: string }>;
+	getNextTaskNumber(projectId: string): Promise<number>;
+	insertTask(data: {
+		projectId: string;
+		userId: string | null;
+		title: string;
+		status: string;
+		columnId: string | null;
+		startDate: Date | null;
+		dueDate: Date | null;
+		description: string;
+		priority: string;
+		number: number;
+	}): Promise<Task>;
 }

@@ -1,15 +1,7 @@
-import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
-import db from "../database";
-import {
-	assetTable,
-	projectTable,
-	taskTable,
-	workspaceTable,
-} from "../database/schema";
 import { taskSchema } from "../schemas";
 import {
 	assertTaskImageKeyMatchesContext,
@@ -22,8 +14,10 @@ import { requireWorkspacePermission } from "../utils/require-workspace-permissio
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import bulkUpdateTasks from "./controllers/bulk-update-tasks";
 import createTask from "./controllers/create-task";
+import createTaskImageUpload from "./controllers/create-task-image-upload";
 import deleteTask from "./controllers/delete-task";
 import exportTasks from "./controllers/export-tasks";
+import finalizeTaskImageUpload from "./controllers/finalize-task-image-upload";
 import getTask from "./controllers/get-task";
 import getTasks from "./controllers/get-tasks";
 import importTasks from "./controllers/import-tasks";
@@ -158,49 +152,49 @@ const task = new Hono<{
 				userId,
 			});
 
-      return c.json(result);
-    },
-  )
-  .post(
-    "/:projectId",
-    describeRoute({
-      operationId: "createTask",
-      tags: ["Tasks"],
-      description: "Create a new task in a project",
-      responses: {
-        200: {
-          description: "Task created successfully",
-          content: {
-            "application/json": { schema: resolver(taskSchema) },
-          },
-        },
-      },
-    }),
-    validator(
-      "json",
-      v.object({
-        title: v.string(),
-        description: v.string(),
-        startDate: v.optional(v.string()),
-        dueDate: v.optional(v.string()),
-        priority: v.picklist(VALID_PRIORITIES),
-        status: v.string(),
-        userId: v.optional(v.string()),
-      }),
-    ),
-    workspaceAccess.fromProject("projectId"),
-    requireWorkspacePermission({ task: ["create"] }),
-    async (c) => {
-      const { projectId } = c.req.param();
-      const {
-        title,
-        description,
-        startDate,
-        dueDate,
-        priority,
-        status,
-        userId,
-      } = c.req.valid("json");
+			return c.json(result);
+		},
+	)
+	.post(
+		"/:projectId",
+		describeRoute({
+			operationId: "createTask",
+			tags: ["Tasks"],
+			description: "Create a new task in a project",
+			responses: {
+				200: {
+					description: "Task created successfully",
+					content: {
+						"application/json": { schema: resolver(taskSchema) },
+					},
+				},
+			},
+		}),
+		validator(
+			"json",
+			v.object({
+				title: v.string(),
+				description: v.string(),
+				startDate: v.optional(v.string()),
+				dueDate: v.optional(v.string()),
+				priority: v.picklist(VALID_PRIORITIES),
+				status: v.string(),
+				userId: v.optional(v.string()),
+			}),
+		),
+		workspaceAccess.fromProject("projectId"),
+		requireWorkspacePermission({ task: ["create"] }),
+		async (c) => {
+			const { projectId } = c.req.param();
+			const {
+				title,
+				description,
+				startDate,
+				dueDate,
+				priority,
+				status,
+				userId,
+			} = c.req.valid("json");
 
 			const task = await createTask({
 				projectId,
@@ -239,46 +233,46 @@ const task = new Hono<{
 
 			const task = await getTask(id);
 
-      return c.json(task);
-    },
-  )
-  .put(
-    "/move/:id",
-    describeRoute({
-      operationId: "moveTask",
-      tags: ["Tasks"],
-      description: "Move a task to another project",
-      responses: {
-        200: {
-          description: "Task moved successfully",
-          content: {
-            "application/json": {
-              schema: resolver(
-                v.object({
-                  task: taskSchema,
-                  sourceProjectId: v.string(),
-                  destinationProjectId: v.string(),
-                }),
-              ),
-            },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ id: v.string() })),
-    validator(
-      "json",
-      v.object({
-        destinationProjectId: v.string(),
-        destinationStatus: v.optional(v.string()),
-      }),
-    ),
-    workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["update"] }),
-    async (c) => {
-      const { id } = c.req.valid("param");
-      const { destinationProjectId, destinationStatus } = c.req.valid("json");
-      const currentUserId = c.get("userId");
+			return c.json(task);
+		},
+	)
+	.put(
+		"/move/:id",
+		describeRoute({
+			operationId: "moveTask",
+			tags: ["Tasks"],
+			description: "Move a task to another project",
+			responses: {
+				200: {
+					description: "Task moved successfully",
+					content: {
+						"application/json": {
+							schema: resolver(
+								v.object({
+									task: taskSchema,
+									sourceProjectId: v.string(),
+									destinationProjectId: v.string(),
+								}),
+							),
+						},
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		validator(
+			"json",
+			v.object({
+				destinationProjectId: v.string(),
+				destinationStatus: v.optional(v.string()),
+			}),
+		),
+		workspaceAccess.fromTask(),
+		requireWorkspacePermission({ task: ["update"] }),
+		async (c) => {
+			const { id } = c.req.valid("param");
+			const { destinationProjectId, destinationStatus } = c.req.valid("json");
+			const currentUserId = c.get("userId");
 
 			const result = await moveTask({
 				taskId: id,
@@ -287,54 +281,54 @@ const task = new Hono<{
 				currentUserId,
 			});
 
-      return c.json(result);
-    },
-  )
-  .put(
-    "/:id",
-    describeRoute({
-      operationId: "updateTask",
-      tags: ["Tasks"],
-      description: "Update all fields of a task",
-      responses: {
-        200: {
-          description: "Task updated successfully",
-          content: {
-            "application/json": { schema: resolver(taskSchema) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ id: v.string() })),
-    validator(
-      "json",
-      v.object({
-        title: v.string(),
-        description: v.string(),
-        startDate: v.optional(v.string()),
-        dueDate: v.optional(v.string()),
-        priority: v.picklist(VALID_PRIORITIES),
-        status: v.string(),
-        projectId: v.string(),
-        position: v.number(),
-        userId: v.optional(v.string()),
-      }),
-    ),
-    workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["update"] }),
-    async (c) => {
-      const { id } = c.req.valid("param");
-      const {
-        title,
-        description,
-        startDate,
-        dueDate,
-        priority,
-        status,
-        projectId,
-        position,
-        userId,
-      } = c.req.valid("json");
+			return c.json(result);
+		},
+	)
+	.put(
+		"/:id",
+		describeRoute({
+			operationId: "updateTask",
+			tags: ["Tasks"],
+			description: "Update all fields of a task",
+			responses: {
+				200: {
+					description: "Task updated successfully",
+					content: {
+						"application/json": { schema: resolver(taskSchema) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		validator(
+			"json",
+			v.object({
+				title: v.string(),
+				description: v.string(),
+				startDate: v.optional(v.string()),
+				dueDate: v.optional(v.string()),
+				priority: v.picklist(VALID_PRIORITIES),
+				status: v.string(),
+				projectId: v.string(),
+				position: v.number(),
+				userId: v.optional(v.string()),
+			}),
+		),
+		workspaceAccess.fromTask(),
+		requireWorkspacePermission({ task: ["update"] }),
+		async (c) => {
+			const { id } = c.req.valid("param");
+			const {
+				title,
+				description,
+				startDate,
+				dueDate,
+				priority,
+				status,
+				projectId,
+				position,
+				userId,
+			} = c.req.valid("json");
 
 			const currentUserId = c.get("userId");
 
@@ -377,190 +371,190 @@ const task = new Hono<{
 
 			const exportData = await exportTasks(projectId);
 
-      return c.json(exportData);
-    },
-  )
-  .post(
-    "/import/:projectId",
-    describeRoute({
-      operationId: "importTasks",
-      tags: ["Tasks"],
-      description: "Import multiple tasks into a project",
-      responses: {
-        200: {
-          description: "Tasks imported successfully",
-          content: {
-            "application/json": { schema: resolver(v.any()) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ projectId: v.string() })),
-    validator(
-      "json",
-      v.object({
-        tasks: v.array(
-          v.object({
-            title: v.string(),
-            description: v.optional(v.string()),
-            status: v.string(),
-            priority: v.optional(v.string()),
-            startDate: v.optional(v.nullable(v.string())),
-            dueDate: v.optional(v.nullable(v.string())),
-            userId: v.optional(v.nullable(v.string())),
-          }),
-        ),
-      }),
-    ),
-    workspaceAccess.fromProject("projectId"),
-    requireWorkspacePermission({ task: ["create"] }),
-    async (c) => {
-      const { projectId } = c.req.valid("param");
-      const { tasks } = c.req.valid("json");
-      const currentUserId = c.get("userId");
+			return c.json(exportData);
+		},
+	)
+	.post(
+		"/import/:projectId",
+		describeRoute({
+			operationId: "importTasks",
+			tags: ["Tasks"],
+			description: "Import multiple tasks into a project",
+			responses: {
+				200: {
+					description: "Tasks imported successfully",
+					content: {
+						"application/json": { schema: resolver(v.any()) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ projectId: v.string() })),
+		validator(
+			"json",
+			v.object({
+				tasks: v.array(
+					v.object({
+						title: v.string(),
+						description: v.optional(v.string()),
+						status: v.string(),
+						priority: v.optional(v.string()),
+						startDate: v.optional(v.nullable(v.string())),
+						dueDate: v.optional(v.nullable(v.string())),
+						userId: v.optional(v.nullable(v.string())),
+					}),
+				),
+			}),
+		),
+		workspaceAccess.fromProject("projectId"),
+		requireWorkspacePermission({ task: ["create"] }),
+		async (c) => {
+			const { projectId } = c.req.valid("param");
+			const { tasks } = c.req.valid("json");
+			const currentUserId = c.get("userId");
 
 			const result = await importTasks(projectId, tasks, currentUserId);
 
-      return c.json(result);
-    },
-  )
-  .delete(
-    "/:id",
-    describeRoute({
-      operationId: "deleteTask",
-      tags: ["Tasks"],
-      description: "Delete a task by ID",
-      responses: {
-        200: {
-          description: "Task deleted successfully",
-          content: {
-            "application/json": { schema: resolver(taskSchema) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ id: v.string() })),
-    workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["delete"] }),
-    async (c) => {
-      const { id } = c.req.valid("param");
+			return c.json(result);
+		},
+	)
+	.delete(
+		"/:id",
+		describeRoute({
+			operationId: "deleteTask",
+			tags: ["Tasks"],
+			description: "Delete a task by ID",
+			responses: {
+				200: {
+					description: "Task deleted successfully",
+					content: {
+						"application/json": { schema: resolver(taskSchema) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		workspaceAccess.fromTask(),
+		requireWorkspacePermission({ task: ["delete"] }),
+		async (c) => {
+			const { id } = c.req.valid("param");
 
 			const currentUserId = c.get("userId");
 			const task = await deleteTask(id, currentUserId);
 
-      return c.json(task);
-    },
-  )
-  .put(
-    "/status/:id",
-    describeRoute({
-      operationId: "updateTaskStatus",
-      tags: ["Tasks"],
-      description: "Update only the status of a task",
-      responses: {
-        200: {
-          description: "Task status updated successfully",
-          content: {
-            "application/json": { schema: resolver(taskSchema) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ id: v.string() })),
-    validator("json", v.object({ status: v.string() })),
-    workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["update"] }),
-    async (c) => {
-      const { id } = c.req.valid("param");
-      const { status } = c.req.valid("json");
-      const currentUserId = c.get("userId");
+			return c.json(task);
+		},
+	)
+	.put(
+		"/status/:id",
+		describeRoute({
+			operationId: "updateTaskStatus",
+			tags: ["Tasks"],
+			description: "Update only the status of a task",
+			responses: {
+				200: {
+					description: "Task status updated successfully",
+					content: {
+						"application/json": { schema: resolver(taskSchema) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		validator("json", v.object({ status: v.string() })),
+		workspaceAccess.fromTask(),
+		requireWorkspacePermission({ task: ["update"] }),
+		async (c) => {
+			const { id } = c.req.valid("param");
+			const { status } = c.req.valid("json");
+			const currentUserId = c.get("userId");
 
 			const task = await updateTaskStatus({ id, status, currentUserId });
 
-      return c.json(task);
-    },
-  )
-  .put(
-    "/priority/:id",
-    describeRoute({
-      operationId: "updateTaskPriority",
-      tags: ["Tasks"],
-      description: "Update only the priority of a task",
-      responses: {
-        200: {
-          description: "Task priority updated successfully",
-          content: {
-            "application/json": { schema: resolver(taskSchema) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ id: v.string() })),
-    validator("json", v.object({ priority: v.picklist(VALID_PRIORITIES) })),
-    workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["update"] }),
-    async (c) => {
-      const { id } = c.req.valid("param");
-      const { priority } = c.req.valid("json");
-      const currentUserId = c.get("userId");
+			return c.json(task);
+		},
+	)
+	.put(
+		"/priority/:id",
+		describeRoute({
+			operationId: "updateTaskPriority",
+			tags: ["Tasks"],
+			description: "Update only the priority of a task",
+			responses: {
+				200: {
+					description: "Task priority updated successfully",
+					content: {
+						"application/json": { schema: resolver(taskSchema) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		validator("json", v.object({ priority: v.picklist(VALID_PRIORITIES) })),
+		workspaceAccess.fromTask(),
+		requireWorkspacePermission({ task: ["update"] }),
+		async (c) => {
+			const { id } = c.req.valid("param");
+			const { priority } = c.req.valid("json");
+			const currentUserId = c.get("userId");
 
 			const task = await updateTaskPriority({ id, priority, currentUserId });
 
-      return c.json(task);
-    },
-  )
-  .put(
-    "/assignee/:id",
-    describeRoute({
-      operationId: "updateTaskAssignee",
-      tags: ["Tasks"],
-      description: "Assign or unassign a task to a user",
-      responses: {
-        200: {
-          description: "Task assignee updated successfully",
-          content: {
-            "application/json": { schema: resolver(taskSchema) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ id: v.string() })),
-    validator("json", v.object({ userId: v.string() })),
-    workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["assign"] }),
-    async (c) => {
-      const { id } = c.req.valid("param");
-      const { userId } = c.req.valid("json");
-      const currentUserId = c.get("userId");
+			return c.json(task);
+		},
+	)
+	.put(
+		"/assignee/:id",
+		describeRoute({
+			operationId: "updateTaskAssignee",
+			tags: ["Tasks"],
+			description: "Assign or unassign a task to a user",
+			responses: {
+				200: {
+					description: "Task assignee updated successfully",
+					content: {
+						"application/json": { schema: resolver(taskSchema) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		validator("json", v.object({ userId: v.string() })),
+		workspaceAccess.fromTask(),
+		requireWorkspacePermission({ task: ["assign"] }),
+		async (c) => {
+			const { id } = c.req.valid("param");
+			const { userId } = c.req.valid("json");
+			const currentUserId = c.get("userId");
 
 			const task = await updateTaskAssignee({ id, userId, currentUserId });
 
-      return c.json(task);
-    },
-  )
-  .put(
-    "/due-date/:id",
-    describeRoute({
-      operationId: "updateTaskDueDate",
-      tags: ["Tasks"],
-      description: "Update only the due date of a task",
-      responses: {
-        200: {
-          description: "Task due date updated successfully",
-          content: {
-            "application/json": { schema: resolver(taskSchema) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ id: v.string() })),
-    validator("json", v.object({ dueDate: v.optional(v.string()) })),
-    workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["update"] }),
-    async (c) => {
-      const { id } = c.req.valid("param");
-      const { dueDate = null } = c.req.valid("json");
-      const currentUserId = c.get("userId");
+			return c.json(task);
+		},
+	)
+	.put(
+		"/due-date/:id",
+		describeRoute({
+			operationId: "updateTaskDueDate",
+			tags: ["Tasks"],
+			description: "Update only the due date of a task",
+			responses: {
+				200: {
+					description: "Task due date updated successfully",
+					content: {
+						"application/json": { schema: resolver(taskSchema) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		validator("json", v.object({ dueDate: v.optional(v.string()) })),
+		workspaceAccess.fromTask(),
+		requireWorkspacePermission({ task: ["update"] }),
+		async (c) => {
+			const { id } = c.req.valid("param");
+			const { dueDate = null } = c.req.valid("json");
+			const currentUserId = c.get("userId");
 
 			const task = await updateTaskDueDate({
 				id,
@@ -572,29 +566,29 @@ const task = new Hono<{
 		},
 	)
 
-  .put(
-    "/title/:id",
-    describeRoute({
-      operationId: "updateTaskTitle",
-      tags: ["Tasks"],
-      description: "Update only the title of a task",
-      responses: {
-        200: {
-          description: "Task title updated successfully",
-          content: {
-            "application/json": { schema: resolver(taskSchema) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ id: v.string() })),
-    validator("json", v.object({ title: v.string() })),
-    workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["update"] }),
-    async (c) => {
-      const { id } = c.req.valid("param");
-      const { title } = c.req.valid("json");
-      const currentUserId = c.get("userId");
+	.put(
+		"/title/:id",
+		describeRoute({
+			operationId: "updateTaskTitle",
+			tags: ["Tasks"],
+			description: "Update only the title of a task",
+			responses: {
+				200: {
+					description: "Task title updated successfully",
+					content: {
+						"application/json": { schema: resolver(taskSchema) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		validator("json", v.object({ title: v.string() })),
+		workspaceAccess.fromTask(),
+		requireWorkspacePermission({ task: ["update"] }),
+		async (c) => {
+			const { id } = c.req.valid("param");
+			const { title } = c.req.valid("json");
+			const currentUserId = c.get("userId");
 
 			const task = await updateTaskTitle({ id, title, currentUserId });
 
@@ -602,241 +596,124 @@ const task = new Hono<{
 		},
 	)
 
-  .put(
-    "/image-upload/:id",
-    describeRoute({
-      operationId: "createTaskImageUpload",
-      tags: ["Tasks"],
-      description:
-        "Create a presigned image upload URL for a task description or comment",
-      responses: {
-        200: {
-          description: "Image upload URL created successfully",
-          content: {
-            "application/json": { schema: resolver(v.any()) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ id: v.string() })),
-    validator(
-      "json",
-      v.object({
-        filename: v.string(),
-        contentType: v.string(),
-        size: v.number(),
-        surface: v.picklist(["description", "comment"] as const),
-      }),
-    ),
-    workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["update"] }),
-    async (c) => {
-      const { id } = c.req.valid("param");
-      const { filename, contentType, size, surface } = c.req.valid("json");
+	.put(
+		"/image-upload/:id",
+		describeRoute({
+			operationId: "createTaskImageUpload",
+			tags: ["Tasks"],
+			description:
+				"Create a presigned image upload URL for a task description or comment",
+			responses: {
+				200: {
+					description: "Image upload URL created successfully",
+					content: {
+						"application/json": { schema: resolver(v.any()) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		validator(
+			"json",
+			v.object({
+				filename: v.string(),
+				contentType: v.string(),
+				size: v.number(),
+				surface: v.picklist(["description", "comment"] as const),
+			}),
+		),
+		workspaceAccess.fromTask(),
+		requireWorkspacePermission({ task: ["update"] }),
+		async (c) => {
+			const { id } = c.req.valid("param");
+			const { filename, contentType, size, surface } = c.req.valid("json");
 
-			try {
-				validateTaskAssetUploadInput(contentType, size);
-			} catch (error) {
-				throw new HTTPException(400, {
-					message:
-						error instanceof Error
-							? error.message
-							: "Invalid image upload request",
-				});
-			}
+			const upload = await createTaskImageUpload({
+				taskId: id,
+				filename,
+				contentType,
+				size,
+				surface,
+			});
 
-			const [taskContext] = await db
-				.select({
-					taskId: taskTable.id,
-					projectId: taskTable.projectId,
-					workspaceId: workspaceTable.id,
-				})
-				.from(taskTable)
-				.innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
-				.innerJoin(
-					workspaceTable,
-					eq(projectTable.workspaceId, workspaceTable.id),
-				)
-				.where(eq(taskTable.id, id))
-				.limit(1);
+			return c.json(upload);
+		},
+	)
+	.post(
+		"/image-upload/:id/finalize",
+		describeRoute({
+			operationId: "finalizeTaskImageUpload",
+			tags: ["Tasks"],
+			description:
+				"Finalize an uploaded task image and create a private asset record",
+			responses: {
+				200: {
+					description: "Image upload finalized successfully",
+					content: {
+						"application/json": { schema: resolver(v.any()) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		validator(
+			"json",
+			v.object({
+				key: v.string(),
+				filename: v.string(),
+				contentType: v.string(),
+				size: v.number(),
+				surface: v.picklist(["description", "comment"] as const),
+			}),
+		),
+		workspaceAccess.fromTask(),
+		async (c) => {
+			const { id } = c.req.valid("param");
+			const { key, filename, contentType, size, surface } = c.req.valid("json");
+			const userId = c.get("userId");
 
-			if (!taskContext) {
-				throw new HTTPException(404, { message: "Task not found" });
-			}
+			const result = await finalizeTaskImageUpload({
+				taskId: id,
+				key,
+				filename,
+				contentType,
+				size,
+				surface,
+				userId: userId || null,
+			});
 
-			try {
-				const upload = await createTaskImageUploadUrl({
-					workspaceId: taskContext.workspaceId,
-					projectId: taskContext.projectId,
-					taskId: taskContext.taskId,
-					surface,
-					filename,
-					contentType,
-				});
-
-        return c.json(upload);
-      } catch (error) {
-        throw new HTTPException(503, {
-          message:
-            error instanceof Error
-              ? error.message
-              : "Image uploads are not configured",
-        });
-      }
-    },
-  )
-  .post(
-    "/image-upload/:id/finalize",
-    describeRoute({
-      operationId: "finalizeTaskImageUpload",
-      tags: ["Tasks"],
-      description:
-        "Finalize an uploaded task image and create a private asset record",
-      responses: {
-        200: {
-          description: "Image upload finalized successfully",
-          content: {
-            "application/json": { schema: resolver(v.any()) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ id: v.string() })),
-    validator(
-      "json",
-      v.object({
-        key: v.string(),
-        filename: v.string(),
-        contentType: v.string(),
-        size: v.number(),
-        surface: v.picklist(["description", "comment"] as const),
-      }),
-    ),
-    workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["update"] }),
-    async (c) => {
-      const { id } = c.req.valid("param");
-      const { key, filename, contentType, size, surface } = c.req.valid("json");
-      const userId = c.get("userId");
-
-			try {
-				validateTaskAssetUploadInput(contentType, size);
-			} catch (error) {
-				throw new HTTPException(400, {
-					message:
-						error instanceof Error
-							? error.message
-							: "Invalid image upload request",
-				});
-			}
-
-			const [taskContext] = await db
-				.select({
-					taskId: taskTable.id,
-					projectId: taskTable.projectId,
-					workspaceId: workspaceTable.id,
-				})
-				.from(taskTable)
-				.innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
-				.innerJoin(
-					workspaceTable,
-					eq(projectTable.workspaceId, workspaceTable.id),
-				)
-				.where(eq(taskTable.id, id))
-				.limit(1);
-
-			if (!taskContext) {
-				throw new HTTPException(404, { message: "Task not found" });
-			}
-
-			const normalizedKey = key.trim();
-			if (
-				!assertTaskImageKeyMatchesContext(normalizedKey, {
-					workspaceId: taskContext.workspaceId,
-					projectId: taskContext.projectId,
-					taskId: taskContext.taskId,
-					surface,
-				})
-			) {
-				throw new HTTPException(400, {
-					message: "Image upload key does not match the task context.",
-				});
-			}
-
-			const [existingAsset] = await db
-				.select({ id: assetTable.id })
-				.from(assetTable)
-				.where(eq(assetTable.objectKey, normalizedKey))
-				.limit(1);
-
-			const [asset] = existingAsset
-				? await db
-						.update(assetTable)
-						.set({
-							workspaceId: taskContext.workspaceId,
-							projectId: taskContext.projectId,
-							taskId: taskContext.taskId,
-							filename,
-							mimeType: contentType,
-							size,
-							kind: isImageContentType(contentType) ? "image" : "attachment",
-							surface,
-							createdBy: userId || null,
-						})
-						.where(eq(assetTable.id, existingAsset.id))
-						.returning({
-							id: assetTable.id,
-						})
-				: await db
-						.insert(assetTable)
-						.values({
-							workspaceId: taskContext.workspaceId,
-							projectId: taskContext.projectId,
-							taskId: taskContext.taskId,
-							objectKey: normalizedKey,
-							filename,
-							mimeType: contentType,
-							size,
-							kind: isImageContentType(contentType) ? "image" : "attachment",
-							surface,
-							createdBy: userId || null,
-						})
-						.returning({
-							id: assetTable.id,
-						});
-
-      const apiBaseUrl = normalizeApiServerUrl(
-        process.env.KANEO_API_URL || new URL(c.req.url).origin,
-      );
-      return c.json({
-        id: asset.id,
-        url: `${apiBaseUrl}/asset/${asset.id}`,
-      });
-    },
-  )
-  .put(
-    "/description/:id",
-    describeRoute({
-      operationId: "updateTaskDescription",
-      tags: ["Tasks"],
-      description: "Update only the description of a task",
-      responses: {
-        200: {
-          description: "Task description updated successfully",
-          content: {
-            "application/json": { schema: resolver(taskSchema) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ id: v.string() })),
-    validator("json", v.object({ description: v.string() })),
-    workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["update"] }),
-    async (c) => {
-      const { id } = c.req.valid("param");
-      const { description } = c.req.valid("json");
-      const currentUserId = c.get("userId");
+			const apiBaseUrl = normalizeApiServerUrl(
+				process.env.KANEO_API_URL || new URL(c.req.url).origin,
+			);
+			return c.json({
+				id: asset.id,
+				url: `${apiBaseUrl}/asset/${asset.id}`,
+			});
+		},
+	)
+	.put(
+		"/description/:id",
+		describeRoute({
+			operationId: "updateTaskDescription",
+			tags: ["Tasks"],
+			description: "Update only the description of a task",
+			responses: {
+				200: {
+					description: "Task description updated successfully",
+					content: {
+						"application/json": { schema: resolver(taskSchema) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		validator("json", v.object({ description: v.string() })),
+		workspaceAccess.fromTask(),
+		requireWorkspacePermission({ task: ["update"] }),
+		async (c) => {
+			const { id } = c.req.valid("param");
+			const { description } = c.req.valid("json");
+			const currentUserId = c.get("userId");
 
 			const task = await updateTaskDescription({
 				id,
