@@ -1,5 +1,6 @@
 import { HTTPException } from "hono/http-exception";
 import type { TaskRepository } from "../../../task/application/ports";
+import { validateWorkspaceAccess } from "../../../utils/validate-workspace-access";
 import type { TaskRelation } from "../../domain";
 import type { EventPublisher, TaskRelationRepository } from "../ports";
 
@@ -20,6 +21,16 @@ export class DeleteTaskRelationUseCase {
 		}
 
 		const task = await this.taskRepository.findById(rel.sourceTaskId);
+
+		if (task) {
+			const workspaceId = await this.taskRepository.getProjectWorkspaceId(
+				task.projectId,
+			);
+
+			if (workspaceId) {
+				await validateWorkspaceAccess(input.userId, workspaceId);
+			}
+		}
 
 		const deleted = await this.taskRelationRepository.delete(input.id);
 

@@ -1,11 +1,6 @@
-import { eq } from "drizzle-orm";
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
-import db from "../database";
-import { projectTable, taskRelationTable, taskTable } from "../database/schema";
-import { validateWorkspaceAccess } from "../utils/validate-workspace-access";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import createTaskRelation from "./controllers/create-task-relation";
 import deleteTaskRelation from "./controllers/delete-task-relation";
@@ -70,24 +65,6 @@ const taskRelation = new Hono<{
 				relationType: v.picklist(["subtask", "blocks", "related"]),
 			}),
 		),
-		async (c, next) => {
-			const userId = c.get("userId");
-			if (!userId) {
-				throw new HTTPException(401, { message: "Unauthorized" });
-			}
-			const { sourceTaskId } = c.req.valid("json");
-			const [task] = await db
-				.select({ workspaceId: projectTable.workspaceId })
-				.from(taskTable)
-				.innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
-				.where(eq(taskTable.id, sourceTaskId))
-				.limit(1);
-			if (!task) {
-				throw new HTTPException(404, { message: "Source task not found" });
-			}
-			await validateWorkspaceAccess(userId, task.workspaceId);
-			return next();
-		},
 		async (c) => {
 			const userId = c.get("userId");
 			const { sourceTaskId, targetTaskId, relationType } = c.req.valid("json");
@@ -116,32 +93,6 @@ const taskRelation = new Hono<{
 			},
 		}),
 		validator("param", v.object({ id: v.string() })),
-		async (c, next) => {
-			const userId = c.get("userId");
-			if (!userId) {
-				throw new HTTPException(401, { message: "Unauthorized" });
-			}
-			const { id } = c.req.valid("param");
-			const [rel] = await db
-				.select({ sourceTaskId: taskRelationTable.sourceTaskId })
-				.from(taskRelationTable)
-				.where(eq(taskRelationTable.id, id))
-				.limit(1);
-			if (!rel) {
-				throw new HTTPException(404, { message: "Task relation not found" });
-			}
-			const [task] = await db
-				.select({ workspaceId: projectTable.workspaceId })
-				.from(taskTable)
-				.innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
-				.where(eq(taskTable.id, rel.sourceTaskId))
-				.limit(1);
-			if (!task) {
-				throw new HTTPException(404, { message: "Task not found" });
-			}
-			await validateWorkspaceAccess(userId, task.workspaceId);
-			return next();
-		},
 		async (c) => {
 			const userId = c.get("userId");
 			const { id } = c.req.valid("param");

@@ -27,6 +27,7 @@ import {
 	extractIssueStatus,
 } from "../../plugins/github/utils/extract-priority";
 import { formatTaskDescriptionFromIssue } from "../../plugins/github/utils/format";
+import { validateWorkspaceAccess } from "../../utils/validate-workspace-access";
 
 type ImportResult = {
 	imported: number;
@@ -43,6 +44,8 @@ function toPriorityLabels(labels: GiteaLabel[]): LabelLike[] {
 
 export async function importGiteaIssues(
 	projectId: string,
+	userId: string,
+	apiKeyId?: string,
 ): Promise<ImportResult> {
 	const errors: string[] = [];
 	let imported = 0;
@@ -56,6 +59,8 @@ export async function importGiteaIssues(
 	if (!project) {
 		throw new HTTPException(404, { message: "Project not found" });
 	}
+
+	await validateWorkspaceAccess(userId, project.workspaceId, apiKeyId);
 
 	const integration = await db.query.integrationTable.findFirst({
 		where: and(

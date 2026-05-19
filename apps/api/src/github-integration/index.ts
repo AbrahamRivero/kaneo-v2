@@ -1,13 +1,9 @@
-import { eq } from "drizzle-orm";
 import type { Context } from "hono";
 import { Hono } from "hono";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
-import db from "../database";
-import { projectTable } from "../database/schema";
 import { handleGitHubWebhook } from "../plugins/github/webhook-handler";
 import { githubIntegrationSchema } from "../schemas";
-import { validateWorkspaceAccess } from "../utils/validate-workspace-access";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import createGithubIntegration from "./controllers/create-github-integration";
 import deleteGithubIntegration from "./controllers/delete-github-integration";
@@ -273,35 +269,11 @@ const githubIntegration = new Hono<{
 				projectId: v.string(),
 			}),
 		),
-		async (c, next) => {
-			const userId = c.get("userId");
-			if (!userId) {
-				throw new HTTPException(401, { message: "Unauthorized" });
-			}
-
-			const { projectId } = c.req.valid("json");
-
-			const [project] = await db
-				.select({ workspaceId: projectTable.workspaceId })
-				.from(projectTable)
-				.where(eq(projectTable.id, projectId))
-				.limit(1);
-
-			if (!project) {
-				throw new HTTPException(404, { message: "Project not found" });
-			}
-
-			const apiKey = c.get("apiKey");
-			const apiKeyId = apiKey?.id;
-
-			await validateWorkspaceAccess(userId, project.workspaceId, apiKeyId);
-			c.set("workspaceId", project.workspaceId);
-
-			return next();
-		},
 		async (c) => {
 			const { projectId } = c.req.valid("json");
-			const result = await importIssues(projectId);
+			const userId = c.get("userId");
+			const apiKey = c.get("apiKey");
+			const result = await importIssues(projectId, userId, apiKey?.id);
 			return c.json(result);
 		},
 	);
