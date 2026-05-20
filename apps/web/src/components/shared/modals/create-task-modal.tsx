@@ -233,9 +233,7 @@ function CreateTaskModal({
 		setPriority("no-priority");
 		setAssigneeId("");
 		setStartDate(undefined);
-		setStartTime(getDefaultTime());
 		setDueDate(undefined);
-		setDueTime(getDefaultTime());
 		setCreateMore(false);
 		setLabels([]);
 		setLabelsStep("select");

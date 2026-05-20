@@ -331,7 +331,7 @@ const task = new Hono<{
 				description,
 				priority,
 				position,
-				userId,
+				userId || null,
 				currentUserId,
 			);
 

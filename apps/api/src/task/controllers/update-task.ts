@@ -16,7 +16,7 @@ async function updateTask(
 	description: string,
 	priority: string,
 	position: number,
-	userId?: string,
+	userId?: string | null,
 	currentUserId?: string,
 ) {
   const existingTask = await db.query.taskTable.findFirst({
