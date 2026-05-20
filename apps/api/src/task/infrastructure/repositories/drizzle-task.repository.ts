@@ -839,7 +839,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 	): Promise<Task> {
 		const [updatedTask] = await db
 			.update(taskTable)
-			.set({ userId })
+			.set({ userId: userId || null })
 			.where(eq(taskTable.id, taskId))
 			.returning();
 
