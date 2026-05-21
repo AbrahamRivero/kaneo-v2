@@ -10,6 +10,7 @@ import {
 	or,
 	sql,
 } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { HTTPException } from "hono/http-exception";
 import db from "../../../database";
 import {
@@ -115,6 +116,41 @@ export class DrizzleTaskRepository implements TaskRepository {
 			return null;
 		}
 
+		const creatorUser = alias(userTable, "creator_user");
+
+		const [taskWithCreator] = await db
+			.select({
+				id: taskTable.id,
+				projectId: taskTable.projectId,
+				position: taskTable.position,
+				number: taskTable.number,
+				userId: taskTable.userId,
+				createdBy: taskTable.createdBy,
+				title: taskTable.title,
+				description: taskTable.description,
+				status: taskTable.status,
+				columnId: taskTable.columnId,
+				priority: taskTable.priority,
+				startDate: taskTable.startDate,
+				dueDate: taskTable.dueDate,
+				createdAt: taskTable.createdAt,
+				updatedAt: taskTable.updatedAt,
+				assigneeName: userTable.name,
+				assigneeId: userTable.id,
+				assigneeImage: userTable.image,
+				creatorName: creatorUser.name,
+				creatorImage: creatorUser.image,
+			})
+			.from(taskTable)
+			.leftJoin(userTable, eq(taskTable.userId, userTable.id))
+			.leftJoin(creatorUser, eq(taskTable.createdBy, creatorUser.id))
+			.where(eq(taskTable.id, id))
+			.limit(1);
+
+		if (!taskWithCreator) {
+			return null;
+		}
+
 		const labelsData = await db
 			.select({
 				id: labelTable.id,
@@ -157,18 +193,14 @@ export class DrizzleTaskRepository implements TaskRepository {
 				})
 			: null;
 
-		const assignee = task.userId
-			? await db.query.userTable.findFirst({
-					where: eq(userTable.id, task.userId),
-				})
-			: null;
-
 		return {
-			...task,
-			priority: (task.priority ?? "no-priority") as Task["priority"],
-			assigneeName: assignee?.name ?? null,
-			assigneeId: task.userId,
-			assigneeImage: assignee?.image ?? null,
+			...taskWithCreator,
+			priority: (taskWithCreator.priority ?? "no-priority") as Task["priority"],
+			assigneeName: taskWithCreator.assigneeName ?? null,
+			assigneeId: taskWithCreator.assigneeId,
+			assigneeImage: taskWithCreator.assigneeImage ?? null,
+			creatorName: taskWithCreator.creatorName ?? null,
+			creatorImage: taskWithCreator.creatorImage ?? null,
 			columnName: column?.name ?? null,
 			labels,
 			externalLinks,
@@ -253,6 +285,8 @@ export class DrizzleTaskRepository implements TaskRepository {
 
 		const total = Number(taskCount?.count ?? 0);
 
+		const creatorUser = alias(userTable, "creator_user");
+
 		const taskSelection = {
 			id: taskTable.id,
 			title: taskTable.title,
@@ -267,9 +301,12 @@ export class DrizzleTaskRepository implements TaskRepository {
 			createdAt: taskTable.createdAt,
 			updatedAt: taskTable.updatedAt,
 			userId: taskTable.userId,
+			createdBy: taskTable.createdBy,
 			assigneeName: userTable.name,
 			assigneeId: userTable.id,
 			assigneeImage: userTable.image,
+			creatorName: creatorUser.name,
+			creatorImage: creatorUser.image,
 			projectId: taskTable.projectId,
 		};
 
@@ -277,6 +314,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 			.select(taskSelection)
 			.from(taskTable)
 			.leftJoin(userTable, eq(taskTable.userId, userTable.id))
+			.leftJoin(creatorUser, eq(taskTable.createdBy, creatorUser.id))
 			.leftJoin(projectTable, eq(taskTable.projectId, projectTable.id))
 			.where(whereClause)
 			.orderBy(getOrderBy());
@@ -414,6 +452,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 			.values({
 				projectId: input.projectId,
 				userId: input.userId || null,
+				createdBy: input.createdBy || null,
 				title: input.title || "",
 				status: resolvedStatus,
 				columnId: column?.id ?? null,
@@ -924,6 +963,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 	async insertTask(data: {
 		projectId: string;
 		userId: string | null;
+		createdBy: string | null;
 		title: string;
 		status: string;
 		columnId: string | null;

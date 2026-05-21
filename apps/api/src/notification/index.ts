@@ -162,6 +162,7 @@ const notification = new Hono<{
 subscribeToEvent<{
 	taskId: string;
 	userId: string;
+	assigneeId: string | null;
 	title: string;
 	projectId: string;
 }>("task.created", async (data) => {
@@ -173,7 +174,7 @@ subscribeToEvent<{
 			.limit(1);
 
 		await createNotification({
-			userId: data.userId,
+			userId: data.assigneeId,
 			type: "task_created",
 			eventData: {
 				taskTitle: data.title,

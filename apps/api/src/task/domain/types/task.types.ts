@@ -4,6 +4,7 @@ export interface CreateTaskInput {
 	projectId: string;
 	currentUserId: string;
 	userId?: string;
+	createdBy?: string;
 	title: string;
 	description?: string;
 	startDate?: Date;

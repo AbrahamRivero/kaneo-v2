@@ -5883,6 +5883,22 @@
 						"clearError"
 					]
 				},
+				"creator": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"label": {
+							"type": "string"
+						},
+						"unknown": {
+							"type": "string"
+						},
+						"tooltip": {
+							"type": "string"
+						}
+					},
+					"required": ["label", "unknown", "tooltip"]
+				},
 				"labels": {
 					"type": "object",
 					"additionalProperties": false,
@@ -6090,6 +6106,7 @@
 				"pr",
 				"assignee",
 				"dueDate",
+				"creator",
 				"labels",
 				"update",
 				"contextMenu",

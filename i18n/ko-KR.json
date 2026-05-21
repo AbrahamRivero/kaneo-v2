@@ -1630,6 +1630,11 @@
 			"clearSuccess": "작업 마감일이 지워졌습니다",
 			"clearError": "마감일 지우기에 실패했습니다"
 		},
+		"creator": {
+			"label": "작성자",
+			"unknown": "알 수 없음",
+			"tooltip": "작성자: {{name}}"
+		},
 		"labels": {
 			"label": "라벨",
 			"empty": "사용 가능한 라벨이 없습니다"

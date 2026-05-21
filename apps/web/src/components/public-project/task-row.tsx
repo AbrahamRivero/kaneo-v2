@@ -84,6 +84,28 @@ export function PublicTaskRow({
 					</div>
 				)}
 
+				{task.createdBy &&
+					task.createdBy !== task.userId &&
+					task.creatorName && (
+						<span
+							className="inline-flex items-center gap-1 rounded border border-border/70 bg-muted/55 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
+							title={t("tasks:creator.tooltip", {
+								name: task.creatorName,
+							})}
+						>
+							<Avatar className="h-3.5 w-3.5">
+								<AvatarImage
+									src={task.creatorImage ?? ""}
+									alt={task.creatorName}
+								/>
+								<AvatarFallback className="text-[8px] font-medium border border-border/30">
+									{task.creatorName.charAt(0).toUpperCase() ?? "?"}
+								</AvatarFallback>
+							</Avatar>
+							<span className="leading-none">{t("tasks:creator.label")}</span>
+						</span>
+					)}
+
 				{task.priority && (
 					<div className="inline-flex items-center gap-1.5 px-2 py-1 rounded border border-border bg-sidebar text-[10px] font-medium text-muted-foreground">
 						{getPriorityIcon(task.priority)}

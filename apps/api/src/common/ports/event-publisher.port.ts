@@ -6,6 +6,7 @@ export interface TaskEventData {
 	taskId: string;
 	projectId: string;
 	userId: string;
+	assigneeId?: string | null;
 	type: string;
 	content?: string | null;
 }

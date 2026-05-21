@@ -1,52 +1,43 @@
+import { and, eq } from "drizzle-orm";
+import db from "../../database";
+import { activityTable } from "../../database/schema";
 import { publishEvent } from "../../events";
 import { deleteOrphanedAssets } from "../../storage/cleanup-assets";
+import { DrizzleTaskRepository } from "../../task/infrastructure/repositories/drizzle-task.repository";
+import { UpdateCommentUseCase } from "../application/use-cases";
+import { activityRepository } from "../infrastructure/repositories/drizzle-activity.repository";
 
-async function updateComment(userId: string, id: string, content: string) {
-  const [existing] = await db
-    .select({
-      id: activityTable.id,
-      content: activityTable.content,
-      taskId: activityTable.taskId,
-    })
-    .from(activityTable)
-    .where(and(eq(activityTable.id, id), eq(activityTable.userId, userId)))
-    .limit(1);
+const updateComment = new UpdateCommentUseCase(
+	activityRepository,
+	new DrizzleTaskRepository(),
+	{
+		publish: async (eventType, data) => {
+			await publishEvent(eventType, data);
+		},
+	},
+);
 
-  if (!existing) {
-    throw new HTTPException(404, {
-      message: "Comment not found or you are not the author",
-    });
-  }
-
-  const [updated] = await db
-    .update(activityTable)
-    .set({ content })
-    .where(and(eq(activityTable.id, id), eq(activityTable.userId, userId)))
-    .returning();
-
-	if (!updated) {
-		throw new HTTPException(404, {
-			message: "Comment not found or you are not the author",
-		});
-	}
-
-	const [task] = await db
-		.select({ projectId: taskTable.projectId })
-		.from(taskTable)
-		.where(eq(taskTable.id, updated.taskId))
+async function updateCommentController(
+	userId: string,
+	id: string,
+	content: string,
+) {
+	const [existing] = await db
+		.select({
+			content: activityTable.content,
+			taskId: activityTable.taskId,
+		})
+		.from(activityTable)
+		.where(and(eq(activityTable.id, id), eq(activityTable.userId, userId)))
 		.limit(1);
 
-  if (task) {
-    await publishEvent("comment.updated", {
-      ...updated,
-      projectId: task.projectId,
-      userId,
-    });
-  }
+	const updated = await updateComment.execute({ userId, id, content });
 
-  deleteOrphanedAssets(existing.content, content, {
-    taskId: existing.taskId,
-  }).catch(() => {});
+	if (existing) {
+		deleteOrphanedAssets(existing.content, content, {
+			taskId: existing.taskId,
+		}).catch(() => {});
+	}
 
 	return updated;
 }

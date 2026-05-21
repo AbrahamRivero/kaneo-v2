@@ -1647,6 +1647,11 @@
 			"clearSuccess": "Task due date cleared",
 			"clearError": "Failed to clear due date"
 		},
+		"creator": {
+			"label": "Author",
+			"unknown": "Unknown",
+			"tooltip": "Author: {{name}}"
+		},
 		"labels": {
 			"label": "Labels",
 			"empty": "No labels available"

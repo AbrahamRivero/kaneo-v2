@@ -1410,6 +1410,11 @@
 			"clearSuccess": "Fecha de vencimiento eliminada correctamente",
 			"clearError": "Error al eliminar fecha de vencimiento"
 		},
+		"creator": {
+			"label": "Autor",
+			"unknown": "Desconocido",
+			"tooltip": "Autor: {{name}}"
+		},
 		"labels": {
 			"label": "Etiquetas",
 			"empty": "No hay etiquetas disponibles"

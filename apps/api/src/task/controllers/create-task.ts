@@ -6,6 +6,7 @@ async function createTaskController({
 	projectId,
 	currentUserId,
 	userId,
+	createdBy,
 	title,
 	status,
 	startDate,
@@ -16,6 +17,7 @@ async function createTaskController({
 	projectId: string;
 	currentUserId: string;
 	userId?: string;
+	createdBy?: string;
 	title: string;
 	status: string;
 	startDate?: Date;
@@ -27,6 +29,7 @@ async function createTaskController({
 		projectId,
 		currentUserId,
 		userId,
+		createdBy,
 		title,
 		status,
 		startDate,

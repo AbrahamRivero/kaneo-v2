@@ -87,6 +87,21 @@ function TaskRow({ task, projectSlug }: TaskRowProps) {
 		);
 	}, [workspaceUsers, task.userId]);
 
+	const creator = useMemo(() => {
+		if (!task.createdBy) return null;
+		const member = workspaceUsers?.members?.find(
+			(member) => member.userId === task.createdBy,
+		);
+		return {
+			name: member?.user?.name ?? task.creatorName ?? null,
+			image: member?.user?.image ?? task.creatorImage ?? null,
+		};
+	}, [workspaceUsers, task.createdBy, task.creatorName, task.creatorImage]);
+
+	const showCreatorBadge = Boolean(
+		task.createdBy && task.createdBy !== task.userId,
+	);
+
 	const pullRequests = useMemo(() => {
 		if (!externalLinks) return [];
 		return externalLinks.filter((link) => link.resourceType === "pull_request");
@@ -199,12 +214,12 @@ function TaskRow({ task, projectSlug }: TaskRowProps) {
 						{...listeners}
 					>
 						{showPriority && (
-							<div className="flex-shrink-0 first:[&_svg]:h-4 first:[&_svg]:w-4">
+							<div className="shrink-0 first:[&_svg]:h-4 first:[&_svg]:w-4">
 								{getPriorityIcon(task.priority ?? "")}
 							</div>
 						)}
 						{showTaskNumbers && (
-							<div className="text-xs font-mono text-muted-foreground flex-shrink-0">
+							<div className="text-xs font-mono text-muted-foreground shrink-0">
 								{projectSlug}-{task.number}
 							</div>
 						)}
@@ -333,7 +348,7 @@ function TaskRow({ task, projectSlug }: TaskRowProps) {
 
 						{showDueDates && task.dueDate && (
 							<div
-								className={`flex items-center gap-1 text-[10px] px-2 py-1 rounded flex-shrink-0 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
+								className={`flex items-center gap-1 text-[10px] px-2 py-1 rounded shrink-0 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
 							>
 								{getDueDateStatus(task.dueDate) === "overdue" && (
 									<CalendarX className="w-3 h-3" />
@@ -349,8 +364,28 @@ function TaskRow({ task, projectSlug }: TaskRowProps) {
 							</div>
 						)}
 
+						{showCreatorBadge && (
+							<span
+								className="inline-flex items-center gap-1 rounded border border-border/70 bg-muted/55 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground shrink-0"
+								title={t("tasks:creator.tooltip", {
+									name: creator?.name ?? t("tasks:creator.unknown"),
+								})}
+							>
+								<Avatar className="h-3.5 w-3.5">
+									<AvatarImage
+										src={creator?.image ?? ""}
+										alt={creator?.name ?? ""}
+									/>
+									<AvatarFallback className="text-[8px] font-medium border border-border/30">
+										{creator?.name?.charAt(0).toUpperCase() ?? "?"}
+									</AvatarFallback>
+								</Avatar>
+								<span className="leading-none">{t("tasks:creator.label")}</span>
+							</span>
+						)}
+
 						{showAssignees && (
-							<div className="flex-shrink-0">
+							<div className="shrink-0">
 								{task.userId ? (
 									<Avatar className="h-6 w-6">
 										<AvatarImage

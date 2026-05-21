@@ -14,7 +14,8 @@ export class CreateTaskUseCase {
 		await this.eventPublisher.publish("task.created", {
 			...task,
 			taskId: task.id,
-			userId: task.userId ?? "",
+			userId: task.createdBy ?? task.userId ?? "",
+			assigneeId: task.userId ?? null,
 			currentUserId: input.currentUserId,
 			type: "created",
 			content: null,

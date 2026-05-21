@@ -6,6 +6,7 @@ import {
 	Copy,
 	GitBranch,
 	Plus,
+	UserRound,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -111,6 +112,41 @@ export default function TaskPropertiesSidebar({
 		(member) => member.userId === task?.userId,
 	);
 
+	const creatorMember = task?.createdBy
+		? workspaceUsers?.members?.find(
+				(member) => member.userId === task.createdBy,
+			)
+		: null;
+	const creatorName = creatorMember?.user?.name ?? task?.creatorName ?? null;
+	const creatorImage = creatorMember?.user?.image ?? task?.creatorImage ?? null;
+	const showCreator = Boolean(task?.createdBy);
+
+	const creatorBadge = showCreator ? (
+		<div
+			className="flex items-center h-7 px-1.5 gap-1.5 text-foreground/70"
+			title={t("tasks:creator.tooltip", {
+				name: creatorName ?? t("tasks:creator.unknown"),
+			})}
+		>
+			{creatorImage || creatorName ? (
+				<Avatar className="h-[16px] w-[16px]">
+					<AvatarImage src={creatorImage ?? ""} alt={creatorName ?? ""} />
+					<AvatarFallback className="text-[9px] font-medium border border-border/30 shrink-0 h-[16px] w-[16px]">
+						{creatorName?.charAt(0).toUpperCase() ?? "?"}
+					</AvatarFallback>
+				</Avatar>
+			) : (
+				<UserRound className="w-3.5 h-3.5 text-muted-foreground" />
+			)}
+			<span className="text-[10px] text-muted-foreground">
+				{t("tasks:creator.label")}:
+			</span>
+			<span className="text-xs font-semibold truncate max-w-[100px]">
+				{creatorName ?? t("tasks:creator.unknown")}
+			</span>
+		</div>
+	) : null;
+
 	const handleCopyTaskLink = () => {
 		navigator.clipboard.writeText(
 			`${window.location.origin}/dashboard/workspace/${workspaceId}/project/${projectId}/task/${taskId}`,
@@ -191,133 +227,130 @@ export default function TaskPropertiesSidebar({
 							</TooltipProvider>
 						</div>
 
-            <div className="flex flex-row flex-wrap gap-1 items-center p-2 w-full">
-              {task && (
-                <TaskStatusPopover task={task}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="justify-start h-7 px-1.5 gap-1.5"
-                  >
-                    {getColumnIcon(
-                      task.status ?? "",
-                      statusIsFinal,
-                      statusIcon,
-                    )}
-                    <span className="text-xs font-semibold truncate">
-                      {statusLabel}
-                    </span>
-                  </Button>
-                </TaskStatusPopover>
-              )}
-              {task && (
-                <TaskPriorityPopover task={task}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="justify-start h-7 px-1.5 gap-1.5"
-                  >
-                    {getPriorityIcon(task.priority ?? "")}
-                    <span className="text-xs font-semibold truncate">
-                      {getPriorityLabel(task.priority ?? "")}
-                    </span>
-                  </Button>
-                </TaskPriorityPopover>
-              )}
-              {task && (
-                <TaskAssigneePopover task={task} workspaceId={workspaceId}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="justify-start h-7 px-1.5 gap-1.5"
-                  >
-                    {task.userId ? (
-                      <Avatar className="h-[16px] w-[16px]">
-                        <AvatarImage
-                          src={assignee?.user?.image ?? ""}
-                          alt={assignee?.user?.name || ""}
-                        />
-                        <AvatarFallback className="text-[9px] font-medium border border-border/30 flex-shrink-0 h-[16px] w-[16px]">
-                          {assignee?.user?.name?.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    ) : (
-                      <div
-                        className="w-[16px] h-[16px] rounded-full bg-muted border border-border flex items-center justify-center flex-shrink-0"
-                        title={t("tasks:popover.assignee.unassigned")}
-                      >
-                        <span className="text-[8px] font-medium">?</span>
-                      </div>
-                    )}
-                    <span className="text-xs font-semibold truncate max-w-[100px]">
-                      {assignee?.user?.name ||
-                        task.assigneeName ||
-                        t("tasks:popover.assignee.unassigned")}
-                    </span>
-                  </Button>
-                </TaskAssigneePopover>
-              )}
-              {task && (
-                <TaskStartDatePopover task={task}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="justify-start h-7 px-1.5 gap-1.5"
-                  >
-                    <CalendarDays className="w-3.5 h-3.5 text-muted-foreground" />
-                    <span
-                      className={`text-xs font-semibold ${task.startDate ? "" : "text-muted-foreground"}`}
-                    >
-                      {task.startDate
-                        ? formatDateShort(task.startDate)
-                        : t("tasks:properties.start")}
-                    </span>
-                  </Button>
-                </TaskStartDatePopover>
-              )}
-              {task && (
-                <TaskDueDatePopover task={task}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="justify-start h-7 px-1.5 gap-1.5"
-                  >
-                    {task.dueDate ? (
-                      <>
-                        {getDueDateStatus(task.dueDate) === "overdue" && (
-                          <CalendarX
-                            className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
-                          />
-                        )}
-                        {getDueDateStatus(task.dueDate) === "due-soon" && (
-                          <CalendarClock
-                            className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
-                          />
-                        )}
-                        {(getDueDateStatus(task.dueDate) === "far-future" ||
-                          getDueDateStatus(task.dueDate) === "no-due-date") && (
-                          <Calendar
-                            className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
-                          />
-                        )}
-                        <span className="text-xs font-semibold">
-                          {formatDateShort(task.dueDate)}
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-                        <span className="text-xs font-semibold text-muted-foreground">
-                          {t("tasks:properties.noDate")}
-                        </span>
-                      </>
-                    )}
-                  </Button>
-                </TaskDueDatePopover>
-              )}
-            </div>
-          </div>
-        )}
+						<div className="flex flex-row flex-wrap gap-1 items-center p-2 w-full">
+							{task && (
+								<TaskStatusPopover task={task}>
+									<Button
+										variant="ghost"
+										size="sm"
+										className="justify-start h-7 px-1.5 gap-1.5"
+									>
+										{getColumnIcon(task.status ?? "", statusIsFinal,statusIcon)}
+										<span className="text-xs font-semibold truncate">
+											{statusLabel}
+										</span>
+									</Button>
+								</TaskStatusPopover>
+							)}
+							{task && (
+								<TaskPriorityPopover task={task}>
+									<Button
+										variant="ghost"
+										size="sm"
+										className="justify-start h-7 px-1.5 gap-1.5"
+									>
+										{getPriorityIcon(task.priority ?? "")}
+										<span className="text-xs font-semibold truncate">
+											{getPriorityLabel(task.priority ?? "")}
+										</span>
+									</Button>
+								</TaskPriorityPopover>
+							)}
+							{task && (
+								<TaskAssigneePopover task={task} workspaceId={workspaceId}>
+									<Button
+										variant="ghost"
+										size="sm"
+										className="justify-start h-7 px-1.5 gap-1.5"
+									>
+										{task.userId ? (
+											<Avatar className="h-4 w-4">
+												<AvatarImage
+													src={assignee?.user?.image ?? ""}
+													alt={assignee?.user?.name || ""}
+												/>
+												<AvatarFallback className="text-[9px] font-medium border border-border/30 shrink-0 h-4 w-4">
+													{assignee?.user?.name?.charAt(0).toUpperCase()}
+												</AvatarFallback>
+											</Avatar>
+										) : (
+											<div
+												className="w-4 h-4 rounded-full bg-muted border border-border flex items-center justify-center shrink-0"
+												title={t("tasks:popover.assignee.unassigned")}
+											>
+												<span className="text-[8px] font-medium">?</span>
+											</div>
+										)}
+										<span className="text-xs font-semibold truncate max-w-25">
+											{assignee?.user?.name ||
+												task.assigneeName ||
+												t("tasks:popover.assignee.unassigned")}
+										</span>
+									</Button>
+								</TaskAssigneePopover>
+							)}
+							{creatorBadge}
+							{task && (
+								<TaskStartDatePopover task={task}>
+									<Button
+										variant="ghost"
+										size="sm"
+										className="justify-start h-7 px-1.5 gap-1.5"
+									>
+										<CalendarDays className="w-3.5 h-3.5 text-muted-foreground" />
+										<span
+											className={`text-xs font-semibold ${task.startDate ? "" : "text-muted-foreground"}`}
+										>
+											{task.startDate
+												? formatDateShort(task.startDate)
+												: t("tasks:properties.start")}
+										</span>
+									</Button>
+								</TaskStartDatePopover>
+							)}
+							{task && (
+								<TaskDueDatePopover task={task}>
+									<Button
+										variant="ghost"
+										size="sm"
+										className="justify-start h-7 px-1.5 gap-1.5"
+									>
+										{task.dueDate ? (
+											<>
+												{getDueDateStatus(task.dueDate) === "overdue" && (
+													<CalendarX
+														className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
+													/>
+												)}
+												{getDueDateStatus(task.dueDate) === "due-soon" && (
+													<CalendarClock
+														className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
+													/>
+												)}
+												{(getDueDateStatus(task.dueDate) === "far-future" ||
+													getDueDateStatus(task.dueDate) === "no-due-date") && (
+													<Calendar
+														className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
+													/>
+												)}
+												<span className="text-xs font-semibold">
+													{formatDateShort(task.dueDate)}
+												</span>
+											</>
+										) : (
+											<>
+												<Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+												<span className="text-xs font-semibold text-muted-foreground">
+													{t("tasks:properties.noDate")}
+												</span>
+											</>
+										)}
+									</Button>
+								</TaskDueDatePopover>
+							)}
+						</div>
+					</div>
+				)}
 
 				{!compact && (
 					<>
@@ -379,133 +412,130 @@ export default function TaskPropertiesSidebar({
 								</TooltipProvider>
 							</div>
 
-              <div className="flex flex-row flex-wrap gap-1 items-center p-2 w-full">
-                {task && (
-                  <TaskStatusPopover task={task}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="justify-start h-7 px-1.5 gap-1.5"
-                    >
-                      {getColumnIcon(
-                        task.status ?? "",
-                        statusIsFinal,
-                        statusIcon,
-                      )}
-                      <span className="text-xs font-semibold truncate">
-                        {statusLabel}
-                      </span>
-                    </Button>
-                  </TaskStatusPopover>
-                )}
-                {task && (
-                  <TaskPriorityPopover task={task}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="justify-start h-7 px-1.5 gap-1.5"
-                    >
-                      {getPriorityIcon(task.priority ?? "")}
-                      <span className="text-xs font-semibold truncate">
-                        {getPriorityLabel(task.priority ?? "")}
-                      </span>
-                    </Button>
-                  </TaskPriorityPopover>
-                )}
-                {task && (
-                  <TaskAssigneePopover task={task} workspaceId={workspaceId}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="justify-start h-7 px-1.5 gap-1.5"
-                    >
-                      {task.userId ? (
-                        <Avatar className="h-[16px] w-[16px]">
-                          <AvatarImage
-                            src={assignee?.user?.image ?? ""}
-                            alt={assignee?.user?.name || ""}
-                          />
-                          <AvatarFallback className="text-[9px] font-medium border border-border/30 shrink-0 h-[16px] w-[16px]">
-                            {assignee?.user?.name?.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                      ) : (
-                        <div
-                          className="w-[16px] h-[16px] rounded-full bg-muted border border-border flex items-center justify-center shrink-0"
-                          title={t("tasks:popover.assignee.unassigned")}
-                        >
-                          <span className="text-[8px] font-medium">?</span>
-                        </div>
-                      )}
-                      <span className="text-xs font-semibold truncate max-w-[100px]">
-                        {assignee?.user?.name ||
-                          task.assigneeName ||
-                          t("tasks:popover.assignee.unassigned")}
-                      </span>
-                    </Button>
-                  </TaskAssigneePopover>
-                )}
-                {task && (
-                  <TaskStartDatePopover task={task}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="justify-start h-7 px-1.5 gap-1.5"
-                    >
-                      <CalendarDays className="w-3.5 h-3.5 text-muted-foreground" />
-                      <span
-                        className={`text-xs font-semibold ${task.startDate ? "" : "text-muted-foreground"}`}
-                      >
-                        {task.startDate
-                          ? formatDateShort(task.startDate)
-                          : t("tasks:properties.start")}
-                      </span>
-                    </Button>
-                  </TaskStartDatePopover>
-                )}
-                {task && (
-                  <TaskDueDatePopover task={task}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="justify-start h-7 px-1.5 gap-1.5"
-                    >
-                      {task.dueDate ? (
-                        <>
-                          {getDueDateStatus(task.dueDate) === "overdue" && (
-                            <CalendarX
-                              className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
-                            />
-                          )}
-                          {getDueDateStatus(task.dueDate) === "due-soon" && (
-                            <CalendarClock
-                              className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
-                            />
-                          )}
-                          {(getDueDateStatus(task.dueDate) === "far-future" ||
-                            getDueDateStatus(task.dueDate) ===
-                              "no-due-date") && (
-                            <Calendar
-                              className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
-                            />
-                          )}
-                          <span className="text-xs font-semibold">
-                            {formatDateShort(task.dueDate)}
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-                          <span className="text-xs font-semibold text-muted-foreground">
-                            {t("tasks:properties.noDate")}
-                          </span>
-                        </>
-                      )}
-                    </Button>
-                  </TaskDueDatePopover>
-                )}
-              </div>
-            </div>
+							<div className="flex flex-row flex-wrap gap-1 items-center p-2 w-full">
+								{task && (
+									<TaskStatusPopover task={task}>
+										<Button
+											variant="ghost"
+											size="sm"
+											className="justify-start h-7 px-1.5 gap-1.5"
+										>
+											{getColumnIcon(task.status ?? "", statusIsFinal,statusIcon)}
+											<span className="text-xs font-semibold truncate">
+												{statusLabel}
+											</span>
+										</Button>
+									</TaskStatusPopover>
+								)}
+								{task && (
+									<TaskPriorityPopover task={task}>
+										<Button
+											variant="ghost"
+											size="sm"
+											className="justify-start h-7 px-1.5 gap-1.5"
+										>
+											{getPriorityIcon(task.priority ?? "")}
+											<span className="text-xs font-semibold truncate">
+												{getPriorityLabel(task.priority ?? "")}
+											</span>
+										</Button>
+									</TaskPriorityPopover>
+								)}
+								{task && (
+									<TaskAssigneePopover task={task} workspaceId={workspaceId}>
+										<Button
+											variant="ghost"
+											size="sm"
+											className="justify-start h-7 px-1.5 gap-1.5"
+										>
+											{task.userId ? (
+												<Avatar className="h-[16px] w-[16px]">
+													<AvatarImage
+														src={assignee?.user?.image ?? ""}
+														alt={assignee?.user?.name || ""}
+													/>
+													<AvatarFallback className="text-[9px] font-medium border border-border/30 shrink-0 h-[16px] w-[16px]">
+														{assignee?.user?.name?.charAt(0).toUpperCase()}
+													</AvatarFallback>
+												</Avatar>
+											) : (
+												<div
+													className="w-[16px] h-[16px] rounded-full bg-muted border border-border flex items-center justify-center shrink-0"
+													title={t("tasks:popover.assignee.unassigned")}
+												>
+													<span className="text-[8px] font-medium">?</span>
+												</div>
+											)}
+											<span className="text-xs font-semibold truncate max-w-[100px]">
+												{assignee?.user?.name ||
+													task.assigneeName ||
+													t("tasks:popover.assignee.unassigned")}
+											</span>
+										</Button>
+									</TaskAssigneePopover>
+								)}
+								{creatorBadge}
+								{task && (
+									<TaskStartDatePopover task={task}>
+										<Button
+											variant="ghost"
+											size="sm"
+											className="justify-start h-7 px-1.5 gap-1.5"
+										>
+											<CalendarDays className="w-3.5 h-3.5 text-muted-foreground" />
+											<span
+												className={`text-xs font-semibold ${task.startDate ? "" : "text-muted-foreground"}`}
+											>
+												{task.startDate
+													? formatDateShort(task.startDate)
+													: t("tasks:properties.start")}
+											</span>
+										</Button>
+									</TaskStartDatePopover>
+								)}
+								{task && (
+									<TaskDueDatePopover task={task}>
+										<Button
+											variant="ghost"
+											size="sm"
+											className="justify-start h-7 px-1.5 gap-1.5"
+										>
+											{task.dueDate ? (
+												<>
+													{getDueDateStatus(task.dueDate) === "overdue" && (
+														<CalendarX
+															className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
+														/>
+													)}
+													{getDueDateStatus(task.dueDate) === "due-soon" && (
+														<CalendarClock
+															className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
+														/>
+													)}
+													{(getDueDateStatus(task.dueDate) === "far-future" ||
+														getDueDateStatus(task.dueDate) ===
+															"no-due-date") && (
+														<Calendar
+															className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
+														/>
+													)}
+													<span className="text-xs font-semibold">
+														{formatDateShort(task.dueDate)}
+													</span>
+												</>
+											) : (
+												<>
+													<Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+													<span className="text-xs font-semibold text-muted-foreground">
+														{t("tasks:properties.noDate")}
+													</span>
+												</>
+											)}
+										</Button>
+									</TaskDueDatePopover>
+								)}
+							</div>
+						</div>
 
 						{/* Desktop: Title + stacked properties */}
 						<div className="hidden lg:block">
@@ -570,135 +600,132 @@ export default function TaskPropertiesSidebar({
 								</div>
 							</div>
 
-              <div className="flex flex-col gap-2 px-3 py-3">
-                {task && (
-                  <TaskStatusPopover task={task}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="justify-start h-7 px-1.5 gap-1.5 w-full"
-                    >
-                      {getColumnIcon(
-                        task.status ?? "",
-                        statusIsFinal,
-                        statusIcon,
-                      )}
-                      <span className="text-xs font-semibold truncate">
-                        {statusLabel}
-                      </span>
-                    </Button>
-                  </TaskStatusPopover>
-                )}
-                {task && (
-                  <TaskPriorityPopover task={task}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="justify-start h-7 px-1.5 gap-1.5 w-full"
-                    >
-                      {getPriorityIcon(task.priority ?? "")}
-                      <span className="text-xs font-semibold truncate">
-                        {getPriorityLabel(task.priority ?? "")}
-                      </span>
-                    </Button>
-                  </TaskPriorityPopover>
-                )}
-                {task && (
-                  <TaskAssigneePopover task={task} workspaceId={workspaceId}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="justify-start h-7 px-1.5 gap-1.5 w-full"
-                    >
-                      {task.userId ? (
-                        <Avatar className="h-[16px] w-[16px]">
-                          <AvatarImage
-                            src={assignee?.user?.image ?? ""}
-                            alt={assignee?.user?.name || ""}
-                          />
-                          <AvatarFallback className="text-[9px] font-medium border border-border/30 shrink-0 h-[16px] w-[16px]">
-                            {assignee?.user?.name?.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                      ) : (
-                        <div
-                          className="w-[16px] h-[16px] rounded-full bg-muted border border-border flex items-center justify-center shrink-0"
-                          title={t("tasks:popover.assignee.unassigned")}
-                        >
-                          <span className="text-[8px] font-medium">?</span>
-                        </div>
-                      )}
-                      <span className="text-xs font-semibold truncate max-w-[100px]">
-                        {assignee?.user?.name ||
-                          task.assigneeName ||
-                          t("tasks:popover.assignee.unassigned")}
-                      </span>
-                    </Button>
-                  </TaskAssigneePopover>
-                )}
-                {task && (
-                  <TaskStartDatePopover task={task}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="justify-start h-7 px-1.5 gap-1.5 w-full"
-                    >
-                      <CalendarDays className="w-3.5 h-3.5 text-muted-foreground" />
-                      <span
-                        className={`text-xs font-semibold ${task.startDate ? "" : "text-muted-foreground"}`}
-                      >
-                        {task.startDate
-                          ? formatDateShort(task.startDate)
-                          : t("tasks:properties.startDate")}
-                      </span>
-                    </Button>
-                  </TaskStartDatePopover>
-                )}
-                {task && (
-                  <TaskDueDatePopover task={task}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="justify-start h-7 px-1.5 gap-1.5 w-full"
-                    >
-                      {task.dueDate ? (
-                        <>
-                          {getDueDateStatus(task.dueDate) === "overdue" && (
-                            <CalendarX
-                              className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
-                            />
-                          )}
-                          {getDueDateStatus(task.dueDate) === "due-soon" && (
-                            <CalendarClock
-                              className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
-                            />
-                          )}
-                          {(getDueDateStatus(task.dueDate) === "far-future" ||
-                            getDueDateStatus(task.dueDate) ===
-                              "no-due-date") && (
-                            <Calendar
-                              className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
-                            />
-                          )}
-                          <span className="text-xs font-semibold">
-                            {formatDateShort(task.dueDate)}
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-                          <span className="text-xs font-semibold text-muted-foreground">
-                            {t("tasks:properties.noDate")}
-                          </span>
-                        </>
-                      )}
-                    </Button>
-                  </TaskDueDatePopover>
-                )}
-              </div>
-            </div>
-          </>
-        )}
+							<div className="flex flex-col gap-2 px-3 py-3">
+								{task && (
+									<TaskStatusPopover task={task}>
+										<Button
+											variant="ghost"
+											size="sm"
+											className="justify-start h-7 px-1.5 gap-1.5 w-full"
+										>
+											{getColumnIcon(task.status ?? "", statusIsFinal,statusIcon)}
+											<span className="text-xs font-semibold truncate">
+												{statusLabel}
+											</span>
+										</Button>
+									</TaskStatusPopover>
+								)}
+								{task && (
+									<TaskPriorityPopover task={task}>
+										<Button
+											variant="ghost"
+											size="sm"
+											className="justify-start h-7 px-1.5 gap-1.5 w-full"
+										>
+											{getPriorityIcon(task.priority ?? "")}
+											<span className="text-xs font-semibold truncate">
+												{getPriorityLabel(task.priority ?? "")}
+											</span>
+										</Button>
+									</TaskPriorityPopover>
+								)}
+								{task && (
+									<TaskAssigneePopover task={task} workspaceId={workspaceId}>
+										<Button
+											variant="ghost"
+											size="sm"
+											className="justify-start h-7 px-1.5 gap-1.5 w-full"
+										>
+											{task.userId ? (
+												<Avatar className="h-[16px] w-[16px]">
+													<AvatarImage
+														src={assignee?.user?.image ?? ""}
+														alt={assignee?.user?.name || ""}
+													/>
+													<AvatarFallback className="text-[9px] font-medium border border-border/30 shrink-0 h-[16px] w-[16px]">
+														{assignee?.user?.name?.charAt(0).toUpperCase()}
+													</AvatarFallback>
+												</Avatar>
+											) : (
+												<div
+													className="w-[16px] h-[16px] rounded-full bg-muted border border-border flex items-center justify-center shrink-0"
+													title={t("tasks:popover.assignee.unassigned")}
+												>
+													<span className="text-[8px] font-medium">?</span>
+												</div>
+											)}
+											<span className="text-xs font-semibold truncate max-w-[100px]">
+												{assignee?.user?.name ||
+													task.assigneeName ||
+													t("tasks:popover.assignee.unassigned")}
+											</span>
+										</Button>
+									</TaskAssigneePopover>
+								)}
+								{creatorBadge}
+								{task && (
+									<TaskStartDatePopover task={task}>
+										<Button
+											variant="ghost"
+											size="sm"
+											className="justify-start h-7 px-1.5 gap-1.5 w-full"
+										>
+											<CalendarDays className="w-3.5 h-3.5 text-muted-foreground" />
+											<span
+												className={`text-xs font-semibold ${task.startDate ? "" : "text-muted-foreground"}`}
+											>
+												{task.startDate
+													? formatDateShort(task.startDate)
+													: t("tasks:properties.startDate")}
+											</span>
+										</Button>
+									</TaskStartDatePopover>
+								)}
+								{task && (
+									<TaskDueDatePopover task={task}>
+										<Button
+											variant="ghost"
+											size="sm"
+											className="justify-start h-7 px-1.5 gap-1.5 w-full"
+										>
+											{task.dueDate ? (
+												<>
+													{getDueDateStatus(task.dueDate) === "overdue" && (
+														<CalendarX
+															className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
+														/>
+													)}
+													{getDueDateStatus(task.dueDate) === "due-soon" && (
+														<CalendarClock
+															className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
+														/>
+													)}
+													{(getDueDateStatus(task.dueDate) === "far-future" ||
+														getDueDateStatus(task.dueDate) ===
+															"no-due-date") && (
+														<Calendar
+															className={`w-3.5 h-3.5 ${dueDateStatusColors[getDueDateStatus(task.dueDate)]}`}
+														/>
+													)}
+													<span className="text-xs font-semibold">
+														{formatDateShort(task.dueDate)}
+													</span>
+												</>
+											) : (
+												<>
+													<Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+													<span className="text-xs font-semibold text-muted-foreground">
+														{t("tasks:properties.noDate")}
+													</span>
+												</>
+											)}
+										</Button>
+									</TaskDueDatePopover>
+								)}
+							</div>
+						</div>
+					</>
+				)}
 
 				<div className="hidden lg:flex px-3 flex-col gap-3 p-2">
 					<div className="flex flex-col gap-1">
