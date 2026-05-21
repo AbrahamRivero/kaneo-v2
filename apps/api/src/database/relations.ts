@@ -5,7 +5,6 @@ import {
 	apikeyTable,
 	assetTable,
 	columnTable,
-	commentTable,
 	externalLinkTable,
 	githubIntegrationTable,
 	integrationTable,
@@ -36,10 +35,10 @@ export const userTableRelations = relations(userTable, ({ many, one }) => ({
 	teamMembers: many(teamMemberTable),
 	workspaces: many(workspaceTable),
 	workspaceMemberships: many(workspaceUserTable),
-	assignedTasks: many(taskTable),
+	assignedTasks: many(taskTable, { relationName: "taskAssignee" }),
+	createdTasks: many(taskTable, { relationName: "taskCreator" }),
 	timeEntries: many(timeEntryTable),
 	activities: many(activityTable),
-	comments: many(commentTable),
 	assets: many(assetTable),
 	notifications: many(notificationTable),
 	notificationPreference: one(userNotificationPreferenceTable),
@@ -141,6 +140,12 @@ export const taskTableRelations = relations(taskTable, ({ one, many }) => ({
 	assignee: one(userTable, {
 		fields: [taskTable.userId],
 		references: [userTable.id],
+		relationName: "taskAssignee",
+	}),
+	creator: one(userTable, {
+		fields: [taskTable.createdBy],
+		references: [userTable.id],
+		relationName: "taskCreator",
 	}),
 	column: one(columnTable, {
 		fields: [taskTable.columnId],
@@ -148,7 +153,6 @@ export const taskTableRelations = relations(taskTable, ({ one, many }) => ({
 	}),
 	timeEntries: many(timeEntryTable),
 	activities: many(activityTable),
-	comments: many(commentTable),
 	assets: many(assetTable),
 	labels: many(labelTable),
 	externalLinks: many(externalLinkTable),
@@ -370,14 +374,3 @@ export const taskReminderSentTableRelations = relations(
 		}),
 	}),
 );
-
-export const commentTableRelations = relations(commentTable, ({ one }) => ({
-	task: one(taskTable, {
-		fields: [commentTable.taskId],
-		references: [taskTable.id],
-	}),
-	user: one(userTable, {
-		fields: [commentTable.userId],
-		references: [userTable.id],
-	}),
-}));

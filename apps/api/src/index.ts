@@ -18,7 +18,6 @@ import * as v from "valibot";
 import activity from "./activity";
 import { auth } from "./auth";
 import column from "./column";
-import comment from "./comment";
 import config from "./config";
 import db, { getDatabase, schema } from "./database";
 import { prepareDatabaseStartup } from "./database/prepare-database-startup";
@@ -474,7 +473,6 @@ export function createApp() {
 	const taskApi = api.route("/task", task);
 	const columnApi = api.route("/column", column);
 	const activityApi = api.route("/activity", activity);
-	const commentApi = api.route("/comment", comment);
 	const timeEntryApi = api.route("/time-entry", timeEntry);
 	const labelApi = api.route("/label", label);
 	const notificationApi = api.route("/notification", notification);
@@ -575,7 +573,6 @@ export function createApp() {
 		injectWebSocket,
 		activityApi,
 		columnApi,
-		commentApi,
 		configApi,
 		discordIntegrationApi,
 		externalLinkApi,
@@ -604,25 +601,25 @@ export function createApp() {
 export async function runStartupTasks() {
 	const currentDir = dirname(fileURLToPath(import.meta.url));
 
-  await prepareDatabaseStartup({
-    waitForDatabase: async () => {
-      await waitForDatabase({
-        query: async () => {
-          await getDatabase().execute(sql`SELECT 1`);
-        },
-      });
-    },
-    runStartupMigrations: async () => {
-      await migrateWorkspaceUserEmail();
-      await migrateSessionColumn();
+	await prepareDatabaseStartup({
+		waitForDatabase: async () => {
+			await waitForDatabase({
+				query: async () => {
+					await getDatabase().execute(sql`SELECT 1`);
+				},
+			});
+		},
+		runStartupMigrations: async () => {
+			await migrateWorkspaceUserEmail();
+			await migrateSessionColumn();
 
-      console.log("🔄 Migrating database...");
-      await migrate(getDatabase(), {
-        migrationsFolder: `${currentDir}/../drizzle`,
-      });
-      console.log("✅ Database migrated successfully!");
-    },
-  });
+			console.log("🔄 Migrating database...");
+			await migrate(getDatabase(), {
+				migrationsFolder: `${currentDir}/../drizzle`,
+			});
+			console.log("✅ Database migrated successfully!");
+		},
+	});
 
 	// After Drizzle migrations: apikey table must exist so we can align columns
 	// with Better Auth (reference_id + nullable user_id).
@@ -690,7 +687,6 @@ const {
 	injectWebSocket,
 	activityApi,
 	columnApi,
-	commentApi,
 	configApi,
 	discordIntegrationApi,
 	externalLinkApi,
@@ -729,7 +725,6 @@ export type AppType =
 	| typeof taskApi
 	| typeof columnApi
 	| typeof activityApi
-	| typeof commentApi
 	| typeof timeEntryApi
 	| typeof labelApi
 	| typeof notificationApi

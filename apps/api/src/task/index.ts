@@ -191,6 +191,7 @@ const task = new Hono<{
 				projectId,
 				currentUserId: c.get("userId"),
 				userId: userId,
+				createdBy: c.get("userId"),
 				title,
 				description,
 				startDate: startDate ? new Date(startDate) : undefined,

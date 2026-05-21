@@ -9,6 +9,7 @@ export function mapTaskToEntity(row: TaskRow): Task {
 		id: row.id,
 		projectId: row.projectId,
 		userId: row.userId,
+		createdBy: row.createdBy,
 		title: row.title,
 		description: row.description,
 		status: row.status,
@@ -26,6 +27,8 @@ export function mapTaskToEntity(row: TaskRow): Task {
 export function mapTaskWithRelationsToEntity(
 	task: TaskRow & {
 		assigneeName?: string | null;
+		creatorName?: string | null;
+		creatorImage?: string | null;
 		columnName?: string | null;
 		labels?: Array<{ id: string; name: string; color: string }>;
 	},
@@ -33,6 +36,8 @@ export function mapTaskWithRelationsToEntity(
 	return {
 		...mapTaskToEntity(task),
 		assigneeName: task.assigneeName ?? null,
+		creatorName: task.creatorName ?? null,
+		creatorImage: task.creatorImage ?? null,
 		columnName: task.columnName ?? null,
 		labels: task.labels ?? [],
 	};

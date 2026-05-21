@@ -5,10 +5,10 @@ import { resolveDatabaseConnectionString } from "./src/database/resolve-database
 config();
 
 export default defineConfig({
-  out: "./drizzle",
-  schema: "./src/database/schema.ts",
-  dialect: "postgresql",
-  dbCredentials: {
-    url: resolveDatabaseConnectionString(),
-  },
+	out: "./drizzle",
+	schema: "./src/database/schema.ts",
+	dialect: "postgresql",
+	dbCredentials: {
+		url: resolveDatabaseConnectionString(),
+	},
 }) satisfies Config;

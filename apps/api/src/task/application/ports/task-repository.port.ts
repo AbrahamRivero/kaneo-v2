@@ -65,6 +65,7 @@ export interface TaskRepository {
 	insertTask(data: {
 		projectId: string;
 		userId: string | null;
+		createdBy: string | null;
 		title: string;
 		status: string;
 		columnId: string | null;

@@ -1633,6 +1633,11 @@
 			"clearSuccess": "Date d'échéance de la tâche effacée",
 			"clearError": "Échec de l'effacement de la date d'échéance"
 		},
+		"creator": {
+			"label": "Auteur",
+			"unknown": "Inconnu",
+			"tooltip": "Auteur : {{name}}"
+		},
 		"labels": {
 			"label": "Labels",
 			"empty": "Aucun label disponible"

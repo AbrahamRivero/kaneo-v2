@@ -1635,6 +1635,11 @@
 			"clearSuccess": "Fälligkeitsdatum entfernt",
 			"clearError": "Fälligkeitsdatum konnte nicht entfernt werden"
 		},
+		"creator": {
+			"label": "Autor",
+			"unknown": "Unbekannt",
+			"tooltip": "Autor: {{name}}"
+		},
 		"labels": {
 			"label": "Labels",
 			"empty": "Keine Labels verfügbar"

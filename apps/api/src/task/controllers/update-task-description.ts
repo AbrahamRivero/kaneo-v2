@@ -14,42 +14,42 @@ async function updateTaskDescription({
 	description: string;
 	currentUserId: string;
 }) {
-  const existingTask = await db.query.taskTable.findFirst({
-    where: eq(taskTable.id, id),
-  });
+	const existingTask = await db.query.taskTable.findFirst({
+		where: eq(taskTable.id, id),
+	});
 
-  if (!existingTask) {
-    throw new HTTPException(404, {
-      message: "Task not found",
-    });
-  }
+	if (!existingTask) {
+		throw new HTTPException(404, {
+			message: "Task not found",
+		});
+	}
 
-  const [updatedTask] = await db
-    .update(taskTable)
-    .set({ description })
-    .where(eq(taskTable.id, id))
-    .returning();
+	const [updatedTask] = await db
+		.update(taskTable)
+		.set({ description })
+		.where(eq(taskTable.id, id))
+		.returning();
 
-  if (!updatedTask) {
-    throw new HTTPException(500, {
-      message: "Failed to update task description",
-    });
-  }
+	if (!updatedTask) {
+		throw new HTTPException(500, {
+			message: "Failed to update task description",
+		});
+	}
 
-  await publishEvent("task.description_changed", {
-    taskId: updatedTask.id,
-    projectId: updatedTask.projectId,
-    userId: currentUserId,
-    oldDescription: existingTask.description,
-    newDescription: description,
-    type: "description_changed",
-  });
+	await publishEvent("task.description_changed", {
+		taskId: updatedTask.id,
+		projectId: updatedTask.projectId,
+		userId: currentUserId,
+		oldDescription: existingTask.description,
+		newDescription: description,
+		type: "description_changed",
+	});
 
-  deleteOrphanedAssets(existingTask.description, description, {
-    taskId: id,
-  }).catch(() => {});
+	deleteOrphanedAssets(existingTask.description, description, {
+		taskId: id,
+	}).catch(() => {});
 
-  return updatedTask;
+	return updatedTask;
 }
 
 export default updateTaskDescription;

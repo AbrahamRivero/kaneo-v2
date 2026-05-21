@@ -1,10 +1,10 @@
 import { Readable } from "node:stream";
 import {
-  DeleteObjectCommand,
-  GetObjectCommand,
-  PutObjectCommand,
-  S3Client,
-  type S3ClientConfig,
+	DeleteObjectCommand,
+	GetObjectCommand,
+	PutObjectCommand,
+	S3Client,
+	type S3ClientConfig,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createId } from "@paralleldrive/cuid2";
@@ -35,16 +35,16 @@ export function isImageContentType(contentType: string) {
 type UploadSurface = "description" | "comment";
 
 type StorageConfig = {
-  endpoint: string;
-  region: string;
-  bucket: string;
-  accessKeyId: string;
-  secretAccessKey: string;
-  publicBaseUrl?: string;
-  keyPrefix: string;
-  forcePathStyle: boolean;
-  maxImageUploadBytes: number;
-  presignTtlSeconds: number;
+	endpoint: string;
+	region: string;
+	bucket: string;
+	accessKeyId: string;
+	secretAccessKey: string;
+	publicBaseUrl?: string;
+	keyPrefix: string;
+	forcePathStyle: boolean;
+	maxImageUploadBytes: number;
+	presignTtlSeconds: number;
 };
 
 type TaskImageUploadContext = {
@@ -104,24 +104,24 @@ function getStorageConfig(): StorageConfig {
 		);
 	}
 
-  return {
-    endpoint,
-    region: env("S3_REGION") || "us-east-1",
-    bucket,
-    accessKeyId,
-    secretAccessKey,
-    publicBaseUrl: env("S3_PUBLIC_BASE_URL") || undefined,
-    keyPrefix: env("S3_KEY_PREFIX"),
-    forcePathStyle: parseBoolean(process.env.S3_FORCE_PATH_STYLE, true),
-    maxImageUploadBytes: parsePositiveInt(
-      process.env.S3_MAX_IMAGE_UPLOAD_BYTES,
-      DEFAULT_MAX_IMAGE_UPLOAD_BYTES,
-    ),
-    presignTtlSeconds: parsePositiveInt(
-      process.env.S3_PRESIGN_TTL_SECONDS,
-      DEFAULT_PRESIGN_TTL_SECONDS,
-    ),
-  };
+	return {
+		endpoint,
+		region: env("S3_REGION") || "us-east-1",
+		bucket,
+		accessKeyId,
+		secretAccessKey,
+		publicBaseUrl: env("S3_PUBLIC_BASE_URL") || undefined,
+		keyPrefix: env("S3_KEY_PREFIX"),
+		forcePathStyle: parseBoolean(process.env.S3_FORCE_PATH_STYLE, true),
+		maxImageUploadBytes: parsePositiveInt(
+			process.env.S3_MAX_IMAGE_UPLOAD_BYTES,
+			DEFAULT_MAX_IMAGE_UPLOAD_BYTES,
+		),
+		presignTtlSeconds: parsePositiveInt(
+			process.env.S3_PRESIGN_TTL_SECONDS,
+			DEFAULT_PRESIGN_TTL_SECONDS,
+		),
+	};
 }
 
 function getMaxImageUploadBytes() {
@@ -216,9 +216,9 @@ export function buildObjectKey(context: TaskImageUploadContext) {
 }
 
 export function applyKeyPrefix(prefix: string, key: string) {
-  if (!prefix) return key;
-  const trimmed = prefix.replace(/\/+$/, "");
-  return `${trimmed}/${key}`;
+	if (!prefix) return key;
+	const trimmed = prefix.replace(/\/+$/, "");
+	return `${trimmed}/${key}`;
 }
 
 export function validateTaskAssetUploadInput(
@@ -245,10 +245,10 @@ export function validateTaskAssetUploadInput(
 export async function createTaskImageUploadUrl(
 	context: TaskImageUploadContext,
 ): Promise<TaskImageUploadUrl> {
-  const config = getStorageConfig();
-  const client = getClient(config);
-  const rawKey = buildObjectKey(context);
-  const key = applyKeyPrefix(config.keyPrefix, rawKey);
+	const config = getStorageConfig();
+	const client = getClient(config);
+	const rawKey = buildObjectKey(context);
+	const key = applyKeyPrefix(config.keyPrefix, rawKey);
 
 	const command = new PutObjectCommand({
 		Bucket: config.bucket,
@@ -277,10 +277,10 @@ export function assertTaskImageKeyMatchesContext(
 	key: string,
 	context: Omit<TaskImageUploadContext, "filename" | "contentType">,
 ) {
-  const config = getStorageConfig();
-  const objectPrefix = buildObjectKeyPrefix(context);
-  const fullPrefix = `${applyKeyPrefix(config.keyPrefix, objectPrefix)}/`;
-  return key.startsWith(fullPrefix);
+	const config = getStorageConfig();
+	const objectPrefix = buildObjectKeyPrefix(context);
+	const fullPrefix = `${applyKeyPrefix(config.keyPrefix, objectPrefix)}/`;
+	return key.startsWith(fullPrefix);
 }
 
 export async function getPrivateObject(key: string): Promise<AssetObject> {
@@ -312,12 +312,12 @@ export async function getPrivateObject(key: string): Promise<AssetObject> {
 }
 
 export async function deleteS3Object(key: string): Promise<void> {
-  const config = getStorageConfig();
-  const client = getClient(config);
-  await client.send(
-    new DeleteObjectCommand({
-      Bucket: config.bucket,
-      Key: key,
-    }),
-  );
+	const config = getStorageConfig();
+	const client = getClient(config);
+	await client.send(
+		new DeleteObjectCommand({
+			Bucket: config.bucket,
+			Key: key,
+		}),
+	);
 }

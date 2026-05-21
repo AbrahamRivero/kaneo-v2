@@ -8,5 +8,5 @@ export interface ActivityRepository {
 		content: string,
 		userId: string,
 	): Promise<Activity | null>;
-	deleteByIdAndUser(id: string, userId: string): Promise<Activity>;
+	deleteByIdAndUser(id: string, userId: string): Promise<Activity | null>;
 }

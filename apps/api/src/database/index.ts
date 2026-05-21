@@ -7,7 +7,6 @@ import {
 	apikeyTableRelations,
 	assetTableRelations,
 	columnTableRelations,
-	commentTableRelations,
 	externalLinkTableRelations,
 	githubIntegrationTableRelations,
 	integrationTableRelations,
@@ -37,7 +36,6 @@ import {
 	apikeyTable,
 	assetTable,
 	columnTable,
-	commentTable,
 	deviceCodeTable,
 	externalLinkTable,
 	githubIntegrationTable,
@@ -70,7 +68,6 @@ export const schema = {
 	activityTable,
 	apikeyTable,
 	columnTable,
-	commentTable,
 	deviceCodeTable,
 	externalLinkTable,
 	githubIntegrationTable,
@@ -98,7 +95,6 @@ export const schema = {
 	activityTableRelations,
 	apikeyTableRelations,
 	columnTableRelations,
-	commentTableRelations,
 	externalLinkTableRelations,
 	githubIntegrationTableRelations,
 	integrationTableRelations,
@@ -128,35 +124,35 @@ let pool: Pool | undefined;
 let dbInstance: DatabaseInstance | undefined;
 
 export function getDatabasePool(): Pool {
-  if (!pool) {
-    pool = new Pool({
-      connectionString: resolveDatabaseConnectionString(),
-    });
-  }
+	if (!pool) {
+		pool = new Pool({
+			connectionString: resolveDatabaseConnectionString(),
+		});
+	}
 
-  return pool;
+	return pool;
 }
 
 export function getDatabase(): DatabaseInstance {
-  if (!dbInstance) {
-    dbInstance = drizzle(getDatabasePool(), {
-      schema,
-    });
-  }
+	if (!dbInstance) {
+		dbInstance = drizzle(getDatabasePool(), {
+			schema,
+		});
+	}
 
-  return dbInstance;
+	return dbInstance;
 }
 
 const db = new Proxy({} as DatabaseInstance, {
-  get(_target, property, receiver) {
-    const value = Reflect.get(getDatabase(), property, receiver);
+	get(_target, property, receiver) {
+		const value = Reflect.get(getDatabase(), property, receiver);
 
-    if (typeof value === "function") {
-      return value.bind(getDatabase());
-    }
+		if (typeof value === "function") {
+			return value.bind(getDatabase());
+		}
 
-    return value;
-  },
+		return value;
+	},
 });
 
 export default db;

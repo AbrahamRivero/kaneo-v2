@@ -4,6 +4,7 @@ export interface Task {
 	id: string;
 	projectId: string;
 	userId: string | null;
+	createdBy: string | null;
 	title: string;
 	description: string | null;
 	status: string;
@@ -21,6 +22,8 @@ export interface TaskWithRelations extends Task {
 	assigneeName: string | null;
 	assigneeId: string | null;
 	assigneeImage: string | null;
+	creatorName: string | null;
+	creatorImage: string | null;
 	columnName?: string | null;
 	labels?: Array<{ id: string; name: string; color: string }>;
 	externalLinks?: Array<{

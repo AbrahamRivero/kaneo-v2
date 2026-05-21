@@ -1,53 +1,27 @@
 import { publishEvent } from "../../events";
 import { deleteOrphanedAssets } from "../../storage/cleanup-assets";
+import { DrizzleTaskRepository } from "../../task/infrastructure/repositories/drizzle-task.repository";
+import { DeleteCommentUseCase } from "../application/use-cases";
+import { activityRepository } from "../infrastructure/repositories/drizzle-activity.repository";
 
-async function deleteComment(userId: string, id: string) {
-  const [existing] = await db
-    .select({
-      id: activityTable.id,
-      content: activityTable.content,
-      taskId: activityTable.taskId,
-    })
-    .from(activityTable)
-    .where(and(eq(activityTable.id, id), eq(activityTable.userId, userId)))
-    .limit(1);
+const deleteComment = new DeleteCommentUseCase(
+	activityRepository,
+	new DrizzleTaskRepository(),
+	{
+		publish: async (eventType, data) => {
+			await publishEvent(eventType, data);
+		},
+	},
+);
 
-  if (!existing) {
-    throw new HTTPException(404, {
-      message: "Comment not found or you are not the author",
-    });
-  }
+async function deleteCommentController(userId: string, id: string) {
+	const deleted = await deleteComment.execute({ userId, id });
 
-  const [deletedComment] = await db
-    .delete(activityTable)
-    .where(and(eq(activityTable.id, id), eq(activityTable.userId, userId)))
-    .returning();
+	deleteOrphanedAssets(deleted.content, null, {
+		taskId: deleted.taskId,
+	}).catch(() => {});
 
-	if (!deletedComment) {
-		throw new HTTPException(404, {
-			message: "Comment not found or you are not the author",
-		});
-	}
-
-	const [task] = await db
-		.select({ projectId: taskTable.projectId })
-		.from(taskTable)
-		.where(eq(taskTable.id, deletedComment.taskId))
-		.limit(1);
-
-  if (task) {
-    await publishEvent("comment.deleted", {
-      ...deletedComment,
-      projectId: task.projectId,
-      userId,
-    });
-  }
-
-  deleteOrphanedAssets(existing.content, null, {
-    taskId: existing.taskId,
-  }).catch(() => {});
-
-	return deletedComment;
+	return deleted;
 }
 
 export default deleteCommentController;

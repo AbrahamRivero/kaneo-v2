@@ -300,6 +300,10 @@ export const taskTable = pgTable(
 			onDelete: "cascade",
 			onUpdate: "cascade",
 		}),
+		createdBy: text("created_by").references(() => userTable.id, {
+			onDelete: "cascade",
+			onUpdate: "cascade",
+		}),
 		title: text("title").notNull(),
 		description: text("description"),
 		status: text("status").notNull().default("to-do"),
@@ -320,6 +324,7 @@ export const taskTable = pgTable(
 		index("task_projectId_idx").on(table.projectId),
 		index("task_dueDate_idx").on(table.dueDate),
 		index("task_assigneeId_idx").on(table.userId),
+		index("task_createdBy_idx").on(table.createdBy),
 		index("task_columnId_idx").on(table.columnId),
 		unique("task_project_number_unique").on(table.projectId, table.number),
 	],
@@ -753,37 +758,6 @@ export const externalLinkTable = pgTable(
 		index("external_link_integrationId_idx").on(table.integrationId),
 		index("external_link_externalId_idx").on(table.externalId),
 		index("external_link_resourceType_idx").on(table.resourceType),
-	],
-);
-
-export const commentTable = pgTable(
-	"comment",
-	{
-		id: text("id")
-			.$defaultFn(() => createId())
-			.primaryKey(),
-		taskId: text("task_id")
-			.notNull()
-			.references(() => taskTable.id, {
-				onDelete: "cascade",
-				onUpdate: "cascade",
-			}),
-		userId: text("user_id")
-			.notNull()
-			.references(() => userTable.id, {
-				onDelete: "cascade",
-				onUpdate: "cascade",
-			}),
-		content: text("content").notNull(),
-		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-		updatedAt: timestamp("updated_at", { mode: "date" })
-			.defaultNow()
-			.$onUpdate(() => new Date())
-			.notNull(),
-	},
-	(table) => [
-		index("comment_task_idx").on(table.taskId),
-		index("comment_user_idx").on(table.userId),
 	],
 );
 

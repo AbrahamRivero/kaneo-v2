@@ -1408,6 +1408,11 @@
 			"clearSuccess": "Einddatum taak verwijderd",
 			"clearError": "Verwijderen einddatum mislukt"
 		},
+		"creator": {
+			"label": "Auteur",
+			"unknown": "Onbekend",
+			"tooltip": "Auteur: {{name}}"
+		},
 		"labels": {
 			"label": "Labels",
 			"empty": "Geen labels beschikbaar"
