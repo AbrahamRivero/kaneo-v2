@@ -1092,6 +1092,75 @@ export const deviceCodeTable = pgTable(
 	],
 );
 
+export const templateTable = pgTable(
+	"template",
+	{
+		id: text("id")
+			.$defaultFn(() => createId())
+			.primaryKey(),
+		workspaceId: text("workspace_id").references(() => workspaceTable.id, {
+			onDelete: "cascade",
+			onUpdate: "cascade",
+		}),
+		name: text("name").notNull(),
+		description: text("description"),
+		icon: text("icon").default("Layout"),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => new Date())
+			.notNull(),
+	},
+	(table) => [index("template_workspaceId_idx").on(table.workspaceId)],
+);
+
+export const templateColumnTable = pgTable(
+	"template_column",
+	{
+		id: text("id")
+			.$defaultFn(() => createId())
+			.primaryKey(),
+		templateId: text("template_id")
+			.notNull()
+			.references(() => templateTable.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		name: text("name").notNull(),
+		slug: text("slug").notNull(),
+		position: integer("position").notNull().default(0),
+		color: text("color"),
+		isFinal: boolean("is_final").default(false).notNull(),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => new Date())
+			.notNull(),
+	},
+	(table) => [index("templateColumn_templateId_idx").on(table.templateId)],
+);
+
+export const templateTaskTable = pgTable(
+	"template_task",
+	{
+		id: text("id")
+			.$defaultFn(() => createId())
+			.primaryKey(),
+		templateId: text("template_id")
+			.notNull()
+			.references(() => templateTable.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		title: text("title").notNull(),
+		description: text("description"),
+		columnSlug: text("column_slug").notNull(),
+		priority: text("priority").default("no-priority"),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+	},
+	(table) => [index("templateTask_templateId_idx").on(table.templateId)],
+);
+
 // Auth-schema compatible aliases in schema.ts
 export const user = userTable;
 export const session = sessionTable;

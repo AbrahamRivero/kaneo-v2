@@ -1,7 +1,11 @@
-import { eq } from "drizzle-orm";
+import { eq, max } from "drizzle-orm";
 import { columnRepository } from "../../../column/infrastructure/repositories/drizzle-column.repository";
 import db from "../../../database";
-import { projectTable } from "../../../database/schema";
+import {
+	projectTable,
+	taskTable,
+	templateTable,
+} from "../../../database/schema";
 import type {
 	CreateProjectInput,
 	ProjectRepository,
@@ -85,14 +89,73 @@ export class DrizzleProjectRepository implements ProjectRepository {
 			throw new Error("Failed to create project");
 		}
 
-		for (const col of DEFAULT_PROJECT_COLUMNS) {
-			await columnRepository.createExplicit(
-				created.id,
-				col.name,
-				col.slug,
-				col.position,
-				col.isFinal,
-			);
+		if (input.templateId) {
+			const template = await db.query.templateTable.findFirst({
+				where: eq(templateTable.id, input.templateId),
+				with: {
+					columns: {
+						orderBy: (cols, { asc }) => [asc(cols.position)],
+					},
+					tasks: true,
+				},
+			});
+
+			if (template) {
+				const slugToColumnId = new Map<string, string>();
+
+				for (const col of template.columns) {
+					const newColumn = await columnRepository.createExplicit(
+						created.id,
+						col.name,
+						col.slug,
+						col.position,
+						col.isFinal,
+					);
+					slugToColumnId.set(col.slug, newColumn.id);
+				}
+
+				if (template.tasks.length > 0) {
+					const [{ max: maxNum }] = await db
+						.select({ max: max(taskTable.number) })
+						.from(taskTable)
+						.where(eq(taskTable.projectId, created.id));
+
+					const nextNumber = (maxNum ?? 0) + 1;
+
+					await db.insert(taskTable).values(
+						template.tasks.map((task, i) => ({
+							projectId: created.id,
+							title: task.title,
+							description: task.description,
+							columnId: slugToColumnId.get(task.columnSlug) ?? null,
+							status: task.columnSlug,
+							priority: task.priority === "no-priority" ? "low" : task.priority,
+							number: nextNumber + i,
+							position: i,
+						})),
+					);
+				}
+			} else {
+				for (const col of DEFAULT_PROJECT_COLUMNS) {
+					await columnRepository.createExplicit(
+						created.id,
+						col.name,
+						col.slug,
+						col.position,
+						col.isFinal,
+					);
+				}
+			}
+		} else {
+			for (const col of DEFAULT_PROJECT_COLUMNS) {
+				await columnRepository.createExplicit(
+					created.id,
+					col.name,
+					col.slug,
+					col.position,
+					col.isFinal,
+				);
+			}
 		}
 
 		return mapToProject(created);
