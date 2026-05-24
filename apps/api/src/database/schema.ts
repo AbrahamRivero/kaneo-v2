@@ -337,6 +337,115 @@ export const budgetExpenseTable = pgTable(
 	(table) => [index("budget_expense_budgetId_idx").on(table.budgetId)],
 );
 
+export const supplierTable = pgTable(
+	"supplier",
+	{
+		id: text("id")
+			.$defaultFn(() => createId())
+			.primaryKey(),
+		workspaceId: text("workspace_id")
+			.notNull()
+			.references(() => workspaceTable.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		name: text("name").notNull(),
+		contactName: text("contact_name"),
+		contactEmail: text("contact_email"),
+		contactPhone: text("contact_phone"),
+		website: text("website"),
+		notes: text("notes"),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => /* @__PURE__ */ new Date())
+			.notNull(),
+	},
+	(table) => [index("supplier_workspaceId_idx").on(table.workspaceId)],
+);
+
+export const supplierContractTable = pgTable(
+	"supplier_contract",
+	{
+		id: text("id")
+			.$defaultFn(() => createId())
+			.primaryKey(),
+		workspaceId: text("workspace_id")
+			.notNull()
+			.references(() => workspaceTable.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		supplierId: text("supplier_id")
+			.notNull()
+			.references(() => supplierTable.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		title: text("title").notNull(),
+		description: text("description"),
+		value: numeric("value", { precision: 12, scale: 2 }),
+		startDate: timestamp("start_date", { mode: "date" }),
+		endDate: timestamp("end_date", { mode: "date" }),
+		status: text("status").default("draft").notNull(),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => /* @__PURE__ */ new Date())
+			.notNull(),
+	},
+	(table) => [
+		index("contract_supplierId_idx").on(table.supplierId),
+		index("contract_workspaceId_idx").on(table.workspaceId),
+	],
+);
+
+export const serviceOrderTable = pgTable(
+	"service_order",
+	{
+		id: text("id")
+			.$defaultFn(() => createId())
+			.primaryKey(),
+		workspaceId: text("workspace_id")
+			.notNull()
+			.references(() => workspaceTable.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		supplierId: text("supplier_id")
+			.notNull()
+			.references(() => supplierTable.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		contractId: text("contract_id").references(() => supplierContractTable.id, {
+			onDelete: "set null",
+			onUpdate: "cascade",
+		}),
+		projectId: text("project_id").references(() => projectTable.id, {
+			onDelete: "set null",
+			onUpdate: "cascade",
+		}),
+		title: text("title").notNull(),
+		description: text("description"),
+		amount: numeric("amount", { precision: 12, scale: 2 }),
+		status: text("status").default("draft").notNull(),
+		orderedAt: timestamp("ordered_at", { mode: "date" }),
+		completedAt: timestamp("completed_at", { mode: "date" }),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => /* @__PURE__ */ new Date())
+			.notNull(),
+	},
+	(table) => [
+		index("order_supplierId_idx").on(table.supplierId),
+		index("order_workspaceId_idx").on(table.workspaceId),
+		index("order_contractId_idx").on(table.contractId),
+		index("order_projectId_idx").on(table.projectId),
+	],
+);
+
 export const columnTable = pgTable(
 	"column",
 	{

@@ -17,7 +17,8 @@ type WorkspaceIdSource =
 				| "timeEntry"
 				| "activity"
 				| "column"
-				| "workflowRule";
+				| "workflowRule"
+				| "supplier";
 			idKey: string;
 	  };
 
@@ -97,7 +98,8 @@ async function lookupWorkspaceId(
 		| "timeEntry"
 		| "activity"
 		| "column"
-		| "workflowRule",
+		| "workflowRule"
+		| "supplier",
 	id: string,
 ): Promise<string | null> {
 	try {
@@ -199,6 +201,15 @@ async function lookupWorkspaceId(
 				return workflowRule?.workspaceId || null;
 			}
 
+			case "supplier": {
+				const [supplier] = await db
+					.select({ workspaceId: schema.supplierTable.workspaceId })
+					.from(schema.supplierTable)
+					.where(eq(schema.supplierTable.id, id))
+					.limit(1);
+				return supplier?.workspaceId || null;
+			}
+
 			default:
 				return null;
 		}
@@ -278,6 +289,14 @@ export const workspaceAccess = {
 		workspaceAccessMiddleware({
 			sources: [
 				{ type: "lookup", resource: "workflowRule", idKey },
+				{ type: "query", key: "workspaceId" },
+			],
+		}),
+
+	fromSupplier: (idKey = "id") =>
+		workspaceAccessMiddleware({
+			sources: [
+				{ type: "lookup", resource: "supplier", idKey },
 				{ type: "query", key: "workspaceId" },
 			],
 		}),
