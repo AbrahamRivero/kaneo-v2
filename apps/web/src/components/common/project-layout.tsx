@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "@tanstack/react-router";
 import {
 	CalendarDays,
 	DollarSign,
+	RefreshCw,
 	SquareKanban,
 	SquircleDashed,
 } from "lucide-react";
@@ -32,7 +33,7 @@ type ProjectLayoutProps = {
 	headerActions?: ReactNode;
 	children: ReactNode;
 	showViewSwitcher?: boolean;
-	activeView?: "backlog" | "board" | "gantt" | "budget";
+	activeView?: "backlog" | "board" | "gantt" | "budget" | "recurring";
 };
 
 export default function ProjectLayout({
@@ -59,7 +60,9 @@ export default function ProjectLayout({
 				? "gantt"
 				: location.pathname.includes("/budget")
 					? "budget"
-					: "board");
+					: location.pathname.includes("/recurring-tasks")
+						? "recurring"
+						: "board");
 
 	const handleNavigateToBacklog = () => {
 		navigate({
@@ -89,6 +92,13 @@ export default function ProjectLayout({
 		});
 	};
 
+	const handleNavigateToRecurring = () => {
+		navigate({
+			to: "/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks",
+			params: { workspaceId, projectId },
+		});
+	};
+
 	const handleProjectSwitch = (nextProjectId: string) => {
 		navigate({
 			to:
@@ -98,7 +108,9 @@ export default function ProjectLayout({
 						? "/dashboard/workspace/$workspaceId/project/$projectId/gantt"
 						: resolvedView === "budget"
 							? "/dashboard/workspace/$workspaceId/project/$projectId/budget"
-							: "/dashboard/workspace/$workspaceId/project/$projectId/board",
+							: resolvedView === "recurring"
+								? "/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks"
+								: "/dashboard/workspace/$workspaceId/project/$projectId/board",
 			params: {
 				workspaceId,
 				projectId: nextProjectId,
@@ -153,6 +165,7 @@ export default function ProjectLayout({
 								onSelectBoard={handleNavigateToBoard}
 								onSelectGantt={handleNavigateToGantt}
 								onSelectBudget={handleNavigateToBudget}
+								onSelectRecurring={handleNavigateToRecurring}
 								onSelectProject={handleProjectSwitch}
 								onAddProject={() => setIsCreateProjectModalOpen(true)}
 							/>
@@ -208,6 +221,22 @@ export default function ProjectLayout({
 									>
 										<DollarSign className="size-3.5" />
 										Budget
+									</Button>
+								</FeatureGate>
+								<FeatureGate featureKey="recurring-tasks">
+									<Button
+										variant={
+											resolvedView === "recurring" ? "secondary" : "ghost"
+										}
+										size="xs"
+										onClick={handleNavigateToRecurring}
+										className={cn(
+											"h-6 gap-1.5 rounded-md px-2 text-xs",
+											resolvedView !== "recurring" && "text-muted-foreground",
+										)}
+									>
+										<RefreshCw className="size-3.5" />
+										Recurring
 									</Button>
 								</FeatureGate>
 							</div>

@@ -14,6 +14,7 @@ import {
 	labelTable,
 	notificationTable,
 	projectTable,
+	recurringTaskTable,
 	serviceOrderTable,
 	sessionTable,
 	supplierContractTable,
@@ -117,6 +118,7 @@ export const projectTableRelations = relations(
 		integrations: many(integrationTable),
 		notificationWorkspaceProjects: many(userNotificationWorkspaceProjectTable),
 		budget: one(budgetTable),
+		recurringTasks: many(recurringTaskTable),
 	}),
 );
 
@@ -468,6 +470,16 @@ export const serviceOrderTableRelations = relations(
 		}),
 		project: one(projectTable, {
 			fields: [serviceOrderTable.projectId],
+			references: [projectTable.id],
+		}),
+	}),
+);
+
+export const recurringTaskTableRelations = relations(
+	recurringTaskTable,
+	({ one }) => ({
+		project: one(projectTable, {
+			fields: [recurringTaskTable.projectId],
 			references: [projectTable.id],
 		}),
 	}),

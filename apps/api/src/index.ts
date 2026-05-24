@@ -45,6 +45,7 @@ import { initializePlugins } from "./plugins";
 import { migrateGitHubIntegration } from "./plugins/github/migration";
 import project from "./project";
 import { getPublicProject } from "./project/controllers/get-public-project";
+import recurringTasks from "./recurring-tasks";
 import { initializeScheduler, shutdownScheduler } from "./scheduler";
 import search from "./search";
 import slackIntegration from "./slack-integration";
@@ -516,6 +517,7 @@ export function createApp() {
 	const activityApi = api.route("/activity", activity);
 	const budgetApi = api.route("/budget", budget);
 	const supplierApi = api.route("/supplier", supplier);
+	const _recurringTasksApi = api.route("/recurring-tasks", recurringTasks);
 	const timeEntryApi = api.route("/time-entry", timeEntry);
 	const labelApi = api.route("/label", label);
 	const notificationApi = api.route("/notification", notification);

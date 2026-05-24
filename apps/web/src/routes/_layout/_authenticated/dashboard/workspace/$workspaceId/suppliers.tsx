@@ -1,18 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Building2, FileText, Plus, ShoppingCart } from "lucide-react";
+import { Building2, FileText, ShoppingCart, Trash2 } from "lucide-react";
 import { useState } from "react";
 import WorkspaceLayout from "@/components/common/workspace-layout";
 import PageTitle from "@/components/page-title";
+import AddSupplierDialog from "@/components/shared/modals/add-supplier-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-	Dialog,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
 import {
 	Empty,
 	EmptyDescription,
@@ -20,8 +14,6 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
 	Table,
@@ -32,7 +24,6 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 import useCreateSupplier from "@/hooks/mutations/supplier/use-create-supplier";
 import useDeleteContract from "@/hooks/mutations/supplier/use-delete-contract";
 import useDeleteOrder from "@/hooks/mutations/supplier/use-delete-order";
@@ -96,7 +87,7 @@ function RouteComponent() {
 		<>
 			<PageTitle title="Suppliers" />
 			<WorkspaceLayout title="Suppliers">
-				<div className="space-y-6 p-4">
+				<div className="space-y-5 p-4">
 					<div className="grid gap-4 sm:grid-cols-3">
 						<Card>
 							<CardHeader className="pb-2">
@@ -104,10 +95,10 @@ function RouteComponent() {
 									Total Vendors
 								</CardTitle>
 							</CardHeader>
-							<CardContent>
-								<div className="flex items-center gap-2">
-									<Building2 className="size-5 text-muted-foreground" />
-									<p className="text-2xl font-bold">{totalSuppliers}</p>
+							<CardContent className="pt-3">
+								<div className="flex items-center gap-3">
+									<Building2 className="size-5 text-muted-foreground shrink-0" />
+									<p className="text-3xl font-semibold">{totalSuppliers}</p>
 								</div>
 							</CardContent>
 						</Card>
@@ -117,10 +108,10 @@ function RouteComponent() {
 									Total Contracts
 								</CardTitle>
 							</CardHeader>
-							<CardContent>
-								<div className="flex items-center gap-2">
-									<FileText className="size-5 text-muted-foreground" />
-									<p className="text-2xl font-bold">{totalContracts}</p>
+							<CardContent className="pt-3">
+								<div className="flex items-center gap-3">
+									<FileText className="size-5 text-muted-foreground shrink-0" />
+									<p className="text-3xl font-semibold">{totalContracts}</p>
 								</div>
 							</CardContent>
 						</Card>
@@ -130,10 +121,10 @@ function RouteComponent() {
 									Service Orders
 								</CardTitle>
 							</CardHeader>
-							<CardContent>
-								<div className="flex items-center gap-2">
-									<ShoppingCart className="size-5 text-muted-foreground" />
-									<p className="text-2xl font-bold">{totalOrders}</p>
+							<CardContent className="pt-3">
+								<div className="flex items-center gap-3">
+									<ShoppingCart className="size-5 text-muted-foreground shrink-0" />
+									<p className="text-3xl font-semibold">{totalOrders}</p>
 								</div>
 							</CardContent>
 						</Card>
@@ -170,19 +161,29 @@ function RouteComponent() {
 										<Table>
 											<TableHeader>
 												<TableRow>
-													<TableHead>Name</TableHead>
-													<TableHead>Contact</TableHead>
-													<TableHead>Email</TableHead>
-													<TableHead>Contracts</TableHead>
-													<TableHead>Orders</TableHead>
-													<TableHead />
+													<TableHead className="text-foreground font-medium">
+														Name
+													</TableHead>
+													<TableHead className="text-foreground font-medium">
+														Contact
+													</TableHead>
+													<TableHead className="text-foreground font-medium">
+														Email
+													</TableHead>
+													<TableHead className="text-foreground font-medium">
+														Contracts
+													</TableHead>
+													<TableHead className="text-foreground font-medium">
+														Orders
+													</TableHead>
+													<TableHead className="w-16" />
 												</TableRow>
 											</TableHeader>
 											<TableBody>
 												{suppliers.map((s) => (
 													<TableRow
 														key={s.id}
-														className="cursor-pointer"
+														className="cursor-pointer hover:bg-muted/50 transition-colors"
 														onClick={() =>
 															navigate({
 																to: "/dashboard/workspace/$workspaceId/suppliers/$supplierId",
@@ -207,13 +208,14 @@ function RouteComponent() {
 														<TableCell>
 															<Button
 																variant="ghost"
-																size="sm"
+																size="icon-xs"
+																className="text-muted-foreground hover:text-destructive"
 																onClick={(e) => {
 																	e.stopPropagation();
 																	deleteSupplier.mutate(s.id);
 																}}
 															>
-																Delete
+																<Trash2 className="size-4" />
 															</Button>
 														</TableCell>
 													</TableRow>
@@ -244,12 +246,22 @@ function RouteComponent() {
 										<Table>
 											<TableHeader>
 												<TableRow>
-													<TableHead>Title</TableHead>
-													<TableHead>Vendor</TableHead>
-													<TableHead>Value</TableHead>
-													<TableHead>Status</TableHead>
-													<TableHead>Period</TableHead>
-													<TableHead />
+													<TableHead className="text-foreground font-medium">
+														Title
+													</TableHead>
+													<TableHead className="text-foreground font-medium">
+														Vendor
+													</TableHead>
+													<TableHead className="text-foreground font-medium">
+														Value
+													</TableHead>
+													<TableHead className="text-foreground font-medium">
+														Status
+													</TableHead>
+													<TableHead className="text-foreground font-medium">
+														Period
+													</TableHead>
+													<TableHead className="w-16" />
 												</TableRow>
 											</TableHeader>
 											<TableBody>
@@ -265,25 +277,29 @@ function RouteComponent() {
 																: "—"}
 														</TableCell>
 														<TableCell>
-															<span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium capitalize">
+															<Badge
+																variant="outline"
+																className="capitalize font-medium"
+															>
 																{c.status}
-															</span>
+															</Badge>
 														</TableCell>
 														<TableCell className="text-xs text-muted-foreground">
 															{c.startDate
 																? new Date(c.startDate).toLocaleDateString()
 																: "—"}
 															{c.endDate
-																? ` → ${new Date(c.endDate).toLocaleDateString()}`
+																? ` · ${new Date(c.endDate).toLocaleDateString()}`
 																: ""}
 														</TableCell>
 														<TableCell>
 															<Button
 																variant="ghost"
-																size="sm"
+																size="icon-xs"
+																className="text-muted-foreground hover:text-destructive"
 																onClick={() => deleteContract.mutate(c.id)}
 															>
-																Delete
+																<Trash2 className="size-4" />
 															</Button>
 														</TableCell>
 													</TableRow>
@@ -314,12 +330,22 @@ function RouteComponent() {
 										<Table>
 											<TableHeader>
 												<TableRow>
-													<TableHead>Title</TableHead>
-													<TableHead>Vendor</TableHead>
-													<TableHead>Amount</TableHead>
-													<TableHead>Status</TableHead>
-													<TableHead>Project</TableHead>
-													<TableHead />
+													<TableHead className="text-foreground font-medium">
+														Title
+													</TableHead>
+													<TableHead className="text-foreground font-medium">
+														Vendor
+													</TableHead>
+													<TableHead className="text-foreground font-medium">
+														Amount
+													</TableHead>
+													<TableHead className="text-foreground font-medium">
+														Status
+													</TableHead>
+													<TableHead className="text-foreground font-medium">
+														Project
+													</TableHead>
+													<TableHead className="w-16" />
 												</TableRow>
 											</TableHeader>
 											<TableBody>
@@ -335,9 +361,12 @@ function RouteComponent() {
 																: "—"}
 														</TableCell>
 														<TableCell>
-															<span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium capitalize">
+															<Badge
+																variant="outline"
+																className="capitalize font-medium"
+															>
 																{o.status}
-															</span>
+															</Badge>
 														</TableCell>
 														<TableCell className="text-muted-foreground">
 															{o.project?.name ?? "—"}
@@ -345,10 +374,11 @@ function RouteComponent() {
 														<TableCell>
 															<Button
 																variant="ghost"
-																size="sm"
+																size="icon-xs"
+																className="text-muted-foreground hover:text-destructive"
 																onClick={() => deleteOrder.mutate(o.id)}
 															>
-																Delete
+																<Trash2 className="size-4" />
 															</Button>
 														</TableCell>
 													</TableRow>
@@ -363,119 +393,5 @@ function RouteComponent() {
 				</div>
 			</WorkspaceLayout>
 		</>
-	);
-}
-
-function AddSupplierDialog({
-	onCreate,
-}: {
-	onCreate: (data: {
-		name: string;
-		contactName?: string;
-		contactEmail?: string;
-		contactPhone?: string;
-		website?: string;
-		notes?: string;
-	}) => void;
-}) {
-	const [open, setOpen] = useState(false);
-	const [name, setName] = useState("");
-	const [contactName, setContactName] = useState("");
-	const [contactEmail, setContactEmail] = useState("");
-	const [contactPhone, setContactPhone] = useState("");
-	const [website, setWebsite] = useState("");
-	const [notes, setNotes] = useState("");
-
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!name.trim()) return;
-		onCreate({
-			name: name.trim(),
-			...(contactName && { contactName }),
-			...(contactEmail && { contactEmail }),
-			...(contactPhone && { contactPhone }),
-			...(website && { website }),
-			...(notes && { notes }),
-		});
-		setName("");
-		setContactName("");
-		setContactEmail("");
-		setContactPhone("");
-		setWebsite("");
-		setNotes("");
-		setOpen(false);
-	};
-
-	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<Button size="sm">
-					<Plus className="mr-1 size-4" />
-					Add Vendor
-				</Button>
-			</DialogTrigger>
-			<DialogContent>
-				<form onSubmit={handleSubmit}>
-					<DialogHeader>
-						<DialogTitle>Add Vendor</DialogTitle>
-					</DialogHeader>
-					<div className="grid gap-4 py-4">
-						<div className="grid gap-2">
-							<Label htmlFor="name">Name *</Label>
-							<Input
-								id="name"
-								value={name}
-								onChange={(e) => setName(e.target.value)}
-								required
-							/>
-						</div>
-						<div className="grid gap-2">
-							<Label htmlFor="contactName">Contact Name</Label>
-							<Input
-								id="contactName"
-								value={contactName}
-								onChange={(e) => setContactName(e.target.value)}
-							/>
-						</div>
-						<div className="grid gap-2">
-							<Label htmlFor="contactEmail">Email</Label>
-							<Input
-								id="contactEmail"
-								type="email"
-								value={contactEmail}
-								onChange={(e) => setContactEmail(e.target.value)}
-							/>
-						</div>
-						<div className="grid gap-2">
-							<Label htmlFor="contactPhone">Phone</Label>
-							<Input
-								id="contactPhone"
-								value={contactPhone}
-								onChange={(e) => setContactPhone(e.target.value)}
-							/>
-						</div>
-						<div className="grid gap-2">
-							<Label htmlFor="website">Website</Label>
-							<Input
-								id="website"
-								value={website}
-								onChange={(e) => setWebsite(e.target.value)}
-							/>
-						</div>
-						<div className="grid gap-2">
-							<Label htmlFor="notes">Notes</Label>
-							<Textarea
-								id="notes"
-								value={notes}
-								onChange={(e) => setNotes(e.target.value)}
-							/>
-						</div>
-					</div>
-					<DialogFooter>
-						<Button type="submit">Create</Button>
-					</DialogFooter>
-				</form>
-			</DialogContent>
-		</Dialog>
 	);
 }

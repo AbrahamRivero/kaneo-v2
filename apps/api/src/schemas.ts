@@ -295,6 +295,26 @@ export const serviceOrderSchema = v.object({
 	updatedAt: v.date(),
 });
 
+export const recurringTaskSchema = v.object({
+	id: v.string(),
+	projectId: v.string(),
+	title: v.string(),
+	description: v.nullable(v.string()),
+	frequency: v.string(),
+	intervalValue: v.number(),
+	dayOfWeek: v.nullable(v.number()),
+	dayOfMonth: v.nullable(v.number()),
+	cronExpression: v.nullable(v.string()),
+	nextRunAt: v.date(),
+	lastRunAt: v.nullable(v.date()),
+	isActive: v.boolean(),
+	columnId: v.nullable(v.string()),
+	assigneeId: v.nullable(v.string()),
+	priority: v.nullable(v.string()),
+	createdAt: v.date(),
+	updatedAt: v.date(),
+});
+
 export const configSchema = v.object({
 	disableRegistration: v.nullable(v.boolean()),
 	disablePasswordRegistration: v.nullable(v.boolean()),
