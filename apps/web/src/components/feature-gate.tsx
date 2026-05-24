@@ -1,6 +1,6 @@
-import { useParams } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useFeatureEnabled } from "@/hooks/queries/features/use-workspace-features";
+import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 
 type FeatureGateProps = {
 	featureKey: string;
@@ -13,11 +13,8 @@ export function FeatureGate({
 	children,
 	fallback,
 }: FeatureGateProps) {
-	const { workspaceId } = useParams({
-		from: "/dashboard/workspace/$workspaceId",
-	});
-
-	const enabled = useFeatureEnabled(workspaceId, featureKey);
+	const { data: workspace } = useActiveWorkspace();
+	const enabled = useFeatureEnabled(workspace?.id ?? "", featureKey);
 
 	if (!enabled) return fallback ?? null;
 

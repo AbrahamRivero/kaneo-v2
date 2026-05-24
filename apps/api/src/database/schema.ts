@@ -415,6 +415,46 @@ export const serviceOrderTable = pgTable(
 	],
 );
 
+export const recurringTaskTable = pgTable(
+	"recurring_task",
+	{
+		id: text("id")
+			.$defaultFn(() => createId())
+			.primaryKey(),
+		projectId: text("project_id")
+			.notNull()
+			.references(() => projectTable.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		title: text("title").notNull(),
+		description: text("description"),
+		frequency: text("frequency").default("weekly").notNull(),
+		intervalValue: integer("interval_value").default(1).notNull(),
+		dayOfWeek: integer("day_of_week"),
+		dayOfMonth: integer("day_of_month"),
+		cronExpression: text("cron_expression"),
+		nextRunAt: timestamp("next_run_at", { mode: "date" }).notNull(),
+		lastRunAt: timestamp("last_run_at", { mode: "date" }),
+		isActive: boolean("is_active").default(true).notNull(),
+		columnId: text("column_id").references(() => columnTable.id, {
+			onDelete: "set null",
+			onUpdate: "cascade",
+		}),
+		assigneeId: text("assignee_id").references(() => userTable.id, {
+			onDelete: "set null",
+			onUpdate: "cascade",
+		}),
+		priority: text("priority").default("no-priority"),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => /* @__PURE__ */ new Date())
+			.notNull(),
+	},
+	(table) => [index("recurring_task_projectId_idx").on(table.projectId)],
+);
+
 export const columnTable = pgTable(
 	"column",
 	{

@@ -4,6 +4,7 @@ import {
 	DollarSign,
 	Menu,
 	Plus,
+	RefreshCw,
 	SquareKanban,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,11 +20,12 @@ import { cn } from "@/lib/cn";
 type MobileProjectNavProps = {
 	workspaceId: string;
 	projectId: string;
-	activeView: "backlog" | "board" | "gantt" | "budget";
+	activeView: "backlog" | "board" | "gantt" | "budget" | "recurring";
 	onSelectBoard: () => void;
 	onSelectBacklog: () => void;
 	onSelectGantt: () => void;
 	onSelectBudget: () => void;
+	onSelectRecurring: () => void;
 	onSelectProject: (projectId: string) => void;
 	onAddProject: () => void;
 };
@@ -36,6 +38,7 @@ export default function MobileProjectNav({
 	onSelectBacklog,
 	onSelectGantt,
 	onSelectBudget,
+	onSelectRecurring,
 	onSelectProject,
 	onAddProject,
 }: MobileProjectNavProps) {
@@ -111,6 +114,19 @@ export default function MobileProjectNav({
 							>
 								<DollarSign className="size-3.5" />
 								Budget
+							</button>
+							<button
+								type="button"
+								onClick={onSelectRecurring}
+								className={cn(
+									"flex w-full items-center justify-center gap-1 whitespace-nowrap rounded-md border px-2 py-1.5 text-xs font-medium transition-colors",
+									activeView === "recurring"
+										? "border-border bg-secondary text-foreground"
+										: "border-transparent text-muted-foreground hover:bg-accent",
+								)}
+							>
+								<RefreshCw className="size-3.5" />
+								Recurring
 							</button>
 						</div>
 					</div>

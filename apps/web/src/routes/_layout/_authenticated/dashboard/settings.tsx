@@ -70,10 +70,10 @@ function SettingsLayout() {
 							{t("navigation:page.settingsTitle")}
 						</h1>
 
-						<Tabs value={activeTab} className="w-[400px] pt-2">
+						<Tabs value={activeTab} className="w-100 pt-2">
 							<TabsList className="bg-sidebar gap-2">
 								<TabsTrigger
-									className="[&[data-state=active]]:border [&[data-state=active]]:border-border [&[data-state=active]]:rounded-md [&[data-state=active]]:bg-card"
+									className="data-[state=active]:border data-[state=active]:border-border data-[state=active]:rounded-md data-[state=active]:bg-card"
 									value="account"
 									onClick={() =>
 										navigate({ to: "/dashboard/settings/account/information" })
@@ -83,7 +83,7 @@ function SettingsLayout() {
 								</TabsTrigger>
 								<TabsTrigger
 									value="workspace"
-									className="[&[data-state=active]]:border [&[data-state=active]]:border-border [&[data-state=active]]:rounded-md [&[data-state=active]]:bg-card"
+									className="data-[state=active]:border data-[state=active]:border-border data-[state=active]:rounded-md data-[state=active]:bg-card"
 									onClick={() =>
 										navigate({ to: "/dashboard/settings/workspace/general" })
 									}
@@ -93,21 +93,12 @@ function SettingsLayout() {
 								<TabsTrigger
 									disabled={projects?.length === 0}
 									value="project"
-									className="[&[data-state=active]]:border [&[data-state=active]]:border-border [&[data-state=active]]:rounded-md [&[data-state=active]]:bg-card"
+									className="data-[state=active]:border data-[state=active]:border-border data-[state=active]:rounded-md data-[state=active]:bg-card"
 									onClick={() =>
 										navigate({ to: "/dashboard/settings/projects" })
 									}
 								>
 									{t("navigation:sidebar.projects")}
-								</TabsTrigger>
-								<TabsTrigger
-									value="modules"
-									className="[&[data-state=active]]:border [&[data-state=active]]:border-border [&[data-state=active]]:rounded-md [&[data-state=active]]:bg-card"
-									onClick={() =>
-										navigate({ to: "/dashboard/settings/workspace/modules" })
-									}
-								>
-									Modules
 								</TabsTrigger>
 							</TabsList>
 						</Tabs>

@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { Building2, ChevronRight, DollarSign } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -71,7 +71,7 @@ export function NavMain() {
 							window.location.pathname ===
 							`/dashboard/workspace/${workspace.id}/budgets`,
 						badge: null,
-						Icon: DollarSign,
+						Icon: null,
 					},
 				]
 			: []),
@@ -87,7 +87,7 @@ export function NavMain() {
 								`/dashboard/workspace/${workspace.id}/suppliers/`,
 							),
 						badge: null,
-						Icon: Building2,
+						Icon: null,
 					},
 				]
 			: []),

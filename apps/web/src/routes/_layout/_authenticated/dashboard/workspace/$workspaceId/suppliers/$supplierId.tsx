@@ -1,18 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Building2, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, Building2, Trash2 } from "lucide-react";
 import WorkspaceLayout from "@/components/common/workspace-layout";
 import PageTitle from "@/components/page-title";
+import AddContractDialog from "@/components/shared/modals/add-contract-dialog";
+import AddOrderDialog from "@/components/shared/modals/add-order-dialog";
+import EditSupplierDialog from "@/components/shared/modals/edit-supplier-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-	Dialog,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
 import {
 	Empty,
 	EmptyDescription,
@@ -20,8 +15,6 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
 	Table,
@@ -31,7 +24,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
 import useCreateContract from "@/hooks/mutations/supplier/use-create-contract";
 import useCreateOrder from "@/hooks/mutations/supplier/use-create-order";
 import useDeleteContract from "@/hooks/mutations/supplier/use-delete-contract";
@@ -54,24 +46,6 @@ function RouteComponent() {
 	const deleteContract = useDeleteContract(workspaceId);
 	const createOrder = useCreateOrder(workspaceId);
 	const deleteOrder = useDeleteOrder(workspaceId);
-
-	const [editOpen, setEditOpen] = useState(false);
-	const [contractOpen, setContractOpen] = useState(false);
-	const [orderOpen, setOrderOpen] = useState(false);
-	const [editName, setEditName] = useState("");
-	const [editContactName, setEditContactName] = useState("");
-	const [editEmail, setEditEmail] = useState("");
-	const [editPhone, setEditPhone] = useState("");
-	const [editWebsite, setEditWebsite] = useState("");
-	const [editNotes, setEditNotes] = useState("");
-
-	const [contractTitle, setContractTitle] = useState("");
-	const [contractValue, setContractValue] = useState("");
-	const [contractStatus, setContractStatus] = useState("draft");
-
-	const [orderTitle, setOrderTitle] = useState("");
-	const [orderAmount, setOrderAmount] = useState("");
-	const [orderStatus, setOrderStatus] = useState("draft");
 
 	if (isLoading) {
 		return (
@@ -109,73 +83,44 @@ function RouteComponent() {
 		);
 	}
 
-	const openEdit = () => {
-		setEditName(supplier.name);
-		setEditContactName(supplier.contactName ?? "");
-		setEditEmail(supplier.contactEmail ?? "");
-		setEditPhone(supplier.contactPhone ?? "");
-		setEditWebsite(supplier.website ?? "");
-		setEditNotes(supplier.notes ?? "");
-		setEditOpen(true);
+	const handleEdit = (data: {
+		name: string;
+		contactName: string | null;
+		contactEmail: string | null;
+		contactPhone: string | null;
+		website: string | null;
+		notes: string | null;
+	}) => {
+		updateSupplier.mutate({ supplierId, data });
 	};
 
-	const handleEdit = (e: React.FormEvent) => {
-		e.preventDefault();
-		updateSupplier.mutate({
+	const handleCreateContract = async (data: {
+		title: string;
+		value?: string;
+		status: string;
+	}) => {
+		await createContract.mutateAsync({
 			supplierId,
-			data: {
-				name: editName,
-				contactName: editContactName || null,
-				contactEmail: editEmail || null,
-				contactPhone: editPhone || null,
-				website: editWebsite || null,
-				notes: editNotes || null,
-			},
+			data: { workspaceId, ...data },
 		});
-		setEditOpen(false);
 	};
 
-	const handleCreateContract = (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!contractTitle.trim()) return;
-		createContract.mutate({
+	const handleCreateOrder = async (data: {
+		title: string;
+		amount?: string;
+		status: string;
+	}) => {
+		await createOrder.mutateAsync({
 			supplierId,
-			data: {
-				workspaceId,
-				title: contractTitle.trim(),
-				...(contractValue && { value: contractValue }),
-				status: contractStatus,
-			},
+			data: { workspaceId, ...data },
 		});
-		setContractTitle("");
-		setContractValue("");
-		setContractStatus("draft");
-		setContractOpen(false);
-	};
-
-	const handleCreateOrder = (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!orderTitle.trim()) return;
-		createOrder.mutate({
-			supplierId,
-			data: {
-				workspaceId,
-				title: orderTitle.trim(),
-				...(orderAmount && { amount: orderAmount }),
-				status: orderStatus,
-			},
-		});
-		setOrderTitle("");
-		setOrderAmount("");
-		setOrderStatus("draft");
-		setOrderOpen(false);
 	};
 
 	return (
 		<>
 			<PageTitle title={supplier.name} />
 			<WorkspaceLayout title={supplier.name}>
-				<div className="space-y-6 p-4">
+				<div className="space-y-5 p-4">
 					<Button
 						variant="ghost"
 						size="sm"
@@ -193,9 +138,7 @@ function RouteComponent() {
 					<Card>
 						<CardHeader className="flex flex-row items-center justify-between">
 							<CardTitle className="text-lg">Vendor Details</CardTitle>
-							<Button variant="outline" size="sm" onClick={openEdit}>
-								Edit
-							</Button>
+							<EditSupplierDialog supplier={supplier} onSave={handleEdit} />
 						</CardHeader>
 						<CardContent className="grid gap-4 sm:grid-cols-2">
 							<div>
@@ -228,59 +171,7 @@ function RouteComponent() {
 							<CardTitle className="text-lg">
 								Contracts ({supplier.contracts.length})
 							</CardTitle>
-							<Dialog open={contractOpen} onOpenChange={setContractOpen}>
-								<DialogTrigger asChild>
-									<Button size="sm">
-										<Plus className="mr-1 size-4" />
-										Add Contract
-									</Button>
-								</DialogTrigger>
-								<DialogContent>
-									<form onSubmit={handleCreateContract}>
-										<DialogHeader>
-											<DialogTitle>Add Contract</DialogTitle>
-										</DialogHeader>
-										<div className="grid gap-4 py-4">
-											<div className="grid gap-2">
-												<Label htmlFor="ctitle">Title *</Label>
-												<Input
-													id="ctitle"
-													value={contractTitle}
-													onChange={(e) => setContractTitle(e.target.value)}
-													required
-												/>
-											</div>
-											<div className="grid gap-2">
-												<Label htmlFor="cvalue">Value</Label>
-												<Input
-													id="cvalue"
-													type="number"
-													step="0.01"
-													value={contractValue}
-													onChange={(e) => setContractValue(e.target.value)}
-												/>
-											</div>
-											<div className="grid gap-2">
-												<Label htmlFor="cstatus">Status</Label>
-												<select
-													id="cstatus"
-													className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
-													value={contractStatus}
-													onChange={(e) => setContractStatus(e.target.value)}
-												>
-													<option value="draft">Draft</option>
-													<option value="active">Active</option>
-													<option value="completed">Completed</option>
-													<option value="terminated">Terminated</option>
-												</select>
-											</div>
-										</div>
-										<DialogFooter>
-											<Button type="submit">Create</Button>
-										</DialogFooter>
-									</form>
-								</DialogContent>
-							</Dialog>
+							<AddContractDialog onCreate={handleCreateContract} />
 						</CardHeader>
 						<CardContent className="p-0">
 							{supplier.contracts.length === 0 ? (
@@ -307,14 +198,17 @@ function RouteComponent() {
 														: "—"}
 												</TableCell>
 												<TableCell>
-													<span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium capitalize">
+													<Badge
+														variant="outline"
+														className="capitalize font-medium"
+													>
 														{c.status}
-													</span>
+													</Badge>
 												</TableCell>
 												<TableCell>
 													<Button
 														variant="ghost"
-														size="sm"
+														size="icon-xs"
 														onClick={() => deleteContract.mutate(c.id)}
 													>
 														<Trash2 className="size-4" />
@@ -333,60 +227,7 @@ function RouteComponent() {
 							<CardTitle className="text-lg">
 								Service Orders ({supplier.serviceOrders.length})
 							</CardTitle>
-							<Dialog open={orderOpen} onOpenChange={setOrderOpen}>
-								<DialogTrigger asChild>
-									<Button size="sm">
-										<Plus className="mr-1 size-4" />
-										Add Order
-									</Button>
-								</DialogTrigger>
-								<DialogContent>
-									<form onSubmit={handleCreateOrder}>
-										<DialogHeader>
-											<DialogTitle>Add Service Order</DialogTitle>
-										</DialogHeader>
-										<div className="grid gap-4 py-4">
-											<div className="grid gap-2">
-												<Label htmlFor="otitle">Title *</Label>
-												<Input
-													id="otitle"
-													value={orderTitle}
-													onChange={(e) => setOrderTitle(e.target.value)}
-													required
-												/>
-											</div>
-											<div className="grid gap-2">
-												<Label htmlFor="oamount">Amount</Label>
-												<Input
-													id="oamount"
-													type="number"
-													step="0.01"
-													value={orderAmount}
-													onChange={(e) => setOrderAmount(e.target.value)}
-												/>
-											</div>
-											<div className="grid gap-2">
-												<Label htmlFor="ostatus">Status</Label>
-												<select
-													id="ostatus"
-													className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
-													value={orderStatus}
-													onChange={(e) => setOrderStatus(e.target.value)}
-												>
-													<option value="draft">Draft</option>
-													<option value="ordered">Ordered</option>
-													<option value="in-progress">In Progress</option>
-													<option value="completed">Completed</option>
-													<option value="cancelled">Cancelled</option>
-												</select>
-											</div>
-										</div>
-										<DialogFooter>
-											<Button type="submit">Create</Button>
-										</DialogFooter>
-									</form>
-								</DialogContent>
-							</Dialog>
+							<AddOrderDialog onCreate={handleCreateOrder} />
 						</CardHeader>
 						<CardContent className="p-0">
 							{supplier.serviceOrders.length === 0 ? (
@@ -414,9 +255,12 @@ function RouteComponent() {
 														: "—"}
 												</TableCell>
 												<TableCell>
-													<span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium capitalize">
+													<Badge
+														variant="outline"
+														className="capitalize font-medium"
+													>
 														{o.status}
-													</span>
+													</Badge>
 												</TableCell>
 												<TableCell className="text-muted-foreground">
 													{o.project?.name ?? "—"}
@@ -424,7 +268,7 @@ function RouteComponent() {
 												<TableCell>
 													<Button
 														variant="ghost"
-														size="sm"
+														size="icon-xs"
 														onClick={() => deleteOrder.mutate(o.id)}
 													>
 														<Trash2 className="size-4" />
@@ -437,70 +281,6 @@ function RouteComponent() {
 							)}
 						</CardContent>
 					</Card>
-
-					<Dialog open={editOpen} onOpenChange={setEditOpen}>
-						<DialogContent>
-							<form onSubmit={handleEdit}>
-								<DialogHeader>
-									<DialogTitle>Edit Vendor</DialogTitle>
-								</DialogHeader>
-								<div className="grid gap-4 py-4">
-									<div className="grid gap-2">
-										<Label htmlFor="ename">Name *</Label>
-										<Input
-											id="ename"
-											value={editName}
-											onChange={(e) => setEditName(e.target.value)}
-											required
-										/>
-									</div>
-									<div className="grid gap-2">
-										<Label htmlFor="econtact">Contact Name</Label>
-										<Input
-											id="econtact"
-											value={editContactName}
-											onChange={(e) => setEditContactName(e.target.value)}
-										/>
-									</div>
-									<div className="grid gap-2">
-										<Label htmlFor="eemail">Email</Label>
-										<Input
-											id="eemail"
-											value={editEmail}
-											onChange={(e) => setEditEmail(e.target.value)}
-										/>
-									</div>
-									<div className="grid gap-2">
-										<Label htmlFor="ephone">Phone</Label>
-										<Input
-											id="ephone"
-											value={editPhone}
-											onChange={(e) => setEditPhone(e.target.value)}
-										/>
-									</div>
-									<div className="grid gap-2">
-										<Label htmlFor="ewebsite">Website</Label>
-										<Input
-											id="ewebsite"
-											value={editWebsite}
-											onChange={(e) => setEditWebsite(e.target.value)}
-										/>
-									</div>
-									<div className="grid gap-2">
-										<Label htmlFor="enotes">Notes</Label>
-										<Textarea
-											id="enotes"
-											value={editNotes}
-											onChange={(e) => setEditNotes(e.target.value)}
-										/>
-									</div>
-								</div>
-								<DialogFooter>
-									<Button type="submit">Save</Button>
-								</DialogFooter>
-							</form>
-						</DialogContent>
-					</Dialog>
 				</div>
 			</WorkspaceLayout>
 		</>
