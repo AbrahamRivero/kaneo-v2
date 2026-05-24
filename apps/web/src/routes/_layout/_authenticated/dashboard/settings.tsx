@@ -38,6 +38,9 @@ function SettingsLayout() {
 		if (pathname.includes("/dashboard/settings/projects")) {
 			return "project";
 		}
+		if (pathname.includes("/dashboard/settings/workspace/modules")) {
+			return "modules";
+		}
 		return "account";
 	};
 
@@ -96,6 +99,15 @@ function SettingsLayout() {
 									}
 								>
 									{t("navigation:sidebar.projects")}
+								</TabsTrigger>
+								<TabsTrigger
+									value="modules"
+									className="[&[data-state=active]]:border [&[data-state=active]]:border-border [&[data-state=active]]:rounded-md [&[data-state=active]]:bg-card"
+									onClick={() =>
+										navigate({ to: "/dashboard/settings/workspace/modules" })
+									}
+								>
+									Modules
 								</TabsTrigger>
 							</TabsList>
 						</Tabs>

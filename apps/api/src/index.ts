@@ -25,6 +25,8 @@ import { waitForDatabase } from "./database/wait-for-database";
 import discordIntegration from "./discord-integration";
 import { eventContext } from "./events";
 import externalLink from "./external-link";
+import featuresRouter from "./features";
+import { initializeFeatures } from "./features/init";
 import genericWebhookIntegration from "./generic-webhook-integration";
 import giteaIntegration, { handleGiteaWebhookRoute } from "./gitea-integration";
 import githubIntegration, {
@@ -541,6 +543,7 @@ export function createApp() {
 	const workflowRuleApi = api.route("/workflow-rule", workflowRule);
 	const invitationApi = api.route("/invitation", invitation);
 	const workspaceApi = api.route("/workspace", workspace);
+	const featuresApi = api.route("/features", featuresRouter);
 
 	app.route(
 		"/",
@@ -683,6 +686,7 @@ export function createApp() {
 		configApi,
 		discordIntegrationApi,
 		externalLinkApi,
+		featuresApi,
 		genericWebhookIntegrationApi,
 		githubIntegrationApi,
 		giteaIntegrationApi,
@@ -738,6 +742,7 @@ export async function runStartupTasks() {
 	await seedDefaultWorkspaceRoles();
 
 	initializePlugins();
+	initializeFeatures();
 	initializeScheduler();
 	await initializeWebSocketAdapter();
 }
@@ -798,6 +803,7 @@ const {
 	configApi,
 	discordIntegrationApi,
 	externalLinkApi,
+	featuresApi,
 	genericWebhookIntegrationApi,
 	githubIntegrationApi,
 	giteaIntegrationApi,
@@ -846,6 +852,7 @@ export type AppType =
 	| typeof telegramIntegrationApi
 	| typeof taskRelationApi
 	| typeof externalLinkApi
+	| typeof featuresApi
 	| typeof workflowRuleApi
 	| typeof invitationApi
 	| typeof workspaceApi
