@@ -4,6 +4,8 @@ import {
 	activityTable,
 	apikeyTable,
 	assetTable,
+	budgetExpenseTable,
+	budgetTable,
 	columnTable,
 	externalLinkTable,
 	githubIntegrationTable,
@@ -108,6 +110,7 @@ export const projectTableRelations = relations(
 		githubIntegration: many(githubIntegrationTable),
 		integrations: many(integrationTable),
 		notificationWorkspaceProjects: many(userNotificationWorkspaceProjectTable),
+		budget: one(budgetTable),
 	}),
 );
 
@@ -383,6 +386,24 @@ export const workspaceFeatureTableRelations = relations(
 		workspace: one(workspaceTable, {
 			fields: [workspaceFeatureTable.workspaceId],
 			references: [workspaceTable.id],
+		}),
+	}),
+);
+
+export const budgetTableRelations = relations(budgetTable, ({ one, many }) => ({
+	project: one(projectTable, {
+		fields: [budgetTable.projectId],
+		references: [projectTable.id],
+	}),
+	expenses: many(budgetExpenseTable),
+}));
+
+export const budgetExpenseTableRelations = relations(
+	budgetExpenseTable,
+	({ one }) => ({
+		budget: one(budgetTable, {
+			fields: [budgetExpenseTable.budgetId],
+			references: [budgetTable.id],
 		}),
 	}),
 );

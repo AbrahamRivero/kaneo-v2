@@ -17,6 +17,7 @@ import {
 import * as v from "valibot";
 import activity from "./activity";
 import { auth } from "./auth";
+import budget from "./budget";
 import column from "./column";
 import config from "./config";
 import db, { getDatabase, schema } from "./database";
@@ -475,6 +476,7 @@ export function createApp() {
 	const taskApi = api.route("/task", task);
 	const columnApi = api.route("/column", column);
 	const activityApi = api.route("/activity", activity);
+	const budgetApi = api.route("/budget", budget);
 	const timeEntryApi = api.route("/time-entry", timeEntry);
 	const labelApi = api.route("/label", label);
 	const notificationApi = api.route("/notification", notification);
@@ -575,6 +577,7 @@ export function createApp() {
 		api,
 		injectWebSocket,
 		activityApi,
+		budgetApi,
 		columnApi,
 		configApi,
 		discordIntegrationApi,
@@ -691,6 +694,7 @@ const {
 	app,
 	injectWebSocket,
 	activityApi,
+	budgetApi,
 	columnApi,
 	configApi,
 	discordIntegrationApi,
@@ -729,6 +733,7 @@ export type AppType =
 	| typeof configApi
 	| typeof projectApi
 	| typeof taskApi
+	| typeof budgetApi
 	| typeof columnApi
 	| typeof activityApi
 	| typeof timeEntryApi

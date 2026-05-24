@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, DollarSign } from "lucide-react";
+import type React from "react";
 import { useTranslation } from "react-i18next";
 import {
 	Collapsible,
@@ -14,6 +15,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useFeatureEnabled } from "@/hooks/queries/features/use-workspace-features";
 import { usePendingInvitations } from "@/hooks/queries/invitation/use-pending-invitations";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 
@@ -22,18 +24,26 @@ export function NavMain() {
 	const { data: workspace } = useActiveWorkspace();
 	const navigate = useNavigate();
 	const { data: invitations = [] } = usePendingInvitations();
+	const budgetsEnabled = useFeatureEnabled(workspace?.id ?? "", "budgets");
 
 	if (!workspace) return null;
 
 	const pendingCount = invitations.length;
 
-	const navItems = [
+	const navItems: {
+		title: string;
+		url: string;
+		isActive: boolean;
+		badge: number | null;
+		Icon: React.ComponentType<{ className?: string }> | null;
+	}[] = [
 		{
 			title: t("navigation:sidebar.projects"),
 			url: `/dashboard/workspace/${workspace.id}`,
 			isActive:
 				window.location.pathname === `/dashboard/workspace/${workspace.id}`,
 			badge: null,
+			Icon: null,
 		},
 		{
 			title: t("navigation:sidebar.members"),
@@ -42,13 +52,28 @@ export function NavMain() {
 				window.location.pathname ===
 				`/dashboard/workspace/${workspace.id}/members`,
 			badge: null,
+			Icon: null,
 		},
 		{
 			title: t("navigation:sidebar.invitations"),
 			url: "/dashboard/invitations",
 			isActive: window.location.pathname === "/dashboard/invitations",
 			badge: pendingCount > 0 ? pendingCount : null,
+			Icon: null,
 		},
+		...(budgetsEnabled
+			? [
+					{
+						title: "Budgets",
+						url: `/dashboard/workspace/${workspace.id}/budgets`,
+						isActive:
+							window.location.pathname ===
+							`/dashboard/workspace/${workspace.id}/budgets`,
+						badge: null,
+						Icon: DollarSign,
+					},
+				]
+			: []),
 	];
 
 	return (
@@ -75,6 +100,7 @@ export function NavMain() {
 										className="h-8 ps-3.5 text-sm hover:bg-transparent hover:text-sidebar-accent-foreground active:bg-transparent"
 										onClick={() => navigate({ to: item.url })}
 									>
+										{item.Icon && <item.Icon className="size-4" />}
 										<span>{item.title}</span>
 										{item.badge !== null && (
 											<span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-sm border border-sidebar-border/60 px-1 text-[11px] font-medium text-sidebar-foreground/80">
