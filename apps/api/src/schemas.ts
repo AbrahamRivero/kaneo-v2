@@ -233,6 +233,25 @@ export const telegramIntegrationSchema = v.object({
 	updatedAt: v.date(),
 });
 
+export const budgetSchema = v.object({
+	id: v.string(),
+	projectId: v.string(),
+	totalBudget: v.string(),
+	createdAt: v.date(),
+	updatedAt: v.date(),
+});
+
+export const budgetExpenseSchema = v.object({
+	id: v.string(),
+	budgetId: v.string(),
+	description: v.string(),
+	amount: v.string(),
+	category: v.nullable(v.string()),
+	incurredAt: v.date(),
+	createdAt: v.date(),
+	updatedAt: v.date(),
+});
+
 export const configSchema = v.object({
 	disableRegistration: v.nullable(v.boolean()),
 	disablePasswordRegistration: v.nullable(v.boolean()),

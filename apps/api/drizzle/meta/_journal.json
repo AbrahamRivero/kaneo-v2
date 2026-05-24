@@ -232,6 +232,13 @@
 			"when": 1779629472534,
 			"tag": "0032_jittery_gorgon",
 			"breakpoints": true
+		},
+		{
+			"idx": 33,
+			"version": "7",
+			"when": 1779634180407,
+			"tag": "0033_wandering_lorna_dane",
+			"breakpoints": true
 		}
 	]
 }

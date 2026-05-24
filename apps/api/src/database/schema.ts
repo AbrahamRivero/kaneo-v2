@@ -6,6 +6,7 @@ import {
 	index,
 	integer,
 	jsonb,
+	numeric,
 	pgTable,
 	text,
 	timestamp,
@@ -282,6 +283,58 @@ export const workspaceFeatureTable = pgTable(
 		),
 		index("workspace_feature_workspace_idx").on(table.workspaceId),
 	],
+);
+
+export const budgetTable = pgTable(
+	"budget",
+	{
+		id: text("id")
+			.$defaultFn(() => createId())
+			.primaryKey(),
+		projectId: text("project_id")
+			.notNull()
+			.unique()
+			.references(() => projectTable.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		totalBudget: numeric("total_budget", { precision: 12, scale: 2 })
+			.default("0")
+			.notNull(),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => /* @__PURE__ */ new Date())
+			.notNull(),
+	},
+	(table) => [index("budget_projectId_idx").on(table.projectId)],
+);
+
+export const budgetExpenseTable = pgTable(
+	"budget_expense",
+	{
+		id: text("id")
+			.$defaultFn(() => createId())
+			.primaryKey(),
+		budgetId: text("budget_id")
+			.notNull()
+			.references(() => budgetTable.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		description: text("description").notNull(),
+		amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
+		category: text("category"),
+		incurredAt: timestamp("incurred_at", { mode: "date" })
+			.defaultNow()
+			.notNull(),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => /* @__PURE__ */ new Date())
+			.notNull(),
+	},
+	(table) => [index("budget_expense_budgetId_idx").on(table.budgetId)],
 );
 
 export const columnTable = pgTable(

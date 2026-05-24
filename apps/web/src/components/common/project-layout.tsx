@@ -1,10 +1,16 @@
 import { useLocation, useNavigate } from "@tanstack/react-router";
-import { CalendarDays, SquareKanban, SquircleDashed } from "lucide-react";
+import {
+	CalendarDays,
+	DollarSign,
+	SquareKanban,
+	SquircleDashed,
+} from "lucide-react";
 import { type ReactNode, useState } from "react";
 import MobileProjectNav from "@/components/common/header/mobile-project-nav";
 import ProjectCrumbSelect from "@/components/common/header/project-crumb-select";
 import WorkspaceCrumbSelect from "@/components/common/header/workspace-crumb-select";
 import Layout from "@/components/common/layout";
+import { FeatureGate } from "@/components/feature-gate";
 import CreateProjectModal from "@/components/shared/modals/create-project-modal";
 import { Button } from "@/components/ui/button";
 import { KbdSequence } from "@/components/ui/kbd";
@@ -26,7 +32,7 @@ type ProjectLayoutProps = {
 	headerActions?: ReactNode;
 	children: ReactNode;
 	showViewSwitcher?: boolean;
-	activeView?: "backlog" | "board" | "gantt";
+	activeView?: "backlog" | "board" | "gantt" | "budget";
 };
 
 export default function ProjectLayout({
@@ -51,7 +57,9 @@ export default function ProjectLayout({
 			? "backlog"
 			: location.pathname.includes("/gantt")
 				? "gantt"
-				: "board");
+				: location.pathname.includes("/budget")
+					? "budget"
+					: "board");
 
 	const handleNavigateToBacklog = () => {
 		navigate({
@@ -74,6 +82,13 @@ export default function ProjectLayout({
 		});
 	};
 
+	const handleNavigateToBudget = () => {
+		navigate({
+			to: "/dashboard/workspace/$workspaceId/project/$projectId/budget",
+			params: { workspaceId, projectId },
+		});
+	};
+
 	const handleProjectSwitch = (nextProjectId: string) => {
 		navigate({
 			to:
@@ -81,7 +96,9 @@ export default function ProjectLayout({
 					? "/dashboard/workspace/$workspaceId/project/$projectId/backlog"
 					: resolvedView === "gantt"
 						? "/dashboard/workspace/$workspaceId/project/$projectId/gantt"
-						: "/dashboard/workspace/$workspaceId/project/$projectId/board",
+						: resolvedView === "budget"
+							? "/dashboard/workspace/$workspaceId/project/$projectId/budget"
+							: "/dashboard/workspace/$workspaceId/project/$projectId/board",
 			params: {
 				workspaceId,
 				projectId: nextProjectId,
@@ -135,6 +152,7 @@ export default function ProjectLayout({
 								onSelectBacklog={handleNavigateToBacklog}
 								onSelectBoard={handleNavigateToBoard}
 								onSelectGantt={handleNavigateToGantt}
+								onSelectBudget={handleNavigateToBudget}
 								onSelectProject={handleProjectSwitch}
 								onAddProject={() => setIsCreateProjectModalOpen(true)}
 							/>
@@ -178,6 +196,20 @@ export default function ProjectLayout({
 									<CalendarDays className="size-3.5" />
 									Gantt
 								</Button>
+								<FeatureGate featureKey="budgets">
+									<Button
+										variant={resolvedView === "budget" ? "secondary" : "ghost"}
+										size="xs"
+										onClick={handleNavigateToBudget}
+										className={cn(
+											"h-6 gap-1.5 rounded-md px-2 text-xs",
+											resolvedView !== "budget" && "text-muted-foreground",
+										)}
+									>
+										<DollarSign className="size-3.5" />
+										Budget
+									</Button>
+								</FeatureGate>
 							</div>
 						)}
 					</div>
