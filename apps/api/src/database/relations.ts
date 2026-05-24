@@ -24,6 +24,9 @@ import {
 	taskTable,
 	teamMemberTable,
 	teamTable,
+	templateColumnTable,
+	templateTable,
+	templateTaskTable,
 	timeEntryTable,
 	userNotificationPreferenceTable,
 	userNotificationWorkspaceProjectTable,
@@ -481,6 +484,38 @@ export const recurringTaskTableRelations = relations(
 		project: one(projectTable, {
 			fields: [recurringTaskTable.projectId],
 			references: [projectTable.id],
+		}),
+	}),
+);
+
+export const templateTableRelations = relations(
+	templateTable,
+	({ one, many }) => ({
+		workspace: one(workspaceTable, {
+			fields: [templateTable.workspaceId],
+			references: [workspaceTable.id],
+		}),
+		columns: many(templateColumnTable),
+		tasks: many(templateTaskTable),
+	}),
+);
+
+export const templateColumnTableRelations = relations(
+	templateColumnTable,
+	({ one }) => ({
+		template: one(templateTable, {
+			fields: [templateColumnTable.templateId],
+			references: [templateTable.id],
+		}),
+	}),
+);
+
+export const templateTaskTableRelations = relations(
+	templateTaskTable,
+	({ one }) => ({
+		template: one(templateTable, {
+			fields: [templateTaskTable.templateId],
+			references: [templateTable.id],
 		}),
 	}),
 );

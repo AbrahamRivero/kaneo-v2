@@ -5,6 +5,7 @@ export interface CreateProjectInput {
 	name: string;
 	icon: string;
 	slug: string;
+	templateId?: string;
 }
 
 export interface UpdateProjectInput {

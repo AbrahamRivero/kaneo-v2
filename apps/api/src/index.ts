@@ -54,6 +54,8 @@ import supplier from "./supplier";
 import task from "./task";
 import taskRelation from "./task-relation";
 import telegramIntegration from "./telegram-integration";
+import template from "./template";
+import { seedTemplates } from "./template/seed";
 import timeEntry from "./time-entry";
 import {
 	authenticateApiRequest,
@@ -517,6 +519,7 @@ export function createApp() {
 	const activityApi = api.route("/activity", activity);
 	const budgetApi = api.route("/budget", budget);
 	const supplierApi = api.route("/supplier", supplier);
+	const _templateApi = api.route("/template", template);
 	const _recurringTasksApi = api.route("/recurring-tasks", recurringTasks);
 	const timeEntryApi = api.route("/time-entry", timeEntry);
 	const labelApi = api.route("/label", label);
@@ -751,6 +754,7 @@ export async function runStartupTasks() {
 
 	initializePlugins();
 	initializeFeatures();
+	await seedTemplates();
 	initializeScheduler();
 	await initializeWebSocketAdapter();
 }
@@ -870,6 +874,7 @@ export type AppType =
 	| typeof workspaceApi
 	| typeof publicProjectApi
 	| typeof invitationPublicApi
-	| typeof oauthApi;
+	| typeof oauthApi
+	| typeof _templateApi;
 
 export default app;

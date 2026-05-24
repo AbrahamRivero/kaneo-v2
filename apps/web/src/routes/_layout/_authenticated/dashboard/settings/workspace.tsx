@@ -5,7 +5,7 @@ import {
   redirect,
   useLocation,
 } from "@tanstack/react-router";
-import { Puzzle, Settings, Shield } from "lucide-react";
+import { Layout as LayoutIcon, Puzzle, Settings, Shield } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -66,15 +66,20 @@ function RouteComponent() {
 			url: "/dashboard/settings/workspace/modules",
 			icon: Puzzle,
 		},
-  ];
-  const isActivePath = (path: string) => location.pathname === path;
-  const workspaceInitials =
-    workspace?.name
-      ?.split(" ")
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0]?.toUpperCase())
-      .join("") || "WS";
+		{
+			title: "Templates",
+			url: "/dashboard/settings/workspace/templates",
+			icon: LayoutIcon,
+		},
+	];
+	const isActivePath = (path: string) => location.pathname === path;
+	const workspaceInitials =
+		workspace?.name
+			?.split(" ")
+			.filter(Boolean)
+			.slice(0, 2)
+			.map((part) => part[0]?.toUpperCase())
+			.join("") || "WS";
 
 	return (
 		<div className="flex gap-6 h-full">

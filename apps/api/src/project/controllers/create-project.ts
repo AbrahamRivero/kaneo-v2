@@ -6,9 +6,10 @@ async function createProjectCtrl(
 	name: string,
 	icon: string,
 	slug: string,
+	templateId?: string,
 ) {
 	const useCase = new CreateProjectUseCase(projectRepository);
-	return useCase.execute({ workspaceId, name, icon, slug });
+	return useCase.execute({ workspaceId, name, icon, slug, templateId });
 }
 
 export default createProjectCtrl;

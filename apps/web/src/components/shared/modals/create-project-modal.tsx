@@ -23,8 +23,16 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import icons from "@/constants/project-icons";
 import useCreateProject from "@/hooks/mutations/project/use-create-project";
+import { useListTemplates } from "@/hooks/queries/template/use-list-templates";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 import { cn } from "@/lib/cn";
 import generateProjectSlug from "@/lib/generate-project-id";
@@ -42,13 +50,16 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
 	const [selectedIcon, setSelectedIcon] = useState("Layout");
 	const [iconPopoverOpen, setIconPopoverOpen] = useState(false);
 	const [iconSearch, setIconSearch] = useState("");
+	const [templateId, setTemplateId] = useState("");
 	const queryClient = useQueryClient();
 	const { data: workspace } = useActiveWorkspace();
+	const { data: templates } = useListTemplates(workspace?.id ?? "");
 	const { mutateAsync } = useCreateProject({
 		name,
 		slug,
 		workspaceId: workspace?.id ?? "",
 		icon: selectedIcon,
+		templateId: templateId || undefined,
 	});
 	const SelectedIcon =
 		icons[selectedIcon as keyof typeof icons] || icons.Layout;
@@ -57,12 +68,17 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
 	);
 	const navigate = useNavigate();
 
+	const selectedTemplate = templateId
+		? templates?.find((t) => t.id === templateId)
+		: null;
+
 	const handleClose = () => {
 		setName("");
 		setSlug("");
 		setSelectedIcon("Layout");
 		setIconPopoverOpen(false);
 		setIconSearch("");
+		setTemplateId("");
 		onClose();
 	};
 
@@ -125,6 +141,42 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
 
 				<form onSubmit={handleSubmit} className="space-y-4">
 					<div className="space-y-6 px-3 pt-2">
+						<div className="space-y-2">
+							<Select
+								value={templateId}
+								onValueChange={(v) => setTemplateId(v ?? "")}
+							>
+								<SelectTrigger className="h-8 text-xs">
+									<SelectValue placeholder="Blank project" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="">Blank project</SelectItem>
+									{templates?.map((tmpl) => (
+										<SelectItem key={tmpl.id} value={tmpl.id}>
+											{tmpl.name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							{selectedTemplate && (
+								<div className="flex flex-wrap gap-1">
+									{selectedTemplate.columns.map((col) => (
+										<span
+											key={col.id}
+											className="inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] text-muted-foreground"
+										>
+											{col.name}
+										</span>
+									))}
+									{selectedTemplate.tasks.length > 0 && (
+										<span className="text-[10px] text-muted-foreground pl-1">
+											{selectedTemplate.tasks.length} sample task
+											{selectedTemplate.tasks.length !== 1 ? "s" : ""}
+										</span>
+									)}
+								</div>
+							)}
+						</div>
 						<Popover
 							open={iconPopoverOpen}
 							onOpenChange={(open) => {
@@ -152,7 +204,7 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
 										placeholder={t("common:modals.createProject.searchIcons")}
 										className="h-8 text-xs"
 									/>
-									<div className="max-h-[280px] overflow-y-auto pr-1">
+									<div className="max-h-70 overflow-y-auto pr-1">
 										<div className="grid grid-cols-6 gap-1.5">
 											{filteredIcons.map(([iconName, Icon]) => {
 												const isSelected = selectedIcon === iconName;
@@ -190,7 +242,7 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
 							onChange={handleNameChange}
 							autoFocus
 							placeholder={t("common:modals.createProject.projectName")}
-							className="w-full [&_[data-slot=input]]:h-auto [&_[data-slot=input]]:px-0 [&_[data-slot=input]]:py-2 [&_[data-slot=input]]:text-2xl [&_[data-slot=input]]:leading-tight [&_[data-slot=input]]:font-semibold [&_[data-slot=input]]:tracking-tight [&_[data-slot=input]]:text-foreground [&_[data-slot=input]]:placeholder:text-muted-foreground [&_[data-slot=input]]:outline-none"
+							className="w-full **:data-[slot=input]:h-auto **:data-[slot=input]:px-0 **:data-[slot=input]:py-2 **:data-[slot=input]:text-2xl **:data-[slot=input]:leading-tight **:data-[slot=input]:font-semibold **:data-[slot=input]:tracking-tight **:data-[slot=input]:text-foreground **:data-[slot=input]:placeholder:text-muted-foreground **:data-[slot=input]:outline-none"
 							required
 						/>
 					</div>
