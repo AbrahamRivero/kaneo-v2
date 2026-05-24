@@ -223,6 +223,36 @@ export const projectTable = pgTable(
 	],
 );
 
+export const workspaceFeatureTable = pgTable(
+	"workspace_feature",
+	{
+		id: text("id")
+			.$defaultFn(() => createId())
+			.primaryKey(),
+		workspaceId: text("workspace_id")
+			.notNull()
+			.references(() => workspaceTable.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		featureKey: text("feature_key").notNull(),
+		enabled: boolean("enabled").default(false).notNull(),
+		config: text("config"),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => /* @__PURE__ */ new Date())
+			.notNull(),
+	},
+	(table) => [
+		unique("workspace_feature_workspace_key_unique").on(
+			table.workspaceId,
+			table.featureKey,
+		),
+		index("workspace_feature_workspace_idx").on(table.workspaceId),
+	],
+);
+
 export const columnTable = pgTable(
 	"column",
 	{
