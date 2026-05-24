@@ -14,7 +14,10 @@ import {
 	labelTable,
 	notificationTable,
 	projectTable,
+	serviceOrderTable,
 	sessionTable,
+	supplierContractTable,
+	supplierTable,
 	taskRelationTable,
 	taskReminderSentTable,
 	taskTable,
@@ -79,6 +82,9 @@ export const workspaceTableRelations = relations(
 		invitations: many(invitationTable),
 		notificationWorkspaceRules: many(userNotificationWorkspaceRuleTable),
 		features: many(workspaceFeatureTable),
+		suppliers: many(supplierTable),
+		contracts: many(supplierContractTable),
+		serviceOrders: many(serviceOrderTable),
 	}),
 );
 
@@ -404,6 +410,55 @@ export const budgetExpenseTableRelations = relations(
 		budget: one(budgetTable, {
 			fields: [budgetExpenseTable.budgetId],
 			references: [budgetTable.id],
+		}),
+	}),
+);
+
+export const supplierTableRelations = relations(
+	supplierTable,
+	({ one, many }) => ({
+		workspace: one(workspaceTable, {
+			fields: [supplierTable.workspaceId],
+			references: [workspaceTable.id],
+		}),
+		contracts: many(supplierContractTable),
+		serviceOrders: many(serviceOrderTable),
+	}),
+);
+
+export const supplierContractTableRelations = relations(
+	supplierContractTable,
+	({ one, many }) => ({
+		workspace: one(workspaceTable, {
+			fields: [supplierContractTable.workspaceId],
+			references: [workspaceTable.id],
+		}),
+		supplier: one(supplierTable, {
+			fields: [supplierContractTable.supplierId],
+			references: [supplierTable.id],
+		}),
+		serviceOrders: many(serviceOrderTable),
+	}),
+);
+
+export const serviceOrderTableRelations = relations(
+	serviceOrderTable,
+	({ one }) => ({
+		workspace: one(workspaceTable, {
+			fields: [serviceOrderTable.workspaceId],
+			references: [workspaceTable.id],
+		}),
+		supplier: one(supplierTable, {
+			fields: [serviceOrderTable.supplierId],
+			references: [supplierTable.id],
+		}),
+		contract: one(supplierContractTable, {
+			fields: [serviceOrderTable.contractId],
+			references: [supplierContractTable.id],
+		}),
+		project: one(projectTable, {
+			fields: [serviceOrderTable.projectId],
+			references: [projectTable.id],
 		}),
 	}),
 );

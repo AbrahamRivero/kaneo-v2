@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronRight, DollarSign } from "lucide-react";
+import { Building2, ChevronRight, DollarSign } from "lucide-react";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -25,6 +25,7 @@ export function NavMain() {
 	const navigate = useNavigate();
 	const { data: invitations = [] } = usePendingInvitations();
 	const budgetsEnabled = useFeatureEnabled(workspace?.id ?? "", "budgets");
+	const suppliersEnabled = useFeatureEnabled(workspace?.id ?? "", "suppliers");
 
 	if (!workspace) return null;
 
@@ -71,6 +72,22 @@ export function NavMain() {
 							`/dashboard/workspace/${workspace.id}/budgets`,
 						badge: null,
 						Icon: DollarSign,
+					},
+				]
+			: []),
+		...(suppliersEnabled
+			? [
+					{
+						title: "Suppliers",
+						url: `/dashboard/workspace/${workspace.id}/suppliers`,
+						isActive:
+							window.location.pathname ===
+								`/dashboard/workspace/${workspace.id}/suppliers` ||
+							window.location.pathname.startsWith(
+								`/dashboard/workspace/${workspace.id}/suppliers/`,
+							),
+						badge: null,
+						Icon: Building2,
 					},
 				]
 			: []),

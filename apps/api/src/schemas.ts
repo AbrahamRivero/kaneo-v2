@@ -251,6 +251,49 @@ export const budgetExpenseSchema = v.object({
 	updatedAt: v.date(),
 });
 
+export const supplierSchema = v.object({
+	id: v.string(),
+	workspaceId: v.string(),
+	name: v.string(),
+	contactName: v.nullable(v.string()),
+	contactEmail: v.nullable(v.string()),
+	contactPhone: v.nullable(v.string()),
+	website: v.nullable(v.string()),
+	notes: v.nullable(v.string()),
+	createdAt: v.date(),
+	updatedAt: v.date(),
+});
+
+export const supplierContractSchema = v.object({
+	id: v.string(),
+	workspaceId: v.string(),
+	supplierId: v.string(),
+	title: v.string(),
+	description: v.nullable(v.string()),
+	value: v.nullable(v.string()),
+	startDate: v.nullable(v.date()),
+	endDate: v.nullable(v.date()),
+	status: v.string(),
+	createdAt: v.date(),
+	updatedAt: v.date(),
+});
+
+export const serviceOrderSchema = v.object({
+	id: v.string(),
+	workspaceId: v.string(),
+	supplierId: v.string(),
+	contractId: v.nullable(v.string()),
+	projectId: v.nullable(v.string()),
+	title: v.string(),
+	description: v.nullable(v.string()),
+	amount: v.nullable(v.string()),
+	status: v.string(),
+	orderedAt: v.nullable(v.date()),
+	completedAt: v.nullable(v.date()),
+	createdAt: v.date(),
+	updatedAt: v.date(),
+});
+
 export const configSchema = v.object({
 	disableRegistration: v.nullable(v.boolean()),
 	disablePasswordRegistration: v.nullable(v.boolean()),

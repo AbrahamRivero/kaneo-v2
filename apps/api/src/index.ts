@@ -48,6 +48,7 @@ import { initializeScheduler, shutdownScheduler } from "./scheduler";
 import search from "./search";
 import slackIntegration from "./slack-integration";
 import { getPrivateObject } from "./storage/s3";
+import supplier from "./supplier";
 import task from "./task";
 import taskRelation from "./task-relation";
 import telegramIntegration from "./telegram-integration";
@@ -477,6 +478,7 @@ export function createApp() {
 	const columnApi = api.route("/column", column);
 	const activityApi = api.route("/activity", activity);
 	const budgetApi = api.route("/budget", budget);
+	const supplierApi = api.route("/supplier", supplier);
 	const timeEntryApi = api.route("/time-entry", timeEntry);
 	const labelApi = api.route("/label", label);
 	const notificationApi = api.route("/notification", notification);
@@ -578,6 +580,7 @@ export function createApp() {
 		injectWebSocket,
 		activityApi,
 		budgetApi,
+		supplierApi,
 		columnApi,
 		configApi,
 		discordIntegrationApi,
@@ -695,6 +698,7 @@ const {
 	injectWebSocket,
 	activityApi,
 	budgetApi,
+	supplierApi,
 	columnApi,
 	configApi,
 	discordIntegrationApi,
@@ -734,6 +738,7 @@ export type AppType =
 	| typeof projectApi
 	| typeof taskApi
 	| typeof budgetApi
+	| typeof supplierApi
 	| typeof columnApi
 	| typeof activityApi
 	| typeof timeEntryApi
