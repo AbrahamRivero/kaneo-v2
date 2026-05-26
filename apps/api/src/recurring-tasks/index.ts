@@ -55,6 +55,8 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 				columnId: v.optional(v.string()),
 				assigneeId: v.optional(v.string()),
 				priority: v.optional(v.string()),
+				dueDateDaysOffset: v.optional(v.number()),
+				labelIds: v.optional(v.array(v.string())),
 			}),
 		),
 		async (c) => {
@@ -99,6 +101,8 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 				columnId: v.optional(v.nullable(v.string())),
 				assigneeId: v.optional(v.nullable(v.string())),
 				priority: v.optional(v.nullable(v.string())),
+				dueDateDaysOffset: v.optional(v.nullable(v.number())),
+				labelIds: v.optional(v.nullable(v.array(v.string()))),
 			}),
 		),
 		async (c) => {

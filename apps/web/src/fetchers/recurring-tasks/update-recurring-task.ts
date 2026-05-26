@@ -15,6 +15,8 @@ export type UpdateRecurringTaskRequest = {
 	columnId?: string | null;
 	assigneeId?: string | null;
 	priority?: string | null;
+	dueDateDaysOffset?: number | null;
+	labelIds?: string[] | null;
 };
 
 async function updateRecurringTask(data: UpdateRecurringTaskRequest) {

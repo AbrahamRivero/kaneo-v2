@@ -1717,6 +1717,7 @@
 			"title": "Titel",
 			"schedule": "Schema",
 			"nextRun": "Volgende uitvoering",
+			"lastRun": "Laatste uitvoering",
 			"priority": "Prioriteit",
 			"active": "Actief"
 		},
@@ -1740,12 +1741,45 @@
 			"assigneeUnassigned": "Niet toegewezen",
 			"priority": "Prioriteit",
 			"priorityNone": "Geen",
+			"labels": "Labels",
+			"noLabels": "Geen labels beschikbaar",
+			"dueDateOffset": "Vervaldatum na (dagen)",
+			"dueDateOffsetPlaceholder": "bijv. 3",
+			"nextRunAt": "Eerste uitvoering",
 			"submit": "Aanmaken"
+		},
+		"edit": {
+			"title": "Terugkerende taak bewerken",
+			"description": "Werk het schema en de instellingen van de terugkerende taak bij.",
+			"submit": "Wijzigingen opslaan"
 		},
 		"frequency": {
 			"daily": "Dagelijks",
 			"weekly": "Wekelijks",
 			"monthly": "Maandelijks"
+		},
+		"schedule": {
+			"every": "Elke",
+			"daily_one": "dag",
+			"daily_other": "dagen",
+			"weekly_one": "week",
+			"weekly_other": "weken",
+			"monthly_one": "maand",
+			"monthly_other": "maanden"
+		},
+		"toast": {
+			"created": "Terugkerende taak aangemaakt",
+			"createError": "Aanmaken terugkerende taak mislukt",
+			"updated": "Terugkerende taak bijgewerkt",
+			"updateError": "Bijwerken terugkerende taak mislukt",
+			"deleted": "Terugkerende taak verwijderd",
+			"deleteError": "Verwijderen terugkerende taak mislukt"
+		},
+		"deleteConfirm": {
+			"title": "Terugkerende taak verwijderen",
+			"description": "Dit stopt het aanmaken van nieuwe taken. Al aangemaakte taken worden niet beïnvloed.",
+			"confirm": "Verwijderen",
+			"cancel": "Annuleren"
 		}
 	},
 	"templates": {

@@ -1942,6 +1942,7 @@
 			"title": "Titre",
 			"schedule": "Planification",
 			"nextRun": "Prochaine exécution",
+			"lastRun": "Dernière exécution",
 			"priority": "Priorité",
 			"active": "Actif"
 		},
@@ -1965,12 +1966,45 @@
 			"assigneeUnassigned": "Non assigné",
 			"priority": "Priorité",
 			"priorityNone": "Aucune",
+			"labels": "Étiquettes",
+			"noLabels": "Aucune étiquette disponible",
+			"dueDateOffset": "Échéance après (jours)",
+			"dueDateOffsetPlaceholder": "ex. 3",
+			"nextRunAt": "Première exécution",
 			"submit": "Créer"
+		},
+		"edit": {
+			"title": "Modifier la tâche récurrente",
+			"description": "Mettez à jour le planning et les paramètres de la tâche récurrente.",
+			"submit": "Enregistrer les modifications"
 		},
 		"frequency": {
 			"daily": "Quotidien",
 			"weekly": "Hebdomadaire",
 			"monthly": "Mensuel"
+		},
+		"schedule": {
+			"every": "Tous les",
+			"daily_one": "jour",
+			"daily_other": "jours",
+			"weekly_one": "semaine",
+			"weekly_other": "semaines",
+			"monthly_one": "mois",
+			"monthly_other": "mois"
+		},
+		"toast": {
+			"created": "Tâche récurrente créée",
+			"createError": "Échec de la création de la tâche récurrente",
+			"updated": "Tâche récurrente mise à jour",
+			"updateError": "Échec de la mise à jour de la tâche récurrente",
+			"deleted": "Tâche récurrente supprimée",
+			"deleteError": "Échec de la suppression de la tâche récurrente"
+		},
+		"deleteConfirm": {
+			"title": "Supprimer la tâche récurrente",
+			"description": "Cela arrêtera la génération de nouvelles tâches. Les tâches déjà créées ne seront pas affectées.",
+			"confirm": "Supprimer",
+			"cancel": "Annuler"
 		}
 	},
 	"templates": {

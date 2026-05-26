@@ -1936,6 +1936,7 @@
 			"title": "제목",
 			"schedule": "일정",
 			"nextRun": "다음 실행",
+			"lastRun": "마지막 실행",
 			"priority": "우선순위",
 			"active": "활성"
 		},
@@ -1959,12 +1960,45 @@
 			"assigneeUnassigned": "미배정",
 			"priority": "우선순위",
 			"priorityNone": "없음",
+			"labels": "레이블",
+			"noLabels": "사용 가능한 레이블 없음",
+			"dueDateOffset": "마감일 (일 후)",
+			"dueDateOffsetPlaceholder": "예: 3",
+			"nextRunAt": "첫 실행",
 			"submit": "만들기"
+		},
+		"edit": {
+			"title": "반복 작업 편집",
+			"description": "반복 작업의 일정 및 설정을 업데이트합니다.",
+			"submit": "변경사항 저장"
 		},
 		"frequency": {
 			"daily": "매일",
 			"weekly": "매주",
 			"monthly": "매월"
+		},
+		"schedule": {
+			"every": "매",
+			"daily_one": "일",
+			"daily_other": "일",
+			"weekly_one": "주",
+			"weekly_other": "주",
+			"monthly_one": "개월",
+			"monthly_other": "개월"
+		},
+		"toast": {
+			"created": "반복 작업이 생성되었습니다",
+			"createError": "반복 작업 생성 실패",
+			"updated": "반복 작업이 업데이트되었습니다",
+			"updateError": "반복 작업 업데이트 실패",
+			"deleted": "반복 작업이 삭제되었습니다",
+			"deleteError": "반복 작업 삭제 실패"
+		},
+		"deleteConfirm": {
+			"title": "반복 작업 삭제",
+			"description": "새 작업 생성을 중단합니다. 이미 생성된 작업에는 영향을 미치지 않습니다.",
+			"confirm": "삭제",
+			"cancel": "취소"
 		}
 	},
 	"templates": {

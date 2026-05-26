@@ -1946,6 +1946,7 @@
 			"title": "Назва",
 			"schedule": "Розклад",
 			"nextRun": "Наступний запуск",
+			"lastRun": "Останній запуск",
 			"priority": "Пріоритет",
 			"active": "Активне"
 		},
@@ -1960,7 +1961,7 @@
 			"titleField": "Назва",
 			"titlePlaceholder": "Назва завдання",
 			"descriptionField": "Опис",
-			"descriptionPlaceholder": "Необов\u0027язковий опис",
+			"descriptionPlaceholder": "Необов'язковий опис",
 			"frequency": "Частота",
 			"every": "Кожні",
 			"column": "Колонка",
@@ -1969,12 +1970,48 @@
 			"assigneeUnassigned": "Не призначено",
 			"priority": "Пріоритет",
 			"priorityNone": "Немає",
+			"labels": "Мітки",
+			"noLabels": "Немає доступних міток",
+			"dueDateOffset": "Термін через (днів)",
+			"dueDateOffsetPlaceholder": "напр. 3",
+			"nextRunAt": "Перший запуск",
 			"submit": "Створити"
+		},
+		"edit": {
+			"title": "Редагувати повторюване завдання",
+			"description": "Оновіть розклад та налаштування повторюваного завдання.",
+			"submit": "Зберегти зміни"
 		},
 		"frequency": {
 			"daily": "Щоденно",
 			"weekly": "Щотижня",
 			"monthly": "Щомісяця"
+		},
+		"schedule": {
+			"every": "Кожні",
+			"daily_one": "день",
+			"daily_few": "дні",
+			"daily_other": "днів",
+			"weekly_one": "тиждень",
+			"weekly_few": "тижні",
+			"weekly_other": "тижнів",
+			"monthly_one": "місяць",
+			"monthly_few": "місяці",
+			"monthly_other": "місяців"
+		},
+		"toast": {
+			"created": "Повторюване завдання створено",
+			"createError": "Не вдалося створити повторюване завдання",
+			"updated": "Повторюване завдання оновлено",
+			"updateError": "Не вдалося оновити повторюване завдання",
+			"deleted": "Повторюване завдання видалено",
+			"deleteError": "Не вдалося видалити повторюване завдання"
+		},
+		"deleteConfirm": {
+			"title": "Видалити повторюване завдання",
+			"description": "Це зупинить створення нових завдань. Вже створені завдання не постраждають.",
+			"confirm": "Видалити",
+			"cancel": "Скасувати"
 		}
 	},
 	"templates": {

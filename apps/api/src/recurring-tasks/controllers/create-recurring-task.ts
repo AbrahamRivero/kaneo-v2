@@ -17,6 +17,8 @@ type CreateRecurringTaskInput = {
 	assigneeId?: string;
 	createdBy?: string;
 	priority?: string;
+	dueDateDaysOffset?: number;
+	labelIds?: string[];
 };
 
 async function createRecurringTask(data: CreateRecurringTaskInput) {

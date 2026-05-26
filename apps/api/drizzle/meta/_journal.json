@@ -274,6 +274,13 @@
 			"when": 1779801293979,
 			"tag": "0038_silky_nightcrawler",
 			"breakpoints": true
+		},
+		{
+			"idx": 39,
+			"version": "7",
+			"when": 1779821461614,
+			"tag": "0039_goofy_mimic",
+			"breakpoints": true
 		}
 	]
 }

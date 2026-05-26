@@ -1957,6 +1957,7 @@
 			"title": "Title",
 			"schedule": "Schedule",
 			"nextRun": "Next Run",
+			"lastRun": "Last Run",
 			"priority": "Priority",
 			"active": "Active"
 		},
@@ -1980,12 +1981,45 @@
 			"assigneeUnassigned": "Unassigned",
 			"priority": "Priority",
 			"priorityNone": "None",
+			"labels": "Labels",
+			"noLabels": "No labels available",
+			"dueDateOffset": "Due after (days)",
+			"dueDateOffsetPlaceholder": "e.g., 3",
+			"nextRunAt": "First run",
 			"submit": "Create"
+		},
+		"edit": {
+			"title": "Edit Recurring Task",
+			"description": "Update the recurring task schedule and settings.",
+			"submit": "Save Changes"
 		},
 		"frequency": {
 			"daily": "Daily",
 			"weekly": "Weekly",
 			"monthly": "Monthly"
+		},
+		"schedule": {
+			"every": "Every",
+			"daily_one": "day",
+			"daily_other": "days",
+			"weekly_one": "week",
+			"weekly_other": "weeks",
+			"monthly_one": "month",
+			"monthly_other": "months"
+		},
+		"toast": {
+			"created": "Recurring task created",
+			"createError": "Failed to create recurring task",
+			"updated": "Recurring task updated",
+			"updateError": "Failed to update recurring task",
+			"deleted": "Recurring task deleted",
+			"deleteError": "Failed to delete recurring task"
+		},
+		"deleteConfirm": {
+			"title": "Delete Recurring Task",
+			"description": "This will stop generating new tasks. Already created tasks will not be affected.",
+			"confirm": "Delete",
+			"cancel": "Cancel"
 		}
 	},
 

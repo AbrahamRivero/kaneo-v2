@@ -1,5 +1,5 @@
-import { Plus } from "lucide-react";
-import { useState } from "react";
+import { Check, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,31 +21,80 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import useGetLabelsByWorkspace from "@/hooks/queries/label/use-get-labels-by-workspace";
 
-type CreateRecurringTaskDialogProps = {
-	onCreate: (data: {
-		title: string;
-		description?: string;
-		frequency: string;
-		intervalValue: number;
-		priority?: string;
-		columnId?: string;
-		assigneeId?: string;
-		nextRunAt: string;
-	}) => Promise<unknown>;
+const labelColorMap: Record<string, string> = {
+	gray: "var(--color-stone-500)",
+	"dark-gray": "var(--color-slate-500)",
+	purple: "var(--color-violet-500)",
+	teal: "var(--color-emerald-600)",
+	green: "var(--color-green-600)",
+	yellow: "var(--color-amber-600)",
+	orange: "var(--color-orange-600)",
+	pink: "var(--color-rose-600)",
+	red: "var(--color-red-600)",
+};
+
+function getLabelColor(color: string): string {
+	return labelColorMap[color] || "var(--color-neutral-400)";
+}
+
+function toDatetimeLocal(date: Date): string {
+	const y = date.getFullYear();
+	const m = String(date.getMonth() + 1).padStart(2, "0");
+	const d = String(date.getDate()).padStart(2, "0");
+	const h = String(date.getHours()).padStart(2, "0");
+	const min = String(date.getMinutes()).padStart(2, "0");
+	return `${y}-${m}-${d}T${h}:${min}`;
+}
+
+function fromDatetimeLocal(value: string): Date {
+	return new Date(value);
+}
+
+export type RecurringTaskFormData = {
+	title: string;
+	description?: string;
+	frequency: string;
+	intervalValue: number;
+	priority?: string;
+	columnId?: string;
+	assigneeId?: string;
+	nextRunAt: string;
+	labelIds?: string[];
+	dueDateDaysOffset?: number;
+};
+
+type RecurringTaskDialogProps = {
+	onSubmit: (data: RecurringTaskFormData) => Promise<unknown>;
 	isPending: boolean;
 	columns: { id: string; name: string }[];
 	users: { userId: string; user: { id: string; name: string | null } }[];
+	workspaceId: string;
+	open?: boolean;
+	onOpenChange?: (open: boolean) => void;
+	initialData?: RecurringTaskFormData & { id?: string };
 };
 
-function CreateRecurringTaskDialog({
-	onCreate,
+function RecurringTaskDialog({
+	onSubmit,
 	isPending,
 	columns,
 	users,
-}: CreateRecurringTaskDialogProps) {
+	workspaceId,
+	open: controlledOpen,
+	onOpenChange: controlledOnOpenChange,
+	initialData,
+}: RecurringTaskDialogProps) {
 	const { t } = useTranslation();
-	const [open, setOpen] = useState(false);
+	const [internalOpen, setInternalOpen] = useState(false);
+
+	const open = controlledOpen ?? internalOpen;
+	const setOpen = controlledOnOpenChange ?? setInternalOpen;
+	const isEditMode = !!initialData;
+
+	const { data: workspaceLabels = [] } = useGetLabelsByWorkspace(workspaceId);
+
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 	const [frequency, setFrequency] = useState("daily");
@@ -53,14 +102,46 @@ function CreateRecurringTaskDialog({
 	const [priority, setPriority] = useState("no-priority");
 	const [columnId, setColumnId] = useState("");
 	const [assigneeId, setAssigneeId] = useState("");
+	const [labelIds, setLabelIds] = useState<string[]>([]);
+	const [dueDateDaysOffset, setDueDateDaysOffset] = useState<
+		number | undefined
+	>();
+	const [nextRunAtLocal, setNextRunAtLocal] = useState("");
+
+	useEffect(() => {
+		if (open) {
+			if (initialData) {
+				setTitle(initialData.title);
+				setDescription(initialData.description ?? "");
+				setFrequency(initialData.frequency);
+				setIntervalValue(initialData.intervalValue);
+				setPriority(initialData.priority ?? "no-priority");
+				setColumnId(initialData.columnId ?? "");
+				setAssigneeId(initialData.assigneeId ?? "");
+				setLabelIds(initialData.labelIds ?? []);
+				setDueDateDaysOffset(initialData.dueDateDaysOffset);
+				setNextRunAtLocal(toDatetimeLocal(new Date(initialData.nextRunAt)));
+			} else {
+				setTitle("");
+				setDescription("");
+				setFrequency("daily");
+				setIntervalValue(1);
+				setPriority("no-priority");
+				setColumnId("");
+				setAssigneeId("");
+				setLabelIds([]);
+				setDueDateDaysOffset(undefined);
+				const defaultDate = new Date();
+				defaultDate.setMinutes(defaultDate.getMinutes() + 1);
+				setNextRunAtLocal(toDatetimeLocal(defaultDate));
+			}
+		}
+	}, [open, initialData]);
 
 	const handleSubmit = async () => {
 		if (!title) return;
 
-		const nextRunAt = new Date();
-		nextRunAt.setMinutes(nextRunAt.getMinutes() + 1);
-
-		await onCreate({
+		await onSubmit({
 			title,
 			description: description || undefined,
 			frequency,
@@ -68,32 +149,43 @@ function CreateRecurringTaskDialog({
 			columnId: columnId || undefined,
 			assigneeId: assigneeId || undefined,
 			priority: priority !== "no-priority" ? priority : undefined,
-			nextRunAt: nextRunAt.toISOString(),
+			nextRunAt: fromDatetimeLocal(nextRunAtLocal).toISOString(),
+			labelIds: labelIds.length > 0 ? labelIds : undefined,
+			dueDateDaysOffset,
 		});
 
-		setTitle("");
-		setDescription("");
-		setFrequency("daily");
-		setIntervalValue(1);
-		setPriority("no-priority");
-		setColumnId("");
-		setAssigneeId("");
 		setOpen(false);
+	};
+
+	const toggleLabel = (labelId: string) => {
+		setLabelIds((prev) =>
+			prev.includes(labelId)
+				? prev.filter((id) => id !== labelId)
+				: [...prev, labelId],
+		);
 	};
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<Button size="xs" className="gap-1">
-					<Plus className="size-3.5" />
-					{t("recurring:create.trigger")}
-				</Button>
-			</DialogTrigger>
+			{!controlledOpen && (
+				<DialogTrigger asChild>
+					<Button size="xs" className="gap-1">
+						<Plus className="size-3.5" />
+						{t("recurring:create.trigger")}
+					</Button>
+				</DialogTrigger>
+			)}
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>{t("recurring:create.title")}</DialogTitle>
+					<DialogTitle>
+						{isEditMode
+							? t("recurring:edit.title")
+							: t("recurring:create.title")}
+					</DialogTitle>
 					<DialogDescription>
-						{t("recurring:create.description")}
+						{isEditMode
+							? t("recurring:edit.description")
+							: t("recurring:create.description")}
 					</DialogDescription>
 				</DialogHeader>
 				<form
@@ -234,13 +326,82 @@ function CreateRecurringTaskDialog({
 								</SelectContent>
 							</Select>
 						</div>
+						<div className="space-y-2">
+							<Label>{t("recurring:create.labels")}</Label>
+							<div className="border rounded-md p-2 max-h-32 overflow-y-auto space-y-1">
+								{workspaceLabels.length === 0 ? (
+									<span className="text-xs text-muted-foreground">
+										{t("recurring:create.noLabels")}
+									</span>
+								) : (
+									workspaceLabels.map((label) => {
+										const isSelected = labelIds.includes(label.id);
+										return (
+											<button
+												key={label.id}
+												type="button"
+												className="w-full flex items-center gap-2 px-2 py-1 text-xs hover:bg-accent/50 rounded text-left"
+												onClick={() => toggleLabel(label.id)}
+											>
+												<div
+													className={`w-3 h-3 rounded-sm border flex items-center justify-center ${isSelected ? "bg-primary border-primary" : "border-input"}`}
+												>
+													{isSelected && (
+														<Check className="w-2 h-2 text-primary-foreground" />
+													)}
+												</div>
+												<span
+													className="w-2 h-2 rounded-full flex-shrink-0"
+													style={{
+														backgroundColor: getLabelColor(label.color),
+													}}
+												/>
+												<span className="truncate">{label.name}</span>
+											</button>
+										);
+									})
+								)}
+							</div>
+						</div>
+						<div className="grid grid-cols-2 gap-4">
+							<div className="space-y-2">
+								<Label htmlFor="rt-due-offset">
+									{t("recurring:create.dueDateOffset")}
+								</Label>
+								<Input
+									id="rt-due-offset"
+									type="number"
+									min={0}
+									placeholder={t("recurring:create.dueDateOffsetPlaceholder")}
+									value={dueDateDaysOffset ?? ""}
+									onChange={(e) =>
+										setDueDateDaysOffset(
+											e.target.value ? Number(e.target.value) : undefined,
+										)
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label htmlFor="rt-next-run">
+									{t("recurring:create.nextRunAt")}
+								</Label>
+								<Input
+									id="rt-next-run"
+									type="datetime-local"
+									value={nextRunAtLocal}
+									onChange={(e) => setNextRunAtLocal(e.target.value)}
+								/>
+							</div>
+						</div>
 					</div>
 					<DialogFooter>
 						<DialogClose asChild>
 							<Button variant="ghost">{t("common:actions.cancel")}</Button>
 						</DialogClose>
 						<Button type="submit" loading={isPending}>
-							{t("recurring:create.submit")}
+							{isEditMode
+								? t("recurring:edit.submit")
+								: t("recurring:create.submit")}
 						</Button>
 					</DialogFooter>
 				</form>
@@ -249,4 +410,4 @@ function CreateRecurringTaskDialog({
 	);
 }
 
-export default CreateRecurringTaskDialog;
+export default RecurringTaskDialog;

@@ -6,8 +6,10 @@ export function useUpdateRecurringTask() {
 
 	return useMutation({
 		mutationFn: updateRecurringTask,
-		onSuccess: () => {
-			queryClient.invalidateQueries({ refetchType: "all" });
+		onSuccess: (_data, variables) => {
+			queryClient.invalidateQueries({
+				queryKey: ["recurring-tasks", variables.projectId],
+			});
 		},
 	});
 }
