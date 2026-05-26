@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import i18n from "i18next";
 import getTask from "@/fetchers/task/get-task";
 
 function useGetTask(taskId: string | null) {

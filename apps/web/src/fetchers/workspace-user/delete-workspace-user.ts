@@ -1,3 +1,4 @@
+import i18n from "i18next";
 import { authClient } from "@/lib/auth-client";
 
 export type DeleteWorkspaceUserRequest = {
@@ -15,7 +16,9 @@ async function deleteWorkspaceUser({
 	});
 
 	if (error) {
-		throw new Error(error.message || "Failed to remove workspace member");
+		throw new Error(
+			error.message || i18n.t("common:error.removeWorkspaceMember"),
+		);
 	}
 
 	return data;

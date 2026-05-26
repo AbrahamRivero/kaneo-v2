@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import i18n from "i18next";
 import { authClient } from "@/lib/auth-client";
 
 type UpdateWorkspaceUserRoleRequest = {
@@ -23,7 +24,7 @@ function useUpdateWorkspaceUserRole() {
 
 			if (error) {
 				throw new Error(
-					error.message || "Failed to update workspace member role",
+					error.message || i18n.t("common:error.updateWorkspaceMemberRole"),
 				);
 			}
 

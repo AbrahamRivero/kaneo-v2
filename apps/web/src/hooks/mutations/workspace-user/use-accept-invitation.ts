@@ -1,19 +1,18 @@
 import { useMutation } from "@tanstack/react-query";
+import i18n from "i18next";
 import { authClient } from "@/lib/auth-client";
-
-type AcceptInvitationRequest = {
-	invitationId: string;
-};
 
 function useAcceptInvitation() {
 	return useMutation({
-		mutationFn: async ({ invitationId }: AcceptInvitationRequest) => {
+		mutationFn: async ({ invitationId }: { invitationId: string }) => {
 			const { data, error } = await authClient.organization.acceptInvitation({
 				invitationId,
 			});
 
 			if (error) {
-				throw new Error(error.message || "Failed to accept invitation");
+				throw new Error(
+					error.message || i18n.t("common:error.acceptInvitation"),
+				);
 			}
 
 			return data;

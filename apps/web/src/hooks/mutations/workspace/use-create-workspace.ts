@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import i18n from "i18next";
 import { authClient } from "@/lib/auth-client";
 import {
 	createUniqueWorkspaceSlug,
@@ -50,7 +51,7 @@ function useCreateWorkspace() {
 				}
 
 				const createError = new Error(
-					error.message || "Failed to create workspace",
+					error.message || i18n.t("common:error.createWorkspace"),
 				);
 
 				if (slug || !isWorkspaceSlugCollisionError(createError)) {
@@ -63,7 +64,7 @@ function useCreateWorkspace() {
 				]);
 			}
 
-			throw new Error("Failed to create workspace");
+			throw new Error(i18n.t("common:error.createWorkspace"));
 		},
 	});
 }

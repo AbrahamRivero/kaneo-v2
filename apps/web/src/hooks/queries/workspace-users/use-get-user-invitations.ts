@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import i18n from "i18next";
 import { authClient } from "@/lib/auth-client";
 
 function useGetUserInvitations() {
@@ -9,7 +10,9 @@ function useGetUserInvitations() {
 				await authClient.organization.listUserInvitations();
 
 			if (error) {
-				throw new Error(error.message || "Failed to get user invitations");
+				throw new Error(
+					error.message || i18n.t("common:error.getUserInvitations"),
+				);
 			}
 
 			return data;

@@ -55,7 +55,56 @@
 			"troubleshooting": "Troubleshooting steps:",
 			"tryAgain": "Try Again",
 			"viewDeploymentGuide": "View Deployment Guide",
-			"refreshPage": "Refresh Page"
+			"refreshPage": "Refresh Page",
+			"generic": "Error",
+			"cors": "Unable to connect to the server. This might be due to CORS configuration issues.",
+			"network": "Network error. Please check your internet connection and try again.",
+			"auth": "Authentication failed. Please sign in again.",
+			"server": "Server error. Please try again later.",
+			"unexpected": "An unexpected error occurred.",
+			"emptyFile": "Only non-empty file uploads are supported.",
+			"uploadFailed": "Failed to upload file to storage.",
+			"createWorkspace": "Failed to create workspace",
+			"updateWorkspace": "Failed to update workspace",
+			"deleteWorkspace": "Failed to delete workspace",
+			"fetchWorkspaces": "Failed to fetch workspaces",
+			"acceptInvitation": "Failed to accept invitation",
+			"rejectInvitation": "Failed to reject invitation",
+			"cancelInvitation": "Failed to cancel invitation",
+			"changePassword": "Failed to change password",
+			"getInvitation": "Failed to get invitation",
+			"updateLocale": "Failed to update locale",
+			"fetchWorkspaceFeatures": "Failed to fetch workspace features",
+			"fetchFeatureRegistry": "Failed to fetch feature registry",
+			"updateWorkspaceFeatures": "Failed to update workspace features",
+			"noProjectForTask": "No project selected for task creation",
+			"fetchPendingInvitations": "Failed to get pending invitations",
+			"getFullWorkspace": "Failed to get full workspace",
+			"getWorkspaceUsers": "Failed to get workspace users",
+			"getWorkspaceInvites": "Failed to get workspace invites",
+			"getUserInvitations": "Failed to get user invitations",
+			"getActiveWorkspaceUser": "Failed to get active workspace user",
+			"taskIdRequired": "Task ID is required",
+			"inviteWorkspaceMember": "Failed to invite workspace member",
+			"removeWorkspaceMember": "Failed to remove workspace member",
+			"updateWorkspaceMemberRole": "Failed to update workspace member role",
+			"updateUserProfile": "Failed to update user profile",
+			"fetchWorkspaceUsers": "Failed to fetch workspace users",
+			"apiError": "API error {{status}}",
+			"requestFailed": "Request failed",
+			"corsTroubleshooting": {
+				"step0": "Make sure your API server is running",
+				"step1": "Check that VITE_API_URL in your frontend .env matches your API server URL",
+				"step2": "Verify CORS_ORIGINS in your API .env includes your frontend URL",
+				"step3": "Ensure both frontend and API are using the same protocol (http/https)",
+				"step4": "Check that your API server is accessible from your browser"
+			},
+			"networkTroubleshooting": {
+				"step0": "Check your internet connection",
+				"step1": "Verify the API server is running and accessible",
+				"step2": "Try refreshing the page",
+				"step3": "Check if there are any firewall or proxy issues"
+			}
 		},
 		"demo": {
 			"banner": "This is a demo environment. All data will be automatically purged every hour.",
@@ -63,6 +112,9 @@
 		},
 		"formats": {
 			"never": "Never"
+		},
+		"attachment": {
+			"defaultFilename": "Attachment"
 		},
 		"status": {
 			"active": "Active",
@@ -564,6 +616,12 @@
 					"expirationRequired": "Expiration is required"
 				}
 			}
+		},
+		"workspaceModules": {
+			"title": "Modules"
+		},
+		"workspaceTemplates": {
+			"title": "Templates"
 		},
 		"workspaceGeneral": {
 			"pageTitle": "General Settings",
@@ -1984,6 +2042,12 @@
 		},
 		"taskCard": {
 			"viewDetailsAria": "View details for task {{title}}"
+		},
+		"kanbanView": {
+			"noTasksInColumn": "No tasks in {{columnName}}"
+		},
+		"listView": {
+			"noTasksInColumn": "No tasks in {{columnName}}"
 		},
 		"taskDetail": {
 			"labels": "Labels",

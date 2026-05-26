@@ -1,3 +1,5 @@
+import i18n from "i18next";
+
 export type ApiError = {
 	message: string;
 	type: "network" | "cors" | "auth" | "server" | "unknown";
@@ -13,8 +15,7 @@ export function parseApiError(error: unknown): ApiError {
 			error.message.includes("CORS")
 		) {
 			return {
-				message:
-					"Unable to connect to the server. This might be due to CORS configuration issues.",
+				message: i18n.t("common:error.cors"),
 				type: "cors",
 				originalError: error,
 			};
@@ -26,8 +27,7 @@ export function parseApiError(error: unknown): ApiError {
 			error.message.includes("connection")
 		) {
 			return {
-				message:
-					"Network error. Please check your internet connection and try again.",
+				message: i18n.t("common:error.network"),
 				type: "network",
 				originalError: error,
 			};
@@ -39,21 +39,20 @@ export function parseApiError(error: unknown): ApiError {
 			error.message.includes("authentication")
 		) {
 			return {
-				message: "Authentication failed. Please sign in again.",
+				message: i18n.t("common:error.auth"),
 				type: "auth",
 				status: 401,
 				originalError: error,
 			};
 		}
 
-		// Check for server errors
 		if (
 			error.message.includes("500") ||
 			error.message.includes("server error") ||
 			error.message.includes("internal")
 		) {
 			return {
-				message: "Server error. Please try again later.",
+				message: i18n.t("common:error.server"),
 				type: "server",
 				status: 500,
 				originalError: error,
@@ -61,33 +60,33 @@ export function parseApiError(error: unknown): ApiError {
 		}
 
 		return {
-			message: error.message || "An unexpected error occurred.",
+			message: error.message || i18n.t("common:error.unexpected"),
 			type: "unknown",
 			originalError: error,
 		};
 	}
 
 	return {
-		message: "An unexpected error occurred.",
+		message: i18n.t("common:error.unexpected"),
 		type: "unknown",
 	};
 }
 
 export function getCorsTroubleshootingSteps(): string[] {
 	return [
-		"Make sure your API server is running",
-		"Check that VITE_API_URL in your frontend .env matches your API server URL",
-		"Verify CORS_ORIGINS in your API .env includes your frontend URL",
-		"Ensure both frontend and API are using the same protocol (http/https)",
-		"Check that your API server is accessible from your browser",
+		i18n.t("common:error.corsTroubleshooting.step0"),
+		i18n.t("common:error.corsTroubleshooting.step1"),
+		i18n.t("common:error.corsTroubleshooting.step2"),
+		i18n.t("common:error.corsTroubleshooting.step3"),
+		i18n.t("common:error.corsTroubleshooting.step4"),
 	];
 }
 
 export function getNetworkTroubleshootingSteps(): string[] {
 	return [
-		"Check your internet connection",
-		"Verify the API server is running and accessible",
-		"Try refreshing the page",
-		"Check if there are any firewall or proxy issues",
+		i18n.t("common:error.networkTroubleshooting.step0"),
+		i18n.t("common:error.networkTroubleshooting.step1"),
+		i18n.t("common:error.networkTroubleshooting.step2"),
+		i18n.t("common:error.networkTroubleshooting.step3"),
 	];
 }

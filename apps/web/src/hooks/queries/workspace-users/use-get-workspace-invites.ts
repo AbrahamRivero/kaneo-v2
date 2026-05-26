@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import i18n from "i18next";
 import { authClient } from "@/lib/auth-client";
 
 type GetWorkspaceInvitesRequest = {
@@ -16,7 +17,9 @@ function useGetWorkspaceInvites({ workspaceId }: GetWorkspaceInvitesRequest) {
 			});
 
 			if (error) {
-				throw new Error(error.message || "Failed to get workspace invites");
+				throw new Error(
+					error.message || i18n.t("common:error.getWorkspaceInvites"),
+				);
 			}
 
 			return data;

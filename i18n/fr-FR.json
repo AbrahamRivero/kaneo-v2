@@ -55,7 +55,56 @@
 			"troubleshooting": "Étapes de dépannage :",
 			"tryAgain": "Réessayer",
 			"viewDeploymentGuide": "Voir le guide de déploiement",
-			"refreshPage": "Rafraîchir la page"
+			"refreshPage": "Rafraîchir la page",
+			"generic": "Erreur",
+			"cors": "Impossible de se connecter au serveur. Cela peut être dû à des problèmes de configuration CORS.",
+			"network": "Erreur réseau. Veuillez vérifier votre connexion Internet et réessayer.",
+			"auth": "Échec de l\u0027authentification. Veuillez vous reconnecter.",
+			"server": "Erreur serveur. Veuillez réessayer plus tard.",
+			"unexpected": "Une erreur inattendue s\u0027est produite.",
+			"emptyFile": "Seuls les fichiers non vides sont pris en charge.",
+			"uploadFailed": "Échec du téléchargement du fichier vers le stockage.",
+			"createWorkspace": "Échec de la création de l\u0027espace de travail",
+			"updateWorkspace": "Échec de la mise à jour de l\u0027espace de travail",
+			"deleteWorkspace": "Échec de la suppression de l\u0027espace de travail",
+			"fetchWorkspaces": "Échec de la récupération des espaces de travail",
+			"acceptInvitation": "Échec de l\u0027acceptation de l\u0027invitation",
+			"rejectInvitation": "Échec du refus de l\u0027invitation",
+			"cancelInvitation": "Échec de l\u0027annulation de l\u0027invitation",
+			"changePassword": "Échec du changement de mot de passe",
+			"getInvitation": "Échec de la récupération de l\u0027invitation",
+			"updateLocale": "Échec de la mise à jour de la langue",
+			"fetchWorkspaceFeatures": "Échec de la récupération des fonctionnalités de l\u0027espace de travail",
+			"fetchFeatureRegistry": "Échec de la récupération du registre des fonctionnalités",
+			"updateWorkspaceFeatures": "Échec de la mise à jour des fonctionnalités de l\u0027espace de travail",
+			"noProjectForTask": "Aucun projet sélectionné pour la création de tâche",
+			"fetchPendingInvitations": "Échec de la récupération des invitations en attente",
+			"getFullWorkspace": "Échec de la récupération de l\u0027espace de travail complet",
+			"getWorkspaceUsers": "Échec de la récupération des utilisateurs de l\u0027espace de travail",
+			"getWorkspaceInvites": "Échec de la récupération des invitations de l\u0027espace de travail",
+			"getUserInvitations": "Échec de la récupération des invitations utilisateur",
+			"getActiveWorkspaceUser": "Échec de la récupération de l\u0027utilisateur actif de l\u0027espace de travail",
+			"taskIdRequired": "L\u0027ID de la tâche est requis",
+			"inviteWorkspaceMember": "Échec de l\u0027invitation du membre de l\u0027espace de travail",
+			"removeWorkspaceMember": "Échec de la suppression du membre de l\u0027espace de travail",
+			"updateWorkspaceMemberRole": "Échec de la mise à jour du rôle du membre de l\u0027espace de travail",
+			"updateUserProfile": "Échec de la mise à jour du profil utilisateur",
+			"fetchWorkspaceUsers": "Échec de la récupération des utilisateurs de l\u0027espace de travail",
+			"apiError": "Erreur API {{status}}",
+			"requestFailed": "La requête a échoué",
+			"corsTroubleshooting": {
+				"step0": "Assurez-vous que votre serveur API est en cours d\u0027exécution",
+				"step1": "Vérifiez que VITE_API_URL dans votre .env frontend correspond à l\u0027URL de votre serveur API",
+				"step2": "Vérifiez que CORS_ORIGINS dans votre .env API inclut l\u0027URL de votre frontend",
+				"step3": "Assurez-vous que le frontend et l\u0027API utilisent le même protocole (http/https)",
+				"step4": "Vérifiez que votre serveur API est accessible depuis votre navigateur"
+			},
+			"networkTroubleshooting": {
+				"step0": "Vérifiez votre connexion Internet",
+				"step1": "Vérifiez que le serveur API est en cours d\u0027exécution et accessible",
+				"step2": "Essayez d\u0027actualiser la page",
+				"step3": "Vérifiez les éventuels problèmes de pare-feu ou proxy"
+			}
 		},
 		"demo": {
 			"banner": "Ceci est un environnement de démonstration. Toutes les données seront automatiquement supprimées toutes les heures.",
@@ -63,6 +112,9 @@
 		},
 		"formats": {
 			"never": "Jamais"
+		},
+		"attachment": {
+			"defaultFilename": "Pièce jointe"
 		},
 		"status": {
 			"active": "Actif",
@@ -560,6 +612,12 @@
 					"expirationRequired": "Une date d\u0027expiration est requise"
 				}
 			}
+		},
+		"workspaceModules": {
+			"title": "Modules"
+		},
+		"workspaceTemplates": {
+			"title": "Modèles"
 		},
 		"workspaceGeneral": {
 			"pageTitle": "Paramètres Généraux",
@@ -1967,7 +2025,13 @@
 			"description": "Ce projet n\u0027existe pas ou n\u0027est pas accessible publiquement."
 		},
 		"taskCard": {
-			"viewDetailsAria": "Voir les détails de la tâche {{title}}"
+			"viewDetailsAria": "Afficher les détails de la tâche {{title}}"
+		},
+		"kanbanView": {
+			"noTasksInColumn": "Aucune tâche dans {{columnName}}"
+		},
+		"listView": {
+			"noTasksInColumn": "Aucune tâche dans {{columnName}}"
 		},
 		"taskDetail": {
 			"labels": "Labels",

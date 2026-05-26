@@ -1,5 +1,6 @@
 import { client } from "@kaneo/libs";
 import type { InferRequestType } from "hono";
+import i18n from "i18next";
 
 export type UpdateGiteaIntegrationRequest = InferRequestType<
 	(typeof client)["gitea-integration"]["project"][":projectId"]["$patch"]
@@ -21,12 +22,13 @@ async function updateGiteaIntegration(
 			.clone()
 			.json()
 			.catch(async () => ({
-				message: (await response.text()) || "Request failed",
+				message:
+					(await response.text()) || i18n.t("common:error.requestFailed"),
 			}));
 		throw new Error(
 			typeof error === "object" && error && "message" in error
 				? String(error.message)
-				: "Request failed",
+				: i18n.t("common:error.requestFailed"),
 		);
 	}
 

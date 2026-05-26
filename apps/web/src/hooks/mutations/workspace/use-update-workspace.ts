@@ -1,64 +1,30 @@
 import { useMutation } from "@tanstack/react-query";
+import i18n from "i18next";
 import { authClient } from "@/lib/auth-client";
-import { createSlug } from "@/lib/utils/create-slug";
-
-type UpdateWorkspaceRequest = {
-	workspaceId: string;
-	name?: string;
-	description?: string;
-	slug?: string;
-	logo?: string;
-	metadata?: Record<string, unknown>;
-};
 
 function useUpdateWorkspace() {
 	return useMutation({
 		mutationFn: async ({
-			workspaceId,
 			name,
 			description,
-			slug,
 			logo,
-			metadata,
-		}: UpdateWorkspaceRequest) => {
-			const updateData: {
-				name?: string;
-				description?: string;
-				slug?: string;
-				logo?: string;
-				metadata?: Record<string, unknown>;
-			} = {};
-
-			if (name !== undefined) {
-				updateData.name = name;
-				if (slug === undefined) {
-					updateData.slug = createSlug(name);
-				}
-			}
-
-			if (slug !== undefined) {
-				updateData.slug = slug;
-			}
-
-			if (description !== undefined) {
-				updateData.description = description;
-			}
-
-			if (logo !== undefined) {
-				updateData.logo = logo;
-			}
-
-			if (metadata !== undefined) {
-				updateData.metadata = metadata;
-			}
-
+		}: {
+			name: string;
+			description?: string;
+			logo?: string;
+		}) => {
 			const { data, error } = await authClient.organization.update({
-				data: updateData,
-				organizationId: workspaceId,
+				data: {
+					name,
+					logo: logo || undefined,
+					...(description ? { description } : {}),
+				},
 			});
 
 			if (error) {
-				throw new Error(error.message || "Failed to update workspace");
+				throw new Error(
+					error.message || i18n.t("common:error.updateWorkspace"),
+				);
 			}
 
 			return data;

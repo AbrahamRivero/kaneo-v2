@@ -17,7 +17,7 @@ export function useLocale() {
 	const setLocale = async (nextLocale: AppLocale) => {
 		const { error } = await authClient.updateUser({ locale: nextLocale });
 		if (error) {
-			throw new Error(error.message || "Failed to update locale");
+			throw new Error(error.message || i18n.t("common:error.updateLocale"));
 		}
 
 		const resolved = resolveLocale(nextLocale, null);

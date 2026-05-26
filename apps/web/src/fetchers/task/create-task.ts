@@ -1,5 +1,6 @@
 import { client } from "@kaneo/libs";
 import type { InferRequestType } from "hono/client";
+import i18n from "i18next";
 
 export type CreateTaskRequest = InferRequestType<
 	(typeof client)["task"][":projectId"]["$post"]
@@ -17,7 +18,7 @@ async function createTask(
 	priority: string,
 ) {
 	if (!projectId) {
-		throw new Error("No project selected for task creation");
+		throw new Error(i18n.t("common:error.noProjectForTask"));
 	}
 
 	const response = await client.task[":projectId"].$post({

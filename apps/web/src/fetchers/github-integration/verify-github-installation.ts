@@ -1,5 +1,6 @@
 import { client } from "@kaneo/libs";
 import type { InferRequestType, InferResponseType } from "hono";
+import i18n from "i18next";
 
 export type VerifyGithubInstallationRequest = InferRequestType<
 	(typeof client)["github-integration"]["verify"]["$post"]

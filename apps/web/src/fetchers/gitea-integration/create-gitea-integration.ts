@@ -1,4 +1,5 @@
 import { client } from "@kaneo/libs";
+import i18n from "i18next";
 
 export type CreateGiteaIntegrationRequest = {
 	baseUrl: string;
@@ -23,12 +24,13 @@ async function createGiteaIntegration(
 			.clone()
 			.json()
 			.catch(async () => ({
-				message: (await response.text()) || "Request failed",
+				message:
+					(await response.text()) || i18n.t("common:error.requestFailed"),
 			}));
 		throw new Error(
 			typeof error === "object" && error && "message" in error
 				? String(error.message)
-				: "Request failed",
+				: i18n.t("common:error.requestFailed"),
 		);
 	}
 

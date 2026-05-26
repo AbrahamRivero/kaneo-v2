@@ -1,6 +1,7 @@
 import { mergeAttributes, Node } from "@tiptap/core";
 import type { NodeViewProps } from "@tiptap/react";
 import { NodeViewWrapper, ReactNodeViewRenderer } from "@tiptap/react";
+import i18n from "i18next";
 import { FileText } from "lucide-react";
 
 function formatBytes(size: number) {
@@ -14,7 +15,9 @@ function formatBytes(size: number) {
 
 function AttachmentCardView({ node }: NodeViewProps) {
 	const url = String(node.attrs.url || "");
-	const filename = String(node.attrs.filename || "Attachment");
+	const filename = String(
+		node.attrs.filename || i18n.t("common:attachment.defaultFilename"),
+	);
 	const mimeType = String(node.attrs.mimeType || "");
 	const size = Number(node.attrs.size || 0);
 
