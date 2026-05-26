@@ -204,8 +204,9 @@ function CreateTaskModal({
 	const { mutateAsync: deleteTask } = useDeleteTask();
 
 	const filteredLabels = (() => {
-		const searchFiltered = workspaceLabels.filter((label) =>
-			label.name.toLowerCase().includes(searchValue.toLowerCase()),
+		const searchFiltered = workspaceLabels.filter(
+			(label: { id: string; name: string; color: string }) =>
+				label.name.toLowerCase().includes(searchValue.toLowerCase()),
 		);
 
 		const labelMap = new Map<string, (typeof workspaceLabels)[0]>();
@@ -222,7 +223,8 @@ function CreateTaskModal({
 	const isCreatingNewLabel =
 		searchValue &&
 		!workspaceLabels.some(
-			(label) => label.name.toLowerCase() === searchValue.toLowerCase(),
+			(label: { id: string; name: string; color: string }) =>
+				label.name.toLowerCase() === searchValue.toLowerCase(),
 		);
 
 	const handleClose = () => {

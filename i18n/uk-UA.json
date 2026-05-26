@@ -1969,6 +1969,8 @@
 			"priorityNone": "Немає",
 			"labels": "Мітки",
 			"noLabels": "Немає доступних міток",
+			"checklist": "Чеклист",
+			"checklistPlaceholder": "Додати пункт",
 			"dueDateOffset": "Термін через (днів)",
 			"dueDateOffsetPlaceholder": "напр. 3",
 			"nextRunAt": "Перший запуск",

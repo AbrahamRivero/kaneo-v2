@@ -2005,6 +2005,8 @@
 			"priorityNone": "Нет",
 			"labels": "Метки",
 			"noLabels": "Нет доступных меток",
+			"checklist": "Чеклист",
+			"checklistPlaceholder": "Добавить пункт",
 			"dueDateOffset": "Срок через (дней)",
 			"dueDateOffsetPlaceholder": "напр. 3",
 			"nextRunAt": "Первый запуск",

@@ -250,6 +250,15 @@ export const recurringTaskSchema = v.object({
 	priority: v.nullable(v.string()),
 	dueDateDaysOffset: v.nullable(v.number()),
 	labelIds: v.nullable(v.array(v.string())),
+	checklistItems: v.optional(
+		v.array(
+			v.object({
+				id: v.string(),
+				text: v.string(),
+				position: v.number(),
+			}),
+		),
+	),
 	createdAt: v.date(),
 	updatedAt: v.date(),
 });

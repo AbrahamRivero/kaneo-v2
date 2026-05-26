@@ -1740,6 +1740,8 @@
 			"priorityNone": "Geen",
 			"labels": "Labels",
 			"noLabels": "Geen labels beschikbaar",
+			"checklist": "Checklist",
+			"checklistPlaceholder": "Item toevoegen",
 			"dueDateOffset": "Vervaldatum na (dagen)",
 			"dueDateOffsetPlaceholder": "bijv. 3",
 			"nextRunAt": "Eerste uitvoering",

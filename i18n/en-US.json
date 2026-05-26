@@ -1967,6 +1967,8 @@
 			"priorityNone": "None",
 			"labels": "Labels",
 			"noLabels": "No labels available",
+			"checklist": "Checklist",
+			"checklistPlaceholder": "Add checklist item",
 			"dueDateOffset": "Due after (days)",
 			"dueDateOffsetPlaceholder": "e.g., 3",
 			"nextRunAt": "First run",

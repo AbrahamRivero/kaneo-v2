@@ -1965,6 +1965,8 @@
 			"priorityNone": "Aucune",
 			"labels": "Étiquettes",
 			"noLabels": "Aucune étiquette disponible",
+			"checklist": "Liste de contrôle",
+			"checklistPlaceholder": "Ajouter un élément",
 			"dueDateOffset": "Échéance après (jours)",
 			"dueDateOffsetPlaceholder": "ex. 3",
 			"nextRunAt": "Première exécution",

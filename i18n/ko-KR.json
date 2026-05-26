@@ -1959,6 +1959,8 @@
 			"priorityNone": "없음",
 			"labels": "레이블",
 			"noLabels": "사용 가능한 레이블 없음",
+			"checklist": "체크리스트",
+			"checklistPlaceholder": "항목 추가",
 			"dueDateOffset": "마감일 (일 후)",
 			"dueDateOffsetPlaceholder": "예: 3",
 			"nextRunAt": "첫 실행",

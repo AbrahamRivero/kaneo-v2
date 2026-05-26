@@ -1,5 +1,11 @@
 import { client } from "@kaneo/libs";
 
+export type CheckListItem = {
+	id: string;
+	text: string;
+	position: number;
+};
+
 export type RecurringTask = {
 	id: string;
 	projectId: string;
@@ -18,6 +24,7 @@ export type RecurringTask = {
 	priority: string | null;
 	dueDateDaysOffset: number | null;
 	labelIds: string[] | null;
+	checklistItems?: CheckListItem[] | null;
 	createdAt: string;
 	updatedAt: string;
 };

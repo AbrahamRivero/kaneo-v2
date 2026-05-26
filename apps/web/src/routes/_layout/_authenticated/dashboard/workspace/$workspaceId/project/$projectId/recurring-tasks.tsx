@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Pencil, RefreshCw, Trash2 } from "lucide-react";
+import { Pencil, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import ProjectLayout from "@/components/common/project-layout";
@@ -35,6 +35,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import type { RecurringTask } from "@/fetchers/recurring-tasks/list-recurring-tasks";
 import { useCreateRecurringTask } from "@/hooks/mutations/recurring-tasks/use-create-recurring-task";
 import { useDeleteRecurringTask } from "@/hooks/mutations/recurring-tasks/use-delete-recurring-task";
 import { useUpdateRecurringTask } from "@/hooks/mutations/recurring-tasks/use-update-recurring-task";
@@ -63,8 +64,9 @@ function RouteComponent() {
 	const deleteMutation = useDeleteRecurringTask();
 
 	const [dialogOpen, setDialogOpen] = useState(false);
-	const [editingTask, setEditingTask] =
-		useState<Partial<RecurringTaskFormData> | null>(null);
+	const [editingTask, setEditingTask] = useState<
+		(RecurringTaskFormData & { id?: string }) | null
+	>(null);
 	const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
 
 	const handleCreate = async (data: RecurringTaskFormData) => {
@@ -81,6 +83,7 @@ function RouteComponent() {
 				nextRunAt: data.nextRunAt,
 				labelIds: data.labelIds,
 				dueDateDaysOffset: data.dueDateDaysOffset,
+				checklistItems: data.checklistItems,
 			});
 			toast.success(t("recurring:toast.created"));
 			setDialogOpen(false);
@@ -109,6 +112,7 @@ function RouteComponent() {
 				nextRunAt: data.nextRunAt,
 				labelIds: data.labelIds ?? null,
 				dueDateDaysOffset: data.dueDateDaysOffset ?? null,
+				checklistItems: data.checklistItems,
 			});
 			toast.success(t("recurring:toast.updated"));
 			setEditingTask(null);
@@ -175,7 +179,7 @@ function RouteComponent() {
 		}
 	};
 
-	const openEditDialog = (task: (typeof tasks)[number]) => {
+	const openEditDialog = (task: RecurringTask) => {
 		setEditingTask({
 			id: task.id,
 			title: task.title,
@@ -188,6 +192,7 @@ function RouteComponent() {
 			nextRunAt: task.nextRunAt,
 			labelIds: task.labelIds ?? [],
 			dueDateDaysOffset: task.dueDateDaysOffset ?? undefined,
+			checklistItems: task.checklistItems ?? [],
 		});
 		setDialogOpen(true);
 	};
@@ -225,13 +230,17 @@ function RouteComponent() {
 				<div className="space-y-5 p-4">
 					<div className="flex items-center justify-between">
 						<h2 className="text-lg font-semibold">{t("recurring:title")}</h2>
-						<RecurringTaskDialog
-							onSubmit={handleCreate}
-							isPending={createMutation.isPending}
-							columns={columns}
-							users={workspaceUsers?.members ?? []}
-							workspaceId={workspaceId}
-						/>
+						<Button
+							size="xs"
+							className="gap-1"
+							onClick={() => {
+								setEditingTask(null);
+								setDialogOpen(true);
+							}}
+						>
+							<Plus className="size-3.5" />
+							{t("recurring:create.trigger")}
+						</Button>
 					</div>
 
 					<Card>

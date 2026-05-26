@@ -12,8 +12,10 @@ import {
 	labelTable,
 	notificationTable,
 	projectTable,
+	recurringTaskChecklistItemTable,
 	recurringTaskTable,
 	sessionTable,
+	taskChecklistItemTable,
 	taskRelationTable,
 	taskReminderSentTable,
 	taskTable,
@@ -166,6 +168,7 @@ export const taskTableRelations = relations(taskTable, ({ one, many }) => ({
 	sourceRelations: many(taskRelationTable, { relationName: "sourceTask" }),
 	targetRelations: many(taskRelationTable, { relationName: "targetTask" }),
 	remindersSent: many(taskReminderSentTable),
+	checklistItems: many(taskChecklistItemTable),
 	recurringTask: one(recurringTaskTable, {
 		fields: [taskTable.recurringTaskId],
 		references: [recurringTaskTable.id],
@@ -182,6 +185,16 @@ export const timeEntryTableRelations = relations(timeEntryTable, ({ one }) => ({
 		references: [userTable.id],
 	}),
 }));
+
+export const taskChecklistItemTableRelations = relations(
+	taskChecklistItemTable,
+	({ one }) => ({
+		task: one(taskTable, {
+			fields: [taskChecklistItemTable.taskId],
+			references: [taskTable.id],
+		}),
+	}),
+);
 
 export const activityTableRelations = relations(activityTable, ({ one }) => ({
 	task: one(taskTable, {
@@ -407,6 +420,17 @@ export const recurringTaskTableRelations = relations(
 		generatedBy: one(userTable, {
 			fields: [recurringTaskTable.createdBy],
 			references: [userTable.id],
+		}),
+		checklistItems: many(recurringTaskChecklistItemTable),
+	}),
+);
+
+export const recurringTaskChecklistItemTableRelations = relations(
+	recurringTaskChecklistItemTable,
+	({ one }) => ({
+		recurringTask: one(recurringTaskTable, {
+			fields: [recurringTaskChecklistItemTable.recurringTaskId],
+			references: [recurringTaskTable.id],
 		}),
 	}),
 );
