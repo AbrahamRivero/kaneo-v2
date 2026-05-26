@@ -2,10 +2,19 @@ import { Hono } from "hono";
 import { describeRoute, validator } from "hono-openapi";
 import * as v from "valibot";
 import { recurringTaskSchema } from "../schemas";
+import createChecklistItem from "./controllers/create-checklist-item";
 import createRecurringTask from "./controllers/create-recurring-task";
+import deleteChecklistItem from "./controllers/delete-checklist-item";
 import deleteRecurringTask from "./controllers/delete-recurring-task";
+import listChecklistItems from "./controllers/list-checklist-items";
 import listRecurringTasks from "./controllers/list-recurring-tasks";
 import updateRecurringTask from "./controllers/update-recurring-task";
+
+const checklistItemSchema = v.object({
+	id: v.string(),
+	text: v.string(),
+	position: v.number(),
+});
 
 const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 	.get(
@@ -57,6 +66,14 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 				priority: v.optional(v.string()),
 				dueDateDaysOffset: v.optional(v.number()),
 				labelIds: v.optional(v.array(v.string())),
+				checklistItems: v.optional(
+					v.array(
+						v.object({
+							text: v.string(),
+							position: v.number(),
+						}),
+					),
+				),
 			}),
 		),
 		async (c) => {
@@ -103,6 +120,14 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 				priority: v.optional(v.nullable(v.string())),
 				dueDateDaysOffset: v.optional(v.nullable(v.number())),
 				labelIds: v.optional(v.nullable(v.array(v.string()))),
+				checklistItems: v.optional(
+					v.array(
+						v.object({
+							text: v.string(),
+							position: v.number(),
+						}),
+					),
+				),
 			}),
 		),
 		async (c) => {
@@ -136,6 +161,89 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 			const userId = c.get("userId");
 			const task = await deleteRecurringTask(recurringTaskId, userId);
 			return c.json(task);
+		},
+	)
+	.get(
+		"/:projectId/:recurringTaskId/checklist-items",
+		describeRoute({
+			operationId: "listChecklistItems",
+			tags: ["RecurringTasks"],
+			description: "List checklist items for a recurring task",
+		}),
+		validator(
+			"param",
+			v.object({
+				projectId: v.string(),
+				recurringTaskId: v.string(),
+			}),
+		),
+		async (c) => {
+			const { recurringTaskId } = c.req.valid("param");
+			const items = await listChecklistItems(recurringTaskId);
+			return c.json(items);
+		},
+	)
+	.post(
+		"/:projectId/:recurringTaskId/checklist-items",
+		describeRoute({
+			operationId: "createChecklistItem",
+			tags: ["RecurringTasks"],
+			description: "Add a checklist item to a recurring task",
+			responses: {
+				201: {
+					content: {
+						"application/json": {
+							schema: checklistItemSchema,
+						},
+					},
+					description: "Created checklist item",
+				},
+			},
+		}),
+		validator(
+			"param",
+			v.object({
+				projectId: v.string(),
+				recurringTaskId: v.string(),
+			}),
+		),
+		validator(
+			"json",
+			v.object({
+				text: v.string(),
+				position: v.number(),
+			}),
+		),
+		async (c) => {
+			const { recurringTaskId } = c.req.valid("param");
+			const body = c.req.valid("json");
+			const item = await createChecklistItem({
+				recurringTaskId,
+				text: body.text,
+				position: body.position,
+			});
+			return c.json(item, 201);
+		},
+	)
+	.delete(
+		"/:projectId/:recurringTaskId/checklist-items/:checklistItemId",
+		describeRoute({
+			operationId: "deleteChecklistItem",
+			tags: ["RecurringTasks"],
+			description: "Delete a checklist item",
+		}),
+		validator(
+			"param",
+			v.object({
+				projectId: v.string(),
+				recurringTaskId: v.string(),
+				checklistItemId: v.string(),
+			}),
+		),
+		async (c) => {
+			const { checklistItemId } = c.req.valid("param");
+			const item = await deleteChecklistItem(checklistItemId);
+			return c.json(item);
 		},
 	);
 

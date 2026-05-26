@@ -1968,6 +1968,8 @@
 			"priorityNone": "Καμία",
 			"labels": "Ετικέτες",
 			"noLabels": "Δεν υπάρχουν διαθέσιμες ετικέτες",
+			"checklist": "Λίστα ελέγχου",
+			"checklistPlaceholder": "Προσθήκη στοιχείου",
 			"dueDateOffset": "Προθεσμία μετά από (ημέρες)",
 			"dueDateOffsetPlaceholder": "π.χ. 3",
 			"nextRunAt": "Πρώτη εκτέλεση",

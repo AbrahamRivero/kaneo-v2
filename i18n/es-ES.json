@@ -1742,6 +1742,8 @@
 			"priorityNone": "Ninguna",
 			"labels": "Etiquetas",
 			"noLabels": "No hay etiquetas disponibles",
+			"checklist": "Lista de verificación",
+			"checklistPlaceholder": "Agregar elemento",
 			"dueDateOffset": "Vence después de (días)",
 			"dueDateOffsetPlaceholder": "ej. 3",
 			"nextRunAt": "Primera ejecución",

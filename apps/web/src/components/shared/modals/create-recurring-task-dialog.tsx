@@ -1,4 +1,4 @@
-import { Check, Plus } from "lucide-react";
+import { Check, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,6 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -63,6 +62,12 @@ export type RecurringTaskFormData = {
 	nextRunAt: string;
 	labelIds?: string[];
 	dueDateDaysOffset?: number;
+	checklistItems?: { text: string; position: number }[];
+};
+
+export type ChecklistEntry = {
+	tempId: string;
+	text: string;
 };
 
 type RecurringTaskDialogProps = {
@@ -107,6 +112,23 @@ function RecurringTaskDialog({
 		number | undefined
 	>();
 	const [nextRunAtLocal, setNextRunAtLocal] = useState("");
+	const [checklistItems, setChecklistItems] = useState<ChecklistEntry[]>([]);
+	const [checklistInput, setChecklistInput] = useState("");
+	let checklistCounter = 0;
+
+	const addChecklistItem = () => {
+		const text = checklistInput.trim();
+		if (!text) return;
+		setChecklistItems((prev) => [
+			...prev,
+			{ tempId: `_new_${++checklistCounter}`, text },
+		]);
+		setChecklistInput("");
+	};
+
+	const removeChecklistItem = (tempId: string) => {
+		setChecklistItems((prev) => prev.filter((item) => item.tempId !== tempId));
+	};
 
 	useEffect(() => {
 		if (open) {
@@ -121,6 +143,12 @@ function RecurringTaskDialog({
 				setLabelIds(initialData.labelIds ?? []);
 				setDueDateDaysOffset(initialData.dueDateDaysOffset);
 				setNextRunAtLocal(toDatetimeLocal(new Date(initialData.nextRunAt)));
+				setChecklistItems(
+					(initialData.checklistItems ?? []).map((item, i) => ({
+						tempId: `existing_${i}`,
+						text: item.text,
+					})),
+				);
 			} else {
 				setTitle("");
 				setDescription("");
@@ -131,6 +159,7 @@ function RecurringTaskDialog({
 				setAssigneeId("");
 				setLabelIds([]);
 				setDueDateDaysOffset(undefined);
+				setChecklistItems([]);
 				const defaultDate = new Date();
 				defaultDate.setMinutes(defaultDate.getMinutes() + 1);
 				setNextRunAtLocal(toDatetimeLocal(defaultDate));
@@ -152,6 +181,13 @@ function RecurringTaskDialog({
 			nextRunAt: fromDatetimeLocal(nextRunAtLocal).toISOString(),
 			labelIds: labelIds.length > 0 ? labelIds : undefined,
 			dueDateDaysOffset,
+			checklistItems:
+				checklistItems.length > 0
+					? checklistItems.map((item, i) => ({
+							text: item.text,
+							position: i,
+						}))
+					: undefined,
 		});
 
 		setOpen(false);
@@ -167,14 +203,6 @@ function RecurringTaskDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			{!controlledOpen && (
-				<DialogTrigger asChild>
-					<Button size="xs" className="gap-1">
-						<Plus className="size-3.5" />
-						{t("recurring:create.trigger")}
-					</Button>
-				</DialogTrigger>
-			)}
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>
@@ -334,33 +362,77 @@ function RecurringTaskDialog({
 										{t("recurring:create.noLabels")}
 									</span>
 								) : (
-									workspaceLabels.map((label) => {
-										const isSelected = labelIds.includes(label.id);
-										return (
-											<button
-												key={label.id}
-												type="button"
-												className="w-full flex items-center gap-2 px-2 py-1 text-xs hover:bg-accent/50 rounded text-left"
-												onClick={() => toggleLabel(label.id)}
-											>
-												<div
-													className={`w-3 h-3 rounded-sm border flex items-center justify-center ${isSelected ? "bg-primary border-primary" : "border-input"}`}
+									workspaceLabels.map(
+										(label: { id: string; name: string; color: string }) => {
+											const isSelected = labelIds.includes(label.id);
+											return (
+												<button
+													key={label.id}
+													type="button"
+													className="w-full flex items-center gap-2 px-2 py-1 text-xs hover:bg-accent/50 rounded text-left"
+													onClick={() => toggleLabel(label.id)}
 												>
-													{isSelected && (
-														<Check className="w-2 h-2 text-primary-foreground" />
-													)}
-												</div>
-												<span
-													className="w-2 h-2 rounded-full flex-shrink-0"
-													style={{
-														backgroundColor: getLabelColor(label.color),
-													}}
-												/>
-												<span className="truncate">{label.name}</span>
-											</button>
-										);
-									})
+													<div
+														className={`w-3 h-3 rounded-sm border flex items-center justify-center ${isSelected ? "bg-primary border-primary" : "border-input"}`}
+													>
+														{isSelected && (
+															<Check className="w-2 h-2 text-primary-foreground" />
+														)}
+													</div>
+													<span
+														className="w-2 h-2 rounded-full shrink-0"
+														style={{
+															backgroundColor: getLabelColor(label.color),
+														}}
+													/>
+													<span className="truncate">{label.name}</span>
+												</button>
+											);
+										},
+									)
 								)}
+							</div>
+						</div>
+						<div className="space-y-2">
+							<Label>{t("recurring:create.checklist")}</Label>
+							<div className="space-y-1">
+								{checklistItems.map((item) => (
+									<div key={item.tempId} className="flex items-center gap-2">
+										<span className="flex-1 text-xs truncate px-2 py-1 border rounded bg-muted/50">
+											{item.text}
+										</span>
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon-xs"
+											className="text-muted-foreground hover:text-destructive shrink-0"
+											onClick={() => removeChecklistItem(item.tempId)}
+										>
+											<Trash2 className="size-3" />
+										</Button>
+									</div>
+								))}
+								<div className="flex items-center gap-2">
+									<Input
+										placeholder={t("recurring:create.checklistPlaceholder")}
+										value={checklistInput}
+										onChange={(e) => setChecklistInput(e.target.value)}
+										onKeyDown={(e) => {
+											if (e.key === "Enter") {
+												e.preventDefault();
+												addChecklistItem();
+											}
+										}}
+									/>
+									<Button
+										type="button"
+										variant="outline"
+										size="sm"
+										onClick={addChecklistItem}
+									>
+										<Plus className="size-3.5" />
+									</Button>
+								</div>
 							</div>
 						</div>
 						<div className="grid grid-cols-2 gap-4">

@@ -4,7 +4,9 @@ import db from "../database";
 import {
 	labelTable,
 	projectTable,
+	recurringTaskChecklistItemTable,
 	recurringTaskTable,
+	taskChecklistItemTable,
 	taskTable,
 } from "../database/schema";
 import { publishEvent } from "../events";
@@ -121,6 +123,25 @@ export async function processRecurringTasks(): Promise<void> {
 						})),
 					);
 				}
+			}
+
+			const templateChecklistItems = await db
+				.select()
+				.from(recurringTaskChecklistItemTable)
+				.where(
+					eq(recurringTaskChecklistItemTable.recurringTaskId, recurring.id),
+				)
+				.orderBy(recurringTaskChecklistItemTable.position);
+
+			if (templateChecklistItems.length > 0) {
+				await db.insert(taskChecklistItemTable).values(
+					templateChecklistItems.map((item) => ({
+						id: createId(),
+						taskId,
+						text: item.text,
+						position: item.position,
+					})),
+				);
 			}
 
 			await publishEvent("task.created", {

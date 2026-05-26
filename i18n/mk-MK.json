@@ -1962,6 +1962,8 @@
 			"priorityNone": "Нема",
 			"labels": "Ознаки",
 			"noLabels": "Нема достапни ознаки",
+			"checklist": "Контролна листа",
+			"checklistPlaceholder": "Додај ставка",
 			"dueDateOffset": "Рок после (денови)",
 			"dueDateOffsetPlaceholder": "на пр. 3",
 			"nextRunAt": "Прво извршување",

@@ -1970,6 +1970,8 @@
 			"priorityNone": "Keine",
 			"labels": "Labels",
 			"noLabels": "Keine Labels verfügbar",
+			"checklist": "Checkliste",
+			"checklistPlaceholder": "Aufgabe hinzufügen",
 			"dueDateOffset": "Fällig nach (Tagen)",
 			"dueDateOffsetPlaceholder": "z.B. 3",
 			"nextRunAt": "Erste Ausführung",

@@ -1,5 +1,7 @@
 import { client } from "@kaneo/libs";
 
+import type { CheckListItemInput } from "./create-recurring-task";
+
 export type UpdateRecurringTaskRequest = {
 	projectId: string;
 	recurringTaskId: string;
@@ -17,6 +19,7 @@ export type UpdateRecurringTaskRequest = {
 	priority?: string | null;
 	dueDateDaysOffset?: number | null;
 	labelIds?: string[] | null;
+	checklistItems?: CheckListItemInput[];
 };
 
 async function updateRecurringTask(data: UpdateRecurringTaskRequest) {
