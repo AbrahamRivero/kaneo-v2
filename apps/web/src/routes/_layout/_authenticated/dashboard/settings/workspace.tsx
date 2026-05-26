@@ -35,12 +35,12 @@ function RouteComponent() {
 			icon: Settings,
 		},
 		{
-			title: "Modules",
+			title: t("settings:workspaceModules.title"),
 			url: "/dashboard/settings/workspace/modules",
 			icon: Puzzle,
 		},
 		{
-			title: "Templates",
+			title: t("settings:workspaceTemplates.title"),
 			url: "/dashboard/settings/workspace/templates",
 			icon: LayoutIcon,
 		},

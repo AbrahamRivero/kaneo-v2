@@ -1,27 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
+import i18n from "i18next";
 import { authClient } from "@/lib/auth-client";
 
-type GetInvitationRequest = {
-	invitationId: string;
-};
-
-function useGetInvitation({ invitationId }: GetInvitationRequest) {
+function useGetInvitation(invitationId: string) {
 	return useQuery({
 		queryKey: ["invitation", invitationId],
-		enabled: !!invitationId,
 		queryFn: async () => {
 			const { data, error } = await authClient.organization.getInvitation({
-				query: {
-					id: invitationId,
-				},
+				invitationId,
 			});
 
 			if (error) {
-				throw new Error(error.message || "Failed to get invitation");
+				throw new Error(error.message || i18n.t("common:error.getInvitation"));
 			}
 
 			return data;
 		},
+		enabled: !!invitationId,
 	});
 }
 

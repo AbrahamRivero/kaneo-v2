@@ -1,5 +1,6 @@
 import { Calendar, CalendarClock, CalendarX } from "lucide-react";
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { dueDateStatusColors, getDueDateStatus } from "@/lib/due-date-status";
 import { formatDateShort } from "@/lib/format";
@@ -23,6 +24,7 @@ export function PublicTaskCard({
 	projectSlug,
 	onTaskClick,
 }: PublicTaskCardProps) {
+	const { t } = useTranslation();
 	const labels = task.labels || [];
 	const externalLinks = task.externalLinks || [];
 	const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(
@@ -68,7 +70,9 @@ export function PublicTaskCard({
 			onTouchStart={handleTouchStart}
 			onTouchEnd={handleTouchEnd}
 			onClick={handleClick}
-			aria-label={`View details for task ${task.title}`}
+			aria-label={t("publicProject:taskCard.viewDetailsAria", {
+				title: task.title,
+			})}
 		>
 			<div className="text-[10px] font-mono text-muted-foreground mb-2">
 				{projectSlug}-{task.number}

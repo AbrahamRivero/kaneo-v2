@@ -54,7 +54,56 @@
 			"troubleshooting": "Stappen voor probleemoplossing:",
 			"tryAgain": "Opnieuw proberen",
 			"viewDeploymentGuide": "Implementatiehandleiding bekijken",
-			"refreshPage": "Pagina vernieuwen"
+			"refreshPage": "Pagina vernieuwen",
+			"generic": "Fout",
+			"cors": "Kan geen verbinding maken met de server. Dit kan komen door CORS-configuratieproblemen.",
+			"network": "Netwerkfout. Controleer uw internetverbinding en probeer het opnieuw.",
+			"auth": "Authenticatie mislukt. Log opnieuw in.",
+			"server": "Serverfout. Probeer het later opnieuw.",
+			"unexpected": "Er is een onverwachte fout opgetreden.",
+			"emptyFile": "Alleen niet-lege bestandsuploads worden ondersteund.",
+			"uploadFailed": "Bestand uploaden naar opslag mislukt.",
+			"createWorkspace": "Werkruimte aanmaken mislukt",
+			"updateWorkspace": "Werkruimte bijwerken mislukt",
+			"deleteWorkspace": "Werkruimte verwijderen mislukt",
+			"fetchWorkspaces": "Werkruimten ophalen mislukt",
+			"acceptInvitation": "Uitnodiging accepteren mislukt",
+			"rejectInvitation": "Uitnodiging afwijzen mislukt",
+			"cancelInvitation": "Uitnodiging annuleren mislukt",
+			"changePassword": "Wachtwoord wijzigen mislukt",
+			"getInvitation": "Uitnodiging ophalen mislukt",
+			"updateLocale": "Taal bijwerken mislukt",
+			"fetchWorkspaceFeatures": "Werkruimtefuncties ophalen mislukt",
+			"fetchFeatureRegistry": "Functieregister ophalen mislukt",
+			"updateWorkspaceFeatures": "Werkruimtefuncties bijwerken mislukt",
+			"noProjectForTask": "Geen project geselecteerd voor taakcreatie",
+			"fetchPendingInvitations": "Openstaande uitnodigingen ophalen mislukt",
+			"getFullWorkspace": "Volledige werkruimte ophalen mislukt",
+			"getWorkspaceUsers": "Werkruimtegebruikers ophalen mislukt",
+			"getWorkspaceInvites": "Werkruimte-uitnodigingen ophalen mislukt",
+			"getUserInvitations": "Gebruikersuitnodigingen ophalen mislukt",
+			"getActiveWorkspaceUser": "Actieve werkruimtegebruiker ophalen mislukt",
+			"taskIdRequired": "Taak-ID is vereist",
+			"inviteWorkspaceMember": "Werkruimtelid uitnodigen mislukt",
+			"removeWorkspaceMember": "Werkruimtelid verwijderen mislukt",
+			"updateWorkspaceMemberRole": "Werkruimtelidrol bijwerken mislukt",
+			"updateUserProfile": "Gebruikersprofiel bijwerken mislukt",
+			"fetchWorkspaceUsers": "Werkruimtegebruikers ophalen mislukt",
+			"apiError": "API-fout {{status}}",
+			"requestFailed": "Verzoek mislukt",
+			"corsTroubleshooting": {
+				"step0": "Zorg ervoor dat uw API-server actief is",
+				"step1": "Controleer of VITE_API_URL in uw frontend .env overeenkomt met uw API-server-URL",
+				"step2": "Controleer of CORS_ORIGINS in uw API .env uw frontend-URL bevat",
+				"step3": "Zorg ervoor dat frontend en API hetzelfde protocol gebruiken (http/https)",
+				"step4": "Controleer of uw API-server toegankelijk is vanuit uw browser"
+			},
+			"networkTroubleshooting": {
+				"step0": "Controleer uw internetverbinding",
+				"step1": "Controleer of de API-server actief en toegankelijk is",
+				"step2": "Probeer de pagina te verversen",
+				"step3": "Controleer op firewall- of proxy-problemen"
+			}
 		},
 		"demo": {
 			"banner": "Dit is een demo-omgeving. Alle gegevens worden elk uur automatisch gewist.",
@@ -62,6 +111,9 @@
 		},
 		"formats": {
 			"never": "Nooit"
+		},
+		"attachment": {
+			"defaultFilename": "Bijlage"
 		},
 		"status": {
 			"active": "Actief",
@@ -470,6 +522,12 @@
 					"expirationRequired": "Vervaldatum is verplicht"
 				}
 			}
+		},
+		"workspaceModules": {
+			"title": "Modules"
+		},
+		"workspaceTemplates": {
+			"title": "Sjablonen"
 		},
 		"workspaceGeneral": {
 			"pageTitle": "Algemene instellingen",
@@ -1739,7 +1797,13 @@
 			"description": "Dit project bestaat niet of is niet openbaar toegankelijk."
 		},
 		"taskCard": {
-			"viewDetailsAria": "Details bekijken voor taak {{title}}"
+			"viewDetailsAria": "Details weergeven voor taak {{title}}"
+		},
+		"kanbanView": {
+			"noTasksInColumn": "Geen taken in {{columnName}}"
+		},
+		"listView": {
+			"noTasksInColumn": "Geen taken in {{columnName}}"
 		},
 		"taskDetail": {
 			"labels": "Labels",

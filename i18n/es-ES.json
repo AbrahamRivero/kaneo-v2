@@ -54,7 +54,56 @@
 			"troubleshooting": "Pasos para solucionar problemas:",
 			"tryAgain": "Intentar de nuevo",
 			"viewDeploymentGuide": "Ver el manual del despliegue",
-			"refreshPage": "Actualizar página"
+			"refreshPage": "Actualizar página",
+			"generic": "Error",
+			"cors": "No se puede conectar con el servidor. Puede deberse a problemas de configuración CORS.",
+			"network": "Error de red. Comprueba tu conexión a internet e inténtalo de nuevo.",
+			"auth": "Autenticación fallida. Inicia sesión de nuevo.",
+			"server": "Error del servidor. Inténtalo de nuevo más tarde.",
+			"unexpected": "Ha ocurrido un error inesperado.",
+			"emptyFile": "Solo se admiten archivos no vacíos.",
+			"uploadFailed": "Error al subir el archivo al almacenamiento.",
+			"createWorkspace": "Error al crear el espacio de trabajo",
+			"updateWorkspace": "Error al actualizar el espacio de trabajo",
+			"deleteWorkspace": "Error al eliminar el espacio de trabajo",
+			"fetchWorkspaces": "Error al obtener los espacios de trabajo",
+			"acceptInvitation": "Error al aceptar la invitación",
+			"rejectInvitation": "Error al rechazar la invitación",
+			"cancelInvitation": "Error al cancelar la invitación",
+			"changePassword": "Error al cambiar la contraseña",
+			"getInvitation": "Error al obtener la invitación",
+			"updateLocale": "Error al actualizar el idioma",
+			"fetchWorkspaceFeatures": "Error al obtener las funciones del espacio de trabajo",
+			"fetchFeatureRegistry": "Error al obtener el registro de funciones",
+			"updateWorkspaceFeatures": "Error al actualizar las funciones del espacio de trabajo",
+			"noProjectForTask": "No se seleccionó ningún proyecto para crear la tarea",
+			"fetchPendingInvitations": "Error al obtener las invitaciones pendientes",
+			"getFullWorkspace": "Error al obtener el espacio de trabajo completo",
+			"getWorkspaceUsers": "Error al obtener los usuarios del espacio de trabajo",
+			"getWorkspaceInvites": "Error al obtener las invitaciones del espacio de trabajo",
+			"getUserInvitations": "Error al obtener las invitaciones del usuario",
+			"getActiveWorkspaceUser": "Error al obtener el usuario activo del espacio de trabajo",
+			"taskIdRequired": "El ID de la tarea es obligatorio",
+			"inviteWorkspaceMember": "Error al invitar al miembro del espacio de trabajo",
+			"removeWorkspaceMember": "Error al eliminar al miembro del espacio de trabajo",
+			"updateWorkspaceMemberRole": "Error al actualizar el rol del miembro del espacio de trabajo",
+			"updateUserProfile": "Error al actualizar el perfil de usuario",
+			"fetchWorkspaceUsers": "Error al obtener los usuarios del espacio de trabajo",
+			"apiError": "Error de API {{status}}",
+			"requestFailed": "Solicitud fallida",
+			"corsTroubleshooting": {
+				"step0": "Asegúrate de que tu servidor API está funcionando",
+				"step1": "Verifica que VITE_API_URL en tu .env del frontend coincida con la URL del servidor API",
+				"step2": "Verifica que CORS_ORIGINS en tu .env de la API incluya la URL del frontend",
+				"step3": "Asegúrate de que tanto el frontend como la API usen el mismo protocolo (http/https)",
+				"step4": "Comprueba que tu servidor API sea accesible desde tu navegador"
+			},
+			"networkTroubleshooting": {
+				"step0": "Comprueba tu conexión a internet",
+				"step1": "Verifica que el servidor API esté funcionando y sea accesible",
+				"step2": "Intenta actualizar la página",
+				"step3": "Comprueba si hay problemas de firewall o proxy"
+			}
 		},
 		"demo": {
 			"banner": "Este es un entorno de demostración. Todos los datos se eliminarán automáticamente cada hora.",
@@ -62,6 +111,9 @@
 		},
 		"formats": {
 			"never": "Nunca"
+		},
+		"attachment": {
+			"defaultFilename": "Adjunto"
 		},
 		"status": {
 			"active": "Activo",
@@ -470,6 +522,12 @@
 					"expirationRequired": "La fecha de expiración es obligatoria"
 				}
 			}
+		},
+		"workspaceModules": {
+			"title": "Módulos"
+		},
+		"workspaceTemplates": {
+			"title": "Plantillas"
 		},
 		"workspaceGeneral": {
 			"pageTitle": "Ajustes Generales",
@@ -1739,6 +1797,12 @@
 		},
 		"taskCard": {
 			"viewDetailsAria": "Ver detalles de la tarea {{title}}"
+		},
+		"kanbanView": {
+			"noTasksInColumn": "No hay tareas en {{columnName}}"
+		},
+		"listView": {
+			"noTasksInColumn": "No hay tareas en {{columnName}}"
 		},
 		"taskDetail": {
 			"labels": "Etiquetas",

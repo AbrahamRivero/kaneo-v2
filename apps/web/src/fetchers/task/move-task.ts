@@ -1,4 +1,5 @@
 import { client } from "@kaneo/libs";
+import i18n from "i18next";
 
 async function moveTask({
 	taskId,
@@ -28,7 +29,7 @@ async function moveTask({
 		} catch {
 			message =
 				(await response.text().catch(() => "")) ||
-				`API error ${response.status}`;
+				i18n.t("common:error.apiError", { status: response.status });
 		}
 		throw new Error(message);
 	}

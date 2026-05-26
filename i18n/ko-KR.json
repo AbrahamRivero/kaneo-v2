@@ -55,14 +55,66 @@
 			"troubleshooting": "문제 해결 단계:",
 			"tryAgain": "다시 시도",
 			"viewDeploymentGuide": "배포 가이드 보기",
-			"refreshPage": "페이지 새로고침"
+			"refreshPage": "페이지 새로고침",
+			"generic": "오류",
+			"cors": "서버에 연결할 수 없습니다. CORS 설정 문제일 수 있습니다.",
+			"network": "네트워크 오류입니다. 인터넷 연결을 확인하고 다시 시도하세요.",
+			"auth": "인증에 실패했습니다. 다시 로그인해 주세요.",
+			"server": "서버 오류입니다. 나중에 다시 시도해 주세요.",
+			"unexpected": "예상치 못한 오류가 발생했습니다.",
+			"emptyFile": "비어 있지 않은 파일 업로드만 지원됩니다.",
+			"uploadFailed": "스토리지에 파일을 업로드하지 못했습니다.",
+			"createWorkspace": "워크스페이스를 만들지 못했습니다",
+			"updateWorkspace": "워크스페이스를 업데이트하지 못했습니다",
+			"deleteWorkspace": "워크스페이스를 삭제하지 못했습니다",
+			"fetchWorkspaces": "워크스페이스를 불러오지 못했습니다",
+			"acceptInvitation": "초대를 수락하지 못했습니다",
+			"rejectInvitation": "초대를 거절하지 못했습니다",
+			"cancelInvitation": "초대를 취소하지 못했습니다",
+			"changePassword": "비밀번호를 변경하지 못했습니다",
+			"getInvitation": "초대를 불러오지 못했습니다",
+			"updateLocale": "언어를 업데이트하지 못했습니다",
+			"fetchWorkspaceFeatures": "워크스페이스 기능을 불러오지 못했습니다",
+			"fetchFeatureRegistry": "기능 레지스트리를 불러오지 못했습니다",
+			"updateWorkspaceFeatures": "워크스페이스 기능을 업데이트하지 못했습니다",
+			"noProjectForTask": "작업 생성을 위한 프로젝트가 선택되지 않았습니다",
+			"fetchPendingInvitations": "보류 중인 초대를 불러오지 못했습니다",
+			"getFullWorkspace": "전체 워크스페이스를 불러오지 못했습니다",
+			"getWorkspaceUsers": "워크스페이스 사용자를 불러오지 못했습니다",
+			"getWorkspaceInvites": "워크스페이스 초대를 불러오지 못했습니다",
+			"getUserInvitations": "사용자 초대를 불러오지 못했습니다",
+			"getActiveWorkspaceUser": "활성 워크스페이스 사용자를 불러오지 못했습니다",
+			"taskIdRequired": "작업 ID가 필요합니다",
+			"inviteWorkspaceMember": "워크스페이스 구성원 초대에 실패했습니다",
+			"removeWorkspaceMember": "워크스페이스 구성원 제거에 실패했습니다",
+			"updateWorkspaceMemberRole": "워크스페이스 구성원 역할 업데이트에 실패했습니다",
+			"updateUserProfile": "사용자 프로필 업데이트에 실패했습니다",
+			"fetchWorkspaceUsers": "워크스페이스 사용자를 불러오지 못했습니다",
+			"apiError": "API 오류 {{status}}",
+			"requestFailed": "요청 실패",
+			"corsTroubleshooting": {
+				"step0": "API 서버가 실행 중인지 확인하세요",
+				"step1": "프론트엔드 .env의 VITE_API_URL이 API 서버 URL과 일치하는지 확인하세요",
+				"step2": "API .env의 CORS_ORIGINS에 프론트엔드 URL이 포함되어 있는지 확인하세요",
+				"step3": "프론트엔드와 API가 동일한 프로토콜(http/https)을 사용하는지 확인하세요",
+				"step4": "API 서버가 브라우저에서 접근 가능한지 확인하세요"
+			},
+			"networkTroubleshooting": {
+				"step0": "인터넷 연결을 확인하세요",
+				"step1": "API 서버가 실행 중이고 접근 가능한지 확인하세요",
+				"step2": "페이지를 새로고침해 보세요",
+				"step3": "방화벽이나 프록시 문제가 있는지 확인하세요"
+			}
 		},
 		"demo": {
 			"banner": "데모 환경입니다. 모든 데이터는 매시간 자동으로 삭제됩니다.",
 			"deployButton": "직접 배포하기"
 		},
 		"formats": {
-			"never": "안 함"
+			"never": "없음"
+		},
+		"attachment": {
+			"defaultFilename": "첨부파일"
 		},
 		"status": {
 			"active": "활성",
@@ -560,6 +612,12 @@
 					"expirationRequired": "만료는 필수입니다"
 				}
 			}
+		},
+		"workspaceModules": {
+			"title": "모듈"
+		},
+		"workspaceTemplates": {
+			"title": "템플릿"
 		},
 		"workspaceGeneral": {
 			"pageTitle": "일반 설정",
@@ -1958,7 +2016,13 @@
 			"description": "이 프로젝트는 존재하지 않거나 공개로 접근할 수 없습니다."
 		},
 		"taskCard": {
-			"viewDetailsAria": "{{title}} 작업의 세부 정보 보기"
+			"viewDetailsAria": "작업 {{title}}의 세부 정보 보기"
+		},
+		"kanbanView": {
+			"noTasksInColumn": "{{columnName}}에 작업 없음"
+		},
+		"listView": {
+			"noTasksInColumn": "{{columnName}}에 작업 없음"
 		},
 		"taskDetail": {
 			"labels": "라벨",

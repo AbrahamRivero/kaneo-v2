@@ -113,7 +113,9 @@ export function GiteaRepositoryBrowserModal({
 					{canFetch && error && (
 						<div className="py-6 text-center space-y-2">
 							<p className="text-sm text-destructive">
-								{error instanceof Error ? error.message : "Error"}
+								{error instanceof Error
+									? error.message
+									: t("common:error.generic")}
 							</p>
 							<Button
 								type="button"

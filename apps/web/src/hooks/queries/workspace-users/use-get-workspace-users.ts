@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import i18n from "i18next";
 import { authClient } from "@/lib/auth-client";
 
 type GetWorkspaceUsersRequest = {
@@ -43,7 +44,9 @@ function useGetWorkspaceUsers({
 			});
 
 			if (error) {
-				throw new Error(error.message || "Failed to get workspace users");
+				throw new Error(
+					error.message || i18n.t("common:error.getWorkspaceUsers"),
+				);
 			}
 
 			return data.members;

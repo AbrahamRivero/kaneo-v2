@@ -194,6 +194,98 @@
 						},
 						"refreshPage": {
 							"type": "string"
+						},
+						"generic": {
+							"type": "string"
+						},
+						"cors": {
+							"type": "string"
+						},
+						"network": {
+							"type": "string"
+						},
+						"auth": {
+							"type": "string"
+						},
+						"server": {
+							"type": "string"
+						},
+						"unexpected": {
+							"type": "string"
+						},
+						"emptyFile": {
+							"type": "string"
+						},
+						"uploadFailed": {
+							"type": "string"
+						},
+						"createWorkspace": {
+							"type": "string"
+						},
+						"updateWorkspace": {
+							"type": "string"
+						},
+						"deleteWorkspace": {
+							"type": "string"
+						},
+						"fetchWorkspaces": {
+							"type": "string"
+						},
+						"acceptInvitation": {
+							"type": "string"
+						},
+						"rejectInvitation": {
+							"type": "string"
+						},
+						"cancelInvitation": {
+							"type": "string"
+						},
+						"changePassword": {
+							"type": "string"
+						},
+						"getInvitation": {
+							"type": "string"
+						},
+						"updateLocale": {
+							"type": "string"
+						},
+						"fetchWorkspaceFeatures": {
+							"type": "string"
+						},
+						"fetchFeatureRegistry": {
+							"type": "string"
+						},
+						"updateWorkspaceFeatures": {
+							"type": "string"
+						},
+						"noProjectForTask": {
+							"type": "string"
+						},
+						"fetchPendingInvitations": {
+							"type": "string"
+						},
+						"corsTroubleshooting": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"step0": { "type": "string" },
+								"step1": { "type": "string" },
+								"step2": { "type": "string" },
+								"step3": { "type": "string" },
+								"step4": { "type": "string" }
+							},
+							"required": ["step0", "step1", "step2", "step3", "step4"]
+						},
+						"networkTroubleshooting": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"step0": { "type": "string" },
+								"step1": { "type": "string" },
+								"step2": { "type": "string" },
+								"step3": { "type": "string" }
+							},
+							"required": ["step0", "step1", "step2", "step3"]
 						}
 					},
 					"required": [
@@ -201,7 +293,32 @@
 						"troubleshooting",
 						"tryAgain",
 						"viewDeploymentGuide",
-						"refreshPage"
+						"refreshPage",
+						"generic",
+						"cors",
+						"network",
+						"auth",
+						"server",
+						"unexpected",
+						"emptyFile",
+						"uploadFailed",
+						"createWorkspace",
+						"updateWorkspace",
+						"deleteWorkspace",
+						"fetchWorkspaces",
+						"acceptInvitation",
+						"rejectInvitation",
+						"cancelInvitation",
+						"changePassword",
+						"getInvitation",
+						"updateLocale",
+						"fetchWorkspaceFeatures",
+						"fetchFeatureRegistry",
+						"updateWorkspaceFeatures",
+						"noProjectForTask",
+						"fetchPendingInvitations",
+						"corsTroubleshooting",
+						"networkTroubleshooting"
 					]
 				},
 				"formats": {

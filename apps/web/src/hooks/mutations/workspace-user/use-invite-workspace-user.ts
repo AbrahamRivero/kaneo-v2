@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import i18n from "i18next";
 import { authClient } from "@/lib/auth-client";
 import queryClient from "@/query-client";
 
@@ -25,7 +26,9 @@ function useInviteWorkspaceUser() {
 			});
 
 			if (error) {
-				throw new Error(error.message || "Failed to invite workspace member");
+				throw new Error(
+					error.message || i18n.t("common:error.inviteWorkspaceMember"),
+				);
 			}
 
 			return data;

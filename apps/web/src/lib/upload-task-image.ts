@@ -1,3 +1,4 @@
+import i18n from "i18next";
 import createImageUpload, {
 	finalizeImageUpload,
 } from "@/fetchers/task/create-image-upload";
@@ -43,7 +44,7 @@ export async function uploadTaskImage({
 }) {
 	if (!isSupportedImageFile(file)) {
 		if (!isSupportedTaskAsset(file)) {
-			throw new Error("Only non-empty file uploads are supported.");
+			throw new Error(i18n.t("common:error.emptyFile"));
 		}
 	}
 
@@ -62,7 +63,7 @@ export async function uploadTaskImage({
 	});
 
 	if (!response.ok) {
-		throw new Error("Failed to upload file to storage.");
+		throw new Error(i18n.t("common:error.uploadFailed"));
 	}
 
 	const asset = await finalizeImageUpload({

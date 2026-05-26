@@ -1,3 +1,4 @@
+import i18n from "i18next";
 import { getApiUrl } from "@/fetchers/get-api-url";
 
 export type WorkspaceFeatureStatus = {
@@ -28,7 +29,7 @@ export async function getWorkspaceFeatures(
 	);
 
 	if (!response.ok) {
-		throw new Error("Failed to fetch workspace features");
+		throw new Error(i18n.t("common:error.fetchWorkspaceFeatures"));
 	}
 
 	return response.json();
@@ -42,7 +43,7 @@ export async function getFeatureRegistry(): Promise<
 	});
 
 	if (!response.ok) {
-		throw new Error("Failed to fetch feature registry");
+		throw new Error(i18n.t("common:error.fetchFeatureRegistry"));
 	}
 
 	return response.json();
@@ -63,6 +64,6 @@ export async function updateWorkspaceFeatures(
 	);
 
 	if (!response.ok) {
-		throw new Error("Failed to update workspace features");
+		throw new Error(i18n.t("common:error.updateWorkspaceFeatures"));
 	}
 }

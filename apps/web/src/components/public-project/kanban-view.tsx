@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { getColumnIcon } from "@/lib/column";
 import type { ProjectWithTasks } from "@/types/project";
 import type Task from "@/types/task";
@@ -12,6 +13,7 @@ export function PublicKanbanView({
 	project,
 	onTaskClick,
 }: PublicKanbanViewProps) {
+	const { t } = useTranslation();
 	const columns = project.columns ?? [];
 
 	return (
@@ -21,7 +23,7 @@ export function PublicKanbanView({
 					return (
 						<div
 							key={column.id}
-							className="h-full flex-1 min-w-80 max-w-96 flex-shrink-0"
+							className="h-full flex-1 min-w-80 max-w-96 shrink-0"
 						>
 							<div className="flex flex-col h-full w-full min-h-0 backdrop-blur-xs rounded-lg bg-sidebar border border-border/50 transition-all duration-300 ease-out hover:bg-accent/20 hover:shadow-sm">
 								<div className="p-2 shrink-0">
@@ -55,7 +57,9 @@ export function PublicKanbanView({
 											<div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center mx-auto mb-2">
 												{getColumnIcon(column.id, column.isFinal)}
 											</div>
-											No tasks in {column.name.toLowerCase()}
+											{t("publicProject:kanbanView.noTasksInColumn", {
+												columnName: column.name.toLowerCase(),
+											})}
 										</div>
 									)}
 								</div>

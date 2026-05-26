@@ -55,7 +55,56 @@
 			"troubleshooting": "Schritte zur Fehlerbehebung:",
 			"tryAgain": "Erneut versuchen",
 			"viewDeploymentGuide": "Bereitstellungsanleitung ansehen",
-			"refreshPage": "Seite neu laden"
+			"refreshPage": "Seite neu laden",
+			"generic": "Fehler",
+			"cors": "Verbindung zum Server nicht möglich. Dies könnte an CORS-Konfigurationsproblemen liegen.",
+			"network": "Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
+			"auth": "Authentifizierung fehlgeschlagen. Bitte melden Sie sich erneut an.",
+			"server": "Serverfehler. Bitte versuchen Sie es später erneut.",
+			"unexpected": "Ein unerwarteter Fehler ist aufgetreten.",
+			"emptyFile": "Nur nicht-leere Datei-Uploads werden unterstützt.",
+			"uploadFailed": "Fehler beim Hochladen der Datei in den Speicher.",
+			"createWorkspace": "Fehler beim Erstellen des Workspace",
+			"updateWorkspace": "Fehler beim Aktualisieren des Workspace",
+			"deleteWorkspace": "Fehler beim Löschen des Workspace",
+			"fetchWorkspaces": "Fehler beim Abrufen der Workspaces",
+			"acceptInvitation": "Fehler beim Akzeptieren der Einladung",
+			"rejectInvitation": "Fehler beim Ablehnen der Einladung",
+			"cancelInvitation": "Fehler beim Stornieren der Einladung",
+			"changePassword": "Fehler beim Ändern des Passworts",
+			"getInvitation": "Fehler beim Abrufen der Einladung",
+			"updateLocale": "Fehler beim Aktualisieren der Sprache",
+			"fetchWorkspaceFeatures": "Fehler beim Abrufen der Workspace-Funktionen",
+			"fetchFeatureRegistry": "Fehler beim Abrufen der Funktionsregistrierung",
+			"updateWorkspaceFeatures": "Fehler beim Aktualisieren der Workspace-Funktionen",
+			"noProjectForTask": "Kein Projekt für die Aufgabenerstellung ausgewählt",
+			"fetchPendingInvitations": "Fehler beim Abrufen ausstehender Einladungen",
+			"getFullWorkspace": "Fehler beim Abrufen des vollständigen Workspace",
+			"getWorkspaceUsers": "Fehler beim Abrufen der Workspace-Benutzer",
+			"getWorkspaceInvites": "Fehler beim Abrufen der Workspace-Einladungen",
+			"getUserInvitations": "Fehler beim Abrufen der Benutzereinladungen",
+			"getActiveWorkspaceUser": "Fehler beim Abrufen des aktiven Workspace-Benutzers",
+			"taskIdRequired": "Aufgaben-ID ist erforderlich",
+			"inviteWorkspaceMember": "Fehler beim Einladen des Workspace-Mitglieds",
+			"removeWorkspaceMember": "Fehler beim Entfernen des Workspace-Mitglieds",
+			"updateWorkspaceMemberRole": "Fehler beim Aktualisieren der Workspace-Mitgliedsrolle",
+			"updateUserProfile": "Fehler beim Aktualisieren des Benutzerprofils",
+			"fetchWorkspaceUsers": "Fehler beim Abrufen der Workspace-Benutzer",
+			"apiError": "API-Fehler {{status}}",
+			"requestFailed": "Anfrage fehlgeschlagen",
+			"corsTroubleshooting": {
+				"step0": "Stellen Sie sicher, dass Ihr API-Server läuft",
+				"step1": "Überprüfen Sie, ob VITE_API_URL in Ihrer Frontend-.env mit Ihrer API-Server-URL übereinstimmt",
+				"step2": "Überprüfen Sie, ob CORS_ORIGINS in Ihrer API-.env Ihre Frontend-URL enthält",
+				"step3": "Stellen Sie sicher, dass Frontend und API dasselbe Protokoll (http/https) verwenden",
+				"step4": "Überprüfen Sie, ob Ihr API-Server von Ihrem Browser aus erreichbar ist"
+			},
+			"networkTroubleshooting": {
+				"step0": "Überprüfen Sie Ihre Internetverbindung",
+				"step1": "Überprüfen Sie, ob der API-Server läuft und erreichbar ist",
+				"step2": "Versuchen Sie, die Seite zu aktualisieren",
+				"step3": "Überprüfen Sie auf Firewall- oder Proxy-Probleme"
+			}
 		},
 		"demo": {
 			"banner": "Dies ist eine Demo-Umgebung. Alle Daten werden automatisch jede Stunde gelöscht.",
@@ -63,6 +112,9 @@
 		},
 		"formats": {
 			"never": "Nie"
+		},
+		"attachment": {
+			"defaultFilename": "Anhang"
 		},
 		"status": {
 			"active": "Aktiv",
@@ -560,6 +612,12 @@
 					"expirationRequired": "Ablauf ist erforderlich"
 				}
 			}
+		},
+		"workspaceModules": {
+			"title": "Module"
+		},
+		"workspaceTemplates": {
+			"title": "Vorlagen"
 		},
 		"workspaceGeneral": {
 			"pageTitle": "Allgemeine Einstellungen",
@@ -1966,7 +2024,13 @@
 			"description": "Dieses Projekt existiert nicht oder ist nicht öffentlich zugänglich."
 		},
 		"taskCard": {
-			"viewDetailsAria": "Details für Aufgabe {{title}} ansehen"
+			"viewDetailsAria": "Details für Aufgabe {{title}} anzeigen"
+		},
+		"kanbanView": {
+			"noTasksInColumn": "Keine Aufgaben in {{columnName}}"
+		},
+		"listView": {
+			"noTasksInColumn": "Keine Aufgaben in {{columnName}}"
 		},
 		"taskDetail": {
 			"labels": "Labels",

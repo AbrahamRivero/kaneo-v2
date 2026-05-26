@@ -1,3 +1,4 @@
+import i18n from "i18next";
 import { authClient } from "@/lib/auth-client";
 
 type UpdateWorkspaceRequest = {
@@ -28,7 +29,7 @@ const updateWorkspace = async ({
 	});
 
 	if (error) {
-		throw new Error(error.message || "Failed to update workspace");
+		throw new Error(error.message || i18n.t("common:error.updateWorkspace"));
 	}
 
 	return data;
