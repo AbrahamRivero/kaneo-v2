@@ -36,11 +36,9 @@ import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceRouteImport } fro
 import { Route as LayoutAuthenticatedDashboardSettingsProjectsRouteImport } from './routes/_layout/_authenticated/dashboard/settings/projects'
 import { Route as LayoutAuthenticatedDashboardSettingsAccountRouteImport } from './routes/_layout/_authenticated/dashboard/settings/account'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/index'
-import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/suppliers'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSearchRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/search'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/members'
 import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceRolesRouteImport } from './routes/_layout/_authenticated/dashboard/settings/workspace/roles'
-import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdBudgetsRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/budgets'
 import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceTemplatesRouteImport } from './routes/_layout/_authenticated/dashboard/settings/workspace/templates'
 import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceModulesRouteImport } from './routes/_layout/_authenticated/dashboard/settings/workspace/modules'
 import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceGeneralRouteImport } from './routes/_layout/_authenticated/dashboard/settings/workspace/general'
@@ -48,7 +46,6 @@ import { Route as LayoutAuthenticatedDashboardSettingsAccountPreferencesRouteImp
 import { Route as LayoutAuthenticatedDashboardSettingsAccountNotificationsRouteImport } from './routes/_layout/_authenticated/dashboard/settings/account/notifications'
 import { Route as LayoutAuthenticatedDashboardSettingsAccountInformationRouteImport } from './routes/_layout/_authenticated/dashboard/settings/account/information'
 import { Route as LayoutAuthenticatedDashboardSettingsAccountDeveloperRouteImport } from './routes/_layout/_authenticated/dashboard/settings/account/developer'
-import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersSupplierIdRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/suppliers/$supplierId'
 import { Route as LayoutAuthenticatedDashboardSettingsProjectsProjectIdWorkflowRouteImport } from './routes/_layout/_authenticated/dashboard/settings/projects/$projectId/workflow'
 import { Route as LayoutAuthenticatedDashboardSettingsProjectsProjectIdVisibilityRouteImport } from './routes/_layout/_authenticated/dashboard/settings/projects/$projectId/visibility'
 import { Route as LayoutAuthenticatedDashboardSettingsProjectsProjectIdIntegrationsRouteImport } from './routes/_layout/_authenticated/dashboard/settings/projects/$projectId/integrations'
@@ -56,7 +53,6 @@ import { Route as LayoutAuthenticatedDashboardSettingsProjectsProjectIdGeneralRo
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdIndexRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/index'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdRecurringTasksRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdGanttRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/gantt'
-import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBudgetRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/budget'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBoardRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/board'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBacklogRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/backlog'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdTaskTaskIdRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/task/$taskId_'
@@ -208,12 +204,6 @@ const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRoute =
     path: '/',
     getParentRoute: () => LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute,
   } as any)
-const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRoute =
-  LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteImport.update({
-    id: '/suppliers',
-    path: '/suppliers',
-    getParentRoute: () => LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute,
-  } as any)
 const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSearchRoute =
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSearchRouteImport.update({
     id: '/search',
@@ -231,12 +221,6 @@ const LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute =
     id: '/roles',
     path: '/roles',
     getParentRoute: () => LayoutAuthenticatedDashboardSettingsWorkspaceRoute,
-  } as any)
-const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdBudgetsRoute =
-  LayoutAuthenticatedDashboardWorkspaceWorkspaceIdBudgetsRouteImport.update({
-    id: '/budgets',
-    path: '/budgets',
-    getParentRoute: () => LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute,
   } as any)
 const LayoutAuthenticatedDashboardSettingsWorkspaceTemplatesRoute =
   LayoutAuthenticatedDashboardSettingsWorkspaceTemplatesRouteImport.update({
@@ -280,15 +264,6 @@ const LayoutAuthenticatedDashboardSettingsAccountDeveloperRoute =
     path: '/developer',
     getParentRoute: () => LayoutAuthenticatedDashboardSettingsAccountRoute,
   } as any)
-const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersSupplierIdRoute =
-  LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersSupplierIdRouteImport.update(
-    {
-      id: '/$supplierId',
-      path: '/$supplierId',
-      getParentRoute: () =>
-        LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRoute,
-    } as any,
-  )
 const LayoutAuthenticatedDashboardSettingsProjectsProjectIdWorkflowRoute =
   LayoutAuthenticatedDashboardSettingsProjectsProjectIdWorkflowRouteImport.update(
     {
@@ -344,15 +319,6 @@ const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdGanttRoute
     {
       id: '/project/$projectId/gantt',
       path: '/project/$projectId/gantt',
-      getParentRoute: () =>
-        LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute,
-    } as any,
-  )
-const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBudgetRoute =
-  LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBudgetRouteImport.update(
-    {
-      id: '/project/$projectId/budget',
-      path: '/project/$projectId/budget',
       getParentRoute: () =>
         LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute,
     } as any,
@@ -418,19 +384,15 @@ export interface FileRoutesByFullPath {
   '/dashboard/settings/workspace/roles': typeof LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute
   '/dashboard/settings/workspace/modules': typeof LayoutAuthenticatedDashboardSettingsWorkspaceModulesRoute
   '/dashboard/settings/workspace/templates': typeof LayoutAuthenticatedDashboardSettingsWorkspaceTemplatesRoute
-  '/dashboard/workspace/$workspaceId/budgets': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdBudgetsRoute
   '/dashboard/workspace/$workspaceId/members': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute
   '/dashboard/workspace/$workspaceId/search': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSearchRoute
-  '/dashboard/workspace/$workspaceId/suppliers': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteWithChildren
   '/dashboard/workspace/$workspaceId/': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRoute
   '/dashboard/settings/projects/$projectId/general': typeof LayoutAuthenticatedDashboardSettingsProjectsProjectIdGeneralRoute
   '/dashboard/settings/projects/$projectId/integrations': typeof LayoutAuthenticatedDashboardSettingsProjectsProjectIdIntegrationsRoute
   '/dashboard/settings/projects/$projectId/visibility': typeof LayoutAuthenticatedDashboardSettingsProjectsProjectIdVisibilityRoute
   '/dashboard/settings/projects/$projectId/workflow': typeof LayoutAuthenticatedDashboardSettingsProjectsProjectIdWorkflowRoute
-  '/dashboard/workspace/$workspaceId/suppliers/$supplierId': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersSupplierIdRoute
   '/dashboard/workspace/$workspaceId/project/$projectId/backlog': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBacklogRoute
   '/dashboard/workspace/$workspaceId/project/$projectId/board': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBoardRoute
-  '/dashboard/workspace/$workspaceId/project/$projectId/budget': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBudgetRoute
   '/dashboard/workspace/$workspaceId/project/$projectId/gantt': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdGanttRoute
   '/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdRecurringTasksRoute
   '/dashboard/workspace/$workspaceId/project/$projectId/': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdIndexRoute
@@ -466,19 +428,15 @@ export interface FileRoutesByTo {
   '/dashboard/settings/workspace/roles': typeof LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute
   '/dashboard/settings/workspace/modules': typeof LayoutAuthenticatedDashboardSettingsWorkspaceModulesRoute
   '/dashboard/settings/workspace/templates': typeof LayoutAuthenticatedDashboardSettingsWorkspaceTemplatesRoute
-  '/dashboard/workspace/$workspaceId/budgets': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdBudgetsRoute
   '/dashboard/workspace/$workspaceId/members': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute
   '/dashboard/workspace/$workspaceId/search': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSearchRoute
-  '/dashboard/workspace/$workspaceId/suppliers': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteWithChildren
   '/dashboard/workspace/$workspaceId': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRoute
   '/dashboard/settings/projects/$projectId/general': typeof LayoutAuthenticatedDashboardSettingsProjectsProjectIdGeneralRoute
   '/dashboard/settings/projects/$projectId/integrations': typeof LayoutAuthenticatedDashboardSettingsProjectsProjectIdIntegrationsRoute
   '/dashboard/settings/projects/$projectId/visibility': typeof LayoutAuthenticatedDashboardSettingsProjectsProjectIdVisibilityRoute
   '/dashboard/settings/projects/$projectId/workflow': typeof LayoutAuthenticatedDashboardSettingsProjectsProjectIdWorkflowRoute
-  '/dashboard/workspace/$workspaceId/suppliers/$supplierId': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersSupplierIdRoute
   '/dashboard/workspace/$workspaceId/project/$projectId/backlog': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBacklogRoute
   '/dashboard/workspace/$workspaceId/project/$projectId/board': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBoardRoute
-  '/dashboard/workspace/$workspaceId/project/$projectId/budget': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBudgetRoute
   '/dashboard/workspace/$workspaceId/project/$projectId/gantt': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdGanttRoute
   '/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdRecurringTasksRoute
   '/dashboard/workspace/$workspaceId/project/$projectId': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdIndexRoute
@@ -520,19 +478,15 @@ export interface FileRoutesById {
   '/_layout/_authenticated/dashboard/settings/workspace/roles': typeof LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute
   '/_layout/_authenticated/dashboard/settings/workspace/modules': typeof LayoutAuthenticatedDashboardSettingsWorkspaceModulesRoute
   '/_layout/_authenticated/dashboard/settings/workspace/templates': typeof LayoutAuthenticatedDashboardSettingsWorkspaceTemplatesRoute
-  '/_layout/_authenticated/dashboard/workspace/$workspaceId/budgets': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdBudgetsRoute
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/members': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/search': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSearchRoute
-  '/_layout/_authenticated/dashboard/workspace/$workspaceId/suppliers': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteWithChildren
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRoute
   '/_layout/_authenticated/dashboard/settings/projects/$projectId/general': typeof LayoutAuthenticatedDashboardSettingsProjectsProjectIdGeneralRoute
   '/_layout/_authenticated/dashboard/settings/projects/$projectId/integrations': typeof LayoutAuthenticatedDashboardSettingsProjectsProjectIdIntegrationsRoute
   '/_layout/_authenticated/dashboard/settings/projects/$projectId/visibility': typeof LayoutAuthenticatedDashboardSettingsProjectsProjectIdVisibilityRoute
   '/_layout/_authenticated/dashboard/settings/projects/$projectId/workflow': typeof LayoutAuthenticatedDashboardSettingsProjectsProjectIdWorkflowRoute
-  '/_layout/_authenticated/dashboard/workspace/$workspaceId/suppliers/$supplierId': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersSupplierIdRoute
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/backlog': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBacklogRoute
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/board': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBoardRoute
-  '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/budget': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBudgetRoute
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/gantt': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdGanttRoute
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdRecurringTasksRoute
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdIndexRoute
@@ -573,19 +527,15 @@ export interface FileRouteTypes {
     | '/dashboard/settings/workspace/roles'
     | '/dashboard/settings/workspace/modules'
     | '/dashboard/settings/workspace/templates'
-    | '/dashboard/workspace/$workspaceId/budgets'
     | '/dashboard/workspace/$workspaceId/members'
     | '/dashboard/workspace/$workspaceId/search'
-    | '/dashboard/workspace/$workspaceId/suppliers'
     | '/dashboard/workspace/$workspaceId/'
     | '/dashboard/settings/projects/$projectId/general'
     | '/dashboard/settings/projects/$projectId/integrations'
     | '/dashboard/settings/projects/$projectId/visibility'
     | '/dashboard/settings/projects/$projectId/workflow'
-    | '/dashboard/workspace/$workspaceId/suppliers/$supplierId'
     | '/dashboard/workspace/$workspaceId/project/$projectId/backlog'
     | '/dashboard/workspace/$workspaceId/project/$projectId/board'
-    | '/dashboard/workspace/$workspaceId/project/$projectId/budget'
     | '/dashboard/workspace/$workspaceId/project/$projectId/gantt'
     | '/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks'
     | '/dashboard/workspace/$workspaceId/project/$projectId/'
@@ -621,19 +571,15 @@ export interface FileRouteTypes {
     | '/dashboard/settings/workspace/roles'
     | '/dashboard/settings/workspace/modules'
     | '/dashboard/settings/workspace/templates'
-    | '/dashboard/workspace/$workspaceId/budgets'
     | '/dashboard/workspace/$workspaceId/members'
     | '/dashboard/workspace/$workspaceId/search'
-    | '/dashboard/workspace/$workspaceId/suppliers'
     | '/dashboard/workspace/$workspaceId'
     | '/dashboard/settings/projects/$projectId/general'
     | '/dashboard/settings/projects/$projectId/integrations'
     | '/dashboard/settings/projects/$projectId/visibility'
     | '/dashboard/settings/projects/$projectId/workflow'
-    | '/dashboard/workspace/$workspaceId/suppliers/$supplierId'
     | '/dashboard/workspace/$workspaceId/project/$projectId/backlog'
     | '/dashboard/workspace/$workspaceId/project/$projectId/board'
-    | '/dashboard/workspace/$workspaceId/project/$projectId/budget'
     | '/dashboard/workspace/$workspaceId/project/$projectId/gantt'
     | '/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks'
     | '/dashboard/workspace/$workspaceId/project/$projectId'
@@ -674,19 +620,15 @@ export interface FileRouteTypes {
     | '/_layout/_authenticated/dashboard/settings/workspace/roles'
     | '/_layout/_authenticated/dashboard/settings/workspace/modules'
     | '/_layout/_authenticated/dashboard/settings/workspace/templates'
-    | '/_layout/_authenticated/dashboard/workspace/$workspaceId/budgets'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/members'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/search'
-    | '/_layout/_authenticated/dashboard/workspace/$workspaceId/suppliers'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/'
     | '/_layout/_authenticated/dashboard/settings/projects/$projectId/general'
     | '/_layout/_authenticated/dashboard/settings/projects/$projectId/integrations'
     | '/_layout/_authenticated/dashboard/settings/projects/$projectId/visibility'
     | '/_layout/_authenticated/dashboard/settings/projects/$projectId/workflow'
-    | '/_layout/_authenticated/dashboard/workspace/$workspaceId/suppliers/$supplierId'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/backlog'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/board'
-    | '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/budget'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/gantt'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/'
@@ -894,13 +836,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRouteImport
       parentRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute
     }
-    '/_layout/_authenticated/dashboard/workspace/$workspaceId/suppliers': {
-      id: '/_layout/_authenticated/dashboard/workspace/$workspaceId/suppliers'
-      path: '/suppliers'
-      fullPath: '/dashboard/workspace/$workspaceId/suppliers'
-      preLoaderRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteImport
-      parentRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute
-    }
     '/_layout/_authenticated/dashboard/workspace/$workspaceId/search': {
       id: '/_layout/_authenticated/dashboard/workspace/$workspaceId/search'
       path: '/search'
@@ -921,13 +856,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/settings/workspace/roles'
       preLoaderRoute: typeof LayoutAuthenticatedDashboardSettingsWorkspaceRolesRouteImport
       parentRoute: typeof LayoutAuthenticatedDashboardSettingsWorkspaceRoute
-    }
-    '/_layout/_authenticated/dashboard/workspace/$workspaceId/budgets': {
-      id: '/_layout/_authenticated/dashboard/workspace/$workspaceId/budgets'
-      path: '/budgets'
-      fullPath: '/dashboard/workspace/$workspaceId/budgets'
-      preLoaderRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdBudgetsRouteImport
-      parentRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute
     }
     '/_layout/_authenticated/dashboard/settings/workspace/templates': {
       id: '/_layout/_authenticated/dashboard/settings/workspace/templates'
@@ -978,13 +906,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAuthenticatedDashboardSettingsAccountDeveloperRouteImport
       parentRoute: typeof LayoutAuthenticatedDashboardSettingsAccountRoute
     }
-    '/_layout/_authenticated/dashboard/workspace/$workspaceId/suppliers/$supplierId': {
-      id: '/_layout/_authenticated/dashboard/workspace/$workspaceId/suppliers/$supplierId'
-      path: '/$supplierId'
-      fullPath: '/dashboard/workspace/$workspaceId/suppliers/$supplierId'
-      preLoaderRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersSupplierIdRouteImport
-      parentRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRoute
-    }
     '/_layout/_authenticated/dashboard/settings/projects/$projectId/workflow': {
       id: '/_layout/_authenticated/dashboard/settings/projects/$projectId/workflow'
       path: '/$projectId/workflow'
@@ -1032,13 +953,6 @@ declare module '@tanstack/react-router' {
       path: '/project/$projectId/gantt'
       fullPath: '/dashboard/workspace/$workspaceId/project/$projectId/gantt'
       preLoaderRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdGanttRouteImport
-      parentRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute
-    }
-    '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/budget': {
-      id: '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/budget'
-      path: '/project/$projectId/budget'
-      fullPath: '/dashboard/workspace/$workspaceId/project/$projectId/budget'
-      preLoaderRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBudgetRouteImport
       parentRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute
     }
     '/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/board': {
@@ -1158,30 +1072,12 @@ const LayoutAuthenticatedDashboardSettingsRouteWithChildren =
     LayoutAuthenticatedDashboardSettingsRouteChildren,
   )
 
-interface LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteChildren {
-  LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersSupplierIdRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersSupplierIdRoute
-}
-
-const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteChildren: LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteChildren =
-  {
-    LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersSupplierIdRoute:
-      LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersSupplierIdRoute,
-  }
-
-const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteWithChildren =
-  LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRoute._addFileChildren(
-    LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteChildren,
-  )
-
 interface LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRouteChildren {
-  LayoutAuthenticatedDashboardWorkspaceWorkspaceIdBudgetsRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdBudgetsRoute
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSearchRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSearchRoute
-  LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteWithChildren
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRoute
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBacklogRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBacklogRoute
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBoardRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBoardRoute
-  LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBudgetRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBudgetRoute
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdGanttRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdGanttRoute
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdRecurringTasksRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdRecurringTasksRoute
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdIndexRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdIndexRoute
@@ -1190,22 +1086,16 @@ interface LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRouteChildren {
 
 const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRouteChildren: LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRouteChildren =
   {
-    LayoutAuthenticatedDashboardWorkspaceWorkspaceIdBudgetsRoute:
-      LayoutAuthenticatedDashboardWorkspaceWorkspaceIdBudgetsRoute,
     LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute:
       LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute,
     LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSearchRoute:
       LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSearchRoute,
-    LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRoute:
-      LayoutAuthenticatedDashboardWorkspaceWorkspaceIdSuppliersRouteWithChildren,
     LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRoute:
       LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRoute,
     LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBacklogRoute:
       LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBacklogRoute,
     LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBoardRoute:
       LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBoardRoute,
-    LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBudgetRoute:
-      LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdBudgetRoute,
     LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdGanttRoute:
       LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdGanttRoute,
     LayoutAuthenticatedDashboardWorkspaceWorkspaceIdProjectProjectIdRecurringTasksRoute:

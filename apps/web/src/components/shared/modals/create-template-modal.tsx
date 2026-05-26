@@ -1,5 +1,6 @@
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -44,23 +45,40 @@ type CreateTemplateModalProps = {
 };
 
 function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
+	const { t } = useTranslation();
 	const { data: workspace } = useActiveWorkspace();
 	const workspaceId = workspace?.id ?? "";
 	const createTemplate = useCreateTemplate(workspaceId);
 
 	const [name, setName] = useState("");
 	const [description, setDescription] = useState("");
-	const [columns, setColumns] = useState<TemplateColumnInput[]>([
-		{ key: "1", name: "To Do", slug: "to-do", position: 0, isFinal: false },
-		{
-			key: "2",
-			name: "In Progress",
-			slug: "in-progress",
-			position: 1,
-			isFinal: false,
-		},
-		{ key: "3", name: "Done", slug: "done", position: 2, isFinal: true },
-	]);
+	const getDefaultColumns = () =>
+		[
+			{
+				key: "1",
+				name: t("templates:create.columnTodo"),
+				slug: "to-do",
+				position: 0,
+				isFinal: false,
+			},
+			{
+				key: "2",
+				name: t("templates:create.columnInProgress"),
+				slug: "in-progress",
+				position: 1,
+				isFinal: false,
+			},
+			{
+				key: "3",
+				name: t("templates:create.columnDone"),
+				slug: "done",
+				position: 2,
+				isFinal: true,
+			},
+		] as TemplateColumnInput[];
+
+	const [columns, setColumns] =
+		useState<TemplateColumnInput[]>(getDefaultColumns);
 	const [tasks, setTasks] = useState<TemplateTaskInput[]>([]);
 	const [nextColKey, setNextColKey] = useState(4);
 	const [nextTaskKey, setNextTaskKey] = useState(1);
@@ -155,27 +173,17 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 						: undefined,
 			});
 
-			toast.success("Template created");
+			toast.success(t("templates:toastCreated"));
 			handleClose();
 		} catch {
-			toast.error("Failed to create template");
+			toast.error(t("templates:toastCreateError"));
 		}
 	};
 
 	const handleClose = () => {
 		setName("");
 		setDescription("");
-		setColumns([
-			{ key: "1", name: "To Do", slug: "to-do", position: 0, isFinal: false },
-			{
-				key: "2",
-				name: "In Progress",
-				slug: "in-progress",
-				position: 1,
-				isFinal: false,
-			},
-			{ key: "3", name: "Done", slug: "done", position: 2, isFinal: true },
-		]);
+		setColumns(getDefaultColumns());
 		setTasks([]);
 		setNextColKey(4);
 		setNextTaskKey(1);
@@ -186,32 +194,34 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 		<Dialog open={open} onOpenChange={handleClose}>
 			<DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
 				<DialogHeader>
-					<DialogTitle>Create Template</DialogTitle>
+					<DialogTitle>{t("templates:create.title")}</DialogTitle>
 					<DialogDescription>
-						Define columns and optional sample tasks for this template.
+						{t("templates:create.description")}
 					</DialogDescription>
 				</DialogHeader>
 
 				<form onSubmit={handleSubmit} className="space-y-6">
 					<div className="space-y-4 px-6">
 						<div className="space-y-2">
-							<Label htmlFor="name">Name</Label>
+							<Label htmlFor="name">{t("templates:create.name")}</Label>
 							<Input
 								id="name"
 								value={name}
 								onChange={(e) => setName(e.target.value)}
-								placeholder="e.g., Agile Sprint"
+								placeholder={t("templates:create.namePlaceholder")}
 								required
 							/>
 						</div>
 
 						<div className="space-y-2">
-							<Label htmlFor="description">Description</Label>
+							<Label htmlFor="description">
+								{t("templates:create.descriptionField")}
+							</Label>
 							<Textarea
 								id="description"
 								value={description}
 								onChange={(e) => setDescription(e.target.value)}
-								placeholder="Brief description of this template"
+								placeholder={t("templates:create.descriptionPlaceholder")}
 								className="resize-none"
 								rows={2}
 							/>
@@ -219,7 +229,7 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 
 						<div className="space-y-3">
 							<div className="flex items-center justify-between">
-								<Label>Columns</Label>
+								<Label>{t("templates:create.columns")}</Label>
 								<Button
 									type="button"
 									variant="outline"
@@ -227,7 +237,7 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 									onClick={handleAddColumn}
 								>
 									<Plus className="size-3 mr-1" />
-									Add Column
+									{t("templates:create.addColumn")}
 								</Button>
 							</div>
 
@@ -246,7 +256,9 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 												onChange={(e) =>
 													handleColumnChange(col.key, "name", e.target.value)
 												}
-												placeholder="Column name"
+												placeholder={t(
+													"templates:create.columnNamePlaceholder",
+												)}
 												className="h-8 text-sm"
 											/>
 										</div>
@@ -256,7 +268,9 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 												onChange={(e) =>
 													handleColumnChange(col.key, "slug", e.target.value)
 												}
-												placeholder="column-slug"
+												placeholder={t(
+													"templates:create.columnSlugPlaceholder",
+												)}
 												className="h-7 text-xs font-mono"
 											/>
 											<label className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
@@ -271,7 +285,7 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 														)
 													}
 												/>
-												Final
+												{t("templates:create.final")}
 											</label>
 										</div>
 									</div>
@@ -290,7 +304,7 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 
 						<div className="space-y-3">
 							<div className="flex items-center justify-between">
-								<Label>Sample Tasks (optional)</Label>
+								<Label>{t("templates:create.sampleTasks")}</Label>
 								<Button
 									type="button"
 									variant="outline"
@@ -298,13 +312,13 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 									onClick={handleAddTask}
 								>
 									<Plus className="size-3 mr-1" />
-									Add Task
+									{t("templates:create.addTask")}
 								</Button>
 							</div>
 
 							{tasks.length === 0 && (
 								<p className="text-xs text-muted-foreground">
-									No sample tasks. The template will only define columns.
+									{t("templates:create.noSampleTasks")}
 								</p>
 							)}
 
@@ -319,7 +333,7 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 											onChange={(e) =>
 												handleTaskChange(task.key, "title", e.target.value)
 											}
-											placeholder="Task title"
+											placeholder={t("templates:create.taskTitlePlaceholder")}
 											className="h-8 text-sm"
 										/>
 										<Input
@@ -331,7 +345,9 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 													e.target.value,
 												)
 											}
-											placeholder="Description (optional)"
+											placeholder={t(
+												"templates:create.taskDescriptionPlaceholder",
+											)}
 											className="h-7 text-xs"
 										/>
 										<Select
@@ -341,7 +357,11 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 											}
 										>
 											<SelectTrigger className="h-7 text-xs">
-												<SelectValue placeholder="Column" />
+												<SelectValue
+													placeholder={t(
+														"templates:create.taskColumnPlaceholder",
+													)}
+												/>
 											</SelectTrigger>
 											<SelectContent>
 												{columns
@@ -375,7 +395,7 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 							size="sm"
 							onClick={handleClose}
 						>
-							Cancel
+							{t("common:actions.cancel")}
 						</Button>
 						<Button
 							type="submit"
@@ -383,7 +403,7 @@ function CreateTemplateModal({ open, onClose }: CreateTemplateModalProps) {
 							disabled={!name.trim() || columns.length === 0}
 							loading={createTemplate.isPending}
 						>
-							Create Template
+							{t("templates:create.submit")}
 						</Button>
 					</DialogFooter>
 				</form>

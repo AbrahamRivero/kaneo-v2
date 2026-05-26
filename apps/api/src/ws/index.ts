@@ -239,6 +239,34 @@ type TaskEvent = {
 	targetTaskId: string | undefined;
 };
 
+const recurringTaskEvents = [
+	"recurring_task.created",
+	"recurring_task.updated",
+	"recurring_task.deleted",
+];
+
+for (const eventName of recurringTaskEvents) {
+	subscribeToEvent<{
+		recurringTaskId: string;
+		projectId: string;
+		userId: string;
+		initiatorId?: string;
+	}>(eventName, async (data) => {
+		const { projectId, initiatorId } = data;
+		if (!projectId) return;
+
+		broadcastToProject(
+			projectId,
+			{
+				type: "RECURRING_TASK_UPDATED",
+				projectId,
+				taskId: "",
+			},
+			initiatorId,
+		);
+	});
+}
+
 const taskUpdateEvents = [
 	"task.created",
 	"task.updated",

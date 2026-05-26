@@ -17,7 +17,6 @@ import {
 import * as v from "valibot";
 import activity from "./activity";
 import { auth } from "./auth";
-import budget from "./budget";
 import column from "./column";
 import config from "./config";
 import db, { getDatabase, schema } from "./database";
@@ -50,7 +49,6 @@ import { initializeScheduler, shutdownScheduler } from "./scheduler";
 import search from "./search";
 import slackIntegration from "./slack-integration";
 import { getPrivateObject } from "./storage/s3";
-import supplier from "./supplier";
 import task from "./task";
 import taskRelation from "./task-relation";
 import telegramIntegration from "./telegram-integration";
@@ -517,8 +515,6 @@ export function createApp() {
 	const taskApi = api.route("/task", task);
 	const columnApi = api.route("/column", column);
 	const activityApi = api.route("/activity", activity);
-	const budgetApi = api.route("/budget", budget);
-	const supplierApi = api.route("/supplier", supplier);
 	const _templateApi = api.route("/template", template);
 	const _recurringTasksApi = api.route("/recurring-tasks", recurringTasks);
 	const timeEntryApi = api.route("/time-entry", timeEntry);
@@ -691,8 +687,6 @@ export function createApp() {
 		api,
 		injectWebSocket,
 		activityApi,
-		budgetApi,
-		supplierApi,
 		columnApi,
 		configApi,
 		discordIntegrationApi,
@@ -811,8 +805,6 @@ const {
 	app,
 	injectWebSocket,
 	activityApi,
-	budgetApi,
-	supplierApi,
 	columnApi,
 	configApi,
 	discordIntegrationApi,
@@ -851,8 +843,6 @@ export type AppType =
 	| typeof configApi
 	| typeof projectApi
 	| typeof taskApi
-	| typeof budgetApi
-	| typeof supplierApi
 	| typeof columnApi
 	| typeof activityApi
 	| typeof timeEntryApi

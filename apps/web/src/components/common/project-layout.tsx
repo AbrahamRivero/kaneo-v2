@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import {
 	CalendarDays,
-	DollarSign,
 	RefreshCw,
 	SquareKanban,
 	SquircleDashed,
 } from "lucide-react";
 import { type ReactNode, useState } from "react";
+import { useTranslation } from "react-i18next";
 import MobileProjectNav from "@/components/common/header/mobile-project-nav";
 import ProjectCrumbSelect from "@/components/common/header/project-crumb-select";
 import WorkspaceCrumbSelect from "@/components/common/header/workspace-crumb-select";
@@ -33,7 +33,7 @@ type ProjectLayoutProps = {
 	headerActions?: ReactNode;
 	children: ReactNode;
 	showViewSwitcher?: boolean;
-	activeView?: "backlog" | "board" | "gantt" | "budget" | "recurring";
+	activeView?: "backlog" | "board" | "gantt" | "recurring";
 };
 
 export default function ProjectLayout({
@@ -44,6 +44,7 @@ export default function ProjectLayout({
 	showViewSwitcher = true,
 	activeView,
 }: ProjectLayoutProps) {
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { data: project } = useGetProject({ id: projectId, workspaceId });
@@ -58,11 +59,9 @@ export default function ProjectLayout({
 			? "backlog"
 			: location.pathname.includes("/gantt")
 				? "gantt"
-				: location.pathname.includes("/budget")
-					? "budget"
-					: location.pathname.includes("/recurring-tasks")
-						? "recurring"
-						: "board");
+				: location.pathname.includes("/recurring-tasks")
+					? "recurring"
+					: "board");
 
 	const handleNavigateToBacklog = () => {
 		navigate({
@@ -85,13 +84,6 @@ export default function ProjectLayout({
 		});
 	};
 
-	const handleNavigateToBudget = () => {
-		navigate({
-			to: "/dashboard/workspace/$workspaceId/project/$projectId/budget",
-			params: { workspaceId, projectId },
-		});
-	};
-
 	const handleNavigateToRecurring = () => {
 		navigate({
 			to: "/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks",
@@ -106,11 +98,9 @@ export default function ProjectLayout({
 					? "/dashboard/workspace/$workspaceId/project/$projectId/backlog"
 					: resolvedView === "gantt"
 						? "/dashboard/workspace/$workspaceId/project/$projectId/gantt"
-						: resolvedView === "budget"
-							? "/dashboard/workspace/$workspaceId/project/$projectId/budget"
-							: resolvedView === "recurring"
-								? "/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks"
-								: "/dashboard/workspace/$workspaceId/project/$projectId/board",
+						: resolvedView === "recurring"
+							? "/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks"
+							: "/dashboard/workspace/$workspaceId/project/$projectId/board",
 			params: {
 				workspaceId,
 				projectId: nextProjectId,
@@ -130,7 +120,7 @@ export default function ProjectLayout({
 								</TooltipTrigger>
 								<TooltipContent>
 									<p className="flex items-center gap-2 text-[10px]">
-										Toggle sidebar
+										{t("navigation.sidebar.toggleSidebar")}
 										<KbdSequence
 											keys={[
 												shortcuts.sidebar.prefix,
@@ -164,7 +154,6 @@ export default function ProjectLayout({
 								onSelectBacklog={handleNavigateToBacklog}
 								onSelectBoard={handleNavigateToBoard}
 								onSelectGantt={handleNavigateToGantt}
-								onSelectBudget={handleNavigateToBudget}
 								onSelectRecurring={handleNavigateToRecurring}
 								onSelectProject={handleProjectSwitch}
 								onAddProject={() => setIsCreateProjectModalOpen(true)}
@@ -183,7 +172,7 @@ export default function ProjectLayout({
 									)}
 								>
 									<SquircleDashed className="size-3.5" />
-									Backlog
+									{t("navigation:projectViews.backlog")}
 								</Button>
 								<Button
 									variant={resolvedView === "board" ? "secondary" : "ghost"}
@@ -195,7 +184,7 @@ export default function ProjectLayout({
 									)}
 								>
 									<SquareKanban className="size-3.5" />
-									Tasks
+									{t("navigation:projectViews.board")}
 								</Button>
 								<Button
 									variant={resolvedView === "gantt" ? "secondary" : "ghost"}
@@ -207,22 +196,8 @@ export default function ProjectLayout({
 									)}
 								>
 									<CalendarDays className="size-3.5" />
-									Gantt
+									{t("navigation:projectViews.gantt")}
 								</Button>
-								<FeatureGate featureKey="budgets">
-									<Button
-										variant={resolvedView === "budget" ? "secondary" : "ghost"}
-										size="xs"
-										onClick={handleNavigateToBudget}
-										className={cn(
-											"h-6 gap-1.5 rounded-md px-2 text-xs",
-											resolvedView !== "budget" && "text-muted-foreground",
-										)}
-									>
-										<DollarSign className="size-3.5" />
-										Budget
-									</Button>
-								</FeatureGate>
 								<FeatureGate featureKey="recurring-tasks">
 									<Button
 										variant={
@@ -236,7 +211,7 @@ export default function ProjectLayout({
 										)}
 									>
 										<RefreshCw className="size-3.5" />
-										Recurring
+										{t("navigation:projectViews.recurring")}
 									</Button>
 								</FeatureGate>
 							</div>

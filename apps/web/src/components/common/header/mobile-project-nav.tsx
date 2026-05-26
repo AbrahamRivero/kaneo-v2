@@ -1,12 +1,12 @@
 import {
 	CalendarDays,
 	Check,
-	DollarSign,
 	Menu,
 	Plus,
 	RefreshCw,
 	SquareKanban,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
 	Popover,
@@ -20,11 +20,10 @@ import { cn } from "@/lib/cn";
 type MobileProjectNavProps = {
 	workspaceId: string;
 	projectId: string;
-	activeView: "backlog" | "board" | "gantt" | "budget" | "recurring";
+	activeView: "backlog" | "board" | "gantt" | "recurring";
 	onSelectBoard: () => void;
 	onSelectBacklog: () => void;
 	onSelectGantt: () => void;
-	onSelectBudget: () => void;
 	onSelectRecurring: () => void;
 	onSelectProject: (projectId: string) => void;
 	onAddProject: () => void;
@@ -37,12 +36,15 @@ export default function MobileProjectNav({
 	onSelectBoard,
 	onSelectBacklog,
 	onSelectGantt,
-	onSelectBudget,
 	onSelectRecurring,
 	onSelectProject,
 	onAddProject,
 }: MobileProjectNavProps) {
-	const { data: projects = [] } = useGetProjects({ workspaceId });
+	const { t } = useTranslation();
+	const { data: projects = [] } = useGetProjects({
+		workspaceId,
+		includeArchived: false,
+	});
 
 	return (
 		<Popover>
@@ -61,7 +63,7 @@ export default function MobileProjectNav({
 				<div className="space-y-3">
 					<div className="space-y-1">
 						<p className="px-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
-							View
+							{t("navigation:projectViews.title")}
 						</p>
 						<div className="grid grid-cols-4 gap-1">
 							<button
@@ -74,7 +76,7 @@ export default function MobileProjectNav({
 										: "border-transparent text-muted-foreground hover:bg-accent",
 								)}
 							>
-								Backlog
+								{t("navigation:projectViews.backlog")}
 							</button>
 							<button
 								type="button"
@@ -87,7 +89,7 @@ export default function MobileProjectNav({
 								)}
 							>
 								<SquareKanban className="size-3.5" />
-								Board
+								{t("navigation:projectViews.board")}
 							</button>
 							<button
 								type="button"
@@ -100,20 +102,7 @@ export default function MobileProjectNav({
 								)}
 							>
 								<CalendarDays className="size-3.5" />
-								Gantt
-							</button>
-							<button
-								type="button"
-								onClick={onSelectBudget}
-								className={cn(
-									"flex w-full items-center justify-center gap-1 whitespace-nowrap rounded-md border px-2 py-1.5 text-xs font-medium transition-colors",
-									activeView === "budget"
-										? "border-border bg-secondary text-foreground"
-										: "border-transparent text-muted-foreground hover:bg-accent",
-								)}
-							>
-								<DollarSign className="size-3.5" />
-								Budget
+								{t("navigation:projectViews.gantt")}
 							</button>
 							<button
 								type="button"
@@ -126,14 +115,14 @@ export default function MobileProjectNav({
 								)}
 							>
 								<RefreshCw className="size-3.5" />
-								Recurring
+								{t("navigation:projectViews.recurring")}
 							</button>
 						</div>
 					</div>
 
 					<div className="space-y-1">
 						<p className="px-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
-							Projects
+							{t("navigation:sidebar.projects")}
 						</p>
 						<div className="max-h-56 space-y-0.5 overflow-y-auto">
 							{(projects ?? []).map((project) => {
@@ -168,7 +157,7 @@ export default function MobileProjectNav({
 						className="flex w-full items-center gap-2 rounded-md border border-border px-2 py-1.5 text-left text-sm text-foreground transition-colors hover:bg-accent"
 					>
 						<Plus className="size-3.5" />
-						Add project
+						{t("navigation:projectList.addProject")}
 					</button>
 				</div>
 			</PopoverContent>

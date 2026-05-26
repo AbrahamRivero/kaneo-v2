@@ -1,4 +1,4 @@
-{
+﻿{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -11,7 +11,8 @@
 			"remove": "Borrar",
 			"reset": "Restablecer",
 			"filter": "Filtrar",
-			"clearAllFilters": "Eliminar todos los filtros"
+			"clearAllFilters": "Eliminar todos los filtros",
+			"confirm": "Confirmar"
 		},
 		"a11y": {
 			"toggleSidebar": "Mostrar barra lateral"
@@ -55,8 +56,22 @@
 			"viewDeploymentGuide": "Ver el manual del despliegue",
 			"refreshPage": "Actualizar página"
 		},
+		"demo": {
+			"banner": "Este es un entorno de demostración. Todos los datos se eliminarán automáticamente cada hora.",
+			"deployButton": "Desplegar tu propio"
+		},
 		"formats": {
 			"never": "Nunca"
+		},
+		"status": {
+			"active": "Activo",
+			"pending": "Pendiente"
+		},
+		"spinner": {
+			"loading": "Cargando"
+		},
+		"theme": {
+			"toggle": "Cambiar tema"
 		},
 		"modals": {
 			"createProject": {
@@ -69,6 +84,7 @@
 				"projectName": "Nombre del proyecto",
 				"keyLabel": "Identificador:",
 				"keyHint": "Empleado en los ids de los tickets, por ejemplo {{identificador}}-123)",
+				"keyPlaceholder": "PRO",
 				"createButton": "Crear proyecto",
 				"successToast": "Proyecto creado satisfactoriamente",
 				"errorToast": "Hubo un error al crear el proyecto"
@@ -124,6 +140,11 @@
 					"rose": "Rosa",
 					"crimson": "Carmesí"
 				}
+			},
+			"archiveTasks": {
+				"title": "Archivar Tareas",
+				"description_one": "¿Estás seguro de que quieres archivar {{count}} tarea completada? Esto la moverá del tablero activo al archivo.",
+				"description_other": "¿Estás seguro de que quieres archivar las {{count}} tareas completadas? Esto las moverá del tablero activo al archivo."
 			}
 		}
 	},
@@ -167,7 +188,7 @@
 		"checkEmail": {
 			"pageTitle": "Verifica tu email",
 			"title": "Verifica tu email",
-			"inboxMessage": "Te hemos enviado un enlace temporal. Por favor, comprueba tu bandeja de entrada en <email>{{email}}</email>.",
+			"inboxMessage": "Te hemos enviado un enlace temporal. Por favor, comprueba tu bandeja de entrada en \u003cemail\u003e{{email}}\u003c/email\u003e.",
 			"emailFallback": "tu dirección de correo electrónico",
 			"backToLogin": "Volver a login"
 		},
@@ -240,15 +261,15 @@
 			"goToSignIn": "Ir a Iniciar Sesión",
 			"workspaceLabel": "Espacio de trabajo: {{workspaceName}}",
 			"joinWorkspace": "Unirse a {{workspaceName}}",
-			"inviteBodySignedIn": "<inviter>{{inviterName}}</inviter> te ha invitado a unirse a su espacio de trabajo.",
-			"inviteBodySignedOut": "<inviter>{{inviterName}}</inviter> te ha invitado a unirse a su espacio de trabajo en Kaneo.",
+			"inviteBodySignedIn": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e te ha invitado a unirse a su espacio de trabajo.",
+			"inviteBodySignedOut": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e te ha invitado a unirse a su espacio de trabajo en Kaneo.",
 			"signInToAccept": "Inicia sesión para aceptar esta invitación.",
 			"accepting": "Aceptando...",
 			"acceptInvitation": "Aceptar invitación",
 			"goToDashboard": "Ir al Panel de Control",
-			"signedInAs": "Sesión iniciada como <email>{{email}}</email>",
+			"signedInAs": "Sesión iniciada como \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"youveBeenInvited": "¡Has sido invitado!",
-			"invitationFor": "Invitación para: <email>{{email}}</email>",
+			"invitationFor": "Invitación para: \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"signIn": "Iniciar sesión",
 			"toast": {
 				"acceptFailed": "Error al aceptar la invitación",
@@ -267,7 +288,7 @@
 			"creating": "Creando...",
 			"createWorkspace": "Crear espacio de trabajo",
 			"workspaceCreatedTitle": "Espacio de trabajo creado",
-			"redirectingToWorkspace": "Redirigiéndote a <name>{{name}}</name>...",
+			"redirectingToWorkspace": "Redirigiéndote a \u003cname\u003e{{name}}\u003c/name\u003e...",
 			"toast": {
 				"workspaceCreated": "Espacio de trabajo creado correctamente",
 				"createFailed": "Error al crear el espacio de trabajo"
@@ -294,6 +315,29 @@
 				"nameRequired": "El nombre es obligatorio",
 				"nameShort": "Tu nombre debe tener al menos 2 caracteres"
 			}
+		},
+		"device": {
+			"pageTitle": "Conectar un dispositivo",
+			"pageSubtitle": "Ingresa el código que aparece en tu CLI o aplicación para continuar.",
+			"codePlaceholder": "ej. ABCD-1234",
+			"continue": "Continuar",
+			"enterCodeToast": "Ingresa el código mostrado en tu dispositivo.",
+			"invalidOrExpiredCode": "Código inválido o expirado",
+			"approvePageTitle": "Aprobar dispositivo",
+			"loadingSubtitle": "Cargando…",
+			"checkingSession": "Verificando sesión…",
+			"noCodeProvided": "No se proporcionó ningún código de dispositivo.",
+			"enterACode": "Ingresar un código",
+			"signInToContinue": "Inicia sesión para continuar",
+			"signInToApprove": "Inicia sesión para aprobar o denegar esta solicitud de dispositivo.",
+			"requestingAccess": "Un dispositivo está solicitando acceso a tu cuenta de Kaneo.",
+			"signIn": "Iniciar sesión",
+			"couldNotApprove": "No se pudo aprobar",
+			"deviceConnected": "Dispositivo conectado",
+			"couldNotDeny": "No se pudo denegar",
+			"requestCancelled": "Solicitud cancelada",
+			"approve": "Aprobar",
+			"deny": "Denegar"
 		}
 	},
 	"settings": {
@@ -816,6 +860,13 @@
 		}
 	},
 	"navigation": {
+		"projectViews": {
+			"title": "Vista",
+			"backlog": "Backlog",
+			"board": "Tareas",
+			"gantt": "Gantt",
+			"recurring": "Recurrentes"
+		},
 		"commandPalette": {
 			"suggestions": "Sugerencias",
 			"commands": "Comandos",
@@ -845,7 +896,8 @@
 			"members": "Miembros",
 			"invitations": "Invitaciones",
 			"more": "Más",
-			"backToBoard": "Volver al tablero"
+			"backToBoard": "Volver al tablero",
+			"toggleSidebar": "Alternar barra lateral"
 		},
 		"projectList": {
 			"viewProject": "Ver Proyecto",
@@ -908,7 +960,7 @@
 			"title": "Atajos de teclado",
 			"subtitle": "Agiliza tus flujos de trabajo con atajos de teclado",
 			"searchPlaceholder": "Buscar atajos...",
-			"footer": "Pulsa <kbd>Escape</kbd> para cerrar",
+			"footer": "Pulsa \u003ckbd\u003eEscape\u003c/kbd\u003e para cerrar",
 			"categories": {
 				"general": "General",
 				"create": "Crear",
@@ -1535,6 +1587,20 @@
 			"submit": "Crear espacio de trabajo",
 			"success": "Espacio de trabajo creado correctamente",
 			"error": "Error al crear espacio de trabajo"
+		},
+		"modules": {
+			"title": "Módulos",
+			"description": "Habilitar o deshabilitar funciones opcionales para este espacio de trabajo",
+			"loading": "Cargando módulos...",
+			"toastUpdated": "Módulo actualizado",
+			"toastUpdateError": "Error al actualizar el módulo",
+			"categories": {
+				"finance": "Finanzas",
+				"operations": "Operaciones",
+				"planning": "Planificación",
+				"collaboration": "Colaboración",
+				"automation": "Automation"
+			}
 		}
 	},
 	"team": {
@@ -1577,7 +1643,94 @@
 			"removeError": "Error al eliminar miembro del equipo",
 			"cancelInviteSuccess": "Invitación cancelada correctamente",
 			"cancelInviteError": "Error al cancelar invitación"
+		},
+		"deleteMemberModal": {
+			"title": "Eliminar Miembro del Equipo",
+			"description": "¿Estás seguro de que quieres eliminar a {{name}} del equipo? Esta acción no se puede deshacer.",
+			"removeButton": "Eliminar Miembro"
 		}
+	},
+	"recurring": {
+		"pageTitle": "Tareas recurrentes",
+		"title": "Tareas recurrentes",
+		"tableTitle": "Tareas programadas",
+		"table": {
+			"title": "Título",
+			"schedule": "Programación",
+			"nextRun": "Próxima ejecución",
+			"priority": "Prioridad",
+			"active": "Activa"
+		},
+		"empty": {
+			"title": "No hay tareas recurrentes",
+			"description": "No hay tareas recurrentes configuradas para este proyecto."
+		},
+		"create": {
+			"trigger": "Añadir tarea recurrente",
+			"title": "Crear tarea recurrente",
+			"description": "Configura una tarea que se creará automáticamente en un horario.",
+			"titleField": "Título",
+			"titlePlaceholder": "Título de la tarea",
+			"descriptionField": "Descripción",
+			"descriptionPlaceholder": "Descripción opcional",
+			"frequency": "Frecuencia",
+			"every": "Cada",
+			"column": "Columna",
+			"columnDefault": "Columna por defecto",
+			"assignee": "Asignado",
+			"assigneeUnassigned": "Sin asignar",
+			"priority": "Prioridad",
+			"priorityNone": "Ninguna",
+			"submit": "Crear"
+		},
+		"frequency": {
+			"daily": "Diaria",
+			"weekly": "Semanal",
+			"monthly": "Mensual"
+		}
+	},
+	"templates": {
+		"pageTitle": "Plantillas de proyecto",
+		"title": "Plantillas de proyecto",
+		"description": "Configuraciones de proyecto predefinidas con columnas y tareas. Las plantillas están disponibles al crear un nuevo proyecto.",
+		"create": {
+			"trigger": "Crear plantilla",
+			"title": "Crear plantilla",
+			"description": "Define columnas y tareas de muestra opcionales para esta plantilla.",
+			"name": "Nombre",
+			"namePlaceholder": "ej. Sprint Ágil",
+			"descriptionField": "Descripción",
+			"descriptionPlaceholder": "Descripción breve de esta plantilla",
+			"columns": "Columnas",
+			"addColumn": "Añadir columna",
+			"columnTodo": "Por hacer",
+			"columnInProgress": "En progreso",
+			"columnDone": "Hecho",
+			"columnNamePlaceholder": "Nombre de la columna",
+			"columnSlugPlaceholder": "slug-columna",
+			"final": "Final",
+			"sampleTasks": "Tareas de muestra (opcional)",
+			"addTask": "Añadir tarea",
+			"taskTitlePlaceholder": "Título de la tarea",
+			"taskDescriptionPlaceholder": "Descripción (opcional)",
+			"taskColumnPlaceholder": "Columna",
+			"noSampleTasks": "Sin tareas de muestra. La plantilla solo definirá columnas.",
+			"submit": "Crear plantilla"
+		},
+		"createProject": {
+			"blankProject": "Proyecto en blanco",
+			"sampleTaskCount_one": "{{count}} tarea de muestra",
+			"sampleTaskCount_other": "{{count}} tareas de muestra"
+		},
+		"empty": {
+			"title": "No hay plantillas aún",
+			"description": "No hay plantillas aún. Crea una para comenzar."
+		},
+		"builtIn": "Integrada",
+		"noDescription": "Sin descripción",
+		"deleteTooltip": "Eliminar plantilla",
+		"toastCreated": "Plantilla creada",
+		"toastCreateError": "Error al crear la plantilla"
 	},
 	"publicProject": {
 		"pageTitle": "Vista pública",

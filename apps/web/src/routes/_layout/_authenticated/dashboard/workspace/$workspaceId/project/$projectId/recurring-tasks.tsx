@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { RefreshCw, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import ProjectLayout from "@/components/common/project-layout";
 import PageTitle from "@/components/page-title";
 import CreateRecurringTaskDialog from "@/components/shared/modals/create-recurring-task-dialog";
@@ -26,7 +27,9 @@ import {
 import { useCreateRecurringTask } from "@/hooks/mutations/recurring-tasks/use-create-recurring-task";
 import { useDeleteRecurringTask } from "@/hooks/mutations/recurring-tasks/use-delete-recurring-task";
 import { useUpdateRecurringTask } from "@/hooks/mutations/recurring-tasks/use-update-recurring-task";
+import { useGetColumns } from "@/hooks/queries/column/use-get-columns";
 import useListRecurringTasks from "@/hooks/queries/recurring-tasks/use-list-recurring-tasks";
+import { useGetActiveWorkspaceUsers } from "@/hooks/queries/workspace-users/use-get-active-workspace-users";
 import { formatDateMedium } from "@/lib/format";
 
 export const Route = createFileRoute(
@@ -36,8 +39,11 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
+	const { t } = useTranslation();
 	const { projectId, workspaceId } = Route.useParams();
 	const { data: tasks, isLoading } = useListRecurringTasks(projectId);
+	const { data: columns = [] } = useGetColumns(projectId);
+	const { data: workspaceUsers } = useGetActiveWorkspaceUsers(workspaceId);
 	const createMutation = useCreateRecurringTask();
 	const updateMutation = useUpdateRecurringTask();
 	const deleteMutation = useDeleteRecurringTask();
@@ -48,6 +54,8 @@ function RouteComponent() {
 		frequency: string;
 		intervalValue: number;
 		priority?: string;
+		columnId?: string;
+		assigneeId?: string;
 		nextRunAt: string;
 	}) => {
 		await createMutation.mutateAsync({
@@ -74,11 +82,11 @@ function RouteComponent() {
 	const frequencyLabel = (freq: string) => {
 		switch (freq) {
 			case "daily":
-				return "Daily";
+				return t("recurring:frequency.daily");
 			case "weekly":
-				return "Weekly";
+				return t("recurring:frequency.weekly");
 			case "monthly":
-				return "Monthly";
+				return t("recurring:frequency.monthly");
 			default:
 				return freq;
 		}
@@ -87,7 +95,7 @@ function RouteComponent() {
 	if (isLoading) {
 		return (
 			<>
-				<PageTitle title="Recurring Tasks" />
+				<PageTitle title={t("recurring:pageTitle")} />
 				<ProjectLayout
 					projectId={projectId}
 					workspaceId={workspaceId}
@@ -104,7 +112,7 @@ function RouteComponent() {
 
 	return (
 		<>
-			<PageTitle title="Recurring Tasks" />
+			<PageTitle title={t("recurring:pageTitle")} />
 			<ProjectLayout
 				projectId={projectId}
 				workspaceId={workspaceId}
@@ -112,16 +120,20 @@ function RouteComponent() {
 			>
 				<div className="space-y-5 p-4">
 					<div className="flex items-center justify-between">
-						<h2 className="text-lg font-semibold">Recurring Tasks</h2>
+						<h2 className="text-lg font-semibold">{t("recurring:title")}</h2>
 						<CreateRecurringTaskDialog
 							onCreate={handleCreate}
 							isPending={createMutation.isPending}
+							columns={columns}
+							users={workspaceUsers?.members ?? []}
 						/>
 					</div>
 
 					<Card>
 						<CardHeader>
-							<CardTitle className="text-base">Scheduled Tasks</CardTitle>
+							<CardTitle className="text-base">
+								{t("recurring:tableTitle")}
+							</CardTitle>
 						</CardHeader>
 						<CardContent className="p-0">
 							{!tasks || tasks.length === 0 ? (
@@ -130,9 +142,9 @@ function RouteComponent() {
 										<EmptyMedia variant="icon">
 											<RefreshCw />
 										</EmptyMedia>
-										<EmptyTitle>No recurring tasks</EmptyTitle>
+										<EmptyTitle>{t("recurring:empty.title")}</EmptyTitle>
 										<EmptyDescription>
-											No recurring tasks configured for this project.
+											{t("recurring:empty.description")}
 										</EmptyDescription>
 									</EmptyHeader>
 								</Empty>
@@ -141,19 +153,19 @@ function RouteComponent() {
 									<TableHeader>
 										<TableRow>
 											<TableHead className="text-foreground font-medium">
-												Title
+												{t("recurring:table.title")}
 											</TableHead>
 											<TableHead className="text-foreground font-medium">
-												Schedule
+												{t("recurring:table.schedule")}
 											</TableHead>
 											<TableHead className="text-foreground font-medium">
-												Next Run
+												{t("recurring:table.nextRun")}
 											</TableHead>
 											<TableHead className="text-foreground font-medium">
-												Priority
+												{t("recurring:table.priority")}
 											</TableHead>
 											<TableHead className="w-20 text-center text-foreground font-medium">
-												Active
+												{t("recurring:table.active")}
 											</TableHead>
 											<TableHead className="w-16" />
 										</TableRow>

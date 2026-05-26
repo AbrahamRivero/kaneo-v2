@@ -1,4 +1,4 @@
-{
+﻿{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -11,7 +11,8 @@
 			"remove": "Отстрани",
 			"reset": "Ресетирај",
 			"filter": "Филтрирај",
-			"clearAllFilters": "Исчисти ги сите филтри"
+			"clearAllFilters": "Исчисти ги сите филтри",
+			"confirm": "Потврди"
 		},
 		"a11y": {
 			"toggleSidebar": "Вклучи/исклучи странична лента"
@@ -56,8 +57,22 @@
 			"viewDeploymentGuide": "Погледни го водичот за поставување",
 			"refreshPage": "Освежи ја страницата"
 		},
+		"demo": {
+			"banner": "Ова е демо околина. Сите податоци автоматски ќе се бришат секој час.",
+			"deployButton": "Поставете свој"
+		},
 		"formats": {
 			"never": "Никогаш"
+		},
+		"status": {
+			"active": "Активно",
+			"pending": "Во очекување"
+		},
+		"spinner": {
+			"loading": "Вчитување"
+		},
+		"theme": {
+			"toggle": "Промени тема"
 		},
 		"modals": {
 			"createProject": {
@@ -72,7 +87,8 @@
 				"keyHint": "Се користи за ID на тикети (пр. {{example}}-123)",
 				"createButton": "Креирај проект",
 				"successToast": "Проектот е успешно креиран",
-				"errorToast": "Неуспешно креирање на проект"
+				"errorToast": "Неуспешно креирање на проект",
+				"keyPlaceholder": "PRO"
 			},
 			"createWorkspace": {
 				"breadcrumbKaneo": "KANEO",
@@ -125,6 +141,11 @@
 					"rose": "Роза",
 					"crimson": "Гримизна"
 				}
+			},
+			"archiveTasks": {
+				"title": "Архивирај задачи",
+				"description_one": "Дали сте сигурни дека сакате да ја архивирате {{count}} завршена задача? Ова ќе ја премести од активната табла во вашата архива.",
+				"description_other": "Дали сте сигурни дека сакате да ги архивирате сите {{count}} завршени задачи? Ова ќе ги премести од активната табла во вашата архива."
 			}
 		}
 	},
@@ -168,7 +189,7 @@
 		"checkEmail": {
 			"pageTitle": "Провери ја е-поштата",
 			"title": "Провери ја е-поштата",
-			"inboxMessage": "Ти испративме привремен линк за најава. Провери го сандачето на <email>{{email}}</email>.",
+			"inboxMessage": "Ти испративме привремен линк за најава. Провери го сандачето на \u003cemail\u003e{{email}}\u003c/email\u003e.",
 			"emailFallback": "твојата е-пошта",
 			"backToLogin": "Назад кон најава"
 		},
@@ -241,15 +262,15 @@
 			"goToSignIn": "Оди на најава",
 			"workspaceLabel": "Работен простор: {{workspaceName}}",
 			"joinWorkspace": "Приклучи се на {{workspaceName}}",
-			"inviteBodySignedIn": "<inviter>{{inviterName}}</inviter> те покани да се приклучиш на нивниот работен простор.",
-			"inviteBodySignedOut": "<inviter>{{inviterName}}</inviter> те покани да се приклучиш на нивниот работен простор на Kaneo.",
+			"inviteBodySignedIn": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e те покани да се приклучиш на нивниот работен простор.",
+			"inviteBodySignedOut": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e те покани да се приклучиш на нивниот работен простор на Kaneo.",
 			"signInToAccept": "Најави се за да ја прифатиш поканата.",
 			"accepting": "Се прифаќа...",
 			"acceptInvitation": "Прифати покана",
 			"goToDashboard": "Оди на контролна табла",
-			"signedInAs": "Најавен како <email>{{email}}</email>",
+			"signedInAs": "Најавен како \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"youveBeenInvited": "Поканет си!",
-			"invitationFor": "Покана за: <email>{{email}}</email>",
+			"invitationFor": "Покана за: \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"signIn": "Најави се",
 			"toast": {
 				"acceptFailed": "Неуспешно прифаќање на поканата",
@@ -268,7 +289,7 @@
 			"creating": "Се креира...",
 			"createWorkspace": "Креирај работен простор",
 			"workspaceCreatedTitle": "Работниот простор е креиран",
-			"redirectingToWorkspace": "Те носиме на <name>{{name}}</name>...",
+			"redirectingToWorkspace": "Те носиме на \u003cname\u003e{{name}}\u003c/name\u003e...",
 			"toast": {
 				"workspaceCreated": "Работниот простор е успешно креиран",
 				"createFailed": "Неуспешно креирање на работен простор"
@@ -295,6 +316,29 @@
 				"nameRequired": "Името е задолжително",
 				"nameShort": "Името мора да има најмалку 2 знаци"
 			}
+		},
+		"device": {
+			"pageTitle": "Поврзи уред",
+			"pageSubtitle": "Внесете го кодот од вашата CLI или апликација за да продолжите.",
+			"codePlaceholder": "напр. ABCD-1234",
+			"continue": "Продолжи",
+			"enterCodeToast": "Внесете го кодот прикажан на вашиот уред.",
+			"invalidOrExpiredCode": "Невалиден или истечен код",
+			"approvePageTitle": "Одобри уред",
+			"loadingSubtitle": "Вчитување…",
+			"checkingSession": "Проверка на сесија…",
+			"noCodeProvided": "Не е обезбеден код на уред.",
+			"enterACode": "Внеси код",
+			"signInToContinue": "Најавете се за да продолжите",
+			"signInToApprove": "Најавете се за да го одобрите или одбиете ова барање за уред.",
+			"requestingAccess": "Уред бара пристап до вашата Kaneo сметка.",
+			"signIn": "Најава",
+			"couldNotApprove": "Не можеше да се одобри",
+			"deviceConnected": "Уредот е поврзан",
+			"couldNotDeny": "Не можеше да се одбие",
+			"requestCancelled": "Барањето е откажано",
+			"approve": "Одобри",
+			"deny": "Одбиј"
 		}
 	},
 	"settings": {
@@ -1030,6 +1074,13 @@
 		}
 	},
 	"navigation": {
+		"projectViews": {
+			"title": "Преглед",
+			"backlog": "Backlog",
+			"board": "Задачи",
+			"gantt": "Gantt",
+			"recurring": "Повторливи"
+		},
 		"commandPalette": {
 			"suggestions": "Предлози",
 			"commands": "Команди",
@@ -1059,7 +1110,8 @@
 			"members": "Членови",
 			"invitations": "Покани",
 			"more": "Повеќе",
-			"backToBoard": "Назад на табла"
+			"backToBoard": "Назад на табла",
+			"toggleSidebar": "Префрли странична лента"
 		},
 		"projectList": {
 			"viewProject": "Погледни проект",
@@ -1123,7 +1175,7 @@
 			"title": "Кратенки на тастатура",
 			"subtitle": "Забрзај го работниот тек со кратенки на тастатура",
 			"searchPlaceholder": "Пребарај кратенки...",
-			"footer": "Притисни <kbd>Escape</kbd> за затворање",
+			"footer": "Притисни \u003ckbd\u003eEscape\u003c/kbd\u003e за затворање",
 			"categories": {
 				"general": "Општо",
 				"create": "Креирај",
@@ -1761,6 +1813,20 @@
 			"submit": "Креирај работен простор",
 			"success": "Работниот простор е успешно креиран",
 			"error": "Неуспешно креирање на работен простор"
+		},
+		"modules": {
+			"title": "Модули",
+			"description": "Овозможете или оневозможете опционални функции за овој работен простор",
+			"loading": "Вчитување модули...",
+			"toastUpdated": "Модулот е ажуриран",
+			"toastUpdateError": "Неуспешно ажурирање на модулот",
+			"categories": {
+				"finance": "Финансии",
+				"operations": "Операции",
+				"planning": "Планирање",
+				"collaboration": "Соработка",
+				"automation": "Автоматизација"
+			}
 		}
 	},
 	"team": {
@@ -1803,7 +1869,94 @@
 			"removeError": "Неуспешно отстранување на член на тим",
 			"cancelInviteSuccess": "Поканата е успешно откажана",
 			"cancelInviteError": "Неуспешно откажување на покана"
+		},
+		"deleteMemberModal": {
+			"title": "Отстрани член на тим",
+			"description": "Дали сте сигурни дека сакате да го отстраните {{name}} од тимот? Ова дејство не може да се врати.",
+			"removeButton": "Отстрани член"
 		}
+	},
+	"recurring": {
+		"pageTitle": "Повторливи задачи",
+		"title": "Повторливи задачи",
+		"tableTitle": "Закажани задачи",
+		"table": {
+			"title": "Наслов",
+			"schedule": "Распоред",
+			"nextRun": "Следно извршување",
+			"priority": "Приоритет",
+			"active": "Активно"
+		},
+		"empty": {
+			"title": "Нема повторливи задачи",
+			"description": "Нема конфигурирано повторливи задачи за овој проект."
+		},
+		"create": {
+			"trigger": "Додај повторлива задача",
+			"title": "Креирај повторлива задача",
+			"description": "Поставете задача што автоматски ќе се креира според распоред.",
+			"titleField": "Наслов",
+			"titlePlaceholder": "Наслов на задача",
+			"descriptionField": "Опис",
+			"descriptionPlaceholder": "Опционален опис",
+			"frequency": "Фреквенција",
+			"every": "Секој",
+			"column": "Колона",
+			"columnDefault": "Стандардна колона",
+			"assignee": "Задолжен",
+			"assigneeUnassigned": "Недоделен",
+			"priority": "Приоритет",
+			"priorityNone": "Нема",
+			"submit": "Креирај"
+		},
+		"frequency": {
+			"daily": "Дневно",
+			"weekly": "Неделно",
+			"monthly": "Месечно"
+		}
+	},
+	"templates": {
+		"pageTitle": "Шаблони за проекти",
+		"title": "Шаблони за проекти",
+		"description": "Претходно конфигурирани поставувања на проекти со колони и задачи. Шаблоните се достапни при креирање нов проект.",
+		"create": {
+			"trigger": "Креирај шаблон",
+			"title": "Креирај шаблон",
+			"description": "Дефинирајте колони и опционални пример задачи за овој шаблон.",
+			"name": "Име",
+			"namePlaceholder": "на пр. Agile Sprint",
+			"descriptionField": "Опис",
+			"descriptionPlaceholder": "Краток опис на овој шаблон",
+			"columns": "Колони",
+			"addColumn": "Додај колона",
+			"columnNamePlaceholder": "Име на колона",
+			"columnSlugPlaceholder": "slug-колона",
+			"final": "Завршна",
+			"sampleTasks": "Пример задачи (опционално)",
+			"addTask": "Додај задача",
+			"taskTitlePlaceholder": "Наслов на задача",
+			"taskDescriptionPlaceholder": "Опис (опционално)",
+			"taskColumnPlaceholder": "Колона",
+			"noSampleTasks": "Нема пример задачи. Шаблонот ќе дефинира само колони.",
+			"submit": "Креирај шаблон",
+			"columnTodo": "За направа",
+			"columnInProgress": "Во тек",
+			"columnDone": "Завршено"
+		},
+		"createProject": {
+			"blankProject": "Празен проект",
+			"sampleTaskCount_one": "{{count}} пример задача",
+			"sampleTaskCount_other": "{{count}} пример задачи"
+		},
+		"empty": {
+			"title": "Нема шаблони",
+			"description": "Сè уште нема шаблони. Креирајте еден за да започнете."
+		},
+		"builtIn": "Вграден",
+		"noDescription": "Нема опис",
+		"deleteTooltip": "Избриши шаблон",
+		"toastCreated": "Шаблонот е креиран",
+		"toastCreateError": "Неуспешно креирање на шаблон"
 	},
 	"publicProject": {
 		"pageTitle": "Јавен приказ",

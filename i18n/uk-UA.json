@@ -1,4 +1,4 @@
-{
+﻿{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -11,7 +11,8 @@
 			"remove": "Прибрати",
 			"reset": "Скинути",
 			"filter": "Фільтр",
-			"clearAllFilters": "Очистити всі фільтри"
+			"clearAllFilters": "Очистити всі фільтри",
+			"confirm": "Підтвердити"
 		},
 		"a11y": {
 			"toggleSidebar": "Перемикач бічної панелі"
@@ -56,8 +57,22 @@
 			"viewDeploymentGuide": "Переглянути інструкцію з розгортання",
 			"refreshPage": "Оновити сторінку"
 		},
+		"demo": {
+			"banner": "Це демонстраційне середовище. Всі дані будуть автоматично видалятися щогодини.",
+			"deployButton": "Розгорнути власну версію"
+		},
 		"formats": {
 			"never": "Ніколи"
+		},
+		"status": {
+			"active": "Активний",
+			"pending": "Очікує"
+		},
+		"spinner": {
+			"loading": "Завантаження"
+		},
+		"theme": {
+			"toggle": "Перемкнути тему"
 		},
 		"modals": {
 			"createProject": {
@@ -72,7 +87,8 @@
 				"keyHint": "Використовується для ID тікетів (напр., {{example}}-123)",
 				"createButton": "Створити проєкт",
 				"successToast": "Проєкт успішно створено",
-				"errorToast": "Не вдалося створити проєкт"
+				"errorToast": "Не вдалося створити проєкт",
+				"keyPlaceholder": "PRO"
 			},
 			"createWorkspace": {
 				"breadcrumbKaneo": "KANEO",
@@ -125,6 +141,12 @@
 					"rose": "Троянда",
 					"crimson": "Багряний"
 				}
+			},
+			"archiveTasks": {
+				"title": "Архівувати завдання",
+				"description_one": "Ви впевнені, що хочете архівувати {{count}} завершене завдання? Воно буде переміщено з активної дошки до архіву.",
+				"description_few": "Ви впевнені, що хочете архівувати {{count}} завершені завдання? Вони будуть переміщені з активної дошки до архіву.",
+				"description_other": "Ви впевнені, що хочете архівувати {{count}} завершених завдань? Вони будуть переміщені з активної дошки до архіву."
 			}
 		}
 	},
@@ -168,7 +190,7 @@
 		"checkEmail": {
 			"pageTitle": "Перевірте пошту",
 			"title": "Перевірте вашу пошту",
-			"inboxMessage": "Ми надіслали вам тимчасове посилання для входу. Перевірте вхідні за адресою <email>{{email}}</email>.",
+			"inboxMessage": "Ми надіслали вам тимчасове посилання для входу. Перевірте вхідні за адресою \u003cemail\u003e{{email}}\u003c/email\u003e.",
 			"emailFallback": "вашу адресу електронної пошти",
 			"backToLogin": "Повернутися до входу"
 		},
@@ -221,7 +243,7 @@
 			"signIn": "Увійти"
 		},
 		"signUpForm": {
-			"fullName": "Повне ім'я",
+			"fullName": "Повне ім\u0027я",
 			"namePlaceholder": "Іван Петренко",
 			"failedSignUp": "Не вдалося зареєструватися",
 			"accountCreated": "Обліковий запис успішно створено",
@@ -241,15 +263,15 @@
 			"goToSignIn": "Перейти до входу",
 			"workspaceLabel": "Робочий простір: {{workspaceName}}",
 			"joinWorkspace": "Приєднатися до {{workspaceName}}",
-			"inviteBodySignedIn": "<inviter>{{inviterName}}</inviter> запросив вас приєднатися до свого робочого простору.",
-			"inviteBodySignedOut": "<inviter>{{inviterName}}</inviter> запросив вас приєднатися до свого робочого простору в Kaneo.",
+			"inviteBodySignedIn": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e запросив вас приєднатися до свого робочого простору.",
+			"inviteBodySignedOut": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e запросив вас приєднатися до свого робочого простору в Kaneo.",
 			"signInToAccept": "Увійдіть, щоб прийняти це запрошення.",
 			"accepting": "Приймається...",
 			"acceptInvitation": "Прийняти запрошення",
 			"goToDashboard": "Перейти до панелі керування",
-			"signedInAs": "Ви увійшли як <email>{{email}}</email>",
+			"signedInAs": "Ви увійшли як \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"youveBeenInvited": "Вас запрошено!",
-			"invitationFor": "Запрошення для: <email>{{email}}</email>",
+			"invitationFor": "Запрошення для: \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"signIn": "Увійти",
 			"toast": {
 				"acceptFailed": "Не вдалося прийняти запрошення",
@@ -263,25 +285,25 @@
 			"createWorkspaceSubtitle": "Налаштуйте робочий простір, щоб почати керувати проєктами",
 			"workspaceName": "Назва робочого простору",
 			"workspaceNamePlaceholder": "напр. Acme Inc, Моя команда",
-			"descriptionOptional": "Опис (необов'язково)",
+			"descriptionOptional": "Опис (необов\u0027язково)",
 			"descriptionPlaceholder": "Над чим працює ваша команда?",
 			"creating": "Створення...",
 			"createWorkspace": "Створити робочий простір",
 			"workspaceCreatedTitle": "Робочий простір створено",
-			"redirectingToWorkspace": "Переходимо до <name>{{name}}</name>...",
+			"redirectingToWorkspace": "Переходимо до \u003cname\u003e{{name}}\u003c/name\u003e...",
 			"toast": {
 				"workspaceCreated": "Робочий простір успішно створено",
 				"createFailed": "Не вдалося створити робочий простір"
 			},
 			"validation": {
-				"workspaceNameRequired": "Назва робочого простору є обов'язковою"
+				"workspaceNameRequired": "Назва робочого простору є обов\u0027язковою"
 			}
 		},
 		"profileSetup": {
 			"pageTitle": "Заповнення профілю",
 			"completeTitle": "Заповніть ваш профіль",
-			"subtitle": "Будь ласка, введіть ваше ім'я, щоб почати",
-			"yourName": "Ваше ім'я",
+			"subtitle": "Будь ласка, введіть ваше ім\u0027я, щоб почати",
+			"yourName": "Ваше ім\u0027я",
 			"namePlaceholder": "напр. Іван Петренко",
 			"saving": "Збереження...",
 			"continue": "Продовжити",
@@ -292,9 +314,32 @@
 				"updateFailed": "Не вдалося оновити профіль"
 			},
 			"validation": {
-				"nameRequired": "Ім'я є обов'язковим",
-				"nameShort": "Ім'я має містити щонайменше 2 символи"
+				"nameRequired": "Ім\u0027я є обов\u0027язковим",
+				"nameShort": "Ім\u0027я має містити щонайменше 2 символи"
 			}
+		},
+		"device": {
+			"pageTitle": "Підключити пристрій",
+			"pageSubtitle": "Введіть код з вашої CLI або застосунку, щоб продовжити.",
+			"codePlaceholder": "напр. ABCD-1234",
+			"continue": "Продовжити",
+			"enterCodeToast": "Введіть код, показаний на вашому пристрої.",
+			"invalidOrExpiredCode": "Недійсний або прострочений код",
+			"approvePageTitle": "Підтвердити пристрій",
+			"loadingSubtitle": "Завантаження…",
+			"checkingSession": "Перевірка сесії…",
+			"noCodeProvided": "Код пристрою не надано.",
+			"enterACode": "Ввести код",
+			"signInToContinue": "Увійдіть, щоб продовжити",
+			"signInToApprove": "Увійдіть, щоб підтвердити або відхилити запит пристрою.",
+			"requestingAccess": "Пристрій запитує доступ до вашого облікового запису Kaneo.",
+			"signIn": "Увійти",
+			"couldNotApprove": "Не вдалося підтвердити",
+			"deviceConnected": "Пристрій підключено",
+			"couldNotDeny": "Не вдалося відхилити",
+			"requestCancelled": "Запит скасовано",
+			"approve": "Підтвердити",
+			"deny": "Відхилити"
 		}
 	},
 	"settings": {
@@ -311,15 +356,15 @@
 			"sectionTitle": "Інформація облікового запису",
 			"sectionSubtitle": "Керуйте вашим профілем та деталями облікового запису.",
 			"profilePicture": "Фото профілю",
-			"fullName": "Повне ім'я",
-			"fullNamePlaceholder": "Введіть ваше ім'я",
+			"fullName": "Повне ім\u0027я",
+			"fullNamePlaceholder": "Введіть ваше ім\u0027я",
 			"email": "Електронна пошта",
 			"emailPlaceholder": "Введіть вашу пошту",
 			"updateSuccess": "Профіль успішно оновлено",
 			"updateError": "Не вдалося оновити профіль",
 			"validation": {
-				"nameRequired": "Ім'я є обов'язковим",
-				"nameShort": "Ім'я має містити щонайменше 2 символи",
+				"nameRequired": "Ім\u0027я є обов\u0027язковим",
+				"nameShort": "Ім\u0027я має містити щонайменше 2 символи",
 				"invalidEmail": "Невірна адреса електронної пошти"
 			}
 		},
@@ -335,7 +380,7 @@
 			"accountEmailNoAddress": "Пошта облікового запису відсутня",
 			"accountEmailHint": "Листи завжди надсилаються на пошту поточного облікового запису.",
 			"saveChanges": "Зберегти зміни",
-			"disconnect": "Від'єднати",
+			"disconnect": "Від\u0027єднати",
 			"ntfyTitle": "ntfy",
 			"ntfyDescription": "Публікуйте сповіщення облікового запису в тему ntfy.",
 			"serverUrl": "URL сервера",
@@ -343,9 +388,9 @@
 			"token": "Токен",
 			"ntfyServerPlaceholder": "https://ntfy.example.com",
 			"ntfyTopicPlaceholder": "team-alerts",
-			"ntfyTokenPlaceholder": "Необов'язковий bearer-токен",
+			"ntfyTokenPlaceholder": "Необов\u0027язковий bearer-токен",
 			"ntfyTokenHintConfigured": "Токен вже налаштовано ({{masked}}). Введіть новий токен, щоб замінити його.",
-			"ntfyTokenHintOptional": "Необов'язково. Вкажіть токен, якщо ваш сервер ntfy вимагає автентифікації.",
+			"ntfyTokenHintOptional": "Необов\u0027язково. Вкажіть токен, якщо ваш сервер ntfy вимагає автентифікації.",
 			"connectNtfy": "Підключити ntfy",
 			"gotifyTitle": "Gotify",
 			"gotifyDescription": "Надсилайте сповіщення облікового запису на ваш сервер Gotify.",
@@ -353,16 +398,16 @@
 			"gotifyServerPlaceholder": "https://gotify.example.com",
 			"gotifyTokenPlaceholder": "Токен застосунку Gotify",
 			"gotifyTokenHintConfigured": "Токен застосунку вже налаштовано ({{masked}}). Введіть новий токен, щоб замінити його.",
-			"gotifyTokenHintRequired": "Обов'язково. Використовуйте токен застосунку з вашого сервера Gotify.",
+			"gotifyTokenHintRequired": "Обов\u0027язково. Використовуйте токен застосунку з вашого сервера Gotify.",
 			"connectGotify": "Підключити Gotify",
 			"webhookTitle": "Власний вебхук",
 			"webhookDescription": "Надсилайте сповіщення облікового запису на вашу кінцеву точку у форматі JSON.",
 			"endpointUrl": "URL кінцевої точки",
 			"signingSecret": "Секрет підпису",
 			"webhookUrlPlaceholder": "https://example.com/webhooks/kaneo",
-			"webhookSecretPlaceholder": "Необов'язковий спільний секрет",
+			"webhookSecretPlaceholder": "Необов\u0027язковий спільний секрет",
 			"webhookSecretHintConfigured": "Секрет підпису вже налаштовано ({{masked}}). Введіть новий, щоб замінити його.",
-			"webhookSecretHintOptional": "Необов'язково. Kaneo підписує тіло запиту, коли секрет встановлено.",
+			"webhookSecretHintOptional": "Необов\u0027язково. Kaneo підписує тіло запиту, коли секрет встановлено.",
 			"connectWebhook": "Підключити вебхук",
 			"workspaceRulesTitle": "Правила доставки по робочих просторах",
 			"workspaceRulesDescription": "Використовуйте ваші глобальні канали, а потім визначте, які робочі простори та проєкти можуть надсилати сповіщення облікового запису.",
@@ -392,16 +437,16 @@
 			"toastEmailSaveFailed": "Не вдалося зберегти налаштування пошти",
 			"toastNtfySaved": "Налаштування ntfy збережено",
 			"toastNtfySaveFailed": "Не вдалося зберегти налаштування ntfy",
-			"toastNtfyDisconnected": "ntfy від'єднано",
-			"toastNtfyDisconnectFailed": "Не вдалося від'єднати ntfy",
+			"toastNtfyDisconnected": "ntfy від\u0027єднано",
+			"toastNtfyDisconnectFailed": "Не вдалося від\u0027єднати ntfy",
 			"toastGotifySaved": "Налаштування Gotify збережено",
 			"toastGotifySaveFailed": "Не вдалося зберегти налаштування Gotify",
-			"toastGotifyDisconnected": "Gotify від'єднано",
-			"toastGotifyDisconnectFailed": "Не вдалося від'єднати Gotify",
+			"toastGotifyDisconnected": "Gotify від\u0027єднано",
+			"toastGotifyDisconnectFailed": "Не вдалося від\u0027єднати Gotify",
 			"toastWebhookSaved": "Налаштування вебхука збережено",
 			"toastWebhookSaveFailed": "Не вдалося зберегти налаштування вебхука",
-			"toastWebhookDisconnected": "Вебхук від'єднано",
-			"toastWebhookDisconnectFailed": "Не вдалося від'єднати вебхук",
+			"toastWebhookDisconnected": "Вебхук від\u0027єднано",
+			"toastWebhookDisconnectFailed": "Не вдалося від\u0027єднати вебхук",
 			"toastRuleSaved": "Правило сповіщень для {{workspaceName}} збережено",
 			"toastRuleSaveFailed": "Не вдалося зберегти правило сповіщень робочого простору",
 			"toastRuleRemoved": "Правило сповіщень для {{workspaceName}} видалено",
@@ -511,9 +556,9 @@
 				"creating": "Створення...",
 				"failedCreate": "Не вдалося створити API-ключ",
 				"validation": {
-					"nameRequired": "Назва є обов'язковою",
+					"nameRequired": "Назва є обов\u0027язковою",
 					"nameShort": "Назва має містити щонайменше 3 символи",
-					"expirationRequired": "Термін дії є обов'язковим"
+					"expirationRequired": "Термін дії є обов\u0027язковим"
 				}
 			}
 		},
@@ -541,7 +586,7 @@
 			"toastDeleted": "Робочий простір успішно видалено",
 			"toastDeleteError": "Не вдалося видалити робочий простір",
 			"validation": {
-				"nameRequired": "Назва робочого простору є обов'язковою",
+				"nameRequired": "Назва робочого простору є обов\u0027язковою",
 				"nameShort": "Назва робочого простору має містити щонайменше 2 символи"
 			}
 		},
@@ -576,12 +621,12 @@
 			"toastDeleted": "Проєкт успішно видалено",
 			"toastDeleteError": "Не вдалося видалити проєкт",
 			"validation": {
-				"nameRequired": "Назва проєкту є обов'язковою",
+				"nameRequired": "Назва проєкту є обов\u0027язковою",
 				"nameShort": "Назва проєкту має містити щонайменше 2 символи",
-				"keyRequired": "Ключ є обов'язковим",
+				"keyRequired": "Ключ є обов\u0027язковим",
 				"keyShort": "Ключ має містити щонайменше 2 символи",
 				"keyMax": "Ключ може містити не більше 8 символів",
-				"iconRequired": "Іконка є обов'язковою"
+				"iconRequired": "Іконка є обов\u0027язковою"
 			},
 			"importExportTasks": "Імпорт/Експорт",
 			"importExportTasksDescription": "Імпорт та експорт завдань.",
@@ -607,7 +652,7 @@
 		"projectIntegrations": {
 			"pageTitle": "Інтеґрації проєкту",
 			"title": "Інтеґрації проєкту",
-			"subtitle": "З'єднайте ваш проєкт із зовнішніми інструментами та сервісами для оптимізації робочого процесу.",
+			"subtitle": "З\u0027єднайте ваш проєкт із зовнішніми інструментами та сервісами для оптимізації робочого процесу.",
 			"githubSectionTitle": "Інтеґрація з GitHub",
 			"githubSectionSubtitle": "Синхронізуйте завдання з GitHub Issues та увімкніть двосторонню синхронізацію.",
 			"giteaSectionTitle": "Інтеґрація з Gitea",
@@ -643,7 +688,7 @@
 			"columnsTitle": "Колонки",
 			"columnsDescription": "Керуйте колонками, які відображаються на вашій дошці. Перетягуйте для зміни порядку. Увімкніть «Колонка готовності» для етапів, які означають завершену роботу.",
 			"automationTitle": "Правила автоматизації",
-			"automationDescription": "Зіставте події інтеґрацій із колонками. Коли подія відбувається, пов'язане завдання переміщується до вказаної колонки."
+			"automationDescription": "Зіставте події інтеґрацій із колонками. Коли подія відбувається, пов\u0027язане завдання переміщується до вказаної колонки."
 		},
 		"projectSwitcher": {
 			"selectProject": "Обрати проєкт",
@@ -673,9 +718,9 @@
 		},
 		"githubIntegration": {
 			"validation": {
-				"ownerRequired": "Власник репозиторію є обов'язковим",
+				"ownerRequired": "Власник репозиторію є обов\u0027язковим",
 				"ownerInvalid": "Невірний формат власника репозиторію",
-				"nameRequired": "Назва репозиторію є обов'язковою",
+				"nameRequired": "Назва репозиторію є обов\u0027язковою",
 				"nameInvalid": "Невірний формат назви репозиторію"
 			},
 			"toast": {
@@ -696,7 +741,7 @@
 				"commentOnDisabled": "Коментарі з посиланнями на завдання в нових issues вимкнено",
 				"settingsUpdateError": "Не вдалося оновити інтеґрацію з GitHub"
 			},
-			"connectionStatus": "Статус з'єднання",
+			"connectionStatus": "Статус з\u0027єднання",
 			"connectedActive": "Репозиторій підключено та активно",
 			"notConnectedHint": "Репозиторій не підключено",
 			"badgeConnected": "Підключено",
@@ -711,7 +756,7 @@
 			"statusMissingPermissions": "Відсутні дозволи",
 			"statusNotInstalled": "Не встановлено",
 			"ownerLabel": "Власник репозиторію",
-			"ownerHint": "Ім'я користувача або організації GitHub",
+			"ownerHint": "Ім\u0027я користувача або організації GitHub",
 			"ownerPlaceholder": "напр., octocat",
 			"repoNameLabel": "Назва репозиторію",
 			"repoNameHint": "Назва репозиторію",
@@ -722,7 +767,7 @@
 			"verify": "Перевірити",
 			"update": "Оновити",
 			"connect": "Підключити",
-			"disconnect": "Від'єднати",
+			"disconnect": "Від\u0027єднати",
 			"missingPermissionsLabel": "Відсутні дозволи:",
 			"updatePermissions": "Оновити дозволи",
 			"installGithubApp": "Встановити GitHub App",
@@ -734,11 +779,11 @@
 		},
 		"giteaIntegration": {
 			"validation": {
-				"baseUrlRequired": "Базова URL-адреса Gitea є обов'язковою",
+				"baseUrlRequired": "Базова URL-адреса Gitea є обов\u0027язковою",
 				"baseUrlInvalid": "Введіть дійсну URL-адресу (напр. https://gitea.example.com)",
-				"ownerRequired": "Власник репозиторію є обов'язковим",
+				"ownerRequired": "Власник репозиторію є обов\u0027язковим",
 				"ownerInvalid": "Невірний формат власника репозиторію",
-				"nameRequired": "Назва репозиторію є обов'язковою",
+				"nameRequired": "Назва репозиторію є обов\u0027язковою",
 				"nameInvalid": "Невірний формат назви репозиторію"
 			},
 			"toast": {
@@ -746,7 +791,7 @@
 				"verifyWarning": "Перевірте дозволи токена або доступ до репозиторію",
 				"repoNotFound": "Репозиторій не знайдено або немає доступу",
 				"verifyError": "Не вдалося перевірити доступ до Gitea",
-				"tokenRequired": "Персональний токен доступу є обов'язковим",
+				"tokenRequired": "Персональний токен доступу є обов\u0027язковим",
 				"tokenRequiredVerify": "Введіть токен для перевірки",
 				"verifyFirst": "Перевірка доступу не вдалася — перевірте URL, токен та репозиторій",
 				"updated": "Інтеґрацію з Gitea збережено",
@@ -764,13 +809,13 @@
 			"webhookShow": "Показати",
 			"webhookHide": "Сховати",
 			"webhookCopy": "Копіювати",
-			"connectionStatus": "Статус з'єднання",
+			"connectionStatus": "Статус з\u0027єднання",
 			"connectedActive": "Репозиторій підключено та активно",
 			"notConnectedHint": "Gitea-репозиторій не підключено",
 			"badgeConnected": "Підключено",
 			"badgeNotConnected": "Не підключено",
 			"repository": "Репозиторій",
-			"repositoryHint": "Пов'язаний Gitea-репозиторій",
+			"repositoryHint": "Пов\u0027язаний Gitea-репозиторій",
 			"commentTaskLinkTitle": "Коментувати посилання Kaneo в нових issues",
 			"commentTaskLinkHint": "Коли увімкнено, Kaneo публікує коментар у кожному новому issue з посиланням на завдання.",
 			"webhookTitle": "Вебхук",
@@ -784,7 +829,7 @@
 			"tokenPlaceholderUpdate": "Вставте новий токен для заміни",
 			"currentToken": "збережено",
 			"ownerLabel": "Власник",
-			"ownerHint": "Ім'я користувача або організації",
+			"ownerHint": "Ім\u0027я користувача або організації",
 			"repoNameLabel": "Назва репозиторію",
 			"repoNameHint": "Лише назва репозиторію (без власника)",
 			"actionsTitle": "Дії",
@@ -793,7 +838,7 @@
 			"verify": "Перевірити",
 			"update": "Оновити",
 			"connect": "Підключити",
-			"disconnect": "Від'єднати",
+			"disconnect": "Від\u0027єднати",
 			"importSectionTitle": "Імпорт Gitea issues",
 			"importSectionHint": "Імпортуйте відкриті issues та pull requests із репозиторію",
 			"importing": "Імпорт...",
@@ -828,7 +873,7 @@
 			"webhookHint": "Створіть Incoming Webhook у Slack та вставте згенеровану URL-адресу сюди.",
 			"channelLabel": "Назва каналу",
 			"channelPlaceholder": "#team-updates",
-			"channelHint": "Необов'язковий підпис для вашого зручності. Slack контролює фактичний канал призначення через налаштування вебхука.",
+			"channelHint": "Необов\u0027язковий підпис для вашого зручності. Slack контролює фактичний канал призначення через налаштування вебхука.",
 			"eventsTitle": "Сповіщення про події",
 			"eventsHint": "Оберіть, які зміни в проєкті мають публікуватися в Slack.",
 			"events": {
@@ -842,7 +887,7 @@
 			"connect": "Підключити Slack",
 			"saveChanges": "Зберегти зміни",
 			"update": "Оновити Slack",
-			"disconnect": "Від'єднати"
+			"disconnect": "Від\u0027єднати"
 		},
 		"discordIntegration": {
 			"validation": {
@@ -866,7 +911,7 @@
 			"webhookHint": "Створіть вебхук каналу Discord та вставте згенеровану URL-адресу сюди.",
 			"channelLabel": "Назва каналу",
 			"channelPlaceholder": "#team-updates",
-			"channelHint": "Необов'язковий підпис для вашого зручності. Discord контролює фактичний канал призначення через налаштування вебхука.",
+			"channelHint": "Необов\u0027язковий підпис для вашого зручності. Discord контролює фактичний канал призначення через налаштування вебхука.",
 			"eventsTitle": "Сповіщення про події",
 			"eventsHint": "Оберіть, які зміни в проєкті мають публікуватися в Discord.",
 			"events": {
@@ -880,7 +925,7 @@
 			"connect": "Підключити Discord",
 			"saveChanges": "Зберегти зміни",
 			"update": "Оновити Discord",
-			"disconnect": "Від'єднати"
+			"disconnect": "Від\u0027єднати"
 		},
 		"genericWebhookIntegration": {
 			"validation": {
@@ -903,8 +948,8 @@
 			"webhookPlaceholder": "https://example.com/webhooks/kaneo",
 			"webhookHint": "Kaneo надсилає POST-запити з JSON-тілом для кожної увімкненої події.",
 			"secretLabel": "Секрет підпису",
-			"secretPlaceholder": "Необов'язковий спільний секрет",
-			"secretHint": "Необов'язково. Якщо вказано, Kaneo підписує тіло запиту та надсилає hex-дайджест у заголовку X-Kaneo-Signature.",
+			"secretPlaceholder": "Необов\u0027язковий спільний секрет",
+			"secretHint": "Необов\u0027язково. Якщо вказано, Kaneo підписує тіло запиту та надсилає hex-дайджест у заголовку X-Kaneo-Signature.",
 			"secretHintConfigured": "Секрет підпису вже налаштовано ({{secret}}). Введіть новий, щоб замінити його.",
 			"eventsTitle": "Сповіщення про події",
 			"eventsHint": "Оберіть, які зміни в проєкті мають ініціювати вихідні вебхуки.",
@@ -918,12 +963,12 @@
 			},
 			"connect": "Підключити вебхук",
 			"saveChanges": "Зберегти зміни",
-			"disconnect": "Від'єднати"
+			"disconnect": "Від\u0027єднати"
 		},
 		"telegramIntegration": {
 			"validation": {
 				"botTokenInvalid": "Введіть дійсний токен бота Telegram",
-				"chatIdRequired": "ID чату є обов'язковим",
+				"chatIdRequired": "ID чату є обов\u0027язковим",
 				"threadIdInvalid": "Введіть дійсний ID теми Telegram"
 			},
 			"toast": {
@@ -945,13 +990,13 @@
 			"botTokenHintConfigured": "Токен бота вже налаштовано ({{token}}). Введіть новий, щоб замінити його.",
 			"chatIdLabel": "ID чату",
 			"chatIdPlaceholder": "-1001234567890 або @team_updates",
-			"chatIdHint": "Введіть ID чату Telegram або ім'я каналу, куди надсилатимуться оновлення.",
+			"chatIdHint": "Введіть ID чату Telegram або ім\u0027я каналу, куди надсилатимуться оновлення.",
 			"threadIdLabel": "ID теми",
-			"threadIdPlaceholder": "Необов'язковий ID теми",
-			"threadIdHint": "Необов'язково. Використовуйте для тем форуму всередині груп Telegram.",
+			"threadIdPlaceholder": "Необов\u0027язковий ID теми",
+			"threadIdHint": "Необов\u0027язково. Використовуйте для тем форуму всередині груп Telegram.",
 			"chatLabelLabel": "Підпис чату",
 			"chatLabelPlaceholder": "Оновлення розробки",
-			"chatLabelHint": "Необов'язковий підпис для зручності всередині Kaneo.",
+			"chatLabelHint": "Необов\u0027язковий підпис для зручності всередині Kaneo.",
 			"eventsTitle": "Сповіщення про події",
 			"eventsHint": "Оберіть, які зміни в проєкті мають публікуватися в Telegram.",
 			"events": {
@@ -964,7 +1009,7 @@
 			},
 			"connect": "Підключити Telegram",
 			"saveChanges": "Зберегти зміни",
-			"disconnect": "Від'єднати"
+			"disconnect": "Від\u0027єднати"
 		},
 		"repositoryBrowser": {
 			"title": "Обрати репозиторій",
@@ -1008,9 +1053,9 @@
 			"loading": "Завантаження...",
 			"createColumnsFirst": "Спочатку створіть колонки, щоб налаштувати правила автоматизації.",
 			"githubHeading": "GitHub",
-			"githubHint": "Коли відбувається подія GitHub, переміщувати пов'язане завдання до колонки.",
+			"githubHint": "Коли відбувається подія GitHub, переміщувати пов\u0027язане завдання до колонки.",
 			"giteaHeading": "Gitea",
-			"giteaHint": "Коли відбувається подія вебхука Gitea, переміщувати пов'язане завдання до колонки.",
+			"giteaHint": "Коли відбувається подія вебхука Gitea, переміщувати пов\u0027язане завдання до колонки.",
 			"selectColumnPlaceholder": "Обрати колонку...",
 			"toastUpdated": "Правило робочого процесу оновлено",
 			"toastError": "Не вдалося оновити правило",
@@ -1032,6 +1077,13 @@
 		}
 	},
 	"navigation": {
+		"projectViews": {
+			"title": "Вид",
+			"backlog": "Беклог",
+			"board": "Завдання",
+			"gantt": "Гант",
+			"recurring": "Повторювані"
+		},
 		"commandPalette": {
 			"suggestions": "Пропозиції",
 			"commands": "Команди",
@@ -1060,7 +1112,8 @@
 			"archivedProjects": "Архівні проєкти",
 			"members": "Учасники",
 			"invitations": "Запрошення",
-			"more": "Більше"
+			"more": "Більше",
+			"toggleSidebar": "Перемкнути бічну панель"
 		},
 		"projectList": {
 			"viewProject": "Переглянути проєкт",
@@ -1124,7 +1177,7 @@
 			"title": "Гарячі клавіші",
 			"subtitle": "Прискорте роботу за допомогою гарячих клавіш",
 			"searchPlaceholder": "Пошук гарячих клавіш...",
-			"footer": "Натисніть <kbd>Escape</kbd>, щоб закрити",
+			"footer": "Натисніть \u003ckbd\u003eEscape\u003c/kbd\u003e, щоб закрити",
 			"categories": {
 				"general": "Загальні",
 				"create": "Створення",
@@ -1158,7 +1211,7 @@
 		"newCount_many": "{{count}} нових",
 		"newCount_other": "{{count}} нових",
 		"emptyTitle": "Сповіщень ще немає",
-		"emptySubtitle": "Тут з'являтимуться оновлення та активність.",
+		"emptySubtitle": "Тут з\u0027являтимуться оновлення та активність.",
 		"clearAll": "Очистити всі сповіщення",
 		"clearDialogTitle": "Очистити всі сповіщення?",
 		"clearDialogDescription": "Це назавжди видалить усі сповіщення. Цю дію неможливо скасувати.",
@@ -1428,20 +1481,20 @@
 			"task": "Завдання"
 		},
 		"relations": {
-			"title": "Зв'язки",
+			"title": "Зв\u0027язки",
 			"tasksInProject": "Завдання в проєкті",
-			"linkError": "Не вдалося зв'язати завдання",
-			"empty": "Немає пов'язаних завдань",
-			"searchPlaceholder": "Пошук завдань для зв'язування...",
+			"linkError": "Не вдалося зв\u0027язати завдання",
+			"empty": "Немає пов\u0027язаних завдань",
+			"searchPlaceholder": "Пошук завдань для зв\u0027язування...",
 			"noTasksFound": "Завдання не знайдено",
 			"openTask": "Відкрити завдання",
-			"removeRelation": "Видалити зв'язок",
-			"related": "Пов'язано",
+			"removeRelation": "Видалити зв\u0027язок",
+			"related": "Пов\u0027язано",
 			"blocks": "Блокує",
-			"selectTask": "Обрати завдання для зв'язування",
+			"selectTask": "Обрати завдання для зв\u0027язування",
 			"types": {
 				"blocks": "блокує",
-				"related": "пов'язано з"
+				"related": "пов\u0027язано з"
 			}
 		},
 		"subtasks": {
@@ -1757,13 +1810,27 @@
 			"subtitle": "Робочі простори — це спільні середовища, де команди можуть працювати над проєктами, циклами та завданнями.",
 			"nameLabel": "Назва робочого простору",
 			"namePlaceholder": "Введіть назву робочого простору",
-			"descriptionLabel": "Опис (необов'язково)",
+			"descriptionLabel": "Опис (необов\u0027язково)",
 			"descriptionPlaceholder": "Додайте опис для вашого робочого простору",
-			"required": "Обов'язково",
+			"required": "Обов\u0027язково",
 			"creating": "Створення...",
 			"submit": "Створити робочий простір",
 			"success": "Робочий простір успішно створено",
 			"error": "Не вдалося створити робочий простір"
+		},
+		"modules": {
+			"title": "Модулі",
+			"description": "Увімкнути або вимкнути додаткові функції для цього робочого простору",
+			"loading": "Завантаження модулів...",
+			"toastUpdated": "Модуль оновлено",
+			"toastUpdateError": "Не вдалося оновити модуль",
+			"categories": {
+				"finance": "Фінанси",
+				"operations": "Операції",
+				"planning": "Планування",
+				"collaboration": "Співпраця",
+				"automation": "Автоматизація"
+			}
 		}
 	},
 	"team": {
@@ -1788,7 +1855,7 @@
 			"emptyTitle": "Учасників команди ще немає",
 			"emptyDescription": "Запросіть першого учасника команди, щоб почати.",
 			"columns": {
-				"name": "Ім'я",
+				"name": "Ім\u0027я",
 				"role": "Роль",
 				"joined": "Приєднався",
 				"actions": "Дії"
@@ -1806,7 +1873,96 @@
 			"removeError": "Не вдалося видалити учасника команди",
 			"cancelInviteSuccess": "Запрошення успішно скасовано",
 			"cancelInviteError": "Не вдалося скасувати запрошення"
+		},
+		"deleteMemberModal": {
+			"title": "Видалити учасника команди",
+			"description": "Ви впевнені, що хочете видалити {{name}} з команди? Цю дію не можна скасувати.",
+			"removeButton": "Видалити учасника"
 		}
+	},
+	"recurring": {
+		"pageTitle": "Повторювані завдання",
+		"title": "Повторювані завдання",
+		"tableTitle": "Заплановані завдання",
+		"table": {
+			"title": "Назва",
+			"schedule": "Розклад",
+			"nextRun": "Наступний запуск",
+			"priority": "Пріоритет",
+			"active": "Активне"
+		},
+		"empty": {
+			"title": "Немає повторюваних завдань",
+			"description": "Для цього проекту не налаштовано повторюваних завдань."
+		},
+		"create": {
+			"trigger": "Додати повторюване завдання",
+			"title": "Створити повторюване завдання",
+			"description": "Налаштуйте завдання, яке буде автоматично створюватися за розкладом.",
+			"titleField": "Назва",
+			"titlePlaceholder": "Назва завдання",
+			"descriptionField": "Опис",
+			"descriptionPlaceholder": "Необов\u0027язковий опис",
+			"frequency": "Частота",
+			"every": "Кожні",
+			"column": "Колонка",
+			"columnDefault": "Колонка за замовчуванням",
+			"assignee": "Виконавець",
+			"assigneeUnassigned": "Не призначено",
+			"priority": "Пріоритет",
+			"priorityNone": "Немає",
+			"submit": "Створити"
+		},
+		"frequency": {
+			"daily": "Щоденно",
+			"weekly": "Щотижня",
+			"monthly": "Щомісяця"
+		}
+	},
+	"templates": {
+		"pageTitle": "Шаблони проектів",
+		"title": "Шаблони проектів",
+		"description": "Попередньо налаштовані проекти з колонками та завданнями. Шаблони доступні при створенні нового проекту.",
+		"create": {
+			"trigger": "Створити шаблон",
+			"title": "Створити шаблон",
+			"description": "Визначте колонки та опціональні приклади завдань для цього шаблону.",
+			"name": "Назва",
+			"namePlaceholder": "напр. Agile Sprint",
+			"descriptionField": "Опис",
+			"descriptionPlaceholder": "Короткий опис шаблону",
+			"columns": "Колонки",
+			"addColumn": "Додати колонку",
+			"columnNamePlaceholder": "Назва колонки",
+			"columnSlugPlaceholder": "slug-колонки",
+			"final": "Остання",
+			"sampleTasks": "Приклади завдань (опціонально)",
+			"addTask": "Додати завдання",
+			"taskTitlePlaceholder": "Назва завдання",
+			"taskDescriptionPlaceholder": "Опис (опціонально)",
+			"taskColumnPlaceholder": "Колонка",
+			"noSampleTasks": "Немає прикладів завдань. Шаблон визначатиме лише колонки.",
+			"submit": "Створити шаблон",
+			"columnTodo": "Потрібно зробити",
+			"columnInProgress": "В процесі",
+			"columnDone": "Готово"
+		},
+		"createProject": {
+			"blankProject": "Порожній проект",
+			"sampleTaskCount_one": "{{count}} приклад завдання",
+			"sampleTaskCount_few": "{{count}} приклади завдань",
+			"sampleTaskCount_many": "{{count}} прикладів завдань",
+			"sampleTaskCount_other": "{{count}} прикладів завдань"
+		},
+		"empty": {
+			"title": "Немає шаблонів",
+			"description": "Шаблонів ще немає. Створіть один, щоб почати."
+		},
+		"builtIn": "Вбудований",
+		"noDescription": "Немає опису",
+		"deleteTooltip": "Видалити шаблон",
+		"toastCreated": "Шаблон створено",
+		"toastCreateError": "Не вдалося створити шаблон"
 	},
 	"publicProject": {
 		"pageTitle": "Публічний перегляд",

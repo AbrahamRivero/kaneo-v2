@@ -11,7 +11,8 @@
 			"remove": "Remove",
 			"reset": "Reset",
 			"filter": "Filter",
-			"clearAllFilters": "Clear all filters"
+			"clearAllFilters": "Clear all filters",
+			"confirm": "Confirm"
 		},
 		"a11y": {
 			"toggleSidebar": "Toggle sidebar"
@@ -56,8 +57,22 @@
 			"viewDeploymentGuide": "View Deployment Guide",
 			"refreshPage": "Refresh Page"
 		},
+		"demo": {
+			"banner": "This is a demo environment. All data will be automatically purged every hour.",
+			"deployButton": "Deploy your own"
+		},
 		"formats": {
 			"never": "Never"
+		},
+		"status": {
+			"active": "Active",
+			"pending": "Pending"
+		},
+		"spinner": {
+			"loading": "Loading"
+		},
+		"theme": {
+			"toggle": "Toggle theme"
 		},
 		"modals": {
 			"createProject": {
@@ -70,6 +85,7 @@
 				"projectName": "Project name",
 				"keyLabel": "Key:",
 				"keyHint": "Used for ticket IDs (e.g., {{example}}-123)",
+				"keyPlaceholder": "PRO",
 				"createButton": "Create Project",
 				"successToast": "Project created successfully",
 				"errorToast": "Failed to create project"
@@ -125,6 +141,11 @@
 					"rose": "Rose",
 					"crimson": "Crimson"
 				}
+			},
+			"archiveTasks": {
+				"title": "Archive Tasks",
+				"description_one": "Are you sure you want to archive {{count}} completed task? This will move them from the active board to your archive.",
+				"description_other": "Are you sure you want to archive all {{count}} completed tasks? This will move them from the active board to your archive."
 			}
 		}
 	},
@@ -299,6 +320,29 @@
 				"nameRequired": "Name is required",
 				"nameShort": "Name must be at least 2 characters"
 			}
+		},
+		"device": {
+			"pageTitle": "Connect a device",
+			"pageSubtitle": "Enter the code from your CLI or app to continue.",
+			"codePlaceholder": "e.g. ABCD-1234",
+			"continue": "Continue",
+			"enterCodeToast": "Enter the code shown on your device.",
+			"invalidOrExpiredCode": "Invalid or expired code",
+			"approvePageTitle": "Approve device",
+			"loadingSubtitle": "Loading\u2026",
+			"checkingSession": "Checking session\u2026",
+			"noCodeProvided": "No device code was provided.",
+			"enterACode": "Enter a code",
+			"signInToContinue": "Sign in to continue",
+			"signInToApprove": "Sign in to approve or deny this device request.",
+			"requestingAccess": "A device is requesting access to your Kaneo account.",
+			"signIn": "Sign in",
+			"couldNotApprove": "Could not approve",
+			"deviceConnected": "Device connected",
+			"couldNotDeny": "Could not deny",
+			"requestCancelled": "Request cancelled",
+			"approve": "Approve",
+			"deny": "Deny"
 		}
 	},
 	"settings": {
@@ -1036,6 +1080,13 @@
 		}
 	},
 	"navigation": {
+		"projectViews": {
+			"title": "View",
+			"backlog": "Backlog",
+			"board": "Tasks",
+			"gantt": "Gantt",
+			"recurring": "Recurring"
+		},
 		"commandPalette": {
 			"suggestions": "Suggestions",
 			"commands": "Commands",
@@ -1065,7 +1116,8 @@
 			"members": "Members",
 			"invitations": "Invitations",
 			"more": "More",
-			"backToBoard": "Back to board"
+			"backToBoard": "Back to board",
+			"toggleSidebar": "Toggle sidebar"
 		},
 		"projectList": {
 			"viewProject": "View Project",
@@ -1760,6 +1812,20 @@
 			"suggestionInProgress": "In progress",
 			"suggestionCompleted": "Completed"
 		},
+		"modules": {
+			"title": "Modules",
+			"description": "Enable or disable optional features for this workspace",
+			"loading": "Loading modules...",
+			"toastUpdated": "Module updated",
+			"toastUpdateError": "Failed to update module",
+			"categories": {
+				"finance": "Finance",
+				"operations": "Operations",
+				"planning": "Planning",
+				"collaboration": "Collaboration",
+				"automation": "Automation"
+			}
+		},
 		"create": {
 			"pageTitle": "Create Workspace",
 			"heading": "Create a new workspace",
@@ -1818,7 +1884,95 @@
 			"cancelInviteError": "Failed to cancel invitation",
 			"roleUpdateSuccess": "Role updated",
 			"roleUpdateError": "Failed to update role"
+		},
+		"deleteMemberModal": {
+			"title": "Remove Team Member",
+			"description": "Are you sure you want to remove {{name}} from the team? This action cannot be undone.",
+			"removeButton": "Remove Member"
 		}
+	},
+	"recurring": {
+		"pageTitle": "Recurring Tasks",
+		"title": "Recurring Tasks",
+		"tableTitle": "Scheduled Tasks",
+		"table": {
+			"title": "Title",
+			"schedule": "Schedule",
+			"nextRun": "Next Run",
+			"priority": "Priority",
+			"active": "Active"
+		},
+		"empty": {
+			"title": "No recurring tasks",
+			"description": "No recurring tasks configured for this project."
+		},
+		"create": {
+			"trigger": "Add Recurring Task",
+			"title": "Create Recurring Task",
+			"description": "Set up a task that will be automatically created on a schedule.",
+			"titleField": "Title",
+			"titlePlaceholder": "Task title",
+			"descriptionField": "Description",
+			"descriptionPlaceholder": "Optional description",
+			"frequency": "Frequency",
+			"every": "Every",
+			"column": "Column",
+			"columnDefault": "Default column",
+			"assignee": "Assignee",
+			"assigneeUnassigned": "Unassigned",
+			"priority": "Priority",
+			"priorityNone": "None",
+			"submit": "Create"
+		},
+		"frequency": {
+			"daily": "Daily",
+			"weekly": "Weekly",
+			"monthly": "Monthly"
+		}
+	},
+
+	"templates": {
+		"pageTitle": "Project Templates",
+		"title": "Project Templates",
+		"description": "Pre-configured project setups with columns and tasks. Templates are available when creating a new project.",
+		"create": {
+			"trigger": "Create Template",
+			"title": "Create Template",
+			"description": "Define columns and optional sample tasks for this template.",
+			"name": "Name",
+			"namePlaceholder": "e.g., Agile Sprint",
+			"descriptionField": "Description",
+			"descriptionPlaceholder": "Brief description of this template",
+			"columns": "Columns",
+			"addColumn": "Add Column",
+			"columnTodo": "To Do",
+			"columnInProgress": "In Progress",
+			"columnDone": "Done",
+			"columnNamePlaceholder": "Column name",
+			"columnSlugPlaceholder": "column-slug",
+			"final": "Final",
+			"sampleTasks": "Sample Tasks (optional)",
+			"addTask": "Add Task",
+			"taskTitlePlaceholder": "Task title",
+			"taskDescriptionPlaceholder": "Description (optional)",
+			"taskColumnPlaceholder": "Column",
+			"noSampleTasks": "No sample tasks. The template will only define columns.",
+			"submit": "Create Template"
+		},
+		"createProject": {
+			"blankProject": "Blank project",
+			"sampleTaskCount_one": "{{count}} sample task",
+			"sampleTaskCount_other": "{{count}} sample tasks"
+		},
+		"empty": {
+			"title": "No templates yet",
+			"description": "No templates yet. Create one to get started."
+		},
+		"builtIn": "Built-in",
+		"noDescription": "No description",
+		"deleteTooltip": "Delete template",
+		"toastCreated": "Template created",
+		"toastCreateError": "Failed to create template"
 	},
 	"publicProject": {
 		"pageTitle": "Public View",

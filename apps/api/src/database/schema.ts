@@ -6,7 +6,6 @@ import {
 	index,
 	integer,
 	jsonb,
-	numeric,
 	pgTable,
 	text,
 	timestamp,
@@ -285,167 +284,6 @@ export const workspaceFeatureTable = pgTable(
 	],
 );
 
-export const budgetTable = pgTable(
-	"budget",
-	{
-		id: text("id")
-			.$defaultFn(() => createId())
-			.primaryKey(),
-		projectId: text("project_id")
-			.notNull()
-			.unique()
-			.references(() => projectTable.id, {
-				onDelete: "cascade",
-				onUpdate: "cascade",
-			}),
-		totalBudget: numeric("total_budget", { precision: 12, scale: 2 })
-			.default("0")
-			.notNull(),
-		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-		updatedAt: timestamp("updated_at", { mode: "date" })
-			.defaultNow()
-			.$onUpdate(() => /* @__PURE__ */ new Date())
-			.notNull(),
-	},
-	(table) => [index("budget_projectId_idx").on(table.projectId)],
-);
-
-export const budgetExpenseTable = pgTable(
-	"budget_expense",
-	{
-		id: text("id")
-			.$defaultFn(() => createId())
-			.primaryKey(),
-		budgetId: text("budget_id")
-			.notNull()
-			.references(() => budgetTable.id, {
-				onDelete: "cascade",
-				onUpdate: "cascade",
-			}),
-		description: text("description").notNull(),
-		amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
-		category: text("category"),
-		incurredAt: timestamp("incurred_at", { mode: "date" })
-			.defaultNow()
-			.notNull(),
-		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-		updatedAt: timestamp("updated_at", { mode: "date" })
-			.defaultNow()
-			.$onUpdate(() => /* @__PURE__ */ new Date())
-			.notNull(),
-	},
-	(table) => [index("budget_expense_budgetId_idx").on(table.budgetId)],
-);
-
-export const supplierTable = pgTable(
-	"supplier",
-	{
-		id: text("id")
-			.$defaultFn(() => createId())
-			.primaryKey(),
-		workspaceId: text("workspace_id")
-			.notNull()
-			.references(() => workspaceTable.id, {
-				onDelete: "cascade",
-				onUpdate: "cascade",
-			}),
-		name: text("name").notNull(),
-		contactName: text("contact_name"),
-		contactEmail: text("contact_email"),
-		contactPhone: text("contact_phone"),
-		website: text("website"),
-		notes: text("notes"),
-		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-		updatedAt: timestamp("updated_at", { mode: "date" })
-			.defaultNow()
-			.$onUpdate(() => /* @__PURE__ */ new Date())
-			.notNull(),
-	},
-	(table) => [index("supplier_workspaceId_idx").on(table.workspaceId)],
-);
-
-export const supplierContractTable = pgTable(
-	"supplier_contract",
-	{
-		id: text("id")
-			.$defaultFn(() => createId())
-			.primaryKey(),
-		workspaceId: text("workspace_id")
-			.notNull()
-			.references(() => workspaceTable.id, {
-				onDelete: "cascade",
-				onUpdate: "cascade",
-			}),
-		supplierId: text("supplier_id")
-			.notNull()
-			.references(() => supplierTable.id, {
-				onDelete: "cascade",
-				onUpdate: "cascade",
-			}),
-		title: text("title").notNull(),
-		description: text("description"),
-		value: numeric("value", { precision: 12, scale: 2 }),
-		startDate: timestamp("start_date", { mode: "date" }),
-		endDate: timestamp("end_date", { mode: "date" }),
-		status: text("status").default("draft").notNull(),
-		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-		updatedAt: timestamp("updated_at", { mode: "date" })
-			.defaultNow()
-			.$onUpdate(() => /* @__PURE__ */ new Date())
-			.notNull(),
-	},
-	(table) => [
-		index("contract_supplierId_idx").on(table.supplierId),
-		index("contract_workspaceId_idx").on(table.workspaceId),
-	],
-);
-
-export const serviceOrderTable = pgTable(
-	"service_order",
-	{
-		id: text("id")
-			.$defaultFn(() => createId())
-			.primaryKey(),
-		workspaceId: text("workspace_id")
-			.notNull()
-			.references(() => workspaceTable.id, {
-				onDelete: "cascade",
-				onUpdate: "cascade",
-			}),
-		supplierId: text("supplier_id")
-			.notNull()
-			.references(() => supplierTable.id, {
-				onDelete: "cascade",
-				onUpdate: "cascade",
-			}),
-		contractId: text("contract_id").references(() => supplierContractTable.id, {
-			onDelete: "set null",
-			onUpdate: "cascade",
-		}),
-		projectId: text("project_id").references(() => projectTable.id, {
-			onDelete: "set null",
-			onUpdate: "cascade",
-		}),
-		title: text("title").notNull(),
-		description: text("description"),
-		amount: numeric("amount", { precision: 12, scale: 2 }),
-		status: text("status").default("draft").notNull(),
-		orderedAt: timestamp("ordered_at", { mode: "date" }),
-		completedAt: timestamp("completed_at", { mode: "date" }),
-		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-		updatedAt: timestamp("updated_at", { mode: "date" })
-			.defaultNow()
-			.$onUpdate(() => /* @__PURE__ */ new Date())
-			.notNull(),
-	},
-	(table) => [
-		index("order_supplierId_idx").on(table.supplierId),
-		index("order_workspaceId_idx").on(table.workspaceId),
-		index("order_contractId_idx").on(table.contractId),
-		index("order_projectId_idx").on(table.projectId),
-	],
-);
-
 export const recurringTaskTable = pgTable(
 	"recurring_task",
 	{
@@ -473,6 +311,10 @@ export const recurringTaskTable = pgTable(
 			onUpdate: "cascade",
 		}),
 		assigneeId: text("assignee_id").references(() => userTable.id, {
+			onDelete: "set null",
+			onUpdate: "cascade",
+		}),
+		createdBy: text("created_by").references(() => userTable.id, {
 			onDelete: "set null",
 			onUpdate: "cascade",
 		}),
@@ -574,6 +416,10 @@ export const taskTable = pgTable(
 			onDelete: "set null",
 			onUpdate: "cascade",
 		}),
+		recurringTaskId: text("recurring_task_id").references(
+			() => recurringTaskTable.id,
+			{ onDelete: "set null", onUpdate: "cascade" },
+		),
 		priority: text("priority").default("low"),
 		startDate: timestamp("start_date", { mode: "date" }),
 		dueDate: timestamp("due_date", { mode: "date" }),
