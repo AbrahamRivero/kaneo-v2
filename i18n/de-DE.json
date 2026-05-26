@@ -1941,6 +1941,7 @@
 			"title": "Titel",
 			"schedule": "Zeitplan",
 			"nextRun": "Nächste Ausführung",
+			"lastRun": "Letzte Ausführung",
 			"priority": "Priorität",
 			"active": "Aktiv"
 		},
@@ -1964,12 +1965,45 @@
 			"assigneeUnassigned": "Nicht zugewiesen",
 			"priority": "Priorität",
 			"priorityNone": "Keine",
+			"labels": "Labels",
+			"noLabels": "Keine Labels verfügbar",
+			"dueDateOffset": "Fällig nach (Tagen)",
+			"dueDateOffsetPlaceholder": "z.B. 3",
+			"nextRunAt": "Erste Ausführung",
 			"submit": "Erstellen"
+		},
+		"edit": {
+			"title": "Wiederkehrende Aufgabe bearbeiten",
+			"description": "Aktualisieren Sie den Zeitplan und die Einstellungen der wiederkehrenden Aufgabe.",
+			"submit": "Änderungen speichern"
 		},
 		"frequency": {
 			"daily": "Täglich",
 			"weekly": "Wöchentlich",
 			"monthly": "Monatlich"
+		},
+		"schedule": {
+			"every": "Alle",
+			"daily_one": "Tag",
+			"daily_other": "Tage",
+			"weekly_one": "Woche",
+			"weekly_other": "Wochen",
+			"monthly_one": "Monat",
+			"monthly_other": "Monate"
+		},
+		"toast": {
+			"created": "Wiederkehrende Aufgabe erstellt",
+			"createError": "Fehler beim Erstellen der wiederkehrenden Aufgabe",
+			"updated": "Wiederkehrende Aufgabe aktualisiert",
+			"updateError": "Fehler beim Aktualisieren der wiederkehrenden Aufgabe",
+			"deleted": "Wiederkehrende Aufgabe gelöscht",
+			"deleteError": "Fehler beim Löschen der wiederkehrenden Aufgabe"
+		},
+		"deleteConfirm": {
+			"title": "Wiederkehrende Aufgabe löschen",
+			"description": "Dies stoppt die Erzeugung neuer Aufgaben. Bereits erstellte Aufgaben bleiben unberührt.",
+			"confirm": "Löschen",
+			"cancel": "Abbrechen"
 		}
 	},
 	"templates": {

@@ -16,6 +16,8 @@ export type RecurringTask = {
 	columnId: string | null;
 	assigneeId: string | null;
 	priority: string | null;
+	dueDateDaysOffset: number | null;
+	labelIds: string[] | null;
 	createdAt: string;
 	updatedAt: string;
 };

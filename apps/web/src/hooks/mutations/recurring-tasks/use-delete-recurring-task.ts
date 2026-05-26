@@ -12,8 +12,10 @@ export function useDeleteRecurringTask() {
 			recurringTaskId: string;
 			projectId: string;
 		}) => deleteRecurringTask(recurringTaskId, projectId),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ refetchType: "all" });
+		onSuccess: (_data, variables) => {
+			queryClient.invalidateQueries({
+				queryKey: ["recurring-tasks", variables.projectId],
+			});
 		},
 	});
 }

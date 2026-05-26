@@ -14,6 +14,8 @@ export type CreateRecurringTaskRequest = {
 	columnId?: string;
 	assigneeId?: string;
 	priority?: string;
+	dueDateDaysOffset?: number;
+	labelIds?: string[];
 };
 
 async function createRecurringTask(data: CreateRecurringTaskRequest) {

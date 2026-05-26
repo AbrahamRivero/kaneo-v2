@@ -1713,6 +1713,7 @@
 			"title": "Título",
 			"schedule": "Programación",
 			"nextRun": "Próxima ejecución",
+			"lastRun": "Última ejecución",
 			"priority": "Prioridad",
 			"active": "Activa"
 		},
@@ -1736,12 +1737,45 @@
 			"assigneeUnassigned": "Sin asignar",
 			"priority": "Prioridad",
 			"priorityNone": "Ninguna",
+			"labels": "Etiquetas",
+			"noLabels": "No hay etiquetas disponibles",
+			"dueDateOffset": "Vence después de (días)",
+			"dueDateOffsetPlaceholder": "ej. 3",
+			"nextRunAt": "Primera ejecución",
 			"submit": "Crear"
+		},
+		"edit": {
+			"title": "Editar tarea recurrente",
+			"description": "Actualiza la programación y configuración de la tarea recurrente.",
+			"submit": "Guardar cambios"
 		},
 		"frequency": {
 			"daily": "Diaria",
 			"weekly": "Semanal",
 			"monthly": "Mensual"
+		},
+		"schedule": {
+			"every": "Cada",
+			"daily_one": "día",
+			"daily_other": "días",
+			"weekly_one": "semana",
+			"weekly_other": "semanas",
+			"monthly_one": "mes",
+			"monthly_other": "meses"
+		},
+		"toast": {
+			"created": "Tarea recurrente creada",
+			"createError": "Error al crear la tarea recurrente",
+			"updated": "Tarea recurrente actualizada",
+			"updateError": "Error al actualizar la tarea recurrente",
+			"deleted": "Tarea recurrente eliminada",
+			"deleteError": "Error al eliminar la tarea recurrente"
+		},
+		"deleteConfirm": {
+			"title": "Eliminar tarea recurrente",
+			"description": "Esto detendrá la generación de nuevas tareas. Las tareas ya creadas no se verán afectadas.",
+			"confirm": "Eliminar",
+			"cancel": "Cancelar"
 		}
 	},
 	"templates": {

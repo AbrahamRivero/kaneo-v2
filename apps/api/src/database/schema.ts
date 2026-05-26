@@ -288,13 +288,18 @@ export const recurringTaskTable = pgTable(
 			onUpdate: "cascade",
 		}),
 		priority: text("priority").default("no-priority"),
+		dueDateDaysOffset: integer("due_date_days_offset"),
+		labelIds: jsonb("label_ids").$type<string[]>().default([]),
 		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 		updatedAt: timestamp("updated_at", { mode: "date" })
 			.defaultNow()
 			.$onUpdate(() => /* @__PURE__ */ new Date())
 			.notNull(),
 	},
-	(table) => [index("recurring_task_projectId_idx").on(table.projectId)],
+	(table) => [
+		index("recurring_task_projectId_idx").on(table.projectId),
+		index("recurring_task_nextRunAt_idx").on(table.nextRunAt),
+	],
 );
 
 export const columnTable = pgTable(

@@ -248,6 +248,8 @@ export const recurringTaskSchema = v.object({
 	columnId: v.nullable(v.string()),
 	assigneeId: v.nullable(v.string()),
 	priority: v.nullable(v.string()),
+	dueDateDaysOffset: v.nullable(v.number()),
+	labelIds: v.nullable(v.array(v.string())),
 	createdAt: v.date(),
 	updatedAt: v.date(),
 });

@@ -1,7 +1,8 @@
 import { createId } from "@paralleldrive/cuid2";
-import { and, eq, lte, max } from "drizzle-orm";
+import { and, eq, inArray, lte, max } from "drizzle-orm";
 import db from "../database";
 import {
+	labelTable,
 	projectTable,
 	recurringTaskTable,
 	taskTable,
@@ -13,32 +14,25 @@ function computeNextRun(task: typeof recurringTaskTable.$inferSelect): Date {
 	const next = new Date(task.nextRunAt);
 	const interval = task.intervalValue ?? 1;
 
-	switch (task.frequency) {
-		case "daily": {
-			next.setDate(next.getDate() + interval);
-			break;
+	while (next <= now) {
+		switch (task.frequency) {
+			case "daily": {
+				next.setDate(next.getDate() + interval);
+				break;
+			}
+			case "weekly": {
+				next.setDate(next.getDate() + 7 * interval);
+				break;
+			}
+			case "monthly": {
+				next.setMonth(next.getMonth() + interval);
+				break;
+			}
+			default: {
+				next.setDate(next.getDate() + interval);
+				break;
+			}
 		}
-		case "weekly": {
-			next.setDate(next.getDate() + 7 * interval);
-			break;
-		}
-		case "monthly": {
-			next.setMonth(next.getMonth() + interval);
-			break;
-		}
-		default: {
-			next.setDate(next.getDate() + interval);
-			break;
-		}
-	}
-
-	if (next <= now) {
-		const diff = now.getTime() - next.getTime();
-		const cycles =
-			Math.floor(diff / (next.getTime() - task.nextRunAt.getTime())) + 1;
-		next.setTime(
-			next.getTime() + cycles * (next.getTime() - task.nextRunAt.getTime()),
-		);
 	}
 
 	return next;
@@ -47,15 +41,18 @@ function computeNextRun(task: typeof recurringTaskTable.$inferSelect): Date {
 export async function processRecurringTasks(): Promise<void> {
 	const now = new Date();
 
-	const dueTasks = await db
-		.select()
-		.from(recurringTaskTable)
-		.where(
-			and(
-				eq(recurringTaskTable.isActive, true),
-				lte(recurringTaskTable.nextRunAt, now),
-			),
-		);
+	const dueTasks = await db.transaction(async (tx) => {
+		return await tx
+			.select()
+			.from(recurringTaskTable)
+			.where(
+				and(
+					eq(recurringTaskTable.isActive, true),
+					lte(recurringTaskTable.nextRunAt, now),
+				),
+			)
+			.for("update", { skipLocked: true });
+	});
 
 	for (const recurring of dueTasks) {
 		try {
@@ -74,7 +71,7 @@ export async function processRecurringTasks(): Promise<void> {
 
 			const nextNumber = (maxNumberResult?.maxNumber ?? 0) + 1;
 
-			await db.insert(taskTable).values({
+			const taskValues: Record<string, unknown> = {
 				id: taskId,
 				projectId: recurring.projectId,
 				number: nextNumber,
@@ -91,7 +88,40 @@ export async function processRecurringTasks(): Promise<void> {
 					| "high"
 					| "urgent",
 				position: 0,
-			});
+			};
+
+			if (recurring.dueDateDaysOffset != null) {
+				taskValues.dueDate = new Date(
+					now.getTime() + recurring.dueDateDaysOffset * 24 * 60 * 60 * 1000,
+				);
+			}
+
+			await db
+				.insert(taskTable)
+				.values(taskValues as typeof taskTable.$inferInsert);
+
+			if (
+				recurring.labelIds != null &&
+				Array.isArray(recurring.labelIds) &&
+				(recurring.labelIds as string[]).length > 0
+			) {
+				const sourceLabels = await db
+					.select()
+					.from(labelTable)
+					.where(inArray(labelTable.id, recurring.labelIds as string[]));
+
+				if (sourceLabels.length > 0) {
+					await db.insert(labelTable).values(
+						sourceLabels.map((label) => ({
+							id: createId(),
+							name: label.name,
+							color: label.color,
+							taskId: taskId,
+							workspaceId: label.workspaceId,
+						})),
+					);
+				}
+			}
 
 			await publishEvent("task.created", {
 				taskId,

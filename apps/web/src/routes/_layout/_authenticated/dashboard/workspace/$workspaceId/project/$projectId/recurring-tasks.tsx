@@ -1,9 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { RefreshCw, Trash2 } from "lucide-react";
+import { Pencil, RefreshCw, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import ProjectLayout from "@/components/common/project-layout";
 import PageTitle from "@/components/page-title";
-import CreateRecurringTaskDialog from "@/components/shared/modals/create-recurring-task-dialog";
+import type { RecurringTaskFormData } from "@/components/shared/modals/create-recurring-task-dialog";
+import RecurringTaskDialog from "@/components/shared/modals/create-recurring-task-dialog";
+import {
+	AlertDialog,
+	AlertDialogClose,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,6 +42,8 @@ import { useGetColumns } from "@/hooks/queries/column/use-get-columns";
 import useListRecurringTasks from "@/hooks/queries/recurring-tasks/use-list-recurring-tasks";
 import { useGetActiveWorkspaceUsers } from "@/hooks/queries/workspace-users/use-get-active-workspace-users";
 import { formatDateMedium } from "@/lib/format";
+import { getPriorityIcon } from "@/lib/priority";
+import { toast } from "@/lib/toast";
 
 export const Route = createFileRoute(
 	"/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks",
@@ -44,42 +57,112 @@ function RouteComponent() {
 	const { data: tasks, isLoading } = useListRecurringTasks(projectId);
 	const { data: columns = [] } = useGetColumns(projectId);
 	const { data: workspaceUsers } = useGetActiveWorkspaceUsers(workspaceId);
+
 	const createMutation = useCreateRecurringTask();
 	const updateMutation = useUpdateRecurringTask();
 	const deleteMutation = useDeleteRecurringTask();
 
-	const handleCreate = async (data: {
-		title: string;
-		description?: string;
-		frequency: string;
-		intervalValue: number;
-		priority?: string;
-		columnId?: string;
-		assigneeId?: string;
-		nextRunAt: string;
-	}) => {
-		await createMutation.mutateAsync({
-			projectId,
-			...data,
-		});
+	const [dialogOpen, setDialogOpen] = useState(false);
+	const [editingTask, setEditingTask] =
+		useState<Partial<RecurringTaskFormData> | null>(null);
+	const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
+
+	const handleCreate = async (data: RecurringTaskFormData) => {
+		try {
+			await createMutation.mutateAsync({
+				projectId,
+				title: data.title,
+				description: data.description,
+				frequency: data.frequency,
+				intervalValue: data.intervalValue,
+				columnId: data.columnId,
+				assigneeId: data.assigneeId,
+				priority: data.priority,
+				nextRunAt: data.nextRunAt,
+				labelIds: data.labelIds,
+				dueDateDaysOffset: data.dueDateDaysOffset,
+			});
+			toast.success(t("recurring:toast.created"));
+			setDialogOpen(false);
+		} catch (error) {
+			toast.error(
+				error instanceof Error
+					? error.message
+					: t("recurring:toast.createError"),
+			);
+		}
+	};
+
+	const handleUpdate = async (data: RecurringTaskFormData) => {
+		if (!editingTask?.id) return;
+		try {
+			await updateMutation.mutateAsync({
+				projectId,
+				recurringTaskId: editingTask.id,
+				title: data.title,
+				description: data.description ?? null,
+				frequency: data.frequency,
+				intervalValue: data.intervalValue,
+				columnId: data.columnId ?? null,
+				assigneeId: data.assigneeId ?? null,
+				priority: data.priority ?? null,
+				nextRunAt: data.nextRunAt,
+				labelIds: data.labelIds ?? null,
+				dueDateDaysOffset: data.dueDateDaysOffset ?? null,
+			});
+			toast.success(t("recurring:toast.updated"));
+			setEditingTask(null);
+			setDialogOpen(false);
+		} catch (error) {
+			toast.error(
+				error instanceof Error
+					? error.message
+					: t("recurring:toast.updateError"),
+			);
+		}
+	};
+
+	const handleDelete = async () => {
+		if (!deletingTaskId) return;
+		try {
+			await deleteMutation.mutateAsync({
+				recurringTaskId: deletingTaskId,
+				projectId,
+			});
+			toast.success(t("recurring:toast.deleted"));
+			setDeletingTaskId(null);
+		} catch (error) {
+			toast.error(
+				error instanceof Error
+					? error.message
+					: t("recurring:toast.deleteError"),
+			);
+		}
 	};
 
 	const handleToggleActive = async (
 		recurringTaskId: string,
 		isActive: boolean,
 	) => {
-		await updateMutation.mutateAsync({
-			projectId,
-			recurringTaskId,
-			isActive: !isActive,
-		});
+		try {
+			await updateMutation.mutateAsync({
+				projectId,
+				recurringTaskId,
+				isActive: !isActive,
+			});
+		} catch (error) {
+			toast.error(
+				error instanceof Error
+					? error.message
+					: t("recurring:toast.updateError"),
+			);
+		}
 	};
 
-	const handleDelete = async (recurringTaskId: string) => {
-		await deleteMutation.mutateAsync({ recurringTaskId, projectId });
-	};
-
-	const frequencyLabel = (freq: string) => {
+	const scheduleLabel = (freq: string, intervalVal: number): string => {
+		if (intervalVal > 1) {
+			return `${t("recurring:schedule.every")} ${intervalVal} ${t(`recurring:schedule.${freq}`, { count: intervalVal })}`;
+		}
 		switch (freq) {
 			case "daily":
 				return t("recurring:frequency.daily");
@@ -90,6 +173,23 @@ function RouteComponent() {
 			default:
 				return freq;
 		}
+	};
+
+	const openEditDialog = (task: (typeof tasks)[number]) => {
+		setEditingTask({
+			id: task.id,
+			title: task.title,
+			description: task.description ?? "",
+			frequency: task.frequency,
+			intervalValue: task.intervalValue,
+			priority: task.priority ?? "no-priority",
+			columnId: task.columnId ?? "",
+			assigneeId: task.assigneeId ?? "",
+			nextRunAt: task.nextRunAt,
+			labelIds: task.labelIds ?? [],
+			dueDateDaysOffset: task.dueDateDaysOffset ?? undefined,
+		});
+		setDialogOpen(true);
 	};
 
 	if (isLoading) {
@@ -103,7 +203,11 @@ function RouteComponent() {
 				>
 					<div className="space-y-4 p-4">
 						<Skeleton className="h-8 w-48" />
-						<Skeleton className="h-64 w-full" />
+						<div className="space-y-2">
+							<Skeleton className="h-10 w-full" />
+							<Skeleton className="h-10 w-full" />
+							<Skeleton className="h-10 w-full" />
+						</div>
 					</div>
 				</ProjectLayout>
 			</>
@@ -121,11 +225,12 @@ function RouteComponent() {
 				<div className="space-y-5 p-4">
 					<div className="flex items-center justify-between">
 						<h2 className="text-lg font-semibold">{t("recurring:title")}</h2>
-						<CreateRecurringTaskDialog
-							onCreate={handleCreate}
+						<RecurringTaskDialog
+							onSubmit={handleCreate}
 							isPending={createMutation.isPending}
 							columns={columns}
 							users={workspaceUsers?.members ?? []}
+							workspaceId={workspaceId}
 						/>
 					</div>
 
@@ -162,12 +267,15 @@ function RouteComponent() {
 												{t("recurring:table.nextRun")}
 											</TableHead>
 											<TableHead className="text-foreground font-medium">
+												{t("recurring:table.lastRun")}
+											</TableHead>
+											<TableHead className="text-foreground font-medium">
 												{t("recurring:table.priority")}
 											</TableHead>
 											<TableHead className="w-20 text-center text-foreground font-medium">
 												{t("recurring:table.active")}
 											</TableHead>
-											<TableHead className="w-16" />
+											<TableHead className="w-24" />
 										</TableRow>
 									</TableHeader>
 									<TableBody>
@@ -177,17 +285,26 @@ function RouteComponent() {
 													{task.title}
 												</TableCell>
 												<TableCell className="text-muted-foreground whitespace-nowrap">
-													{frequencyLabel(task.frequency)}
-													{task.intervalValue > 1 &&
-														` (×${task.intervalValue})`}
+													{scheduleLabel(task.frequency, task.intervalValue)}
 												</TableCell>
 												<TableCell className="text-muted-foreground whitespace-nowrap">
 													{formatDateMedium(new Date(task.nextRunAt))}
 												</TableCell>
+												<TableCell className="text-muted-foreground whitespace-nowrap">
+													{task.lastRunAt
+														? formatDateMedium(new Date(task.lastRunAt))
+														: "—"}
+												</TableCell>
 												<TableCell>
 													{task.priority && task.priority !== "no-priority" ? (
-														<Badge variant="outline" className="capitalize">
-															{task.priority}
+														<Badge
+															variant="outline"
+															className="gap-1 capitalize"
+														>
+															{getPriorityIcon(task.priority)}
+															{t(`tasks:priority.${task.priority}`, {
+																defaultValue: task.priority,
+															})}
 														</Badge>
 													) : (
 														<span className="text-muted-foreground">—</span>
@@ -202,15 +319,24 @@ function RouteComponent() {
 													/>
 												</TableCell>
 												<TableCell>
-													<Button
-														variant="ghost"
-														size="icon-xs"
-														className="text-muted-foreground hover:text-destructive"
-														onClick={() => handleDelete(task.id)}
-														loading={deleteMutation.isPending}
-													>
-														<Trash2 className="size-4" />
-													</Button>
+													<div className="flex items-center gap-1">
+														<Button
+															variant="ghost"
+															size="icon-xs"
+															className="text-muted-foreground hover:text-foreground"
+															onClick={() => openEditDialog(task)}
+														>
+															<Pencil className="size-4" />
+														</Button>
+														<Button
+															variant="ghost"
+															size="icon-xs"
+															className="text-muted-foreground hover:text-destructive"
+															onClick={() => setDeletingTaskId(task.id)}
+														>
+															<Trash2 className="size-4" />
+														</Button>
+													</div>
 												</TableCell>
 											</TableRow>
 										))}
@@ -221,6 +347,48 @@ function RouteComponent() {
 					</Card>
 				</div>
 			</ProjectLayout>
+
+			<RecurringTaskDialog
+				open={dialogOpen}
+				onOpenChange={(newOpen) => {
+					setDialogOpen(newOpen);
+					if (!newOpen) setEditingTask(null);
+				}}
+				onSubmit={editingTask ? handleUpdate : handleCreate}
+				isPending={
+					editingTask ? updateMutation.isPending : createMutation.isPending
+				}
+				columns={columns}
+				users={workspaceUsers?.members ?? []}
+				workspaceId={workspaceId}
+				initialData={editingTask ?? undefined}
+			/>
+
+			<AlertDialog
+				open={!!deletingTaskId}
+				onOpenChange={(newOpen) => {
+					if (!newOpen) setDeletingTaskId(null);
+				}}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							{t("recurring:deleteConfirm.title")}
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							{t("recurring:deleteConfirm.description")}
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogClose>
+							{t("recurring:deleteConfirm.cancel")}
+						</AlertDialogClose>
+						<AlertDialogClose onClick={handleDelete}>
+							{t("recurring:deleteConfirm.confirm")}
+						</AlertDialogClose>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</>
 	);
 }
