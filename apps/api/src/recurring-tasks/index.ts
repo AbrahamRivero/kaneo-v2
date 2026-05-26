@@ -60,8 +60,10 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 		async (c) => {
 			const { projectId } = c.req.valid("param");
 			const body = c.req.valid("json");
+			const userId = c.get("userId");
 			const task = await createRecurringTask({
 				projectId,
+				createdBy: userId,
 				...body,
 				nextRunAt: new Date(body.nextRunAt),
 			});
@@ -102,8 +104,10 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 		async (c) => {
 			const { recurringTaskId } = c.req.valid("param");
 			const { nextRunAt, ...rest } = c.req.valid("json");
+			const userId = c.get("userId");
 			const task = await updateRecurringTask(recurringTaskId, {
 				...rest,
+				userId,
 				...(nextRunAt && { nextRunAt: new Date(nextRunAt) }),
 			});
 			return c.json(task);
@@ -125,7 +129,8 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 		),
 		async (c) => {
 			const { recurringTaskId } = c.req.valid("param");
-			const task = await deleteRecurringTask(recurringTaskId);
+			const userId = c.get("userId");
+			const task = await deleteRecurringTask(recurringTaskId, userId);
 			return c.json(task);
 		},
 	);

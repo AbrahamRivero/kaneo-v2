@@ -6,6 +6,7 @@ import {
 	recurringTaskTable,
 	taskTable,
 } from "../database/schema";
+import { publishEvent } from "../events";
 
 function computeNextRun(task: typeof recurringTaskTable.$inferSelect): Date {
 	const now = new Date();
@@ -81,6 +82,8 @@ export async function processRecurringTasks(): Promise<void> {
 				description: recurring.description,
 				columnId: recurring.columnId,
 				userId: recurring.assigneeId,
+				createdBy: recurring.createdBy,
+				recurringTaskId: recurring.id,
 				priority: (recurring.priority ?? "no-priority") as
 					| "no-priority"
 					| "low"
@@ -88,6 +91,16 @@ export async function processRecurringTasks(): Promise<void> {
 					| "high"
 					| "urgent",
 				position: 0,
+			});
+
+			await publishEvent("task.created", {
+				taskId,
+				projectId: recurring.projectId,
+				userId: recurring.createdBy ?? "",
+				assigneeId: recurring.assigneeId,
+				currentUserId: recurring.createdBy,
+				type: "created",
+				content: null,
 			});
 
 			const nextRun = computeNextRun(recurring);

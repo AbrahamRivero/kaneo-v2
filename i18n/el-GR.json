@@ -1,4 +1,4 @@
-{
+﻿{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -11,7 +11,8 @@
 			"remove": "Αφαίρεση",
 			"reset": "Επαναφορά",
 			"filter": "Φίλτρο",
-			"clearAllFilters": "Εκκαθάριση όλων των φίλτρων"
+			"clearAllFilters": "Εκκαθάριση όλων των φίλτρων",
+			"confirm": "Επιβεβαίωση"
 		},
 		"a11y": {
 			"toggleSidebar": "Εναλλαγή πλαϊνής μπάρας"
@@ -56,8 +57,22 @@
 			"viewDeploymentGuide": "Προβολή οδηγού εγκατάστασης",
 			"refreshPage": "Ανανέωση σελίδας"
 		},
+		"demo": {
+			"banner": "Αυτό είναι ένα περιβάλλον επίδειξης. Όλα τα δεδομένα θα εκκαθαρίζονται αυτόματα κάθε ώρα.",
+			"deployButton": "Αναπτύξτε το δικό σας"
+		},
 		"formats": {
 			"never": "Ποτέ"
+		},
+		"status": {
+			"active": "Ενεργό",
+			"pending": "Εκκρεμεί"
+		},
+		"spinner": {
+			"loading": "Φόρτωση"
+		},
+		"theme": {
+			"toggle": "Εναλλαγή θέματος"
 		},
 		"modals": {
 			"createProject": {
@@ -72,7 +87,8 @@
 				"keyHint": "Χρησιμοποιείται για IDs αιτημάτων (π.χ. {{example}}-123)",
 				"createButton": "Δημιουργία έργου",
 				"successToast": "Το έργο δημιουργήθηκε με επιτυχία",
-				"errorToast": "Αποτυχία δημιουργίας έργου"
+				"errorToast": "Αποτυχία δημιουργίας έργου",
+				"keyPlaceholder": "PRO"
 			},
 			"createWorkspace": {
 				"breadcrumbKaneo": "KANEO",
@@ -125,6 +141,11 @@
 					"rose": "Ροζ",
 					"crimson": "Βυσσινί"
 				}
+			},
+			"archiveTasks": {
+				"title": "Αρχειοθέτηση εργασιών",
+				"description_one": "Είστε σίγουροι ότι θέλετε να αρχειοθετήσετε {{count}} ολοκληρωμένη εργασία; Αυτό θα τη μετακινήσει από τον ενεργό πίνακα στο αρχείο σας.",
+				"description_other": "Είστε σίγουροι ότι θέλετε να αρχειοθετήσετε και τις {{count}} ολοκληρωμένες εργασίες; Αυτό θα τις μετακινήσει από τον ενεργό πίνακα στο αρχείο σας."
 			}
 		}
 	},
@@ -168,7 +189,7 @@
 		"checkEmail": {
 			"pageTitle": "Ελέγξτε το email σας",
 			"title": "Ελέγξτε το email σας",
-			"inboxMessage": "Σας στείλαμε έναν προσωρινό σύνδεσμο σύνδεσης. Παρακαλούμε ελέγξτε τα εισερχόμενά σας στη διεύθυνση <email>{{email}}</email>.",
+			"inboxMessage": "Σας στείλαμε έναν προσωρινό σύνδεσμο σύνδεσης. Παρακαλούμε ελέγξτε τα εισερχόμενά σας στη διεύθυνση \u003cemail\u003e{{email}}\u003c/email\u003e.",
 			"emailFallback": "τη διεύθυνση email σας",
 			"backToLogin": "Επιστροφή στη σύνδεση"
 		},
@@ -194,7 +215,7 @@
 			"codeSentTo": "Ο κωδικός στάλθηκε στο {{email}}",
 			"verificationCodeLabel": "Κωδικός επαλήθευσης",
 			"verifying": "Γίνεται επαλήθευση...",
-			"verifyAndSignIn": "Επαλήθευση & Σύνδεση",
+			"verifyAndSignIn": "Επαλήθευση \u0026 Σύνδεση",
 			"changeEmail": "Αλλαγή email",
 			"resend": "Επανάληψη αποστολής",
 			"validation": {
@@ -241,15 +262,15 @@
 			"goToSignIn": "Μετάβαση στη σύνδεση",
 			"workspaceLabel": "Χώρος εργασίας: {{workspaceName}}",
 			"joinWorkspace": "Συμμετοχή στο {{workspaceName}}",
-			"inviteBodySignedIn": "Ο/Η <inviter>{{inviterName}}</inviter> σας προσκάλεσε να συμμετάσχετε στον χώρο εργασίας του/της.",
-			"inviteBodySignedOut": "Ο/Η <inviter>{{inviterName}}</inviter> σας προσκάλεσε να συμμετάσχετε στον χώρο εργασίας του/της στο Kaneo.",
+			"inviteBodySignedIn": "Ο/Η \u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e σας προσκάλεσε να συμμετάσχετε στον χώρο εργασίας του/της.",
+			"inviteBodySignedOut": "Ο/Η \u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e σας προσκάλεσε να συμμετάσχετε στον χώρο εργασίας του/της στο Kaneo.",
 			"signInToAccept": "Συνδεθείτε για να αποδεχτείτε αυτήν την πρόσκληση.",
 			"accepting": "Γίνεται αποδοχή...",
 			"acceptInvitation": "Αποδοχή πρόσκλησης",
 			"goToDashboard": "Μετάβαση στον πίνακα ελέγχου",
-			"signedInAs": "Συνδεδεμένος ως <email>{{email}}</email>",
+			"signedInAs": "Συνδεδεμένος ως \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"youveBeenInvited": "Έχετε προσκληθεί!",
-			"invitationFor": "Πρόσκληση για: <email>{{email}}</email>",
+			"invitationFor": "Πρόσκληση για: \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"signIn": "Σύνδεση",
 			"toast": {
 				"acceptFailed": "Αποτυχία αποδοχής πρόσκλησης",
@@ -268,7 +289,7 @@
 			"creating": "Γίνεται δημιουργία...",
 			"createWorkspace": "Δημιουργία χώρου εργασίας",
 			"workspaceCreatedTitle": "Ο χώρος εργασίας δημιουργήθηκε",
-			"redirectingToWorkspace": "Μεταφορά στο <name>{{name}}</name>...",
+			"redirectingToWorkspace": "Μεταφορά στο \u003cname\u003e{{name}}\u003c/name\u003e...",
 			"toast": {
 				"workspaceCreated": "Ο χώρος εργασίας δημιουργήθηκε με επιτυχία",
 				"createFailed": "Αποτυχία δημιουργίας χώρου εργασίας"
@@ -295,6 +316,29 @@
 				"nameRequired": "Το όνομα είναι υποχρεωτικό",
 				"nameShort": "Το όνομα πρέπει να έχει τουλάχιστον 2 χαρακτήρες"
 			}
+		},
+		"device": {
+			"pageTitle": "Σύνδεση συσκευής",
+			"pageSubtitle": "Εισαγάγετε τον κωδικό από τη CLI ή την εφαρμογή σας για να συνεχίσετε.",
+			"codePlaceholder": "π.χ. ABCD-1234",
+			"continue": "Συνέχεια",
+			"enterCodeToast": "Εισαγάγετε τον κωδικό που εμφανίζεται στη συσκευή σας.",
+			"invalidOrExpiredCode": "Μη έγκυρος ή ληγμένος κωδικός",
+			"approvePageTitle": "Έγκριση συσκευής",
+			"loadingSubtitle": "Φόρτωση…",
+			"checkingSession": "Έλεγχος συνόδου…",
+			"noCodeProvided": "Δεν δόθηκε κωδικός συσκευής.",
+			"enterACode": "Εισαγωγή κωδικού",
+			"signInToContinue": "Συνδεθείτε για να συνεχίσετε",
+			"signInToApprove": "Συνδεθείτε για να εγκρίνετε ή να απορρίψετε αυτό το αίτημα συσκευής.",
+			"requestingAccess": "Μια συσκευή ζητά πρόσβαση στον λογαριασμό σας Kaneo.",
+			"signIn": "Σύνδεση",
+			"couldNotApprove": "Δεν ήταν δυνατή η έγκριση",
+			"deviceConnected": "Η συσκευή συνδέθηκε",
+			"couldNotDeny": "Δεν ήταν δυνατή η απόρριψη",
+			"requestCancelled": "Το αίτημα ακυρώθηκε",
+			"approve": "Έγκριση",
+			"deny": "Απόρριψη"
 		}
 	},
 	"settings": {
@@ -1027,6 +1071,13 @@
 		}
 	},
 	"navigation": {
+		"projectViews": {
+			"title": "Προβολή",
+			"backlog": "Backlog",
+			"board": "Εργασίες",
+			"gantt": "Gantt",
+			"recurring": "Επαναλαμβανόμενες"
+		},
 		"commandPalette": {
 			"suggestions": "Προτάσεις",
 			"commands": "Εντολές",
@@ -1056,7 +1107,8 @@
 			"members": "Μέλη",
 			"invitations": "Προσκλήσεις",
 			"more": "Περισσότερα",
-			"backToBoard": "Επιστροφή στον πίνακα"
+			"backToBoard": "Επιστροφή στον πίνακα",
+			"toggleSidebar": "Εναλλαγή πλευρικής γραμμής"
 		},
 		"projectList": {
 			"viewProject": "Προβολή έργου",
@@ -1120,7 +1172,7 @@
 			"title": "Συντομεύσεις πληκτρολογίου",
 			"subtitle": "Επιταχύνετε τη ροή εργασίας σας με συντομεύσεις πληκτρολογίου",
 			"searchPlaceholder": "Αναζήτηση συντομεύσεων...",
-			"footer": "Πατήστε <kbd>Escape</kbd> για κλείσιμο",
+			"footer": "Πατήστε \u003ckbd\u003eEscape\u003c/kbd\u003e για κλείσιμο",
 			"categories": {
 				"general": "Γενικά",
 				"create": "Δημιουργία",
@@ -1758,6 +1810,20 @@
 			"submit": "Δημιουργία χώρου εργασίας",
 			"success": "Ο χώρος εργασίας δημιουργήθηκε με επιτυχία",
 			"error": "Αποτυχία δημιουργίας χώρου εργασίας"
+		},
+		"modules": {
+			"title": "Λειτουργικές μονάδες",
+			"description": "Ενεργοποίηση ή απενεργοποίηση προαιρετικών λειτουργιών για αυτόν τον χώρο εργασίας",
+			"loading": "Φόρτωση λειτουργικών μονάδων...",
+			"toastUpdated": "Η λειτουργική μονάδα ενημερώθηκε",
+			"toastUpdateError": "Απέτυχε η ενημέρωση της λειτουργικής μονάδας",
+			"categories": {
+				"finance": "Οικονομικά",
+				"operations": "Λειτουργίες",
+				"planning": "Σχεδιασμός",
+				"collaboration": "Συνεργασία",
+				"automation": "Αυτοματοποίηση"
+			}
 		}
 	},
 	"team": {
@@ -1800,7 +1866,94 @@
 			"removeError": "Αποτυχία αφαίρεσης μέλους ομάδας",
 			"cancelInviteSuccess": "Η πρόσκληση ακυρώθηκε με επιτυχία",
 			"cancelInviteError": "Αποτυχία ακύρωσης πρόσκλησης"
+		},
+		"deleteMemberModal": {
+			"title": "Αφαίρεση μέλους ομάδας",
+			"description": "Είστε σίγουροι ότι θέλετε να αφαιρέσετε το {{name}} από την ομάδα; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.",
+			"removeButton": "Αφαίρεση μέλους"
 		}
+	},
+	"recurring": {
+		"pageTitle": "Επαναλαμβανόμενες εργασίες",
+		"title": "Επαναλαμβανόμενες εργασίες",
+		"tableTitle": "Προγραμματισμένες εργασίες",
+		"table": {
+			"title": "Τίτλος",
+			"schedule": "Πρόγραμμα",
+			"nextRun": "Επόμενη εκτέλεση",
+			"priority": "Προτεραιότητα",
+			"active": "Ενεργή"
+		},
+		"empty": {
+			"title": "Δεν υπάρχουν επαναλαμβανόμενες εργασίες",
+			"description": "Δεν έχουν ρυθμιστεί επαναλαμβανόμενες εργασίες για αυτό το έργο."
+		},
+		"create": {
+			"trigger": "Προσθήκη επαναλαμβανόμενης εργασίας",
+			"title": "Δημιουργία επαναλαμβανόμενης εργασίας",
+			"description": "Ρυθμίστε μια εργασία που θα δημιουργείται αυτόματα βάσει προγράμματος.",
+			"titleField": "Τίτλος",
+			"titlePlaceholder": "Τίτλος εργασίας",
+			"descriptionField": "Περιγραφή",
+			"descriptionPlaceholder": "Προαιρετική περιγραφή",
+			"frequency": "Συχνότητα",
+			"every": "Κάθε",
+			"column": "Στήλη",
+			"columnDefault": "Προεπιλεγμένη στήλη",
+			"assignee": "Αναθέτης",
+			"assigneeUnassigned": "Χωρίς ανάθεση",
+			"priority": "Προτεραιότητα",
+			"priorityNone": "Καμία",
+			"submit": "Δημιουργία"
+		},
+		"frequency": {
+			"daily": "Καθημερινά",
+			"weekly": "Εβδομαδιαία",
+			"monthly": "Μηνιαία"
+		}
+	},
+	"templates": {
+		"pageTitle": "Πρότυπα έργων",
+		"title": "Πρότυπα έργων",
+		"description": "Προρυθμισμένες διαμορφώσεις έργων με στήλες και εργασίες. Τα πρότυπα είναι διαθέσιμα κατά τη δημιουργία νέου έργου.",
+		"create": {
+			"trigger": "Δημιουργία προτύπου",
+			"title": "Δημιουργία προτύπου",
+			"description": "Ορίστε στήλες και προαιρετικές εργασίες παραδείγματος για αυτό το πρότυπο.",
+			"name": "Όνομα",
+			"namePlaceholder": "π.χ. Agile Sprint",
+			"descriptionField": "Περιγραφή",
+			"descriptionPlaceholder": "Σύντομη περιγραφή αυτού του προτύπου",
+			"columns": "Στήλες",
+			"addColumn": "Προσθήκη στήλης",
+			"columnNamePlaceholder": "Όνομα στήλης",
+			"columnSlugPlaceholder": "slug-στήλης",
+			"final": "Τελική",
+			"sampleTasks": "Εργασίες παραδείγματος (προαιρετικές)",
+			"addTask": "Προσθήκη εργασίας",
+			"taskTitlePlaceholder": "Τίτλος εργασίας",
+			"taskDescriptionPlaceholder": "Περιγραφή (προαιρετική)",
+			"taskColumnPlaceholder": "Στήλη",
+			"noSampleTasks": "Καμία εργασία παραδείγματος. Το πρότυπο θα ορίζει μόνο στήλες.",
+			"submit": "Δημιουργία προτύπου",
+			"columnTodo": "Προς ολοκλήρωση",
+			"columnInProgress": "Σε εξέλιξη",
+			"columnDone": "Ολοκληρωμένο"
+		},
+		"createProject": {
+			"blankProject": "Κενό έργο",
+			"sampleTaskCount_one": "{{count}} εργασία παραδείγματος",
+			"sampleTaskCount_other": "{{count}} εργασίες παραδείγματος"
+		},
+		"empty": {
+			"title": "Δεν υπάρχουν πρότυπα",
+			"description": "Δεν υπάρχουν ακόμα πρότυπα. Δημιουργήστε ένα για να ξεκινήσετε."
+		},
+		"builtIn": "Ενσωματωμένο",
+		"noDescription": "Χωρίς περιγραφή",
+		"deleteTooltip": "Διαγραφή προτύπου",
+		"toastCreated": "Το πρότυπο δημιουργήθηκε",
+		"toastCreateError": "Αποτυχία δημιουργίας προτύπου"
 	},
 	"publicProject": {
 		"pageTitle": "Δημόσια προβολή",

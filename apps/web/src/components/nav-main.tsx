@@ -15,7 +15,6 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useFeatureEnabled } from "@/hooks/queries/features/use-workspace-features";
 import { usePendingInvitations } from "@/hooks/queries/invitation/use-pending-invitations";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 
@@ -24,8 +23,6 @@ export function NavMain() {
 	const { data: workspace } = useActiveWorkspace();
 	const navigate = useNavigate();
 	const { data: invitations = [] } = usePendingInvitations();
-	const budgetsEnabled = useFeatureEnabled(workspace?.id ?? "", "budgets");
-	const suppliersEnabled = useFeatureEnabled(workspace?.id ?? "", "suppliers");
 
 	if (!workspace) return null;
 
@@ -62,35 +59,6 @@ export function NavMain() {
 			badge: pendingCount > 0 ? pendingCount : null,
 			Icon: null,
 		},
-		...(budgetsEnabled
-			? [
-					{
-						title: "Budgets",
-						url: `/dashboard/workspace/${workspace.id}/budgets`,
-						isActive:
-							window.location.pathname ===
-							`/dashboard/workspace/${workspace.id}/budgets`,
-						badge: null,
-						Icon: null,
-					},
-				]
-			: []),
-		...(suppliersEnabled
-			? [
-					{
-						title: "Suppliers",
-						url: `/dashboard/workspace/${workspace.id}/suppliers`,
-						isActive:
-							window.location.pathname ===
-								`/dashboard/workspace/${workspace.id}/suppliers` ||
-							window.location.pathname.startsWith(
-								`/dashboard/workspace/${workspace.id}/suppliers/`,
-							),
-						badge: null,
-						Icon: null,
-					},
-				]
-			: []),
 	];
 
 	return (

@@ -88,7 +88,7 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
 
 		try {
 			const { id } = await mutateAsync();
-			toast.success("Project created successfully");
+			toast.success(t("common:modals.createProject.successToast"));
 			await queryClient.invalidateQueries({ queryKey: ["projects"] });
 
 			navigate({
@@ -147,10 +147,14 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
 								onValueChange={(v) => setTemplateId(v ?? "")}
 							>
 								<SelectTrigger className="h-8 text-xs">
-									<SelectValue placeholder="Blank project" />
+									<SelectValue
+										placeholder={t("templates:createProject.blankProject")}
+									/>
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="">Blank project</SelectItem>
+									<SelectItem value="">
+										{t("templates:createProject.blankProject")}
+									</SelectItem>
 									{templates?.map((tmpl) => (
 										<SelectItem key={tmpl.id} value={tmpl.id}>
 											{tmpl.name}
@@ -170,8 +174,9 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
 									))}
 									{selectedTemplate.tasks.length > 0 && (
 										<span className="text-[10px] text-muted-foreground pl-1">
-											{selectedTemplate.tasks.length} sample task
-											{selectedTemplate.tasks.length !== 1 ? "s" : ""}
+											{t("templates:createProject.sampleTaskCount", {
+												count: selectedTemplate.tasks.length,
+											})}
 										</span>
 									)}
 								</div>
@@ -257,7 +262,7 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
 									id="project-key"
 									value={slug}
 									onChange={(e) => setSlug(e.target.value)}
-									placeholder="PRO"
+									placeholder={t("common:modals.createProject.keyPlaceholder")}
 									maxLength={8}
 									className="w-20 h-8 text-center font-semibold text-sm bg-background border-border rounded-lg transition-all duration-200"
 									required

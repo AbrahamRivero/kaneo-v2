@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import PageTitle from "@/components/page-title";
 import CreateTemplateModal from "@/components/shared/modals/create-template-modal";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
+	const { t } = useTranslation();
 	const { data: workspace } = useActiveWorkspace();
 	const workspaceId = workspace?.id ?? "";
 	const { data: templates, isLoading } = useListTemplates(workspaceId);
@@ -46,13 +48,12 @@ function RouteComponent() {
 
 	return (
 		<>
-			<PageTitle title="Project Templates" />
+			<PageTitle title={t("templates:pageTitle")} />
 			<div className="max-w-4xl mx-auto space-y-8">
 				<div className="space-y-2">
-					<h1 className="text-2xl font-semibold">Project Templates</h1>
+					<h1 className="text-2xl font-semibold">{t("templates:title")}</h1>
 					<p className="text-muted-foreground text-sm">
-						Pre-configured project setups with columns and tasks. Templates are
-						available when creating a new project.
+						{t("templates:description")}
 					</p>
 				</div>
 
@@ -62,7 +63,7 @@ function RouteComponent() {
 						onClose={() => setIsCreateOpen(false)}
 					/>
 					<Button size="sm" onClick={() => setIsCreateOpen(true)}>
-						Create Template
+						{t("templates:create.trigger")}
 					</Button>
 				</div>
 
@@ -77,7 +78,7 @@ function RouteComponent() {
 				{!isLoading && (!templates || templates.length === 0) && (
 					<div className="flex flex-col items-center gap-2 py-16 text-center">
 						<p className="text-sm text-muted-foreground">
-							No templates yet. Create one to get started.
+							{t("templates:empty.description")}
 						</p>
 					</div>
 				)}
@@ -102,12 +103,12 @@ function RouteComponent() {
 												</CardTitle>
 												{isBuiltIn && (
 													<span className="rounded-full border px-2 py-0.5 text-[10px] text-muted-foreground">
-														Built-in
+														{t("templates:builtIn")}
 													</span>
 												)}
 											</div>
 											<CardDescription className="text-xs">
-												{template.description ?? "No description"}
+												{template.description ?? t("templates:noDescription")}
 											</CardDescription>
 										</div>
 										{!isBuiltIn && (
@@ -124,7 +125,9 @@ function RouteComponent() {
 															<Trash2 className="size-4" />
 														</Button>
 													</TooltipTrigger>
-													<TooltipContent>Delete template</TooltipContent>
+													<TooltipContent>
+														{t("templates:deleteTooltip")}
+													</TooltipContent>
 												</Tooltip>
 											</TooltipProvider>
 										)}
@@ -142,8 +145,9 @@ function RouteComponent() {
 										</div>
 										{template.tasks.length > 0 && (
 											<p className="mt-2 text-xs text-muted-foreground">
-												{template.tasks.length} sample task
-												{template.tasks.length !== 1 ? "s" : ""}
+												{t("templates:createProject.sampleTaskCount", {
+													count: template.tasks.length,
+												})}
 											</p>
 										)}
 									</CardContent>

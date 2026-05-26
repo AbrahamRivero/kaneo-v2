@@ -260,6 +260,20 @@
 			"when": 1779665656847,
 			"tag": "0036_lively_morlocks",
 			"breakpoints": true
+		},
+		{
+			"idx": 37,
+			"version": "7",
+			"when": 1779679210983,
+			"tag": "0037_silent_stephen_strange",
+			"breakpoints": true
+		},
+		{
+			"idx": 38,
+			"version": "7",
+			"when": 1779801293979,
+			"tag": "0038_silky_nightcrawler",
+			"breakpoints": true
 		}
 	]
 }

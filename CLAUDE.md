@@ -294,3 +294,61 @@ export const exampleTable = pgTable("example", {
   index("example_projectId_idx").on(table.projectId),
 ]);
 ```
+
+<!-- Anchored Summary: i18n Localization Completion -->
+
+## Goal
+
+Complete i18n localization of all UI strings across the web app.
+
+## Progress
+
+### Done
+- **Intake Forms feature completely removed**: schema, API, frontend, migration, all references.
+- **Recurring Tasks integrated** with event/notification system (schema, migration, processor publishes `task.created`, WebSocket handlers).
+- **All 10 locale files** have identical key structures (en-US, es-ES, de-DE, fr-FR, nl-NL, ru-RU, uk-UA, el-GR, mk-MK, ko-KR).
+- **All 18 component files** have `useTranslation` imports or `i18n.t()` calls.
+- **8 supplier hook .ts files** use `i18n.t("suppliers:toast.*")`.
+- **create-project-modal.tsx**: Toast + placeholder use `t()`.
+- **create-template-modal.tsx**: Column defaults use `t()` via `getDefaultColumns()`.
+- **project-layout.tsx**, **workspace-layout.tsx**, **task-layout.tsx**: "Toggle sidebar" → `t("navigation.sidebar.toggleSidebar")`.
+- **status.tsx**: "Active"/"Pending" → `i18n.t("common:status.*")`.
+- **demo-alert.tsx**: Banner + deploy button → `t("common:demo.*")`.
+- **theme-toggle-dropdown.tsx**: "Toggle theme" → `t("common:theme.toggle")`.
+- **spinner.tsx**: `aria-label` → `i18n.t("common:spinner.loading")`.
+- **archive-tasks-modal.tsx**: Title, description (with plural), confirm → `t("common:modals.archiveTasks.*")`.
+- **delete-team-member-modal.tsx**: Title, description, buttons → `t("team:deleteMemberModal.*")`.
+- **modules.tsx**: Title, description, loading, toasts, category labels → `t("workspace:modules.*")`.
+- **device/index.tsx** + **device/approve.tsx**: All ~22 strings → `t("auth:device.*")`.
+- **New i18n keys added**: `common:status.*`, `common:demo.*`, `common:theme.*`, `common:spinner.*`, `common:modals.archiveTasks.*`, `team:deleteMemberModal.*`, `workspace:modules.categories.*`, `workspace:modules.description`, `workspace:modules.loading`, `auth:device.*`.
+- **`pnpm lint` passes clean** — all 6 packages.
+
+### Remaining Hardcoded Strings (low priority)
+- `components/kanban-board/task-labels.tsx`: `labelColors` array is a color-value mapping, not rendered text; label names come from API.
+- Feature utility audit gap report across 36 integration issues (Budgets, Suppliers, Recurring Tasks, Templates operate as silos).
+
+### Key Decisions
+- `.ts` files (hooks, lib utilities) use `import i18n from "i18next"` + `i18n.t()`.
+- `.tsx` components/route files use `useTranslation` hook + `t()`.
+- Archive modal uses i18next plural (`_one`/`_other`) for `{{count}}` interpolation.
+- Device auth strings live under `auth:device.*` namespace (not `common`).
+- Delete member modal uses its own `team:deleteMemberModal.*` keys (not `team:membersTable.*`).
+- Russian/Ukrainian locale files use `_one`/`_few`/`_other` plural forms.
+
+### Relevant Files
+- `i18n/*.json`: All 10 locale files updated with new keys.
+- `apps/web/src/lib/status.tsx`: Now localized (lib → `i18n.t()`).
+- `apps/web/src/components/demo-alert.tsx`: Now localized.
+- `apps/web/src/components/theme-toggle-dropdown.tsx`: Now localized.
+- `apps/web/src/components/ui/spinner.tsx`: Now localized (ui → `i18n.t()`).
+- `apps/web/src/components/shared/modals/archive-tasks-modal.tsx`: Now localized.
+- `apps/web/src/components/team/delete-team-member-modal.tsx`: Now localized.
+- `apps/web/src/components/common/workspace-layout.tsx`: Now localized.
+- `apps/web/src/components/common/task-layout.tsx`: Now localized.
+- `apps/web/src/routes/device/index.tsx` + `approve.tsx`: Now localized.
+- `apps/web/src/routes/.../settings/workspace/modules.tsx`: Now localized.
+- `apps/web/src/hooks/mutations/supplier/*.ts`: 8 files localized.
+- `apps/web/src/components/shared/modals/create-project-modal.tsx`: Localized.
+- `apps/web/src/components/shared/modals/create-template-modal.tsx`: Localized.
+- `apps/web/src/components/common/project-layout.tsx`: Localized earlier.
+```

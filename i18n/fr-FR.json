@@ -1,4 +1,4 @@
-{
+﻿{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -11,7 +11,8 @@
 			"remove": "Retirer",
 			"reset": "Réinitialiser",
 			"filter": "Filtrer",
-			"clearAllFilters": "Effacer tous les filtres"
+			"clearAllFilters": "Effacer tous les filtres",
+			"confirm": "Confirmer"
 		},
 		"a11y": {
 			"toggleSidebar": "Basculer la barre latérale"
@@ -32,7 +33,7 @@
 			"morePages": "Plus de pages"
 		},
 		"breadcrumb": {
-			"label": "Fil d'Ariane",
+			"label": "Fil d\u0027Ariane",
 			"more": "Plus"
 		},
 		"language": {
@@ -46,18 +47,32 @@
 			"korean": "Coréen"
 		},
 		"people": {
-			"someone": "Quelqu'un",
+			"someone": "Quelqu\u0027un",
 			"unknown": "Inconnu"
 		},
 		"error": {
-			"title": "Quelque chose s'est mal passé",
+			"title": "Quelque chose s\u0027est mal passé",
 			"troubleshooting": "Étapes de dépannage :",
 			"tryAgain": "Réessayer",
 			"viewDeploymentGuide": "Voir le guide de déploiement",
 			"refreshPage": "Rafraîchir la page"
 		},
+		"demo": {
+			"banner": "Ceci est un environnement de démonstration. Toutes les données seront automatiquement supprimées toutes les heures.",
+			"deployButton": "Déployer votre propre instance"
+		},
 		"formats": {
 			"never": "Jamais"
+		},
+		"status": {
+			"active": "Actif",
+			"pending": "En attente"
+		},
+		"spinner": {
+			"loading": "Chargement"
+		},
+		"theme": {
+			"toggle": "Changer le thème"
 		},
 		"modals": {
 			"createProject": {
@@ -72,25 +87,26 @@
 				"keyHint": "Utilisée pour les ID de tickets (par ex. {{example}}-123)",
 				"createButton": "Créer le projet",
 				"successToast": "Projet créé avec succès",
-				"errorToast": "Échec de la création du projet"
+				"errorToast": "Échec de la création du projet",
+				"keyPlaceholder": "PRO"
 			},
 			"createWorkspace": {
 				"breadcrumbKaneo": "KANEO",
 				"title": "Créer un nouvel espace de travail",
 				"description": "Créez un nouvel espace de travail en lui donnant un nom.",
-				"namePlaceholder": "Nom de l'espace de travail",
+				"namePlaceholder": "Nom de l\u0027espace de travail",
 				"descriptionPlaceholder": "Ajouter une description...",
-				"createButton": "Créer l'espace de travail",
+				"createButton": "Créer l\u0027espace de travail",
 				"successToast": "Espace de travail créé avec succès",
-				"errorToast": "Échec de la création de l'espace de travail"
+				"errorToast": "Échec de la création de l\u0027espace de travail"
 			},
 			"createTask": {
 				"breadcrumbTask": "TÂCHE",
 				"title": "Nouvelle tâche",
-				"description": "Créez une nouvelle tâche en fournissant un titre, une description et d'autres détails.",
+				"description": "Créez une nouvelle tâche en fournissant un titre, une description et d\u0027autres détails.",
 				"taskTitlePlaceholder": "Titre de la tâche",
 				"descriptionPlaceholder": "Ajoutez une description pour votre tâche...",
-				"chooseProjectForImages": "Choisissez un projet avant d'importer des images.",
+				"chooseProjectForImages": "Choisissez un projet avant d\u0027importer des images.",
 				"prepareTaskError": "Échec de la préparation de la tâche",
 				"successCreated": "Tâche créée avec succès",
 				"successUpdated": "Tâche mise à jour avec succès",
@@ -98,9 +114,9 @@
 				"priority": "Priorité",
 				"statusFallback": "En cours",
 				"startDate": "Date de début",
-				"dueDate": "Date d'échéance",
+				"dueDate": "Date d\u0027échéance",
 				"clearStartDate": "Supprimer la date de début",
-				"clearDueDate": "Supprimer la date d'échéance",
+				"clearDueDate": "Supprimer la date d\u0027échéance",
 				"assign": "Assigner",
 				"assignUnassigned": "Non assigné",
 				"assignUnassignedTitle": "Non assigné",
@@ -125,6 +141,11 @@
 					"rose": "Rose",
 					"crimson": "Cramoisi"
 				}
+			},
+			"archiveTasks": {
+				"title": "Archiver les tâches",
+				"description_one": "Voulez-vous vraiment archiver {{count}} tâche terminée ? Cela la déplacera du tableau actif vers les archives.",
+				"description_other": "Voulez-vous vraiment archiver les {{count}} tâches terminées ? Cela les déplacera du tableau actif vers les archives."
 			}
 		}
 	},
@@ -134,7 +155,7 @@
 			"title": "Content de te revoir",
 			"subtitle": "Entrez vos identifiants pour accéder à votre espace de travail",
 			"invitationSubtitle": "Connectez-vous pour accepter votre invitation",
-			"invitationAlert": "Après vous être connecté, vous pourrez accepter votre invitation à l'espace de travail.",
+			"invitationAlert": "Après vous être connecté, vous pourrez accepter votre invitation à l\u0027espace de travail.",
 			"signingIn": "Connexion...",
 			"continueWithGoogle": "Continuer avec Google",
 			"continueWithGithub": "Continuer avec GitHub",
@@ -143,10 +164,10 @@
 			"lastUsed": "Dernière utilisation",
 			"registrationDisabled": "Inscription publique désactivée. Utilisez une invitation pour créer un compte.",
 			"passwordRegistrationDisabled": "Inscription par mot de passe désactivée. Utilisez une méthode de connexion sociale ou OIDC configurée pour créer un compte.",
-			"toggleMessage": "Vous n'avez pas de compte ?",
+			"toggleMessage": "Vous n\u0027avez pas de compte ?",
 			"toggleLink": "Créer un compte",
-			"guestSuccess": "Connecté en tant qu'invité",
-			"guestError": "Échec de la connexion en tant qu'invité",
+			"guestSuccess": "Connecté en tant qu\u0027invité",
+			"guestError": "Échec de la connexion en tant qu\u0027invité",
 			"oidcError": "Échec de la connexion avec OIDC",
 			"googleError": "Échec de la connexion avec Google",
 			"githubError": "Échec de la connexion avec GitHub",
@@ -168,7 +189,7 @@
 		"checkEmail": {
 			"pageTitle": "Vérifier vos mails",
 			"title": "Vérifier vos mails",
-			"inboxMessage": "Nous vous avons envoyé un lien de connexion temporaire. Veuillez vérifier votre boîte de réception à l'adresse <email>{{email}}</email>.",
+			"inboxMessage": "Nous vous avons envoyé un lien de connexion temporaire. Veuillez vérifier votre boîte de réception à l\u0027adresse \u003cemail\u003e{{email}}\u003c/email\u003e.",
 			"emailFallback": "votre adresse email",
 			"backToLogin": "Retour à la connexion"
 		},
@@ -176,14 +197,14 @@
 			"pageTitle": "Créer un compte",
 			"title": "Créer un compte",
 			"subtitleInvitation": "Créer un compte pour accepter votre invitation",
-			"subtitleRegistrationDisabled": "L'inscription nécessite une invitation",
+			"subtitleRegistrationDisabled": "L\u0027inscription nécessite une invitation",
 			"subtitlePasswordDisabled": "Utilisez la connexion sociale ou OIDC pour créer un compte",
 			"subtitleDefault": "Commencez avec votre espace de travail",
-			"invitationAlert": "Après avoir créé votre compte, vous pourrez accepter votre invitation à l'espace de travail.",
-			"registrationDisabledAlert": "L'inscription est actuellement désactivée. Si vous avez été invité, entrez l'adresse e-mail qui a reçu l'invitation pour créer votre compte.",
+			"invitationAlert": "Après avoir créé votre compte, vous pourrez accepter votre invitation à l\u0027espace de travail.",
+			"registrationDisabledAlert": "L\u0027inscription est actuellement désactivée. Si vous avez été invité, entrez l\u0027adresse e-mail qui a reçu l\u0027invitation pour créer votre compte.",
 			"passwordDisabledAlert": "La création de compte par mot de passe est désactivée. Utilisez une méthode de connexion sociale ou OIDC configurée depuis la page de connexion.",
 			"signingIn": "Connexion...",
-			"continueAsGuest": "Continuer en tant qu'invité",
+			"continueAsGuest": "Continuer en tant qu\u0027invité",
 			"toggleMessage": "Vous avez déjà un compte?",
 			"toggleLink": "Se connecter"
 		},
@@ -195,7 +216,7 @@
 			"verificationCodeLabel": "Code de vérification",
 			"verifying": "Vérification...",
 			"verifyAndSignIn": "Vérifier et se connecter",
-			"changeEmail": "Changer l'email",
+			"changeEmail": "Changer l\u0027email",
 			"resend": "Renvoyer",
 			"validation": {
 				"codeLength": "Le code doit contenir 6 chiffres"
@@ -204,12 +225,12 @@
 				"invalidCode": "Code de vérification invalide",
 				"signedInSuccess": "Connecté avec succès!",
 				"verifyFailed": "Échec de la vérification du code",
-				"resendFailed": "Échec de l'envoi du code",
+				"resendFailed": "Échec de l\u0027envoi du code",
 				"resendSuccess": "Nouveau code de vérification envoyé!"
 			}
 		},
 		"otpSignIn": {
-			"sendFailed": "Échec de l'envoi du code de vérification",
+			"sendFailed": "Échec de l\u0027envoi du code de vérification",
 			"codeSent": "Code de vérification envoyé! Vérifiez votre e-mail.",
 			"sending": "Envoi...",
 			"sendVerificationCode": "Envoyer le code de vérification"
@@ -223,37 +244,37 @@
 		"signUpForm": {
 			"fullName": "Nom complet",
 			"namePlaceholder": "John Doe",
-			"failedSignUp": "Échec de l'inscription",
+			"failedSignUp": "Échec de l\u0027inscription",
 			"accountCreated": "Compte créé avec succès",
 			"passwordTooShort": "Le mot de passe est trop court",
 			"creatingAccount": "Création du compte...",
 			"createAccount": "Créer un compte"
 		},
 		"invitation": {
-			"pageTitleAccept": "Accepter l'invitation",
-			"pageTitleError": "Erreur d'invitation",
+			"pageTitleAccept": "Accepter l\u0027invitation",
+			"pageTitleError": "Erreur d\u0027invitation",
 			"pageTitleInvalid": "Invitation invalide",
-			"loadingTitle": "Chargement de l'invitation...",
-			"errorTitle": "Erreur d'invitation",
+			"loadingTitle": "Chargement de l\u0027invitation...",
+			"errorTitle": "Erreur d\u0027invitation",
 			"invalidTitle": "Invitation invalide",
 			"invitationExpired": "Invitation expirée",
-			"errorLoadDescription": "Échec du chargement des détails de l'invitation. L'invitation peut être invalide ou expirée.",
+			"errorLoadDescription": "Échec du chargement des détails de l\u0027invitation. L\u0027invitation peut être invalide ou expirée.",
 			"goToSignIn": "Aller à la connexion",
 			"workspaceLabel": "Espace de travail: {{workspaceName}}",
 			"joinWorkspace": "Rejoindre {{workspaceName}}",
-			"inviteBodySignedIn": "<inviter>{{inviterName}}</inviter> vous a invité à rejoindre son espace de travail.",
-			"inviteBodySignedOut": "<inviter>{{inviterName}}</inviter> vous a invité à rejoindre son espace de travail sur Kaneo.",
+			"inviteBodySignedIn": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e vous a invité à rejoindre son espace de travail.",
+			"inviteBodySignedOut": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e vous a invité à rejoindre son espace de travail sur Kaneo.",
 			"signInToAccept": "Connectez-vous pour accepter cette invitation.",
 			"accepting": "Acceptation...",
-			"acceptInvitation": "Accepter l'invitation",
+			"acceptInvitation": "Accepter l\u0027invitation",
 			"goToDashboard": "Aller au tableau de bord",
-			"signedInAs": "Connecté en tant que <email>{{email}}</email>",
+			"signedInAs": "Connecté en tant que \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"youveBeenInvited": "Vous avez été invité!",
-			"invitationFor": "Invitation pour: <email>{{email}}</email>",
+			"invitationFor": "Invitation pour: \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"signIn": "Se connecter",
 			"toast": {
-				"acceptFailed": "Échec de l'acceptation de l'invitation",
-				"acceptSuccess": "Invitation acceptée! Bienvenue dans l'équipe."
+				"acceptFailed": "Échec de l\u0027acceptation de l\u0027invitation",
+				"acceptSuccess": "Invitation acceptée! Bienvenue dans l\u0027équipe."
 			}
 		},
 		"onboarding": {
@@ -261,20 +282,20 @@
 			"workspacePageTitle": "Créer un espace de travail",
 			"createWorkspaceTitle": "Créer un espace de travail",
 			"createWorkspaceSubtitle": "Configurez votre espace de travail pour commencer à gérer des projets",
-			"workspaceName": "Nom de l'espace de travail",
+			"workspaceName": "Nom de l\u0027espace de travail",
 			"workspaceNamePlaceholder": "ex: Acme Inc, Mon équipe",
 			"descriptionOptional": "Description (optionnelle)",
 			"descriptionPlaceholder": "Sur quoi travaille votre équipe?",
 			"creating": "Création...",
 			"createWorkspace": "Créer un espace de travail",
 			"workspaceCreatedTitle": "Espace de travail créé",
-			"redirectingToWorkspace": "Redirection vers <name>{{name}}</name>...",
+			"redirectingToWorkspace": "Redirection vers \u003cname\u003e{{name}}\u003c/name\u003e...",
 			"toast": {
 				"workspaceCreated": "Espace de travail créé avec succès",
-				"createFailed": "Échec de la création de l'espace de travail"
+				"createFailed": "Échec de la création de l\u0027espace de travail"
 			},
 			"validation": {
-				"workspaceNameRequired": "Le nom de l'espace de travail est requis"
+				"workspaceNameRequired": "Le nom de l\u0027espace de travail est requis"
 			}
 		},
 		"profileSetup": {
@@ -295,6 +316,29 @@
 				"nameRequired": "Le nom est requis",
 				"nameShort": "Le nom doit contenir au moins 2 caractères"
 			}
+		},
+		"device": {
+			"pageTitle": "Connecter un appareil",
+			"pageSubtitle": "Saisissez le code affiché dans votre CLI ou application pour continuer.",
+			"codePlaceholder": "ex. ABCD-1234",
+			"continue": "Continuer",
+			"enterCodeToast": "Saisissez le code affiché sur votre appareil.",
+			"invalidOrExpiredCode": "Code invalide ou expiré",
+			"approvePageTitle": "Approuver l\u0027appareil",
+			"loadingSubtitle": "Chargement…",
+			"checkingSession": "Vérification de la session…",
+			"noCodeProvided": "Aucun code d\u0027appareil fourni.",
+			"enterACode": "Saisir un code",
+			"signInToContinue": "Connectez-vous pour continuer",
+			"signInToApprove": "Connectez-vous pour approuver ou refuser cette demande d\u0027appareil.",
+			"requestingAccess": "Un appareil demande l\u0027accès à votre compte Kaneo.",
+			"signIn": "Se connecter",
+			"couldNotApprove": "Impossible d\u0027approuver",
+			"deviceConnected": "Appareil connecté",
+			"couldNotDeny": "Impossible de refuser",
+			"requestCancelled": "Demande annulée",
+			"approve": "Approuver",
+			"deny": "Refuser"
 		}
 	},
 	"settings": {
@@ -423,7 +467,7 @@
 			"themeDark": "Sombre",
 			"themeSystem": "Système",
 			"language": "Langue",
-			"languageDescription": "Choisissez la langue de l'interface",
+			"languageDescription": "Choisissez la langue de l\u0027interface",
 			"selectLanguage": "Sélectionnez une langue",
 			"firstDayOfWeek": "Premier jour de la semaine",
 			"firstDayOfWeekDescription": "Choisissez si les calendriers et les semaines commencent le dimanche ou le lundi",
@@ -431,21 +475,21 @@
 			"weekStartsOnSunday": "Dimanche",
 			"weekStartsOnMonday": "Lundi",
 			"defaultView": "Vue par défaut",
-			"defaultViewDescription": "Choisissez votre mode d'affichage des tâches préféré",
-			"selectViewMode": "Sélectionnez un mode d'affichage",
+			"defaultViewDescription": "Choisissez votre mode d\u0027affichage des tâches préféré",
+			"selectViewMode": "Sélectionnez un mode d\u0027affichage",
 			"board": "Tableau",
 			"list": "Liste",
 			"gantt": "Gantt",
 			"sidebarDefault": "Barre latérale par défaut",
 			"sidebarDefaultDescription": "Garder la barre latérale ouverte au démarrage",
-			"displayOptions": "Options d'affichage",
+			"displayOptions": "Options d\u0027affichage",
 			"displayOptionsDescription": "Choisissez les informations à afficher dans les vues de tâches",
 			"taskNumbers": "Numéros de tâches",
 			"taskNumbersDescription": "Afficher les ID et numéros de tâches",
 			"assignees": "Assignés",
 			"assigneesDescription": "Afficher les personnes assignées aux tâches",
-			"dueDates": "Dates d'échéance",
-			"dueDatesDescription": "Afficher les dates d'échéance des tâches",
+			"dueDates": "Dates d\u0027échéance",
+			"dueDatesDescription": "Afficher les dates d\u0027échéance des tâches",
 			"labels": "Labels",
 			"labelsDescription": "Afficher les labels et tags des tâches",
 			"priority": "Priorité",
@@ -495,7 +539,7 @@
 			},
 			"createDialog": {
 				"title": "Créer une clé API",
-				"description": "Créez une nouvelle clé API pour accéder à l'API Kaneo par programme.",
+				"description": "Créez une nouvelle clé API pour accéder à l\u0027API Kaneo par programme.",
 				"nameLabel": "Nom",
 				"namePlaceholder": "Ma clé API",
 				"nameDescription": "Un nom descriptif pour cette clé API",
@@ -513,7 +557,7 @@
 				"validation": {
 					"nameRequired": "Le nom est requis",
 					"nameShort": "Le nom doit contenir au moins 3 caractères",
-					"expirationRequired": "Une date d'expiration est requise"
+					"expirationRequired": "Une date d\u0027expiration est requise"
 				}
 			}
 		},
@@ -521,38 +565,38 @@
 			"pageTitle": "Paramètres Généraux",
 			"title": "Paramètres Généraux",
 			"subtitle": "Gérez le nom et la description de votre espace de travail.",
-			"workspaceInfoTitle": "Informations sur l'espace de travail",
+			"workspaceInfoTitle": "Informations sur l\u0027espace de travail",
 			"workspaceInfoSubtitle": "Configurez les détails et les préférences de votre espace de travail.",
-			"nameLabel": "Nom de l'espace de travail",
+			"nameLabel": "Nom de l\u0027espace de travail",
 			"nameHint": "Le nom de votre espace de travail",
-			"namePlaceholder": "Entrez le nom de l'espace de travail",
+			"namePlaceholder": "Entrez le nom de l\u0027espace de travail",
 			"descriptionLabel": "Description",
 			"descriptionHint": "Une brève description de votre espace de travail",
-			"descriptionPlaceholder": "Entrez la description de l'espace de travail",
+			"descriptionPlaceholder": "Entrez la description de l\u0027espace de travail",
 			"dangerZone": "Zone dangereuse",
 			"dangerZoneSubtitle": "Actions irréversibles et destructrices.",
-			"deleteWorkspace": "Supprimer l'espace de travail",
-			"deleteWorkspaceDescription": "Planifier la suppression définitive de l'espace de travail",
-			"deleteModalTitle": "Supprimer l'espace de travail?",
-			"deleteModalDescription": "Cela supprimera définitivement l'espace de travail \"{{name}}\" et toutes ses données. Cette action ne peut pas être annulée.",
-			"deleteModalConfirm": "Supprimer l'espace de travail",
+			"deleteWorkspace": "Supprimer l\u0027espace de travail",
+			"deleteWorkspaceDescription": "Planifier la suppression définitive de l\u0027espace de travail",
+			"deleteModalTitle": "Supprimer l\u0027espace de travail?",
+			"deleteModalDescription": "Cela supprimera définitivement l\u0027espace de travail \"{{name}}\" et toutes ses données. Cette action ne peut pas être annulée.",
+			"deleteModalConfirm": "Supprimer l\u0027espace de travail",
 			"toastUpdated": "Espace de travail mis à jour avec succès",
-			"toastUpdateError": "Échec de la mise à jour de l'espace de travail",
+			"toastUpdateError": "Échec de la mise à jour de l\u0027espace de travail",
 			"toastDeleted": "Espace de travail supprimé avec succès",
-			"toastDeleteError": "Échec de la suppression de l'espace de travail",
+			"toastDeleteError": "Échec de la suppression de l\u0027espace de travail",
 			"validation": {
-				"nameRequired": "Le nom de l'espace de travail est requis",
-				"nameShort": "Le nom de l'espace de travail doit contenir au moins 2 caractères"
+				"nameRequired": "Le nom de l\u0027espace de travail est requis",
+				"nameShort": "Le nom de l\u0027espace de travail doit contenir au moins 2 caractères"
 			}
 		},
 		"projectGeneral": {
 			"pageTitle": "Paramètres du projet",
 			"title": "Paramètres Généraux",
-			"subtitle": "Gérez le nom, la clé, l'icône et la description de votre projet.",
+			"subtitle": "Gérez le nom, la clé, l\u0027icône et la description de votre projet.",
 			"projectInfoTitle": "Informations sur le projet",
 			"projectInfoSubtitle": "Configurez les détails et les préférences de votre projet.",
 			"iconLabel": "Icône",
-			"iconHint": "S'affiche dans la barre latérale et les surfaces du projet.",
+			"iconHint": "S\u0027affiche dans la barre latérale et les surfaces du projet.",
 			"pickIconTitle": "Choisir une icône",
 			"searchIconsPlaceholder": "Rechercher des icônes...",
 			"projectNameLabel": "Nom du projet",
@@ -581,12 +625,12 @@
 				"keyRequired": "La clé est requise",
 				"keyShort": "La clé doit contenir au moins 2 caractères",
 				"keyMax": "La clé doit contenir au plus 8 caractères",
-				"iconRequired": "L'icône est requise"
+				"iconRequired": "L\u0027icône est requise"
 			},
 			"importExportTasks": "Importation/Exportation",
 			"importExportTasksDescription": "Importation/Exportation des Tâches",
 			"projectStatus": "Statut du projet",
-			"projectStatusSubtitle": "Gérer les paramètres d'archivage du projet.",
+			"projectStatusSubtitle": "Gérer les paramètres d\u0027archivage du projet.",
 			"archiveProject": "Archiver le projet",
 			"archiveProjectDescription": "Archiver le projet et le masquer de la vue principale",
 			"archiveModalTitle": "Archiver le projet ?",
@@ -600,7 +644,7 @@
 			"unarchiveModalConfirm": "Désarchiver le projet",
 			"unarchivingProject": "Désarchivage...",
 			"toastArchived": "Projet archivé avec succès",
-			"toastArchiveError": "Échec de l'archivage du projet",
+			"toastArchiveError": "Échec de l\u0027archivage du projet",
 			"toastUnarchived": "Projet désarchivé avec succès",
 			"toastUnarchiveError": "Échec du désarchivage du projet"
 		},
@@ -617,7 +661,7 @@
 			"discordSectionTitle": "Intégration Discord",
 			"discordSectionSubtitle": "Envoyez les mises à jour des tâches du projet dans un canal Discord via un webhook.",
 			"genericWebhookSectionTitle": "Webhooks génériques",
-			"genericWebhookSectionSubtitle": "Envoyez les événements des tâches du projet vers n'importe quel point de terminaison HTTP au format JSON.",
+			"genericWebhookSectionSubtitle": "Envoyez les événements des tâches du projet vers n\u0027importe quel point de terminaison HTTP au format JSON.",
 			"slackSectionTitle": "Intégration Slack",
 			"slackSectionSubtitle": "Envoyez les mises à jour des tâches du projet dans un canal Slack via un webhook entrant."
 		},
@@ -626,9 +670,9 @@
 			"title": "Visibilité",
 			"subtitle": "Contrôlez qui peut voir et accéder à votre projet.",
 			"sectionTitle": "Visibilité",
-			"sectionSubtitle": "Activez l'accès public et partagez l'URL publique.",
+			"sectionSubtitle": "Activez l\u0027accès public et partagez l\u0027URL publique.",
 			"publicAccess": "Accès public",
-			"publicAccessHint": "Permet à toute personne disposant de l'URL de visualiser ce projet",
+			"publicAccessHint": "Permet à toute personne disposant de l\u0027URL de visualiser ce projet",
 			"publicUrl": "URL publique",
 			"publicUrlHint": "Partagez ce lien si le projet est public",
 			"copy": "Copier",
@@ -639,11 +683,11 @@
 		"projectWorkflow": {
 			"pageTitle": "Paramètres du flux de travail",
 			"title": "Flux de travail",
-			"subtitle": "Configurez les colonnes du tableau et les règles d'automatisation pour ce projet.",
+			"subtitle": "Configurez les colonnes du tableau et les règles d\u0027automatisation pour ce projet.",
 			"columnsTitle": "Colonnes",
 			"columnsDescription": "Gérez les colonnes qui apparaissent sur votre tableau. Faites glisser pour réorganiser. Activez \"Colonne terminée\" pour les étapes qui représentent le travail terminé.",
-			"automationTitle": "Règles d'automatisation",
-			"automationDescription": "Mappez les événements d'intégration aux colonnes. Lorsqu'un événement se produit, la tâche liée se déplace vers la colonne spécifiée."
+			"automationTitle": "Règles d\u0027automatisation",
+			"automationDescription": "Mappez les événements d\u0027intégration aux colonnes. Lorsqu\u0027un événement se produit, la tâche liée se déplace vers la colonne spécifiée."
 		},
 		"projectSwitcher": {
 			"selectProject": "Sélectionner un projet",
@@ -655,7 +699,7 @@
 			"toastRenamed": "Colonne renommée",
 			"toastRenameError": "Échec de la mise à jour de la colonne",
 			"toastFinalOn": "Colonne marquée comme terminée",
-			"toastFinalOff": "La colonne n'est plus marquée comme terminée",
+			"toastFinalOff": "La colonne n\u0027est plus marquée comme terminée",
 			"toastUpdateError": "Échec de la mise à jour de la colonne",
 			"toastDeleted": "Colonne supprimée",
 			"toastDeleteError": "Échec de la suppression de la colonne",
@@ -676,22 +720,22 @@
 				"nameInvalid": "Format de nom de dépôt invalide"
 			},
 			"toast": {
-				"installedOk": "L'application GitHub est correctement installée!",
-				"installedMissingPerms": "L'application GitHub est installée mais manque des permissions requises",
-				"needsInstallOnRepo": "L'application GitHub doit être installée sur ce dépôt",
+				"installedOk": "L\u0027application GitHub est correctement installée!",
+				"installedMissingPerms": "L\u0027application GitHub est installée mais manque des permissions requises",
+				"needsInstallOnRepo": "L\u0027application GitHub doit être installée sur ce dépôt",
 				"repoNotFound": "Dépôt non trouvé ou inaccessible",
-				"verifyError": "Échec de la vérification de l'installation GitHub",
-				"installAppFirst": "Veuillez installer l'application GitHub sur ce dépôt en premier",
-				"missingPermsDetail": "L'application GitHub manque des permissions requises: {{list}}. Veuillez mettre à jour les permissions de l'application.",
+				"verifyError": "Échec de la vérification de l\u0027installation GitHub",
+				"installAppFirst": "Veuillez installer l\u0027application GitHub sur ce dépôt en premier",
+				"missingPermsDetail": "L\u0027application GitHub manque des permissions requises: {{list}}. Veuillez mettre à jour les permissions de l\u0027application.",
 				"updated": "Intégration GitHub mise à jour avec succès",
-				"updateError": "Échec de la mise à jour de l'intégration GitHub",
+				"updateError": "Échec de la mise à jour de l\u0027intégration GitHub",
 				"removed": "Intégration GitHub supprimée avec succès",
-				"removeError": "Échec de la suppression de l'intégration GitHub",
+				"removeError": "Échec de la suppression de l\u0027intégration GitHub",
 				"issuesImported": "Problèmes importés avec succès",
-				"importError": "Échec de l'importation des problèmes",
+				"importError": "Échec de l\u0027importation des problèmes",
 				"commentOnEnabled": "Kaneo laissera un commentaire avec un lien de tâche sur les nouveaux problèmes",
 				"commentOnDisabled": "Les commentaires de lien de tâche sur les nouveaux problèmes sont désactivés",
-				"settingsUpdateError": "Échec de la mise à jour de l'intégration GitHub"
+				"settingsUpdateError": "Échec de la mise à jour de l\u0027intégration GitHub"
 			},
 			"connectionStatus": "Statut de la connexion",
 			"connectedActive": "Dépôt connecté et actif",
@@ -702,13 +746,13 @@
 			"repositoryHint": "Dépôt GitHub connecté",
 			"commentTaskLinkTitle": "Commenter le lien Kaneo sur les nouveaux problèmes",
 			"commentTaskLinkHint": "Lorsque cette option est activée, Kaneo publie un commentaire avec un lien de tâche sur chaque nouveau problème GitHub.",
-			"appStatusTitle": "Statut de l'application GitHub",
-			"appStatusHint": "Statut d'installation et de permissions",
+			"appStatusTitle": "Statut de l\u0027application GitHub",
+			"appStatusHint": "Statut d\u0027installation et de permissions",
 			"statusProperlyConfigured": "Correctement configuré",
 			"statusMissingPermissions": "Permissions manquantes",
 			"statusNotInstalled": "Non installé",
 			"ownerLabel": "Propriétaire du dépôt",
-			"ownerHint": "Nom d'utilisateur ou organisation GitHub",
+			"ownerHint": "Nom d\u0027utilisateur ou organisation GitHub",
 			"ownerPlaceholder": "e.g., octocat",
 			"repoNameLabel": "Nom du dépôt",
 			"repoNameHint": "Le nom du dépôt",
@@ -722,12 +766,12 @@
 			"disconnect": "Déconnecter",
 			"missingPermissionsLabel": "Permissions manquantes:",
 			"updatePermissions": "Mettre à jour les permissions",
-			"installGithubApp": "Installer l'application GitHub",
+			"installGithubApp": "Installer l\u0027application GitHub",
 			"importSectionTitle": "Importer les problèmes GitHub",
 			"importSectionHint": "Importer les problèmes existants de votre dépôt GitHub en tant que tâches",
 			"importing": "Importation...",
 			"importIssues": "Importer les problèmes",
-			"importDisabledHint": "Complétez la configuration du dépôt ci-dessus pour activer l'importation"
+			"importDisabledHint": "Complétez la configuration du dépôt ci-dessus pour activer l\u0027importation"
 		},
 		"giteaIntegration": {
 			"validation": {
@@ -809,12 +853,12 @@
 			},
 			"toast": {
 				"saved": "Intégration Slack enregistrée avec succès",
-				"saveError": "Échec de l'enregistrement de l'intégration Slack",
+				"saveError": "Échec de l\u0027enregistrement de l\u0027intégration Slack",
 				"enabled": "Notifications Slack activées",
 				"disabled": "Notifications Slack en pause",
-				"updateError": "Échec de la mise à jour de l'intégration Slack",
+				"updateError": "Échec de la mise à jour de l\u0027intégration Slack",
 				"removed": "Intégration Slack supprimée avec succès",
-				"removeError": "Échec de la suppression de l'intégration Slack"
+				"removeError": "Échec de la suppression de l\u0027intégration Slack"
 			},
 			"connectionTitle": "Connexion webhook Slack",
 			"connectionHint": "Collez une URL de webhook entrant Slack et choisissez les événements de tâche à publier.",
@@ -822,11 +866,11 @@
 			"paused": "En pause",
 			"webhookLabel": "URL du webhook entrant",
 			"webhookPlaceholder": "https://hooks.slack.com/services/...",
-			"webhookHint": "Créez un webhook entrant dans Slack et collez l'URL générée ici.",
+			"webhookHint": "Créez un webhook entrant dans Slack et collez l\u0027URL générée ici.",
 			"channelLabel": "Nom du canal",
 			"channelPlaceholder": "#team-updates",
 			"channelHint": "Libellé facultatif pour votre référence. Slack contrôle le canal réel via la configuration du webhook.",
-			"eventsTitle": "Notifications d'événements",
+			"eventsTitle": "Notifications d\u0027événements",
 			"eventsHint": "Choisissez les changements de projet à envoyer vers Slack.",
 			"events": {
 				"taskCreated": "Nouvelles tâches",
@@ -847,12 +891,12 @@
 			},
 			"toast": {
 				"saved": "Intégration Discord enregistrée avec succès",
-				"saveError": "Échec de l'enregistrement de l'intégration Discord",
+				"saveError": "Échec de l\u0027enregistrement de l\u0027intégration Discord",
 				"enabled": "Notifications Discord activées",
 				"disabled": "Notifications Discord en pause",
-				"updateError": "Échec de la mise à jour de l'intégration Discord",
+				"updateError": "Échec de la mise à jour de l\u0027intégration Discord",
 				"removed": "Intégration Discord supprimée avec succès",
-				"removeError": "Échec de la suppression de l'intégration Discord"
+				"removeError": "Échec de la suppression de l\u0027intégration Discord"
 			},
 			"connectionTitle": "Connexion webhook Discord",
 			"connectionHint": "Collez une URL de webhook Discord et choisissez les événements de tâche à publier.",
@@ -860,11 +904,11 @@
 			"paused": "En pause",
 			"webhookLabel": "URL du webhook",
 			"webhookPlaceholder": "https://discord.com/api/webhooks/...",
-			"webhookHint": "Créez un webhook de canal dans Discord et collez l'URL générée ici.",
+			"webhookHint": "Créez un webhook de canal dans Discord et collez l\u0027URL générée ici.",
 			"channelLabel": "Nom du canal",
 			"channelPlaceholder": "#team-updates",
 			"channelHint": "Libellé facultatif pour votre référence. Discord contrôle le canal réel via la configuration du webhook.",
-			"eventsTitle": "Notifications d'événements",
+			"eventsTitle": "Notifications d\u0027événements",
 			"eventsHint": "Choisissez les changements de projet à envoyer vers Discord.",
 			"events": {
 				"taskCreated": "Nouvelles tâches",
@@ -885,15 +929,15 @@
 			},
 			"toast": {
 				"saved": "Intégration webhook générique enregistrée avec succès",
-				"saveError": "Échec de l'enregistrement de l'intégration webhook générique",
+				"saveError": "Échec de l\u0027enregistrement de l\u0027intégration webhook générique",
 				"enabled": "Notifications webhook génériques activées",
 				"disabled": "Notifications webhook génériques en pause",
-				"updateError": "Échec de la mise à jour de l'intégration webhook générique",
+				"updateError": "Échec de la mise à jour de l\u0027intégration webhook générique",
 				"removed": "Intégration webhook générique supprimée avec succès",
-				"removeError": "Échec de la suppression de l'intégration webhook générique"
+				"removeError": "Échec de la suppression de l\u0027intégration webhook générique"
 			},
 			"connectionTitle": "Connexion webhook sortant",
-			"connectionHint": "Envoyez les événements de tâche en JSON vers votre propre point de terminaison. Un en-tête signé X-Kaneo-Signature est inclus lorsqu'un secret est configuré.",
+			"connectionHint": "Envoyez les événements de tâche en JSON vers votre propre point de terminaison. Un en-tête signé X-Kaneo-Signature est inclus lorsqu\u0027un secret est configuré.",
 			"connected": "Connecté",
 			"paused": "En pause",
 			"webhookLabel": "URL du point de terminaison",
@@ -901,9 +945,9 @@
 			"webhookHint": "Kaneo envoie des requêtes POST avec une charge JSON pour chaque événement activé.",
 			"secretLabel": "Secret de signature",
 			"secretPlaceholder": "Secret partagé facultatif",
-			"secretHint": "Facultatif. Si défini, Kaneo signe le corps de la requête et envoie le digest hexadécimal dans l'en-tête X-Kaneo-Signature.",
+			"secretHint": "Facultatif. Si défini, Kaneo signe le corps de la requête et envoie le digest hexadécimal dans l\u0027en-tête X-Kaneo-Signature.",
 			"secretHintConfigured": "Un secret de signature est déjà configuré ({{secret}}). Entrez-en un nouveau pour le remplacer.",
-			"eventsTitle": "Notifications d'événements",
+			"eventsTitle": "Notifications d\u0027événements",
 			"eventsHint": "Choisissez les changements de projet qui déclenchent les webhooks sortants.",
 			"events": {
 				"taskCreated": "Nouvelles tâches",
@@ -920,17 +964,17 @@
 		"telegramIntegration": {
 			"validation": {
 				"botTokenInvalid": "Entrez un jeton de bot Telegram valide",
-				"chatIdRequired": "L'identifiant du chat est requis",
+				"chatIdRequired": "L\u0027identifiant du chat est requis",
 				"threadIdInvalid": "Entrez un identifiant de sujet Telegram valide"
 			},
 			"toast": {
 				"saved": "Intégration Telegram enregistrée avec succès",
-				"saveError": "Échec de l'enregistrement de l'intégration Telegram",
+				"saveError": "Échec de l\u0027enregistrement de l\u0027intégration Telegram",
 				"enabled": "Notifications Telegram activées",
 				"disabled": "Notifications Telegram mises en pause",
-				"updateError": "Échec de la mise à jour de l'intégration Telegram",
+				"updateError": "Échec de la mise à jour de l\u0027intégration Telegram",
 				"removed": "Intégration Telegram supprimée avec succès",
-				"removeError": "Échec de la suppression de l'intégration Telegram"
+				"removeError": "Échec de la suppression de l\u0027intégration Telegram"
 			},
 			"connectionTitle": "Connexion du bot Telegram",
 			"connectionHint": "Utilisez un jeton de bot Telegram et un identifiant de chat pour envoyer les mises à jour du projet dans un chat ou un sujet.",
@@ -942,14 +986,14 @@
 			"botTokenHintConfigured": "Un jeton de bot est déjà configuré ({{token}}). Entrez-en un nouveau pour le remplacer.",
 			"chatIdLabel": "Identifiant du chat",
 			"chatIdPlaceholder": "-1001234567890 ou @team_updates",
-			"chatIdHint": "Entrez l'identifiant du chat Telegram ou le nom d'utilisateur du canal où publier les mises à jour.",
+			"chatIdHint": "Entrez l\u0027identifiant du chat Telegram ou le nom d\u0027utilisateur du canal où publier les mises à jour.",
 			"threadIdLabel": "Identifiant du sujet",
 			"threadIdPlaceholder": "Identifiant de sujet facultatif",
 			"threadIdHint": "Facultatif. Utilisez-le pour les sujets de forum dans les groupes Telegram.",
 			"chatLabelLabel": "Libellé du chat",
 			"chatLabelPlaceholder": "Mises à jour engineering",
 			"chatLabelHint": "Libellé facultatif pour votre référence dans Kaneo.",
-			"eventsTitle": "Notifications d'événements",
+			"eventsTitle": "Notifications d\u0027événements",
 			"eventsHint": "Choisissez les changements du projet à publier dans Telegram.",
 			"events": {
 				"taskCreated": "Nouvelles tâches",
@@ -970,10 +1014,10 @@
 			"loadError": "Échec du chargement des dépôts",
 			"tryAgain": "Réessayer",
 			"emptyTitle": "Aucun dépôt trouvé",
-			"emptyHint": "Installez l'application GitHub sur vos dépôts pour les voir ici.",
-			"installGithubApp": "Installer l'application GitHub",
+			"emptyHint": "Installez l\u0027application GitHub sur vos dépôts pour les voir ici.",
+			"installGithubApp": "Installer l\u0027application GitHub",
 			"noSearchMatchTitle": "Aucun dépôt ne correspond à votre recherche",
-			"noSearchMatchHint": "Essayez d'ajuster vos termes de recherche ou effacez la recherche pour voir tous les dépôts.",
+			"noSearchMatchHint": "Essayez d\u0027ajuster vos termes de recherche ou effacez la recherche pour voir tous les dépôts.",
 			"footerSummary": "{{repoCount}} dépôts répartis sur {{installationCount}} installations",
 			"manageInstallations": "Gérer les installations",
 			"updatedPrefix": "Mis à jour",
@@ -992,20 +1036,20 @@
 			"selectFile": "Sélectionner un fichier",
 			"exporting": "Exportation des tâches...",
 			"exportSuccess": "Tâches exportées avec succès",
-			"exportError": "Échec de l'exportation des tâches",
+			"exportError": "Échec de l\u0027exportation des tâches",
 			"importing": "Importation des tâches...",
 			"importSuccess": "Importation réussie de {{count}} tâches",
-			"importPartialError": "Échec de l'importation de {{count}} tâches",
-			"importError": "Échec de l'importation des tâches",
-			"invalidFormat": "Format de fichier d'importation invalide",
-			"noFileDropped": "Aucun fichier n'a été déposé",
+			"importPartialError": "Échec de l\u0027importation de {{count}} tâches",
+			"importError": "Échec de l\u0027importation des tâches",
+			"invalidFormat": "Format de fichier d\u0027importation invalide",
+			"noFileDropped": "Aucun fichier n\u0027a été déposé",
 			"notJsonFile": "Veuillez importer un fichier JSON"
 		},
 		"workflowEditor": {
 			"loading": "Chargement...",
-			"createColumnsFirst": "Créez des colonnes d'abord pour configurer les règles d'automatisation.",
+			"createColumnsFirst": "Créez des colonnes d\u0027abord pour configurer les règles d\u0027automatisation.",
 			"githubHeading": "GitHub",
-			"githubHint": "Lorsqu'un événement GitHub se produit, déplacez la tâche liée vers une colonne.",
+			"githubHint": "Lorsqu\u0027un événement GitHub se produit, déplacez la tâche liée vers une colonne.",
 			"selectColumnPlaceholder": "Sélectionner une colonne...",
 			"toastUpdated": "Règle de workflow mise à jour",
 			"toastError": "Échec de la mise à jour de la règle",
@@ -1027,6 +1071,13 @@
 		}
 	},
 	"navigation": {
+		"projectViews": {
+			"title": "Vue",
+			"backlog": "Backlog",
+			"board": "Tâches",
+			"gantt": "Gantt",
+			"recurring": "Récurrent"
+		},
 		"commandPalette": {
 			"suggestions": "Suggestions",
 			"commands": "Commandes",
@@ -1050,13 +1101,14 @@
 		},
 		"notifications": "Notifications",
 		"sidebar": {
-			"overview": "Vue d'ensemble",
+			"overview": "Vue d\u0027ensemble",
 			"projects": "Projets",
 			"archivedProjects": "Projets archivés",
 			"members": "Membres",
 			"invitations": "Invitations",
 			"more": "Plus",
-			"backToBoard": "Retour au tableau"
+			"backToBoard": "Retour au tableau",
+			"toggleSidebar": "Afficher/Masquer la barre latérale"
 		},
 		"projectList": {
 			"viewProject": "Voir le projet",
@@ -1110,7 +1162,7 @@
 		"page": {
 			"projectsTitle": "Projets",
 			"settingsTitle": "Paramètres",
-			"backToWorkspace": "Retour à l'espace de travail",
+			"backToWorkspace": "Retour à l\u0027espace de travail",
 			"settingsWorkspaceTab": "Espace de travail"
 		},
 		"projectSettings": {
@@ -1120,7 +1172,7 @@
 			"title": "Raccourcis clavier",
 			"subtitle": "Accélérez votre flux de travail avec les raccourcis clavier",
 			"searchPlaceholder": "Rechercher des raccourcis...",
-			"footer": "Appuyez sur <kbd>Echap</kbd> pour fermer",
+			"footer": "Appuyez sur \u003ckbd\u003eEchap\u003c/kbd\u003e pour fermer",
 			"categories": {
 				"general": "Général",
 				"create": "Créer",
@@ -1152,7 +1204,7 @@
 		"newCount_one": "{{count}} nouvelle",
 		"newCount_other": "{{count}} nouvelles",
 		"emptyTitle": "Aucune notification pour le moment",
-		"emptySubtitle": "Vous verrez les mises à jour et l'activité ici.",
+		"emptySubtitle": "Vous verrez les mises à jour et l\u0027activité ici.",
 		"clearAll": "Effacer toutes les notifications",
 		"clearDialogTitle": "Effacer toutes les notifications?",
 		"clearDialogDescription": "Cela supprimera définitivement toutes les notifications. Vous ne pouvez pas annuler cette action.",
@@ -1192,14 +1244,14 @@
 		}
 	},
 	"activity": {
-		"assignedToSelf": "s'est assigné la tâche",
+		"assignedToSelf": "s\u0027est assigné la tâche",
 		"unassigned": "a désassigné la tâche",
 		"assignedTo": "a assigné la tâche à {{name}}",
 		"changedStatus": "a changé le statut de {{from}} à {{to}}",
 		"changedPriority": "a changé la priorité de {{from}} à {{to}}",
-		"clearedDueDate": "a effacé la date d'échéance",
-		"setDueDate": "a défini la date d'échéance à {{date}}",
-		"changedDueDate": "a changé la date d'échéance de {{from}} à {{to}}",
+		"clearedDueDate": "a effacé la date d\u0027échéance",
+		"setDueDate": "a défini la date d\u0027échéance à {{date}}",
+		"changedDueDate": "a changé la date d\u0027échéance de {{from}} à {{to}}",
 		"changedTitle": "a changé le titre de \"{{from}}\" à \"{{to}}\"",
 		"created": "a créé cette tâche",
 		"moved": "a déplacé la tâche de \"{{from}}\" à \"{{to}}\"",
@@ -1216,7 +1268,7 @@
 			"editPlaceholder": "Modifier le commentaire...",
 			"save": "Enregistrer",
 			"added": "Commentaire ajouté",
-			"failedToAdd": "Échec de l'ajout du commentaire",
+			"failedToAdd": "Échec de l\u0027ajout du commentaire",
 			"leavePlaceholder": "Laisser un commentaire...",
 			"attachFile": "Joindre un fichier",
 			"submitShortcut": "Soumettre le commentaire",
@@ -1256,7 +1308,7 @@
 				"keepAsLink": "Conserver comme lien",
 				"hintTab": "Tab",
 				"hintEsc": "Esc",
-				"pasteUrl": "Coller l'URL",
+				"pasteUrl": "Coller l\u0027URL",
 				"asLink": "Comme lien",
 				"embed": "Intégrer",
 				"noCommands": "Aucune commande",
@@ -1266,8 +1318,8 @@
 				"ariaCopied": "Copié",
 				"copy": "Copier",
 				"copied": "Copié",
-				"dropImageToUpload": "Déposer l'image pour téléverser",
-				"previewImageAlt": "Aperçu de l'image",
+				"dropImageToUpload": "Déposer l\u0027image pour téléverser",
+				"previewImageAlt": "Aperçu de l\u0027image",
 				"codeLang": {
 					"bash": "Bash",
 					"csharp": "C#",
@@ -1318,7 +1370,7 @@
 			"selectTask": "Sélectionner une tâche",
 			"loadingTask": "Chargement de la tâche...",
 			"taskNotFound": "Tâche non trouvée",
-			"taskNotFoundDescription": "La tâche que vous recherchez n'existe pas ou a été supprimée."
+			"taskNotFoundDescription": "La tâche que vous recherchez n\u0027existe pas ou a été supprimée."
 		},
 		"detail": {
 			"subtaskOf": "Sous-tâche de",
@@ -1330,14 +1382,14 @@
 			"editor": {
 				"ariaLabel": "Éditeur de description de tâche",
 				"placeholder": "Écrire une description...",
-				"previewImage": "Aperçu de l'image",
+				"previewImage": "Aperçu de l\u0027image",
 				"enterUrl": "Entrer une URL",
 				"autoDetect": "Détection automatique",
 				"copyCode": "Copier le code",
 				"copy": "Copier",
 				"copied": "Copié",
 				"attachFile": "Joindre un fichier",
-				"dropToUpload": "Déposer l'image pour téléverser",
+				"dropToUpload": "Déposer l\u0027image pour téléverser",
 				"checkbox": {
 					"markIncomplete": "Marquer la tâche comme incomplète",
 					"markComplete": "Marquer la tâche comme terminée"
@@ -1410,7 +1462,7 @@
 						"embedVideo": "Intégrer la vidéo",
 						"keepAsLink": "Conserver comme lien"
 					},
-					"inputPlaceholder": "Coller l'URL",
+					"inputPlaceholder": "Coller l\u0027URL",
 					"embeddedContent": "Contenu intégré",
 					"asLink": "Comme lien",
 					"submit": "Intégrer",
@@ -1477,7 +1529,7 @@
 		"popover": {
 			"assignee": {
 				"unassigned": "Non assigné",
-				"updateError": "Échec de la mise à jour de l'assigné de la tâche"
+				"updateError": "Échec de la mise à jour de l\u0027assigné de la tâche"
 			},
 			"status": {
 				"updateError": "Échec de la mise à jour du statut de la tâche"
@@ -1486,8 +1538,8 @@
 				"updateError": "Échec de la mise à jour de la priorité de la tâche"
 			},
 			"dueDate": {
-				"updateSuccess": "Date d'échéance de la tâche mise à jour avec succès",
-				"updateError": "Échec de la mise à jour de la date d'échéance de la tâche",
+				"updateSuccess": "Date d\u0027échéance de la tâche mise à jour avec succès",
+				"updateError": "Échec de la mise à jour de la date d\u0027échéance de la tâche",
 				"clear": "Effacer la date"
 			},
 			"startDate": {
@@ -1541,7 +1593,7 @@
 				"label": "Label: {{name}}",
 				"dueThisWeek": "Échéance cette semaine",
 				"dueNextWeek": "Échéance la semaine prochaine",
-				"noDueDate": "Pas de date d'échéance"
+				"noDueDate": "Pas de date d\u0027échéance"
 			}
 		},
 		"sort": {
@@ -1554,7 +1606,7 @@
 				"position": "Manuel (position)",
 				"createdAt": "Date de création",
 				"priority": "Priorité",
-				"dueDate": "Date d'échéance",
+				"dueDate": "Date d\u0027échéance",
 				"title": "Titre",
 				"number": "Numéro de tâche"
 			}
@@ -1564,19 +1616,19 @@
 			"allStatuses": "Tous les statuts",
 			"allPriorities": "Toutes les priorités",
 			"allAssignees": "Tous les assignés",
-			"allDueDates": "Toutes les dates d'échéance",
+			"allDueDates": "Toutes les dates d\u0027échéance",
 			"allLabels": "Tous les labels",
 			"selectedCount": "{{count}} sélectionné",
 			"subjects": {
 				"status": "Statut",
 				"priority": "Priorité",
 				"assignee": "Assigné",
-				"dueDate": "Date d'échéance",
+				"dueDate": "Date d\u0027échéance",
 				"labels": "Labels"
 			},
 			"operators": {
-				"isAnyOf": "est l'un des",
-				"includeAnyOf": "inclut l'un des"
+				"isAnyOf": "est l\u0027un des",
+				"includeAnyOf": "inclut l\u0027un des"
 			}
 		},
 		"gantt": {
@@ -1586,13 +1638,13 @@
 			"hideTasks": "Masquer les tâches",
 			"showTasks": "Afficher les tâches",
 			"noTasks": "Aucune tâche planifiée",
-			"noTasksSubtitle": "Ajoutez une date de début, une date d'échéance ou les deux pour placer les tâches dans la chronologie du projet.",
+			"noTasksSubtitle": "Ajoutez une date de début, une date d\u0027échéance ou les deux pour placer les tâches dans la chronologie du projet.",
 			"noTasksFound": "Aucune tâche trouvée",
 			"noTasksMatch": "Aucune tâche planifiée ne correspond à \"{{query}}\"",
 			"taskHeader": "Tâche",
 			"updateDatesError": "Échec de la mise à jour des dates de la tâche",
 			"resizeStart": "Redimensionner la date de début",
-			"resizeDue": "Redimensionner la date d'échéance",
+			"resizeDue": "Redimensionner la date d\u0027échéance",
 			"taskAriaLabel": "{{title}} — ouvrir ou déplacer"
 		},
 		"delete": {
@@ -1626,12 +1678,12 @@
 			"unassigned": "Non assigné"
 		},
 		"dueDate": {
-			"label": "Date d'échéance",
+			"label": "Date d\u0027échéance",
 			"clear": "Effacer la date",
-			"updateSuccess": "Date d'échéance de la tâche mise à jour avec succès",
-			"updateError": "Échec de la mise à jour de la date d'échéance de la tâche",
-			"clearSuccess": "Date d'échéance de la tâche effacée",
-			"clearError": "Échec de l'effacement de la date d'échéance"
+			"updateSuccess": "Date d\u0027échéance de la tâche mise à jour avec succès",
+			"updateError": "Échec de la mise à jour de la date d\u0027échéance de la tâche",
+			"clearSuccess": "Date d\u0027échéance de la tâche effacée",
+			"clearError": "Échec de l\u0027effacement de la date d\u0027échéance"
 		},
 		"creator": {
 			"label": "Auteur",
@@ -1669,19 +1721,19 @@
 			"deleteError": "Échec de la suppression des tâches",
 			"archive": "Archiver les tâches",
 			"archiveSuccess": "{{count}} tâches archivées",
-			"archiveError": "Échec de l'archivage des tâches",
+			"archiveError": "Échec de l\u0027archivage des tâches",
 			"updateSuccess": "{{count}} tâches mises à jour",
 			"updateError": "Échec de la mise à jour des tâches",
 			"assignTo": "Attribuer à",
 			"assignSuccess": "{{count}} tâches attribuées",
-			"assignError": "Échec de l'attribution des tâches",
+			"assignError": "Échec de l\u0027attribution des tâches",
 			"setPriority": "Définir la priorité",
 			"updatePriorityError": "Échec de la mise à jour de la priorité",
 			"addLabel": "Ajouter un label",
 			"addLabelSuccess": "Label ajouté à {{count}} tâches",
-			"addLabelError": "Échec de l'ajout du label",
-			"setDueDate": "Définir la date d'échéance",
-			"updateDueDateError": "Échec de la mise à jour de la date d'échéance",
+			"addLabelError": "Échec de l\u0027ajout du label",
+			"setDueDate": "Définir la date d\u0027échéance",
+			"updateDueDateError": "Échec de la mise à jour de la date d\u0027échéance",
 			"actions": "Actions",
 			"searchActions": "Rechercher des actions...",
 			"noActionsFound": "Aucune action trouvée.",
@@ -1693,18 +1745,18 @@
 		"pendingInvitations": "Invitations en attente",
 		"acceptSubtitle": "Acceptez les invitations pour rejoindre les workspaces",
 		"noPendingTitle": "Aucune invitation en attente",
-		"noPendingDescription": "Vous n'avez aucune invitation de workspace en attente pour le moment.",
+		"noPendingDescription": "Vous n\u0027avez aucune invitation de workspace en attente pour le moment.",
 		"continueToSetup": "Continuer vers la configuration",
-		"skipForNow": "Ignorer pour l'instant",
+		"skipForNow": "Ignorer pour l\u0027instant",
 		"table": {
 			"workspace": "Workspace",
 			"invitedBy": "Invité par",
 			"expires": "Expire"
 		},
 		"toast": {
-			"acceptError": "Échec de l'acceptation de l'invitation",
-			"acceptSuccess": "Invitation acceptée ! Bienvenue dans l'équipe.",
-			"rejectError": "Échec du rejet de l'invitation",
+			"acceptError": "Échec de l\u0027acceptation de l\u0027invitation",
+			"acceptSuccess": "Invitation acceptée ! Bienvenue dans l\u0027équipe.",
+			"rejectError": "Échec du rejet de l\u0027invitation",
 			"rejectSuccess": "Invitation rejetée"
 		}
 	},
@@ -1715,7 +1767,7 @@
 			"title": "Titre",
 			"progress": "Progression",
 			"targetDate": "Date cible",
-			"dueDate": "Date d'échéance",
+			"dueDate": "Date d\u0027échéance",
 			"status": "Statut",
 			"emptyTitle": "Aucun projet pour le moment",
 			"emptyDescription": "Commencez par créer votre premier projet.",
@@ -1724,7 +1776,7 @@
 				"complete": "Terminé",
 				"inProgress": "En cours"
 			},
-			"noDueDate": "Pas de date d'échéance"
+			"noDueDate": "Pas de date d\u0027échéance"
 		},
 		"search": {
 			"pageTitle": "Rechercher",
@@ -1735,7 +1787,7 @@
 			"resultsFound_one": "{{count}} résultat trouvé",
 			"resultsFound_other": "{{count}} résultats trouvés",
 			"noResultsTitle": "Aucun résultat trouvé",
-			"noResultsDescription": "Essayez d'ajuster vos termes de recherche ou recherchez autre chose",
+			"noResultsDescription": "Essayez d\u0027ajuster vos termes de recherche ou recherchez autre chose",
 			"startTitle": "Commencer la recherche",
 			"startDescription": "Entrez un terme de recherche pour trouver des tâches dans tous les projets",
 			"quickSearchesLabel": "Recherches rapides :",
@@ -1758,6 +1810,20 @@
 			"submit": "Créer un workspace",
 			"success": "Workspace créé avec succès",
 			"error": "Échec de la création du workspace"
+		},
+		"modules": {
+			"title": "Modules",
+			"description": "Activer ou désactiver les fonctionnalités optionnelles pour cet espace de travail",
+			"loading": "Chargement des modules...",
+			"toastUpdated": "Module mis à jour",
+			"toastUpdateError": "Échec de la mise à jour du module",
+			"categories": {
+				"finance": "Finance",
+				"operations": "Opérations",
+				"planning": "Planification",
+				"collaboration": "Collaboration",
+				"automation": "Automatisation"
+			}
 		}
 	},
 	"team": {
@@ -1771,16 +1837,16 @@
 			"inviteMember": "Inviter un membre"
 		},
 		"inviteModal": {
-			"title": "Inviter un membre de l'équipe",
+			"title": "Inviter un membre de l\u0027équipe",
 			"emailLabel": "Email",
 			"emailPlaceholder": "collegue@entreprise.fr",
-			"sendInvitation": "Envoyer l'invitation",
+			"sendInvitation": "Envoyer l\u0027invitation",
 			"success": "Invitation envoyée avec succès",
-			"error": "Échec de l'envoi de l'invitation"
+			"error": "Échec de l\u0027envoi de l\u0027invitation"
 		},
 		"membersTable": {
-			"emptyTitle": "Aucun membre de l'équipe pour le moment",
-			"emptyDescription": "Invitez votre premier membre dans l'équipe pour commencer.",
+			"emptyTitle": "Aucun membre de l\u0027équipe pour le moment",
+			"emptyDescription": "Invitez votre premier membre dans l\u0027équipe pour commencer.",
 			"columns": {
 				"name": "Nom",
 				"role": "Rôle",
@@ -1788,19 +1854,106 @@
 				"actions": "Actions"
 			},
 			"memberRolePending": "{{role}} (En attente)",
-			"ariaCancelInvitation": "Annuler l'invitation",
+			"ariaCancelInvitation": "Annuler l\u0027invitation",
 			"ariaRemoveMember": "Supprimer le membre",
-			"removeDialogTitle": "Supprimer un membre de l'équipe ?",
-			"removeDialogDescription": "Êtes-vous sûr de vouloir supprimer {{name}} de l'équipe ? Cette action ne peut pas être annulée.",
-			"cancelDialogTitle": "Annuler l'invitation ?",
-			"cancelDialogDescription": "Êtes-vous sûr de vouloir annuler l'invitation pour {{email}} ? Cette action ne peut pas être annulée.",
+			"removeDialogTitle": "Supprimer un membre de l\u0027équipe ?",
+			"removeDialogDescription": "Êtes-vous sûr de vouloir supprimer {{name}} de l\u0027équipe ? Cette action ne peut pas être annulée.",
+			"cancelDialogTitle": "Annuler l\u0027invitation ?",
+			"cancelDialogDescription": "Êtes-vous sûr de vouloir annuler l\u0027invitation pour {{email}} ? Cette action ne peut pas être annulée.",
 			"removeMember": "Supprimer le membre",
-			"cancelInvitation": "Annuler l'invitation",
-			"removeSuccess": "Membre de l'équipe supprimé avec succès",
-			"removeError": "Échec de la suppression du membre de l'équipe",
+			"cancelInvitation": "Annuler l\u0027invitation",
+			"removeSuccess": "Membre de l\u0027équipe supprimé avec succès",
+			"removeError": "Échec de la suppression du membre de l\u0027équipe",
 			"cancelInviteSuccess": "Invitation annulée avec succès",
-			"cancelInviteError": "Échec de l'annulation de l'invitation"
+			"cancelInviteError": "Échec de l\u0027annulation de l\u0027invitation"
+		},
+		"deleteMemberModal": {
+			"title": "Supprimer un membre de l\u0027équipe",
+			"description": "Voulez-vous vraiment supprimer {{name}} de l\u0027équipe ? Cette action est irréversible.",
+			"removeButton": "Supprimer le membre"
 		}
+	},
+	"recurring": {
+		"pageTitle": "Tâches récurrentes",
+		"title": "Tâches récurrentes",
+		"tableTitle": "Tâches planifiées",
+		"table": {
+			"title": "Titre",
+			"schedule": "Planification",
+			"nextRun": "Prochaine exécution",
+			"priority": "Priorité",
+			"active": "Actif"
+		},
+		"empty": {
+			"title": "Aucune tâche récurrente",
+			"description": "Aucune tâche récurrente configurée pour ce projet."
+		},
+		"create": {
+			"trigger": "Ajouter une tâche récurrente",
+			"title": "Créer une tâche récurrente",
+			"description": "Configurez une tâche qui sera automatiquement créée selon un planning.",
+			"titleField": "Titre",
+			"titlePlaceholder": "Titre de la tâche",
+			"descriptionField": "Description",
+			"descriptionPlaceholder": "Description optionnelle",
+			"frequency": "Fréquence",
+			"every": "Tous les",
+			"column": "Colonne",
+			"columnDefault": "Colonne par défaut",
+			"assignee": "Assigné à",
+			"assigneeUnassigned": "Non assigné",
+			"priority": "Priorité",
+			"priorityNone": "Aucune",
+			"submit": "Créer"
+		},
+		"frequency": {
+			"daily": "Quotidien",
+			"weekly": "Hebdomadaire",
+			"monthly": "Mensuel"
+		}
+	},
+	"templates": {
+		"pageTitle": "Modèles de projet",
+		"title": "Modèles de projet",
+		"description": "Configurations de projet préconfigurées avec colonnes et tâches. Les modèles sont disponibles lors de la création d\u0027un nouveau projet.",
+		"create": {
+			"trigger": "Créer un modèle",
+			"title": "Créer un modèle",
+			"description": "Définissez des colonnes et des tâches exemple optionnelles pour ce modèle.",
+			"name": "Nom",
+			"namePlaceholder": "ex. Sprint Agile",
+			"descriptionField": "Description",
+			"descriptionPlaceholder": "Brève description de ce modèle",
+			"columns": "Colonnes",
+			"addColumn": "Ajouter une colonne",
+			"columnNamePlaceholder": "Nom de la colonne",
+			"columnSlugPlaceholder": "nom-colonne",
+			"final": "Finale",
+			"sampleTasks": "Tâches exemple (optionnelles)",
+			"addTask": "Ajouter une tâche",
+			"taskTitlePlaceholder": "Titre de la tâche",
+			"taskDescriptionPlaceholder": "Description (optionnelle)",
+			"taskColumnPlaceholder": "Colonne",
+			"noSampleTasks": "Aucune tâche exemple. Le modèle définira uniquement les colonnes.",
+			"submit": "Créer le modèle",
+			"columnTodo": "À faire",
+			"columnInProgress": "En cours",
+			"columnDone": "Terminé"
+		},
+		"createProject": {
+			"blankProject": "Projet vierge",
+			"sampleTaskCount_one": "{{count}} tâche exemple",
+			"sampleTaskCount_other": "{{count}} tâches exemple"
+		},
+		"empty": {
+			"title": "Aucun modèle",
+			"description": "Aucun modèle pour l\u0027instant. Créez-en un pour commencer."
+		},
+		"builtIn": "Intégré",
+		"noDescription": "Aucune description",
+		"deleteTooltip": "Supprimer le modèle",
+		"toastCreated": "Modèle créé",
+		"toastCreateError": "Échec de la création du modèle"
 	},
 	"publicProject": {
 		"pageTitle": "Vue publique",
@@ -1808,7 +1961,7 @@
 		"readOnly": "Lecture seule",
 		"error": {
 			"title": "Projet non trouvé",
-			"description": "Ce projet n'existe pas ou n'est pas accessible publiquement."
+			"description": "Ce projet n\u0027existe pas ou n\u0027est pas accessible publiquement."
 		},
 		"taskCard": {
 			"viewDetailsAria": "Voir les détails de la tâche {{title}}"
@@ -1823,7 +1976,7 @@
 			"prStatusOpen": "Ouvert",
 			"dueWithDate": "Échéance {{date}}",
 			"created": "Créé",
-			"dueDateLabel": "Date d'échéance"
+			"dueDateLabel": "Date d\u0027échéance"
 		},
 		"theme": {
 			"switchToLight": "Passer en mode clair",
@@ -1831,7 +1984,7 @@
 		},
 		"copyUrl": {
 			"successToast": "URL copiée",
-			"errorToast": "Échec de la copie de l'URL",
+			"errorToast": "Échec de la copie de l\u0027URL",
 			"copied": "Copié",
 			"share": "Partager"
 		},

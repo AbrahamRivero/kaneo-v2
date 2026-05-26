@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import PageTitle from "@/components/page-title";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -20,6 +21,7 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
+	const { t } = useTranslation();
 	const { data: workspace } = useActiveWorkspace();
 	const { isOwner, isAdmin } = useWorkspacePermission();
 	const canManage = isOwner || isAdmin;
@@ -50,40 +52,44 @@ function RouteComponent() {
 		async (featureKey: string, currentEnabled: boolean) => {
 			try {
 				await updateFeatures([{ key: featureKey, enabled: !currentEnabled }]);
-				toast.success("Module updated");
+				toast.success(t("workspace:modules.toastUpdated"));
 			} catch {
-				toast.error("Failed to update module");
+				toast.error(t("workspace:modules.toastUpdateError"));
 			}
 		},
-		[updateFeatures],
+		[updateFeatures, t],
 	);
 
 	const categoryLabels: Record<string, string> = useMemo(
 		() => ({
-			finance: "Finance",
-			operations: "Operations",
-			planning: "Planning",
-			collaboration: "Collaboration",
-			automation: "Automation",
+			finance: t("workspace:modules.categories.finance"),
+			operations: t("workspace:modules.categories.operations"),
+			planning: t("workspace:modules.categories.planning"),
+			collaboration: t("workspace:modules.categories.collaboration"),
+			automation: t("workspace:modules.categories.automation"),
 		}),
-		[],
+		[t],
 	);
 
 	const isLoading = registryLoading || featuresLoading;
 
 	return (
 		<>
-			<PageTitle title="Modules" />
+			<PageTitle title={t("workspace:modules.title")} />
 			<div className="max-w-4xl mx-auto space-y-8">
 				<div className="space-y-2">
-					<h1 className="text-2xl font-semibold">Modules</h1>
+					<h1 className="text-2xl font-semibold">
+						{t("workspace:modules.title")}
+					</h1>
 					<p className="text-muted-foreground text-sm">
-						Enable or disable optional features for this workspace
+						{t("workspace:modules.description")}
 					</p>
 				</div>
 
 				{isLoading && (
-					<p className="text-muted-foreground">Loading modules...</p>
+					<p className="text-muted-foreground">
+						{t("workspace:modules.loading")}
+					</p>
 				)}
 
 				{!isLoading &&

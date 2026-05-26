@@ -1,4 +1,4 @@
-{
+﻿{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -11,7 +11,8 @@
 			"remove": "Verwijderen",
 			"reset": "Herstellen",
 			"filter": "Filteren",
-			"clearAllFilters": "Alle filters wissen"
+			"clearAllFilters": "Alle filters wissen",
+			"confirm": "Bevestigen"
 		},
 		"a11y": {
 			"toggleSidebar": "Zijbalk in-/uitschakelen"
@@ -29,7 +30,7 @@
 			"next": "Volgende",
 			"previousPage": "Ga naar vorige pagina",
 			"nextPage": "Ga naar volgende pagina",
-			"morePages": "Meer pagina's"
+			"morePages": "Meer pagina\u0027s"
 		},
 		"breadcrumb": {
 			"label": "Broodkruimelpad",
@@ -55,8 +56,22 @@
 			"viewDeploymentGuide": "Implementatiehandleiding bekijken",
 			"refreshPage": "Pagina vernieuwen"
 		},
+		"demo": {
+			"banner": "Dit is een demo-omgeving. Alle gegevens worden elk uur automatisch gewist.",
+			"deployButton": "Eigen versie implementeren"
+		},
 		"formats": {
 			"never": "Nooit"
+		},
+		"status": {
+			"active": "Actief",
+			"pending": "In afwachting"
+		},
+		"spinner": {
+			"loading": "Laden"
+		},
+		"theme": {
+			"toggle": "Thema wisselen"
 		},
 		"modals": {
 			"createProject": {
@@ -68,10 +83,11 @@
 				"searchIcons": "Pictogrammen zoeken...",
 				"projectName": "Projectnaam",
 				"keyLabel": "Sleutel:",
-				"keyHint": "Gebruikt voor ticket-ID's (bijv. {{example}}-123)",
+				"keyHint": "Gebruikt voor ticket-ID\u0027s (bijv. {{example}}-123)",
 				"createButton": "Project aanmaken",
 				"successToast": "Project succesvol aangemaakt",
-				"errorToast": "Aanmaken van project mislukt"
+				"errorToast": "Aanmaken van project mislukt",
+				"keyPlaceholder": "PRO"
 			},
 			"createWorkspace": {
 				"breadcrumbKaneo": "KANEO",
@@ -124,6 +140,11 @@
 					"rose": "Roos",
 					"crimson": "Karmozijn"
 				}
+			},
+			"archiveTasks": {
+				"title": "Taken archiveren",
+				"description_one": "Weet je zeker dat je {{count}} voltooide taak wilt archiveren? Dit verplaatst het van het actieve bord naar je archief.",
+				"description_other": "Weet je zeker dat je alle {{count}} voltooide taken wilt archiveren? Dit verplaatst ze van het actieve bord naar je archief."
 			}
 		}
 	},
@@ -167,7 +188,7 @@
 		"checkEmail": {
 			"pageTitle": "Controleer je e-mail",
 			"title": "Controleer je mailbox",
-			"inboxMessage": "We hebben je een tijdelijke inloglink gestuurd. Controleer je inbox op <email>{{email}}</email>.",
+			"inboxMessage": "We hebben je een tijdelijke inloglink gestuurd. Controleer je inbox op \u003cemail\u003e{{email}}\u003c/email\u003e.",
 			"emailFallback": "je e-mailadres",
 			"backToLogin": "Terug naar inloggen"
 		},
@@ -193,7 +214,7 @@
 			"codeSentTo": "Code gestuurd naar {{email}}",
 			"verificationCodeLabel": "Verificatiecode",
 			"verifying": "Verifiëren...",
-			"verifyAndSignIn": "Verifiëren & Inloggen",
+			"verifyAndSignIn": "Verifiëren \u0026 Inloggen",
 			"changeEmail": "E-mail wijzigen",
 			"resend": "Opnieuw versturen",
 			"validation": {
@@ -240,15 +261,15 @@
 			"goToSignIn": "Ga naar inloggen",
 			"workspaceLabel": "Werkruimte: {{workspaceName}}",
 			"joinWorkspace": "Deelnemen aan {{workspaceName}}",
-			"inviteBodySignedIn": "<inviter>{{inviterName}}</inviter> heeft je uitgenodigd voor hun werkruimte.",
-			"inviteBodySignedOut": "<inviter>{{inviterName}}</inviter> heeft je uitgenodigd om deel te nemen aan hun werkruimte op Kaneo.",
+			"inviteBodySignedIn": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e heeft je uitgenodigd voor hun werkruimte.",
+			"inviteBodySignedOut": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e heeft je uitgenodigd om deel te nemen aan hun werkruimte op Kaneo.",
 			"signInToAccept": "Log in om deze uitnodiging te accepteren.",
 			"accepting": "Accepteren...",
 			"acceptInvitation": "Uitnodiging accepteren",
 			"goToDashboard": "Naar dashboard",
-			"signedInAs": "Ingelogd als <email>{{email}}</email>",
+			"signedInAs": "Ingelogd als \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"youveBeenInvited": "Je bent uitgenodigd!",
-			"invitationFor": "Uitnodiging voor: <email>{{email}}</email>",
+			"invitationFor": "Uitnodiging voor: \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"signIn": "Inloggen",
 			"toast": {
 				"acceptFailed": "Accepteren van uitnodiging mislukt",
@@ -267,7 +288,7 @@
 			"creating": "Aanmaken...",
 			"createWorkspace": "Werkruimte maken",
 			"workspaceCreatedTitle": "Werkruimte aangemaakt",
-			"redirectingToWorkspace": "Je wordt doorverbonden naar <name>{{name}}</name>...",
+			"redirectingToWorkspace": "Je wordt doorverbonden naar \u003cname\u003e{{name}}\u003c/name\u003e...",
 			"toast": {
 				"workspaceCreated": "Werkruimte succesvol aangemaakt",
 				"createFailed": "Aanmaken werkruimte mislukt"
@@ -294,6 +315,29 @@
 				"nameRequired": "Naam is verplicht",
 				"nameShort": "Naam moet minimaal 2 tekens bevatten"
 			}
+		},
+		"device": {
+			"pageTitle": "Apparaat verbinden",
+			"pageSubtitle": "Voer de code van je CLI of app in om verder te gaan.",
+			"codePlaceholder": "bijv. ABCD-1234",
+			"continue": "Doorgaan",
+			"enterCodeToast": "Voer de code in die op je apparaat wordt weergegeven.",
+			"invalidOrExpiredCode": "Ongeldige of verlopen code",
+			"approvePageTitle": "Apparaat goedkeuren",
+			"loadingSubtitle": "Laden…",
+			"checkingSession": "Sessie controleren…",
+			"noCodeProvided": "Geen apparaatcode opgegeven.",
+			"enterACode": "Code invoeren",
+			"signInToContinue": "Log in om door te gaan",
+			"signInToApprove": "Log in om dit apparaatverzoek goed te keuren of te weigeren.",
+			"requestingAccess": "Een apparaat vraagt toegang tot je Kaneo-account.",
+			"signIn": "Inloggen",
+			"couldNotApprove": "Kon niet goedkeuren",
+			"deviceConnected": "Apparaat verbonden",
+			"couldNotDeny": "Kon niet weigeren",
+			"requestCancelled": "Verzoek geannuleerd",
+			"approve": "Goedkeuren",
+			"deny": "Weigeren"
 		}
 	},
 	"settings": {
@@ -351,7 +395,7 @@
 			"displayOptions": "Weergaveopties",
 			"displayOptionsDescription": "Kies welke informatie getoond wordt in taakoverzichten",
 			"taskNumbers": "Taaknummers",
-			"taskNumbersDescription": "Toon taak-ID's en nummers",
+			"taskNumbersDescription": "Toon taak-ID\u0027s en nummers",
 			"assignees": "Toegewezen personen",
 			"assigneesDescription": "Toon wie er aan taken is toegewezen",
 			"dueDates": "Einddatums",
@@ -411,7 +455,7 @@
 				"nameDescription": "Een beschrijvende naam voor deze API-sleutel",
 				"expirationLabel": "Vervaldatum",
 				"expirationPlaceholder": "Selecteer verloop",
-				"expirationDescription": "Kies hoe lang deze sleutel geldig moet blijven. 'Nooit' maakt een sleutel zonder einddatum.",
+				"expirationDescription": "Kies hoe lang deze sleutel geldig moet blijven. \u0027Nooit\u0027 maakt een sleutel zonder einddatum.",
 				"expiration1d": "1 dag",
 				"expiration7d": "7 dagen",
 				"expiration30d": "30 dagen",
@@ -469,7 +513,7 @@
 			"projectNameHint": "De naam van je project",
 			"projectNamePlaceholder": "Voer projectnaam in",
 			"keyLabel": "Sleutel",
-			"keyHint": "Gebruikt voor ticket-ID's (bijv. {{slug}}-123)",
+			"keyHint": "Gebruikt voor ticket-ID\u0027s (bijv. {{slug}}-123)",
 			"keyPlaceholder": "PRO",
 			"descriptionLabel": "Beschrijving",
 			"descriptionHint": "Een korte beschrijving van je project",
@@ -566,7 +610,7 @@
 			"toastDeleted": "Kolom verwijderd",
 			"toastDeleteError": "Verwijderen kolom mislukt",
 			"loading": "Kolommen laden...",
-			"doneColumnTooltip": "Behandel dit als een 'Gereed' kolom",
+			"doneColumnTooltip": "Behandel dit als een \u0027Gereed\u0027 kolom",
 			"doneColumn": "Gereed-kolom",
 			"markDoneAria": "Markeer {{name}} als gereed-kolom",
 			"on": "Aan",
@@ -649,12 +693,12 @@
 				"removeError": "Verwijderen Slack-integratie mislukt"
 			},
 			"connectionTitle": "Slack webhook-verbinding",
-			"connectionHint": "Plak een Slack 'incoming webhook'-URL en kies welke taakgebeurtenissen gepost moeten worden.",
+			"connectionHint": "Plak een Slack \u0027incoming webhook\u0027-URL en kies welke taakgebeurtenissen gepost moeten worden.",
 			"connected": "Verbonden",
 			"paused": "Gepauzeerd",
 			"webhookLabel": "Incoming webhook-URL",
 			"webhookPlaceholder": "https://hooks.slack.com/services/...",
-			"webhookHint": "Maak een 'Incoming Webhook' aan in Slack en plak de gegenereerde URL hier.",
+			"webhookHint": "Maak een \u0027Incoming Webhook\u0027 aan in Slack en plak de gegenereerde URL hier.",
 			"channelLabel": "Kanaalnaam",
 			"channelPlaceholder": "#team-updates",
 			"channelHint": "Optioneel label voor eigen referentie. Slack bepaalt het daadwerkelijke doelkanaal via de webhook-instellingen.",
@@ -725,7 +769,7 @@
 				"removeError": "Verwijderen generieke webhook-integratie mislukt"
 			},
 			"connectionTitle": "Uitgaande webhook-verbinding",
-			"connectionHint": "Stuur taakgebeurtenissen naar je eigen eindpunt als JSON. Een ondertekende 'X-Kaneo-Signature' header wordt meegezonden wanneer er een geheim is geconfigureerd.",
+			"connectionHint": "Stuur taakgebeurtenissen naar je eigen eindpunt als JSON. Een ondertekende \u0027X-Kaneo-Signature\u0027 header wordt meegezonden wanneer er een geheim is geconfigureerd.",
 			"connected": "Verbonden",
 			"paused": "Gepauzeerd",
 			"webhookLabel": "Eindpunt-URL (Endpoint URL)",
@@ -733,7 +777,7 @@
 			"webhookHint": "Kaneo verzendt POST-verzoeken met een JSON-payload voor elke ingeschakelde gebeurtenis.",
 			"secretLabel": "Ondertekeningsgeheim (Signing secret)",
 			"secretPlaceholder": "Optioneel gedeeld geheim",
-			"secretHint": "Optioneel. Indien opgegeven, ondertekent Kaneo de verzoektekst en verzendt de hex-digest in de 'X-Kaneo-Signature' header.",
+			"secretHint": "Optioneel. Indien opgegeven, ondertekent Kaneo de verzoektekst en verzendt de hex-digest in de \u0027X-Kaneo-Signature\u0027 header.",
 			"secretHintConfigured": "Er is al een ondertekeningsgeheim geconfigureerd ({{secret}}). Voer een nieuwe in om deze te vervangen.",
 			"eventsTitle": "Gebeurtenis-meldingen",
 			"eventsHint": "Kies welke projectwijzigingen uitgaande webhooks moeten activeren.",
@@ -813,9 +857,16 @@
 		}
 	},
 	"navigation": {
+		"projectViews": {
+			"title": "Weergave",
+			"backlog": "Backlog",
+			"board": "Taken",
+			"gantt": "Gantt",
+			"recurring": "Terugkerend"
+		},
 		"commandPalette": {
 			"suggestions": "Suggesties",
-			"commands": "Commando's",
+			"commands": "Commando\u0027s",
 			"projects": "Projecten",
 			"search": "Zoeken",
 			"members": "Leden",
@@ -826,7 +877,7 @@
 			"darkTheme": "Donker thema",
 			"systemTheme": "Systeemthema",
 			"keyboardShortcuts": "Sneltoetsen",
-			"inputPlaceholder": "Zoek naar apps en commando's...",
+			"inputPlaceholder": "Zoek naar apps en commando\u0027s...",
 			"empty": "Geen resultaten gevonden.",
 			"footer": {
 				"navigate": "Navigeren",
@@ -842,7 +893,8 @@
 			"members": "Leden",
 			"invitations": "Uitnodigingen",
 			"more": "Meer",
-			"backToBoard": "Terug naar bord"
+			"backToBoard": "Terug naar bord",
+			"toggleSidebar": "Zijbalk schakelen"
 		},
 		"projectList": {
 			"viewProject": "Project bekijken",
@@ -906,7 +958,7 @@
 			"title": "Sneltoetsen",
 			"subtitle": "Versnel je workflow met sneltoetsen",
 			"searchPlaceholder": "Sneltoetsen zoeken...",
-			"footer": "Druk op <kbd>Escape</kbd> om te sluiten",
+			"footer": "Druk op \u003ckbd\u003eEscape\u003c/kbd\u003e om te sluiten",
 			"categories": {
 				"general": "Algemeen",
 				"create": "Aanmaken",
@@ -1045,7 +1097,7 @@
 				"pasteUrl": "URL plakken",
 				"asLink": "Als link",
 				"embed": "Insluiten",
-				"noCommands": "Geen commando's",
+				"noCommands": "Geen commando\u0027s",
 				"ariaCommentContent": "Inhoud reactie",
 				"ariaCommentEditor": "Editor voor reacties",
 				"ariaCopyCode": "Code kopiëren",
@@ -1140,7 +1192,7 @@
 						"lists": "Lijsten",
 						"insert": "Invoegen"
 					},
-					"empty": "Geen commando's",
+					"empty": "Geen commando\u0027s",
 					"commands": {
 						"paragraph": "Tekst",
 						"heading-2": "Koptekst",
@@ -1204,7 +1256,7 @@
 						"invalidUrl": "Voer een geldige URL in",
 						"onlyYoutube": "Alleen YouTube-links kunnen worden ingesloten."
 					},
-					"onlyYoutubeInline": "Alleen YouTube URL's kunnen worden ingesloten. Gebruik link-modus."
+					"onlyYoutubeInline": "Alleen YouTube URL\u0027s kunnen worden ingesloten. Gebruik link-modus."
 				}
 			}
 		},
@@ -1394,7 +1446,7 @@
 			"open": "Open",
 			"label": "Pull Request",
 			"count_one": "{{count}} PR",
-			"count_other": "{{count}} PR's"
+			"count_other": "{{count}} PR\u0027s"
 		},
 		"assignee": {
 			"label": "Toegewezen persoon",
@@ -1505,7 +1557,7 @@
 			"pageTitle": "Zoeken",
 			"backToDashboard": "Terug naar dashboard",
 			"placeholder": "Zoek taken op titel of ID (bijv. DEP-23)...",
-			"hint": "Zoek in alle projecten van deze werkruimte. Gebruik ID's zoals DEP-23 voor specifieke taken.",
+			"hint": "Zoek in alle projecten van deze werkruimte. Gebruik ID\u0027s zoals DEP-23 voor specifieke taken.",
 			"searching": "Zoeken...",
 			"resultsFound_one": "{{count}} resultaat gevonden",
 			"resultsFound_other": "{{count}} resultaten gevonden",
@@ -1533,6 +1585,20 @@
 			"submit": "Werkruimte maken",
 			"success": "Werkruimte succesvol aangemaakt",
 			"error": "Aanmaken werkruimte mislukt"
+		},
+		"modules": {
+			"title": "Modules",
+			"description": "Optionele functies voor deze werkruimte in- of uitschakelen",
+			"loading": "Modules laden...",
+			"toastUpdated": "Module bijgewerkt",
+			"toastUpdateError": "Module bijwerken mislukt",
+			"categories": {
+				"finance": "Financiën",
+				"operations": "Operaties",
+				"planning": "Planning",
+				"collaboration": "Samenwerking",
+				"automation": "Automatisering"
+			}
 		}
 	},
 	"team": {
@@ -1575,7 +1641,94 @@
 			"removeError": "Verwijderen teamlid mislukt",
 			"cancelInviteSuccess": "Uitnodiging succesvol geannuleerd",
 			"cancelInviteError": "Annuleren uitnodiging mislukt"
+		},
+		"deleteMemberModal": {
+			"title": "Teamlid verwijderen",
+			"description": "Weet je zeker dat je {{name}} uit het team wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+			"removeButton": "Lid verwijderen"
 		}
+	},
+	"recurring": {
+		"pageTitle": "Terugkerende taken",
+		"title": "Terugkerende taken",
+		"tableTitle": "Geplande taken",
+		"table": {
+			"title": "Titel",
+			"schedule": "Schema",
+			"nextRun": "Volgende uitvoering",
+			"priority": "Prioriteit",
+			"active": "Actief"
+		},
+		"empty": {
+			"title": "Geen terugkerende taken",
+			"description": "Geen terugkerende taken geconfigureerd voor dit project."
+		},
+		"create": {
+			"trigger": "Terugkerende taak toevoegen",
+			"title": "Terugkerende taak aanmaken",
+			"description": "Stel een taak in die automatisch wordt aangemaakt volgens een schema.",
+			"titleField": "Titel",
+			"titlePlaceholder": "Taaktitel",
+			"descriptionField": "Beschrijving",
+			"descriptionPlaceholder": "Optionele beschrijving",
+			"frequency": "Frequentie",
+			"every": "Elke",
+			"column": "Kolom",
+			"columnDefault": "Standaardkolom",
+			"assignee": "Toegewezen aan",
+			"assigneeUnassigned": "Niet toegewezen",
+			"priority": "Prioriteit",
+			"priorityNone": "Geen",
+			"submit": "Aanmaken"
+		},
+		"frequency": {
+			"daily": "Dagelijks",
+			"weekly": "Wekelijks",
+			"monthly": "Maandelijks"
+		}
+	},
+	"templates": {
+		"pageTitle": "Projectsjablonen",
+		"title": "Projectsjablonen",
+		"description": "Voorgeconfigureerde projectinstellingen met kolommen en taken. Sjablonen zijn beschikbaar bij het aanmaken van een nieuw project.",
+		"create": {
+			"trigger": "Sjabloon maken",
+			"title": "Sjabloon maken",
+			"description": "Definieer kolommen en optionele voorbeeldtaken voor dit sjabloon.",
+			"name": "Naam",
+			"namePlaceholder": "bijv. Agile Sprint",
+			"descriptionField": "Beschrijving",
+			"descriptionPlaceholder": "Korte beschrijving van dit sjabloon",
+			"columns": "Kolommen",
+			"addColumn": "Kolom toevoegen",
+			"columnNamePlaceholder": "Kolomnaam",
+			"columnSlugPlaceholder": "kolom-slug",
+			"final": "Laatste",
+			"sampleTasks": "Voorbeeldtaken (optioneel)",
+			"addTask": "Taak toevoegen",
+			"taskTitlePlaceholder": "Taaktitel",
+			"taskDescriptionPlaceholder": "Beschrijving (optioneel)",
+			"taskColumnPlaceholder": "Kolom",
+			"noSampleTasks": "Geen voorbeeldtaken. Het sjabloon definieert alleen kolommen.",
+			"submit": "Sjabloon maken",
+			"columnTodo": "Te doen",
+			"columnInProgress": "Bezig",
+			"columnDone": "Klaar"
+		},
+		"createProject": {
+			"blankProject": "Leeg project",
+			"sampleTaskCount_one": "{{count}} voorbeeldtaak",
+			"sampleTaskCount_other": "{{count}} voorbeeldtaken"
+		},
+		"empty": {
+			"title": "Nog geen sjablonen",
+			"description": "Nog geen sjablonen. Maak er een om te beginnen."
+		},
+		"builtIn": "Ingebouwd",
+		"noDescription": "Geen beschrijving",
+		"deleteTooltip": "Sjabloon verwijderen",
+		"toastCreated": "Sjabloon gemaakt",
+		"toastCreateError": "Sjabloon maken mislukt"
 	},
 	"publicProject": {
 		"pageTitle": "Openbare weergave",

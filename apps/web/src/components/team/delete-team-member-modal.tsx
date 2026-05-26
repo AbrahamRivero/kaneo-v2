@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { Trash2, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import useDeleteWorkspaceUser from "@/hooks/mutations/workspace-user/use-delete-workspace-user";
 import { Route } from "@/routes/_layout/_authenticated/dashboard/workspace/$workspaceId/members";
 import { Button } from "../ui/button";
@@ -14,6 +15,7 @@ function DeleteTeamMemberModal({
 	open: boolean;
 	onClose: () => void;
 }) {
+	const { t } = useTranslation();
 	const { workspaceId } = Route.useParams();
 	const { mutateAsync: deleteWorkspaceUser } = useDeleteWorkspaceUser();
 	const queryClient = useQueryClient();
@@ -37,7 +39,7 @@ function DeleteTeamMemberModal({
 				<div className="bg-card rounded-lg shadow-xl">
 					<div className="flex items-center justify-between p-4 border-b border-border">
 						<DialogTitle className="text-lg font-semibold text-foreground">
-							Remove Team Member
+							{t("team:deleteMemberModal.title")}
 						</DialogTitle>
 						<DialogClose
 							className="text-muted-foreground hover:text-foreground"
@@ -49,9 +51,7 @@ function DeleteTeamMemberModal({
 
 					<div className="p-4">
 						<p className="text-sm text-muted-foreground mb-6">
-							Are you sure you want to remove{" "}
-							<span className="font-medium text-foreground">{userId}</span> from
-							the team? This action cannot be undone.
+							{t("team:deleteMemberModal.description", { name: userId })}
 						</p>
 
 						<div className="flex justify-end gap-2">
@@ -63,11 +63,11 @@ function DeleteTeamMemberModal({
 									/>
 								}
 							>
-								Cancel
+								{t("common:actions.cancel")}
 							</DialogClose>
 							<Button onClick={onRemoveMember} variant="destructive">
 								<Trash2 className="w-4 h-4 mr-2" />
-								Remove Member
+								{t("team:deleteMemberModal.removeButton")}
 							</Button>
 						</div>
 					</div>

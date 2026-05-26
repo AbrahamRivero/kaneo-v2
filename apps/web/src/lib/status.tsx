@@ -1,3 +1,4 @@
+import i18n from "i18next";
 import { CheckCircle2, Clock } from "lucide-react";
 
 export function getStatusIcon(status: "active" | "pending") {
@@ -12,8 +13,8 @@ export function getStatusIcon(status: "active" | "pending") {
 export function getStatusText(status: "active" | "pending") {
 	switch (status) {
 		case "active":
-			return "Active";
+			return i18n.t("common:status.active");
 		case "pending":
-			return "Pending";
+			return i18n.t("common:status.pending");
 	}
 }

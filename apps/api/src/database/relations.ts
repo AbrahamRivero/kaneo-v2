@@ -4,8 +4,6 @@ import {
 	activityTable,
 	apikeyTable,
 	assetTable,
-	budgetExpenseTable,
-	budgetTable,
 	columnTable,
 	externalLinkTable,
 	githubIntegrationTable,
@@ -15,10 +13,7 @@ import {
 	notificationTable,
 	projectTable,
 	recurringTaskTable,
-	serviceOrderTable,
 	sessionTable,
-	supplierContractTable,
-	supplierTable,
 	taskRelationTable,
 	taskReminderSentTable,
 	taskTable,
@@ -86,9 +81,6 @@ export const workspaceTableRelations = relations(
 		invitations: many(invitationTable),
 		notificationWorkspaceRules: many(userNotificationWorkspaceRuleTable),
 		features: many(workspaceFeatureTable),
-		suppliers: many(supplierTable),
-		contracts: many(supplierContractTable),
-		serviceOrders: many(serviceOrderTable),
 	}),
 );
 
@@ -120,7 +112,6 @@ export const projectTableRelations = relations(
 		githubIntegration: many(githubIntegrationTable),
 		integrations: many(integrationTable),
 		notificationWorkspaceProjects: many(userNotificationWorkspaceProjectTable),
-		budget: one(budgetTable),
 		recurringTasks: many(recurringTaskTable),
 	}),
 );
@@ -175,6 +166,10 @@ export const taskTableRelations = relations(taskTable, ({ one, many }) => ({
 	sourceRelations: many(taskRelationTable, { relationName: "sourceTask" }),
 	targetRelations: many(taskRelationTable, { relationName: "targetTask" }),
 	remindersSent: many(taskReminderSentTable),
+	recurringTask: one(recurringTaskTable, {
+		fields: [taskTable.recurringTaskId],
+		references: [recurringTaskTable.id],
+	}),
 }));
 
 export const timeEntryTableRelations = relations(timeEntryTable, ({ one }) => ({
@@ -401,79 +396,17 @@ export const workspaceFeatureTableRelations = relations(
 	}),
 );
 
-export const budgetTableRelations = relations(budgetTable, ({ one, many }) => ({
-	project: one(projectTable, {
-		fields: [budgetTable.projectId],
-		references: [projectTable.id],
-	}),
-	expenses: many(budgetExpenseTable),
-}));
-
-export const budgetExpenseTableRelations = relations(
-	budgetExpenseTable,
-	({ one }) => ({
-		budget: one(budgetTable, {
-			fields: [budgetExpenseTable.budgetId],
-			references: [budgetTable.id],
-		}),
-	}),
-);
-
-export const supplierTableRelations = relations(
-	supplierTable,
-	({ one, many }) => ({
-		workspace: one(workspaceTable, {
-			fields: [supplierTable.workspaceId],
-			references: [workspaceTable.id],
-		}),
-		contracts: many(supplierContractTable),
-		serviceOrders: many(serviceOrderTable),
-	}),
-);
-
-export const supplierContractTableRelations = relations(
-	supplierContractTable,
-	({ one, many }) => ({
-		workspace: one(workspaceTable, {
-			fields: [supplierContractTable.workspaceId],
-			references: [workspaceTable.id],
-		}),
-		supplier: one(supplierTable, {
-			fields: [supplierContractTable.supplierId],
-			references: [supplierTable.id],
-		}),
-		serviceOrders: many(serviceOrderTable),
-	}),
-);
-
-export const serviceOrderTableRelations = relations(
-	serviceOrderTable,
-	({ one }) => ({
-		workspace: one(workspaceTable, {
-			fields: [serviceOrderTable.workspaceId],
-			references: [workspaceTable.id],
-		}),
-		supplier: one(supplierTable, {
-			fields: [serviceOrderTable.supplierId],
-			references: [supplierTable.id],
-		}),
-		contract: one(supplierContractTable, {
-			fields: [serviceOrderTable.contractId],
-			references: [supplierContractTable.id],
-		}),
-		project: one(projectTable, {
-			fields: [serviceOrderTable.projectId],
-			references: [projectTable.id],
-		}),
-	}),
-);
-
 export const recurringTaskTableRelations = relations(
 	recurringTaskTable,
-	({ one }) => ({
+	({ one, many }) => ({
 		project: one(projectTable, {
 			fields: [recurringTaskTable.projectId],
 			references: [projectTable.id],
+		}),
+		tasks: many(taskTable),
+		generatedBy: one(userTable, {
+			fields: [recurringTaskTable.createdBy],
+			references: [userTable.id],
 		}),
 	}),
 );

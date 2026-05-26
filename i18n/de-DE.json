@@ -1,4 +1,4 @@
-{
+﻿{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -11,7 +11,8 @@
 			"remove": "Entfernen",
 			"reset": "Zurücksetzen",
 			"filter": "Filter",
-			"clearAllFilters": "Alle Filter löschen"
+			"clearAllFilters": "Alle Filter löschen",
+			"confirm": "Bestätigen"
 		},
 		"a11y": {
 			"toggleSidebar": "Sidebar umschalten"
@@ -56,8 +57,22 @@
 			"viewDeploymentGuide": "Bereitstellungsanleitung ansehen",
 			"refreshPage": "Seite neu laden"
 		},
+		"demo": {
+			"banner": "Dies ist eine Demo-Umgebung. Alle Daten werden automatisch jede Stunde gelöscht.",
+			"deployButton": "Eigene instanz bereitstellen"
+		},
 		"formats": {
 			"never": "Nie"
+		},
+		"status": {
+			"active": "Aktiv",
+			"pending": "Ausstehend"
+		},
+		"spinner": {
+			"loading": "Laden"
+		},
+		"theme": {
+			"toggle": "Design wechseln"
 		},
 		"modals": {
 			"createProject": {
@@ -72,7 +87,8 @@
 				"keyHint": "Wird für Ticket-IDs verwendet (z. B. {{example}}-123)",
 				"createButton": "Projekt erstellen",
 				"successToast": "Projekt erfolgreich erstellt",
-				"errorToast": "Projekt konnte nicht erstellt werden"
+				"errorToast": "Projekt konnte nicht erstellt werden",
+				"keyPlaceholder": "PRO"
 			},
 			"createWorkspace": {
 				"breadcrumbKaneo": "KANEO",
@@ -125,6 +141,11 @@
 					"rose": "Rosa",
 					"crimson": "Karmesinrot"
 				}
+			},
+			"archiveTasks": {
+				"title": "Aufgaben archivieren",
+				"description_one": "Soll die {{count}} erledigte Aufgabe wirklich archiviert werden? Sie wird vom aktiven Board in das Archiv verschoben.",
+				"description_other": "Sollen alle {{count}} erledigten Aufgaben wirklich archiviert werden? Sie werden vom aktiven Board in das Archiv verschoben."
 			}
 		}
 	},
@@ -168,7 +189,7 @@
 		"checkEmail": {
 			"pageTitle": "Prüfe deine E-Mails",
 			"title": "Prüfe deine E-Mails",
-			"inboxMessage": "Wir haben dir einen temporären Anmeldelink gesendet. Bitte prüfe dein Postfach unter <email>{{email}}</email>.",
+			"inboxMessage": "Wir haben dir einen temporären Anmeldelink gesendet. Bitte prüfe dein Postfach unter \u003cemail\u003e{{email}}\u003c/email\u003e.",
 			"emailFallback": "deine E-Mail-Adresse",
 			"backToLogin": "Zurück zur Anmeldung"
 		},
@@ -194,7 +215,7 @@
 			"codeSentTo": "Code gesendet an {{email}}",
 			"verificationCodeLabel": "Bestätigungscode",
 			"verifying": "Wird verifiziert...",
-			"verifyAndSignIn": "Verifizieren & anmelden",
+			"verifyAndSignIn": "Verifizieren \u0026 anmelden",
 			"changeEmail": "E-Mail ändern",
 			"resend": "Erneut senden",
 			"validation": {
@@ -241,15 +262,15 @@
 			"goToSignIn": "Zur Anmeldung",
 			"workspaceLabel": "Workspace: {{workspaceName}}",
 			"joinWorkspace": "{{workspaceName}} beitreten",
-			"inviteBodySignedIn": "<inviter>{{inviterName}}</inviter> hat dich eingeladen, ihrem Workspace beizutreten.",
-			"inviteBodySignedOut": "<inviter>{{inviterName}}</inviter> hat dich eingeladen, ihrem Workspace auf Kaneo beizutreten.",
+			"inviteBodySignedIn": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e hat dich eingeladen, ihrem Workspace beizutreten.",
+			"inviteBodySignedOut": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e hat dich eingeladen, ihrem Workspace auf Kaneo beizutreten.",
 			"signInToAccept": "Melde dich an, um die Einladung anzunehmen.",
 			"accepting": "Wird angenommen...",
 			"acceptInvitation": "Einladung annehmen",
 			"goToDashboard": "Zum Dashboard",
-			"signedInAs": "Angemeldet als <email>{{email}}</email>",
+			"signedInAs": "Angemeldet als \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"youveBeenInvited": "Du wurdest eingeladen!",
-			"invitationFor": "Einladung für: <email>{{email}}</email>",
+			"invitationFor": "Einladung für: \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"signIn": "Anmelden",
 			"toast": {
 				"acceptFailed": "Einladung konnte nicht angenommen werden",
@@ -268,7 +289,7 @@
 			"creating": "Wird erstellt...",
 			"createWorkspace": "Workspace erstellen",
 			"workspaceCreatedTitle": "Workspace erstellt",
-			"redirectingToWorkspace": "Du wirst zu <name>{{name}}</name> weitergeleitet...",
+			"redirectingToWorkspace": "Du wirst zu \u003cname\u003e{{name}}\u003c/name\u003e weitergeleitet...",
 			"toast": {
 				"workspaceCreated": "Workspace erfolgreich erstellt",
 				"createFailed": "Workspace konnte nicht erstellt werden"
@@ -295,6 +316,29 @@
 				"nameRequired": "Name ist erforderlich",
 				"nameShort": "Der Name muss mindestens 2 Zeichen lang sein"
 			}
+		},
+		"device": {
+			"pageTitle": "Gerät verbinden",
+			"pageSubtitle": "Gib den Code von deiner CLI oder App ein, um fortzufahren.",
+			"codePlaceholder": "z.B. ABCD-1234",
+			"continue": "Weiter",
+			"enterCodeToast": "Gib den auf deinem Gerät angezeigten Code ein.",
+			"invalidOrExpiredCode": "Ungültiger oder abgelaufener Code",
+			"approvePageTitle": "Gerät genehmigen",
+			"loadingSubtitle": "Laden…",
+			"checkingSession": "Sitzung wird überprüft…",
+			"noCodeProvided": "Kein Gerätecode angegeben.",
+			"enterACode": "Code eingeben",
+			"signInToContinue": "Anmelden um fortzufahren",
+			"signInToApprove": "Melde dich an, um diese Geräteanfrage zu genehmigen oder abzulehnen.",
+			"requestingAccess": "Ein Gerät fordert Zugriff auf dein Kaneo-Konto an.",
+			"signIn": "Anmelden",
+			"couldNotApprove": "Genehmigung fehlgeschlagen",
+			"deviceConnected": "Gerät verbunden",
+			"couldNotDeny": "Ablehnung fehlgeschlagen",
+			"requestCancelled": "Anfrage abgebrochen",
+			"approve": "Genehmigen",
+			"deny": "Ablehnen"
 		}
 	},
 	"settings": {
@@ -1029,6 +1073,13 @@
 		}
 	},
 	"navigation": {
+		"projectViews": {
+			"title": "Ansicht",
+			"backlog": "Backlog",
+			"board": "Aufgaben",
+			"gantt": "Gantt",
+			"recurring": "Wiederkehrend"
+		},
 		"commandPalette": {
 			"suggestions": "Vorschläge",
 			"commands": "Befehle",
@@ -1058,7 +1109,8 @@
 			"members": "Mitglieder",
 			"invitations": "Einladungen",
 			"more": "Mehr",
-			"backToBoard": "Zurück zum Board"
+			"backToBoard": "Zurück zum Board",
+			"toggleSidebar": "Seitenleiste umschalten"
 		},
 		"projectList": {
 			"viewProject": "Projekt ansehen",
@@ -1122,7 +1174,7 @@
 			"title": "Tastenkürzel",
 			"subtitle": "Beschleunige deinen Workflow mit Tastenkürzeln",
 			"searchPlaceholder": "Tastenkürzel suchen...",
-			"footer": "Drücke <kbd>Escape</kbd>, um zu schließen",
+			"footer": "Drücke \u003ckbd\u003eEscape\u003c/kbd\u003e, um zu schließen",
 			"categories": {
 				"general": "Allgemein",
 				"create": "Erstellen",
@@ -1760,6 +1812,20 @@
 			"submit": "Workspace erstellen",
 			"success": "Workspace erfolgreich erstellt",
 			"error": "Workspace konnte nicht erstellt werden"
+		},
+		"modules": {
+			"title": "Module",
+			"description": "Optionale Funktionen für diesen Arbeitsbereich aktivieren oder deaktivieren",
+			"loading": "Module werden geladen...",
+			"toastUpdated": "Modul aktualisiert",
+			"toastUpdateError": "Fehler beim Aktualisieren des Moduls",
+			"categories": {
+				"finance": "Finanzen",
+				"operations": "Betrieb",
+				"planning": "Planung",
+				"collaboration": "Zusammenarbeit",
+				"automation": "Automatisierung"
+			}
 		}
 	},
 	"team": {
@@ -1802,7 +1868,94 @@
 			"removeError": "Teammitglied konnte nicht entfernt werden",
 			"cancelInviteSuccess": "Einladung erfolgreich abgebrochen",
 			"cancelInviteError": "Einladung konnte nicht abgebrochen werden"
+		},
+		"deleteMemberModal": {
+			"title": "Teammitglied entfernen",
+			"description": "Soll {{name}} wirklich aus dem Team entfernt werden? Diese Aktion kann nicht rückgängig gemacht werden.",
+			"removeButton": "Mitglied entfernen"
 		}
+	},
+	"recurring": {
+		"pageTitle": "Wiederkehrende Aufgaben",
+		"title": "Wiederkehrende Aufgaben",
+		"tableTitle": "Geplante Aufgaben",
+		"table": {
+			"title": "Titel",
+			"schedule": "Zeitplan",
+			"nextRun": "Nächste Ausführung",
+			"priority": "Priorität",
+			"active": "Aktiv"
+		},
+		"empty": {
+			"title": "Keine wiederkehrenden Aufgaben",
+			"description": "Für dieses Projekt sind keine wiederkehrenden Aufgaben konfiguriert."
+		},
+		"create": {
+			"trigger": "Wiederkehrende Aufgabe hinzufügen",
+			"title": "Wiederkehrende Aufgabe erstellen",
+			"description": "Richte eine Aufgabe ein, die automatisch nach einem Zeitplan erstellt wird.",
+			"titleField": "Titel",
+			"titlePlaceholder": "Aufgabentitel",
+			"descriptionField": "Beschreibung",
+			"descriptionPlaceholder": "Optionale Beschreibung",
+			"frequency": "Häufigkeit",
+			"every": "Alle",
+			"column": "Spalte",
+			"columnDefault": "Standardspalte",
+			"assignee": "Zuständiger",
+			"assigneeUnassigned": "Nicht zugewiesen",
+			"priority": "Priorität",
+			"priorityNone": "Keine",
+			"submit": "Erstellen"
+		},
+		"frequency": {
+			"daily": "Täglich",
+			"weekly": "Wöchentlich",
+			"monthly": "Monatlich"
+		}
+	},
+	"templates": {
+		"pageTitle": "Projektvorlagen",
+		"title": "Projektvorlagen",
+		"description": "Vorkonfigurierte Projektsetups mit Spalten und Aufgaben. Vorlagen sind beim Erstellen eines neuen Projekts verfügbar.",
+		"create": {
+			"trigger": "Vorlage erstellen",
+			"title": "Vorlage erstellen",
+			"description": "Definiere Spalten und optionale Beispielaufgaben für diese Vorlage.",
+			"name": "Name",
+			"namePlaceholder": "z. B. Agile Sprint",
+			"descriptionField": "Beschreibung",
+			"descriptionPlaceholder": "Kurzbeschreibung dieser Vorlage",
+			"columns": "Spalten",
+			"addColumn": "Spalte hinzufügen",
+			"columnNamePlaceholder": "Spaltenname",
+			"columnSlugPlaceholder": "spalten-slug",
+			"final": "Final",
+			"sampleTasks": "Beispielaufgaben (optional)",
+			"addTask": "Aufgabe hinzufügen",
+			"taskTitlePlaceholder": "Aufgabentitel",
+			"taskDescriptionPlaceholder": "Beschreibung (optional)",
+			"taskColumnPlaceholder": "Spalte",
+			"noSampleTasks": "Keine Beispielaufgaben. Die Vorlage definiert nur Spalten.",
+			"submit": "Vorlage erstellen",
+			"columnTodo": "Zu erledigen",
+			"columnInProgress": "In Bearbeitung",
+			"columnDone": "Erledigt"
+		},
+		"createProject": {
+			"blankProject": "Leeres Projekt",
+			"sampleTaskCount_one": "{{count}} Beispielaufgabe",
+			"sampleTaskCount_other": "{{count}} Beispielaufgaben"
+		},
+		"empty": {
+			"title": "Noch keine Vorlagen",
+			"description": "Noch keine Vorlagen. Erstelle eine, um loszulegen."
+		},
+		"builtIn": "Integriert",
+		"noDescription": "Keine Beschreibung",
+		"deleteTooltip": "Vorlage löschen",
+		"toastCreated": "Vorlage erstellt",
+		"toastCreateError": "Fehler beim Erstellen der Vorlage"
 	},
 	"publicProject": {
 		"pageTitle": "Öffentliche Ansicht",

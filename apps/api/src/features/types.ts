@@ -2,12 +2,7 @@ export type FeatureModule = {
 	key: string;
 	name: string;
 	description: string;
-	category:
-		| "operations"
-		| "finance"
-		| "planning"
-		| "collaboration"
-		| "automation";
+	category: "planning" | "collaboration" | "automation";
 	defaultEnabled: boolean;
 	dependencies?: string[];
 	workspaceNav?: {

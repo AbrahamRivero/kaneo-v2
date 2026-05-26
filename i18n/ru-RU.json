@@ -1,4 +1,4 @@
-{
+﻿{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -11,7 +11,8 @@
 			"remove": "Убрать",
 			"reset": "Сбросить",
 			"filter": "Фильтр",
-			"clearAllFilters": "Сбросить все фильтры"
+			"clearAllFilters": "Сбросить все фильтры",
+			"confirm": "Подтвердить"
 		},
 		"a11y": {
 			"toggleSidebar": "Переключить боковую панель"
@@ -56,8 +57,22 @@
 			"viewDeploymentGuide": "Руководство по развёртыванию",
 			"refreshPage": "Обновить страницу"
 		},
+		"demo": {
+			"banner": "Это демонстрационная среда. Все данные будут автоматически удаляться каждый час.",
+			"deployButton": "Развернуть свою версию"
+		},
 		"formats": {
 			"never": "Никогда"
+		},
+		"status": {
+			"active": "Активен",
+			"pending": "В ожидании"
+		},
+		"spinner": {
+			"loading": "Загрузка"
+		},
+		"theme": {
+			"toggle": "Переключить тему"
 		},
 		"modals": {
 			"createProject": {
@@ -72,7 +87,8 @@
 				"keyHint": "Используется для идентификаторов задач (например, {{example}}-123)",
 				"createButton": "Создать проект",
 				"successToast": "Проект успешно создан",
-				"errorToast": "Не удалось создать проект"
+				"errorToast": "Не удалось создать проект",
+				"keyPlaceholder": "PRO"
 			},
 			"createWorkspace": {
 				"breadcrumbKaneo": "KANEO",
@@ -125,6 +141,12 @@
 					"rose": "Роза",
 					"crimson": "Малиновый"
 				}
+			},
+			"archiveTasks": {
+				"title": "Архивировать задачи",
+				"description_one": "Вы уверены, что хотите архивировать {{count}} завершённую задачу? Она будет перемещена с активной доски в архив.",
+				"description_few": "Вы уверены, что хотите архивировать {{count}} завершённые задачи? Они будут перемещены с активной доски в архив.",
+				"description_other": "Вы уверены, что хотите архивировать {{count}} завершённых задач? Они будут перемещены с активной доски в архив."
 			}
 		}
 	},
@@ -168,7 +190,7 @@
 		"checkEmail": {
 			"pageTitle": "Проверьте почту",
 			"title": "Проверьте свою почту",
-			"inboxMessage": "Мы отправили вам временную ссылку для входа. Пожалуйста, проверьте свой почтовый ящик по адресу <email>{{email}}</email>.",
+			"inboxMessage": "Мы отправили вам временную ссылку для входа. Пожалуйста, проверьте свой почтовый ящик по адресу \u003cemail\u003e{{email}}\u003c/email\u003e.",
 			"emailFallback": "ваш адрес электронной почты",
 			"backToLogin": "Вернуться к входу"
 		},
@@ -241,15 +263,15 @@
 			"goToSignIn": "Перейти к входу",
 			"workspaceLabel": "Рабочая область: {{workspaceName}}",
 			"joinWorkspace": "Присоединиться к {{workspaceName}}",
-			"inviteBodySignedIn": "<inviter>{{inviterName}}</inviter> приглашает вас присоединиться к рабочей области.",
-			"inviteBodySignedOut": "<inviter>{{inviterName}}</inviter> приглашает вас присоединиться к рабочей области в Kaneo.",
+			"inviteBodySignedIn": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e приглашает вас присоединиться к рабочей области.",
+			"inviteBodySignedOut": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e приглашает вас присоединиться к рабочей области в Kaneo.",
 			"signInToAccept": "Войдите, чтобы принять приглашение.",
 			"accepting": "Принятие...",
 			"acceptInvitation": "Принять приглашение",
 			"goToDashboard": "Перейти к панели управления",
-			"signedInAs": "Вы вошли как <email>{{email}}</email>",
+			"signedInAs": "Вы вошли как \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"youveBeenInvited": "Вас пригласили!",
-			"invitationFor": "Приглашение для: <email>{{email}}</email>",
+			"invitationFor": "Приглашение для: \u003cemail\u003e{{email}}\u003c/email\u003e",
 			"signIn": "Войти",
 			"toast": {
 				"acceptFailed": "Не удалось принять приглашение",
@@ -268,7 +290,7 @@
 			"creating": "Создание...",
 			"createWorkspace": "Создать рабочую область",
 			"workspaceCreatedTitle": "Рабочая область создана",
-			"redirectingToWorkspace": "Переход к <name>{{name}}</name>...",
+			"redirectingToWorkspace": "Переход к \u003cname\u003e{{name}}\u003c/name\u003e...",
 			"toast": {
 				"workspaceCreated": "Рабочая область успешно создана",
 				"createFailed": "Не удалось создать рабочую область"
@@ -295,6 +317,29 @@
 				"nameRequired": "Имя обязательно",
 				"nameShort": "Имя должно содержать не менее 2 символов"
 			}
+		},
+		"device": {
+			"pageTitle": "Подключить устройство",
+			"pageSubtitle": "Введите код из вашей CLI или приложения, чтобы продолжить.",
+			"codePlaceholder": "напр. ABCD-1234",
+			"continue": "Продолжить",
+			"enterCodeToast": "Введите код, показанный на вашем устройстве.",
+			"invalidOrExpiredCode": "Недействительный или просроченный код",
+			"approvePageTitle": "Подтвердить устройство",
+			"loadingSubtitle": "Загрузка…",
+			"checkingSession": "Проверка сессии…",
+			"noCodeProvided": "Код устройства не указан.",
+			"enterACode": "Ввести код",
+			"signInToContinue": "Войдите, чтобы продолжить",
+			"signInToApprove": "Войдите, чтобы подтвердить или отклонить запрос устройства.",
+			"requestingAccess": "Устройство запрашивает доступ к вашей учётной записи Kaneo.",
+			"signIn": "Войти",
+			"couldNotApprove": "Не удалось подтвердить",
+			"deviceConnected": "Устройство подключено",
+			"couldNotDeny": "Не удалось отклонить",
+			"requestCancelled": "Запрос отменён",
+			"approve": "Подтвердить",
+			"deny": "Отклонить"
 		}
 	},
 	"settings": {
@@ -1035,6 +1080,13 @@
 		}
 	},
 	"navigation": {
+		"projectViews": {
+			"title": "Вид",
+			"backlog": "Бэклог",
+			"board": "Задачи",
+			"gantt": "Гант",
+			"recurring": "Повторяющиеся"
+		},
 		"commandPalette": {
 			"suggestions": "Предложения",
 			"commands": "Команды",
@@ -1063,7 +1115,8 @@
 			"archivedProjects": "Архивные проекты",
 			"members": "Участники",
 			"invitations": "Приглашения",
-			"more": "Ещё"
+			"more": "Ещё",
+			"toggleSidebar": "Переключить боковую панель"
 		},
 		"projectList": {
 			"viewProject": "Открыть проект",
@@ -1127,7 +1180,7 @@
 			"title": "Сочетания клавиш",
 			"subtitle": "Ускорьте работу с помощью сочетаний клавиш",
 			"searchPlaceholder": "Поиск сочетаний...",
-			"footer": "Нажмите <kbd>Escape</kbd>, чтобы закрыть",
+			"footer": "Нажмите \u003ckbd\u003eEscape\u003c/kbd\u003e, чтобы закрыть",
 			"categories": {
 				"general": "Основные",
 				"create": "Создание",
@@ -1803,6 +1856,20 @@
 			"submit": "Создать рабочую область",
 			"success": "Рабочая область успешно создана",
 			"error": "Не удалось создать рабочую область"
+		},
+		"modules": {
+			"title": "Модули",
+			"description": "Включить или отключить дополнительные функции для этого рабочего пространства",
+			"loading": "Загрузка модулей...",
+			"toastUpdated": "Модуль обновлён",
+			"toastUpdateError": "Не удалось обновить модуль",
+			"categories": {
+				"finance": "Финансы",
+				"operations": "Операции",
+				"planning": "Планирование",
+				"collaboration": "Совместная работа",
+				"automation": "Автоматизация"
+			}
 		}
 	},
 	"team": {
@@ -1845,7 +1912,96 @@
 			"removeError": "Не удалось удалить участника команды",
 			"cancelInviteSuccess": "Приглашение успешно отменено",
 			"cancelInviteError": "Не удалось отменить приглашение"
+		},
+		"deleteMemberModal": {
+			"title": "Удалить участника команды",
+			"description": "Вы уверены, что хотите удалить {{name}} из команды? Это действие нельзя отменить.",
+			"removeButton": "Удалить участника"
 		}
+	},
+	"recurring": {
+		"pageTitle": "Повторяющиеся задачи",
+		"title": "Повторяющиеся задачи",
+		"tableTitle": "Запланированные задачи",
+		"table": {
+			"title": "Название",
+			"schedule": "Расписание",
+			"nextRun": "Следующий запуск",
+			"priority": "Приоритет",
+			"active": "Активна"
+		},
+		"empty": {
+			"title": "Нет повторяющихся задач",
+			"description": "Для этого проекта не настроены повторяющиеся задачи."
+		},
+		"create": {
+			"trigger": "Добавить повторяющуюся задачу",
+			"title": "Создать повторяющуюся задачу",
+			"description": "Настройте задачу, которая будет автоматически создаваться по расписанию.",
+			"titleField": "Название",
+			"titlePlaceholder": "Название задачи",
+			"descriptionField": "Описание",
+			"descriptionPlaceholder": "Необязательное описание",
+			"frequency": "Частота",
+			"every": "Каждые",
+			"column": "Колонка",
+			"columnDefault": "Колонка по умолчанию",
+			"assignee": "Исполнитель",
+			"assigneeUnassigned": "Не назначен",
+			"priority": "Приоритет",
+			"priorityNone": "Нет",
+			"submit": "Создать"
+		},
+		"frequency": {
+			"daily": "Ежедневно",
+			"weekly": "Еженедельно",
+			"monthly": "Ежемесячно"
+		}
+	},
+	"templates": {
+		"pageTitle": "Шаблоны проектов",
+		"title": "Шаблоны проектов",
+		"description": "Предварительно настроенные проекты с колонками и задачами. Шаблоны доступны при создании нового проекта.",
+		"create": {
+			"trigger": "Создать шаблон",
+			"title": "Создать шаблон",
+			"description": "Определите колонки и опциональные примеры задач для этого шаблона.",
+			"name": "Название",
+			"namePlaceholder": "напр. Agile Sprint",
+			"descriptionField": "Описание",
+			"descriptionPlaceholder": "Краткое описание шаблона",
+			"columns": "Колонки",
+			"addColumn": "Добавить колонку",
+			"columnNamePlaceholder": "Название колонки",
+			"columnSlugPlaceholder": "slug-колонки",
+			"final": "Последняя",
+			"sampleTasks": "Примеры задач (опционально)",
+			"addTask": "Добавить задачу",
+			"taskTitlePlaceholder": "Название задачи",
+			"taskDescriptionPlaceholder": "Описание (опционально)",
+			"taskColumnPlaceholder": "Колонка",
+			"noSampleTasks": "Нет примеров задач. Шаблон будет определять только колонки.",
+			"submit": "Создать шаблон",
+			"columnTodo": "Нужно сделать",
+			"columnInProgress": "В процессе",
+			"columnDone": "Готово"
+		},
+		"createProject": {
+			"blankProject": "Пустой проект",
+			"sampleTaskCount_one": "{{count}} пример задачи",
+			"sampleTaskCount_few": "{{count}} примера задач",
+			"sampleTaskCount_many": "{{count}} примеров задач",
+			"sampleTaskCount_other": "{{count}} примеров задач"
+		},
+		"empty": {
+			"title": "Нет шаблонов",
+			"description": "Ещё нет шаблонов. Создайте один, чтобы начать."
+		},
+		"builtIn": "Встроенный",
+		"noDescription": "Нет описания",
+		"deleteTooltip": "Удалить шаблон",
+		"toastCreated": "Шаблон создан",
+		"toastCreateError": "Не удалось создать шаблон"
 	},
 	"publicProject": {
 		"pageTitle": "Публичный просмотр",
