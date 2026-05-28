@@ -295,60 +295,51 @@ export const exampleTable = pgTable("example", {
 ]);
 ```
 
-<!-- Anchored Summary: i18n Localization Completion -->
+<!-- Anchored Summary: Recurring Task Integration & i18n Completion -->
 
 ## Goal
-
-Complete i18n localization of all UI strings across the web app.
+Complete recurring task integration: convert checklist items to real subtasks, fix event payloads and notifications, expose `recurringTaskId` through the full API+UI chain, add frontend badges, and finalize i18n localization.
 
 ## Progress
 
 ### Done
-- **Intake Forms feature completely removed**: schema, API, frontend, migration, all references.
-- **Recurring Tasks integrated** with event/notification system (schema, migration, processor publishes `task.created`, WebSocket handlers).
-- **All 10 locale files** have identical key structures (en-US, es-ES, de-DE, fr-FR, nl-NL, ru-RU, uk-UA, el-GR, mk-MK, ko-KR).
-- **All 18 component files** have `useTranslation` imports or `i18n.t()` calls.
-- **8 supplier hook .ts files** use `i18n.t("suppliers:toast.*")`.
-- **create-project-modal.tsx**: Toast + placeholder use `t()`.
-- **create-template-modal.tsx**: Column defaults use `t()` via `getDefaultColumns()`.
-- **project-layout.tsx**, **workspace-layout.tsx**, **task-layout.tsx**: "Toggle sidebar" → `t("navigation.sidebar.toggleSidebar")`.
-- **status.tsx**: "Active"/"Pending" → `i18n.t("common:status.*")`.
-- **demo-alert.tsx**: Banner + deploy button → `t("common:demo.*")`.
-- **theme-toggle-dropdown.tsx**: "Toggle theme" → `t("common:theme.toggle")`.
-- **spinner.tsx**: `aria-label` → `i18n.t("common:spinner.loading")`.
-- **archive-tasks-modal.tsx**: Title, description (with plural), confirm → `t("common:modals.archiveTasks.*")`.
-- **delete-team-member-modal.tsx**: Title, description, buttons → `t("team:deleteMemberModal.*")`.
-- **modules.tsx**: Title, description, loading, toasts, category labels → `t("workspace:modules.*")`.
-- **device/index.tsx** + **device/approve.tsx**: All ~22 strings → `t("auth:device.*")`.
-- **New i18n keys added**: `common:status.*`, `common:demo.*`, `common:theme.*`, `common:spinner.*`, `common:modals.archiveTasks.*`, `team:deleteMemberModal.*`, `workspace:modules.categories.*`, `workspace:modules.description`, `workspace:modules.loading`, `auth:device.*`.
+- **Checklist → subtask conversion**: `process-recurring-tasks.ts` now creates real subtasks via `task_relation` (`relationType: "subtask"`) inside a single `db.transaction`. Checklist items from templates are copied as full Task rows.
+- **Schema cleanup**: `taskChecklistItemTable` removed from `schema.ts` and `relations.ts`; migration `0041_flat_proudstar.sql` drops `task_checklist_item` CASCADE.
+- **list-recurring-tasks fix**: Replaced broken Drizzle `with: { checklistItems: true }` with explicit two-query + `Map` grouping.
+- **Recurring create/edit dialog**: Checklist items render as subtask-style rows with framer-motion `AnimatePresence`, matching `SubtaskRow` visual.
+- **Recurring tasks table**: Delete modal buttons wrapped in `<Button>` components; hardcoded em dashes replaced with i18n; `aria-label` added to edit/delete icon buttons.
+- **i18n localization**: All 10 locale files have identical key structures. 18 component files use `useTranslation`. 8 supplier hooks use `i18n.t()`. Added 4 new keys (`common:actions.edit`, `common:actions.back`, `recurring:table.noLastRun`, `recurring:create.days`). Device auth, archive modal, delete member modal, modules page, demo alert, theme toggle, spinner, all sidebar layouts localized.
+- **Phase 1 — API plumbing**: Added `recurringTaskId` to `Task` entity, `TaskWithRelations`, `CreateTaskInput` type, Drizzle task mapper (row ↔ entity), and repository `findById`/`findByProjectId` queries + `create` insert.
+- **Frontend Task type**: Added `recurringTaskId?: string | null`.
+- **Notification payload**: Event includes `title`, `description`, `priority`, `status`, `number`, `recurringTaskId`. DB confirmation shows `event_data: {"taskTitle": "Copia de Seguridad"}` — correct task title propagates.
+- **Phase 2 — Frontend badges**: Recurring badge (`RefreshCw` icon + localized label) added to `task-card.tsx` (board cards) and `task-details-content.tsx` (detail header, clickable → navigates to recurring tasks page).
+- **Phase 3 — Polish**: Added `task_recurringTaskId_idx` index to `schema.ts`; generated migration `0042_stale_charles_xavier.sql`; wrapped recurring button in `mobile-project-nav.tsx` with `<FeatureGate featureKey="recurring-tasks">` (was missing vs. desktop).
 - **`pnpm lint` passes clean** — all 6 packages.
 
-### Remaining Hardcoded Strings (low priority)
-- `components/kanban-board/task-labels.tsx`: `labelColors` array is a color-value mapping, not rendered text; label names come from API.
-- Feature utility audit gap report across 36 integration issues (Budgets, Suppliers, Recurring Tasks, Templates operate as silos).
-
 ### Key Decisions
-- `.ts` files (hooks, lib utilities) use `import i18n from "i18next"` + `i18n.t()`.
-- `.tsx` components/route files use `useTranslation` hook + `t()`.
-- Archive modal uses i18next plural (`_one`/`_other`) for `{{count}}` interpolation.
-- Device auth strings live under `auth:device.*` namespace (not `common`).
-- Delete member modal uses its own `team:deleteMemberModal.*` keys (not `team:membersTable.*`).
-- Russian/Ukrainian locale files use `_one`/`_few`/`_other` plural forms.
+- Drop `taskChecklistItemTable` entirely — written to but never read by any frontend/API code.
+- Use manual two-query + `Map` grouping instead of Drizzle's `with` (runtime crash with relational query builder).
+- Keep `recurringTaskChecklistItemTable` (template items) unchanged — read by cron job, managed by CRUD endpoints.
+- Use spread `...task` pattern in `create-task.usecase.ts` so `recurringTaskId` auto-flows into event payload.
+- `.ts` files use `import i18n from "i18next"` + `i18n.t()`. `.tsx` files use `useTranslation` hook + `t()`.
+
+### Critical Context
+- `task_checklist_item` was never surfaced in the frontend — storing data with no way to view it.
+- Drizzle `with: { checklistItems: true }` caused `/recurring-tasks/:projectId` to silently fail.
+- `_recurringTasksApi` route is **not** in exported `AppType` (line 760 of `apps/api/src/index.ts`) — hc client has no typed access.
+- `recurringTaskId` FK has a database index now (`task_recurringTaskId_idx`).
 
 ### Relevant Files
-- `i18n/*.json`: All 10 locale files updated with new keys.
-- `apps/web/src/lib/status.tsx`: Now localized (lib → `i18n.t()`).
-- `apps/web/src/components/demo-alert.tsx`: Now localized.
-- `apps/web/src/components/theme-toggle-dropdown.tsx`: Now localized.
-- `apps/web/src/components/ui/spinner.tsx`: Now localized (ui → `i18n.t()`).
-- `apps/web/src/components/shared/modals/archive-tasks-modal.tsx`: Now localized.
-- `apps/web/src/components/team/delete-team-member-modal.tsx`: Now localized.
-- `apps/web/src/components/common/workspace-layout.tsx`: Now localized.
-- `apps/web/src/components/common/task-layout.tsx`: Now localized.
-- `apps/web/src/routes/device/index.tsx` + `approve.tsx`: Now localized.
-- `apps/web/src/routes/.../settings/workspace/modules.tsx`: Now localized.
-- `apps/web/src/hooks/mutations/supplier/*.ts`: 8 files localized.
-- `apps/web/src/components/shared/modals/create-project-modal.tsx`: Localized.
-- `apps/web/src/components/shared/modals/create-template-modal.tsx`: Localized.
-- `apps/web/src/components/common/project-layout.tsx`: Localized earlier.
+- `apps/api/src/scheduler/process-recurring-tasks.ts`: Cron job creates tasks + subtasks from recurring templates; emits `task.created` with full payload.
+- `apps/api/src/task/domain/entities/task.entity.ts`: `Task`/`TaskWithRelations` include `recurringTaskId`.
+- `apps/api/src/task/domain/types/task.types.ts`: `CreateTaskInput` includes `recurringTaskId`.
+- `apps/api/src/task/infrastructure/mappers/task.mapper.ts`: Maps `recurringTaskId` row ↔ entity.
+- `apps/api/src/task/infrastructure/repositories/drizzle-task.repository.ts`: Selects/inserts `recurringTaskId`.
+- `apps/api/src/database/schema.ts`: Index `task_recurringTaskId_idx`.
+- `apps/web/src/types/task/index.ts`: Frontend `Task` type includes `recurringTaskId`.
+- `apps/web/src/components/kanban-board/task-card.tsx`: Recurring badge in board card.
+- `apps/web/src/components/task/task-details-content.tsx`: Recurring badge (clickable) in detail header.
+- `apps/web/src/components/common/header/mobile-project-nav.tsx`: FeatureGate wrapper for recurring.
+- `apps/web/src/components/shared/modals/create-recurring-task-dialog.tsx`: Subtask-style checklist.
+- `i18n/*.json`: All 10 locale files with matching key structures.
 ```

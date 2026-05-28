@@ -11,6 +11,7 @@ export interface CreateTaskInput {
 	dueDate?: Date;
 	priority?: TaskPriority;
 	status: string;
+	recurringTaskId?: string;
 }
 
 export interface UpdateTaskInput {

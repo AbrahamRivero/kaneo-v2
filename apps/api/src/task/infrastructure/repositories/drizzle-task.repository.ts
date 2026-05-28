@@ -133,6 +133,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 				priority: taskTable.priority,
 				startDate: taskTable.startDate,
 				dueDate: taskTable.dueDate,
+				recurringTaskId: taskTable.recurringTaskId,
 				createdAt: taskTable.createdAt,
 				updatedAt: taskTable.updatedAt,
 				assigneeName: userTable.name,
@@ -298,6 +299,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 			dueDate: taskTable.dueDate,
 			position: taskTable.position,
 			columnId: taskTable.columnId,
+			recurringTaskId: taskTable.recurringTaskId,
 			createdAt: taskTable.createdAt,
 			updatedAt: taskTable.updatedAt,
 			userId: taskTable.userId,
@@ -417,6 +419,13 @@ export class DrizzleTaskRepository implements TaskRepository {
 					.where(eq(userTable.id, input.userId))
 			: [null];
 
+		const [creator] = input.createdBy
+			? await db
+					.select({ name: userTable.name, image: userTable.image })
+					.from(userTable)
+					.where(eq(userTable.id, input.createdBy))
+			: [null];
+
 		const [lastTask] = await db
 			.select({ number: taskTable.number })
 			.from(taskTable)
@@ -462,6 +471,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 				priority: resolvedPriority,
 				number: nextTaskNumber + 1,
 				position: nextPosition,
+				recurringTaskId: input.recurringTaskId || null,
 			})
 			.returning();
 
@@ -475,6 +485,8 @@ export class DrizzleTaskRepository implements TaskRepository {
 			assigneeName: assignee?.name ?? null,
 			assigneeId: createdTask.userId,
 			assigneeImage: assignee?.image ?? null,
+			creatorName: creator?.name ?? null,
+			creatorImage: creator?.image ?? null,
 		};
 	}
 
@@ -518,12 +530,21 @@ export class DrizzleTaskRepository implements TaskRepository {
 					.where(eq(userTable.id, updatedTask.userId))
 			: [null];
 
+		const [creator] = updatedTask.createdBy
+			? await db
+					.select({ name: userTable.name, image: userTable.image })
+					.from(userTable)
+					.where(eq(userTable.id, updatedTask.createdBy))
+			: [null];
+
 		return {
 			...updatedTask,
 			priority: (updatedTask.priority ?? "no-priority") as Task["priority"],
 			assigneeName: assignee?.name ?? null,
 			assigneeId: updatedTask.userId,
 			assigneeImage: assignee?.image ?? null,
+			creatorName: creator?.name ?? null,
+			creatorImage: creator?.image ?? null,
 		};
 	}
 
@@ -807,6 +828,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 			id: task.id,
 			projectId: task.projectId,
 			userId: task.userId,
+			createdBy: task.createdBy,
 			title: task.title,
 			description: task.description,
 			status: task.status,
@@ -816,6 +838,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 			position: task.position,
 			number: task.number,
 			columnId: task.columnId,
+			recurringTaskId: task.recurringTaskId,
 			createdAt: task.createdAt,
 			updatedAt: task.updatedAt,
 		}));

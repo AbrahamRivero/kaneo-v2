@@ -7,6 +7,7 @@ import {
 	SquareKanban,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { FeatureGate } from "@/components/feature-gate";
 import { Button } from "@/components/ui/button";
 import {
 	Popover,
@@ -104,19 +105,21 @@ export default function MobileProjectNav({
 								<CalendarDays className="size-3.5" />
 								{t("navigation:projectViews.gantt")}
 							</button>
-							<button
-								type="button"
-								onClick={onSelectRecurring}
-								className={cn(
-									"flex w-full items-center justify-center gap-1 whitespace-nowrap rounded-md border px-2 py-1.5 text-xs font-medium transition-colors",
-									activeView === "recurring"
-										? "border-border bg-secondary text-foreground"
-										: "border-transparent text-muted-foreground hover:bg-accent",
-								)}
-							>
-								<RefreshCw className="size-3.5" />
-								{t("navigation:projectViews.recurring")}
-							</button>
+							<FeatureGate featureKey="recurring-tasks">
+								<button
+									type="button"
+									onClick={onSelectRecurring}
+									className={cn(
+										"flex w-full items-center justify-center gap-1 whitespace-nowrap rounded-md border px-2 py-1.5 text-xs font-medium transition-colors",
+										activeView === "recurring"
+											? "border-border bg-secondary text-foreground"
+											: "border-transparent text-muted-foreground hover:bg-accent",
+									)}
+								>
+									<RefreshCw className="size-3.5" />
+									{t("navigation:projectViews.recurring")}
+								</button>
+							</FeatureGate>
 						</div>
 					</div>
 

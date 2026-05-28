@@ -1,0 +1,1 @@
+CREATE INDEX "task_recurringTaskId_idx" ON "task" USING btree ("recurring_task_id");

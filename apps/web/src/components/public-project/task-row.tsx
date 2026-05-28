@@ -1,4 +1,4 @@
-import { Calendar, CalendarClock, CalendarX } from "lucide-react";
+import { Calendar, CalendarClock, CalendarX, RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { dueDateStatusColors, getDueDateStatus } from "@/lib/due-date-status";
@@ -105,6 +105,13 @@ export function PublicTaskRow({
 							<span className="leading-none">{t("tasks:creator.label")}</span>
 						</span>
 					)}
+
+				{task.recurringTaskId && (
+					<RefreshCw
+						className="ml-1.5 h-3 w-3 shrink-0 text-primary/70"
+						aria-label={t("recurring:pageTitle")}
+					/>
+				)}
 
 				{task.priority && (
 					<div className="inline-flex items-center gap-1.5 px-2 py-1 rounded border border-border bg-sidebar text-[10px] font-medium text-muted-foreground">

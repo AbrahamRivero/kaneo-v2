@@ -36,6 +36,7 @@ type Task = {
 	creatorImage?: string | null;
 	projectId: string;
 	columnId?: string | null;
+	recurringTaskId?: string | null;
 	labels?: TaskLabel[];
 	externalLinks?: TaskExternalLink[];
 };

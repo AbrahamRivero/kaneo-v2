@@ -14,6 +14,7 @@ export interface Task {
 	position: number | null;
 	number: number | null;
 	columnId: string | null;
+	recurringTaskId: string | null;
 	createdAt: Date;
 	updatedAt: Date;
 }

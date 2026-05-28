@@ -170,6 +170,7 @@ export async function processRecurringTasks(): Promise<void> {
 
 			await publishEvent("task.created", {
 				taskId,
+				recurringTaskId: recurring.id,
 				projectId: recurring.projectId,
 				title: recurring.title,
 				description: recurring.description,

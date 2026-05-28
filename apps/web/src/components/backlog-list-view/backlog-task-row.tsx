@@ -2,7 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
-import { Calendar, CalendarClock, CalendarX } from "lucide-react";
+import { Calendar, CalendarClock, CalendarX, RefreshCw } from "lucide-react";
 import { type CSSProperties, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -228,6 +228,13 @@ export default function BacklogTaskRow({ task }: BacklogTaskRowProps) {
 								</Avatar>
 								<span className="leading-none">{t("tasks:creator.label")}</span>
 							</span>
+						)}
+
+						{task.recurringTaskId && (
+							<RefreshCw
+								className="ml-1.5 h-3 w-3 shrink-0 text-primary/70"
+								aria-label={t("recurring:pageTitle")}
+							/>
 						)}
 
 						{showAssignees && (

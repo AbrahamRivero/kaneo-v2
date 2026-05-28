@@ -8,6 +8,7 @@ import {
 	CalendarX,
 	GitMerge,
 	GitPullRequest,
+	RefreshCw,
 } from "lucide-react";
 import { type CSSProperties, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -290,6 +291,13 @@ function TaskCard({ task }: TaskCardProps) {
 										{t("tasks:creator.label")}
 									</span>
 								</span>
+							)}
+
+							{task.recurringTaskId && (
+								<RefreshCw
+									className="ml-1.5 h-3 w-3 shrink-0 text-primary/70"
+									aria-label={t("recurring:pageTitle")}
+								/>
 							)}
 
 							{showDueDates && task.dueDate && (

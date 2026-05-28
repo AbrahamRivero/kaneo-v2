@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Activity from "@/components/activity";
 import CommentInput from "@/components/activity/comment-input";
@@ -44,7 +44,11 @@ export default function TaskDetailsContent({
 	const { user } = useAuth();
 
 	const parentRelation = relations.find(
-		(rel) => rel.relationType === "subtask" && rel.targetTaskId === taskId,
+		(rel: {
+			relationType: string;
+			targetTaskId: string;
+			sourceTask: { id: string; title: string } | null;
+		}) => rel.relationType === "subtask" && rel.targetTaskId === taskId,
 	);
 	const parentTask = parentRelation?.sourceTask;
 
@@ -78,6 +82,21 @@ export default function TaskDetailsContent({
 				<p className="text-xs font-semibold text-foreground/70">
 					{project?.slug}-{task?.number}
 				</p>
+				{task?.recurringTaskId && (
+					<button
+						type="button"
+						onClick={() =>
+							navigate({
+								to: "/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks",
+								params: { workspaceId, projectId },
+							})
+						}
+						className="inline-flex items-center gap-1.5 text-xs font-medium text-primary/70 hover:text-primary transition-colors w-fit"
+					>
+						<RefreshCw className="h-3.5 w-3.5" />
+						{t("recurring:pageTitle")}
+					</button>
+				)}
 				<TaskTitle taskId={taskId} />
 				<TaskDescription taskId={taskId} />
 			</div>
@@ -103,28 +122,41 @@ export default function TaskDetailsContent({
 					workspaceId={workspaceId}
 				/>
 			</div>
-			<span className="text-sm font-medium text-muted-foreground h-[1px] bg-border w-full block shrink-0" />
+			<span className="text-sm font-medium text-muted-foreground h-px bg-border w-full block shrink-0" />
 			<div className="flex flex-col gap-4">
 				<h1 className="text-md font-semibold">{t("tasks:detail.activity")}</h1>
 				{user?.id && taskId && <CommentInput taskId={taskId} />}
 				{activities.length > 0 ? (
 					<Timeline>
-						{activities.map((activity, index) => {
-							const nextActivity = activities[index + 1];
-							const showConnector =
-								!isCommentActivity(activity) &&
-								Boolean(nextActivity) &&
-								!isCommentActivity(nextActivity);
+						{activities.map(
+							(
+								activity: {
+									id: string;
+									type: string;
+									content: string | null;
+									eventData?: unknown;
+									createdAt: string;
+									userId: string | null;
+									taskId: string;
+								},
+								index: number,
+							) => {
+								const nextActivity = activities[index + 1];
+								const showConnector =
+									!isCommentActivity(activity) &&
+									Boolean(nextActivity) &&
+									!isCommentActivity(nextActivity);
 
-							return (
-								<Activity
-									key={activity.id}
-									activity={activity}
-									step={activities.length - index}
-									showConnector={showConnector}
-								/>
-							);
-						})}
+								return (
+									<Activity
+										key={activity.id}
+										activity={activity}
+										step={activities.length - index}
+										showConnector={showConnector}
+									/>
+								);
+							},
+						)}
 					</Timeline>
 				) : (
 					<p className="text-sm font-medium text-muted-foreground">

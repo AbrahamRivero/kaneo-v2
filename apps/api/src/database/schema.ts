@@ -467,6 +467,7 @@ export const taskTable = pgTable(
 		index("task_assigneeId_idx").on(table.userId),
 		index("task_createdBy_idx").on(table.createdBy),
 		index("task_columnId_idx").on(table.columnId),
+		index("task_recurringTaskId_idx").on(table.recurringTaskId),
 		unique("task_project_number_unique").on(table.projectId, table.number),
 	],
 );
