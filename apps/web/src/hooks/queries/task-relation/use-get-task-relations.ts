@@ -6,6 +6,7 @@ function useGetTaskRelations(taskId: string) {
 		queryKey: ["task-relations", taskId],
 		queryFn: () => getTaskRelations(taskId),
 		enabled: !!taskId,
+		refetchOnMount: true,
 	});
 }
 

@@ -13,6 +13,9 @@ export class UpdateTaskPriorityUseCase {
 		priority: TaskPriority,
 		currentUserId: string,
 	): Promise<Task> {
+		const oldTask = await this.taskRepository.findById(taskId);
+		if (!oldTask) throw new Error("Task not found");
+
 		const task = await this.taskRepository.updatePriority(
 			taskId,
 			priority,
@@ -23,7 +26,15 @@ export class UpdateTaskPriorityUseCase {
 			taskId: task.id,
 			projectId: task.projectId,
 			userId: currentUserId,
-			priority: task.priority,
+			oldPriority: oldTask.priority,
+			newPriority: task.priority,
+			title: task.title,
+			type: "priority_changed",
+		});
+
+		await this.eventPublisher.publish("task-relation.refresh", {
+			projectId: task.projectId,
+			userId: currentUserId,
 		});
 
 		return task;

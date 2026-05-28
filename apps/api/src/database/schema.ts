@@ -360,30 +360,6 @@ export const recurringTaskChecklistItemTable = pgTable(
 	],
 );
 
-export const taskChecklistItemTable = pgTable(
-	"task_checklist_item",
-	{
-		id: text("id")
-			.$defaultFn(() => createId())
-			.primaryKey(),
-		taskId: text("task_id")
-			.notNull()
-			.references(() => taskTable.id, {
-				onDelete: "cascade",
-				onUpdate: "cascade",
-			}),
-		text: text("text").notNull(),
-		isCompleted: boolean("is_completed").default(false).notNull(),
-		position: integer("position").notNull().default(0),
-		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-		updatedAt: timestamp("updated_at", { mode: "date" })
-			.defaultNow()
-			.$onUpdate(() => new Date())
-			.notNull(),
-	},
-	(table) => [index("task_checklist_item_taskId_idx").on(table.taskId)],
-);
-
 export const columnTable = pgTable(
 	"column",
 	{

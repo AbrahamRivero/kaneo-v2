@@ -12,7 +12,9 @@
 			"reset": "Herstellen",
 			"filter": "Filteren",
 			"clearAllFilters": "Alle filters wissen",
-			"confirm": "Bevestigen"
+			"confirm": "Bevestigen",
+			"edit": "Bewerken",
+			"back": "Terug"
 		},
 		"a11y": {
 			"toggleSidebar": "Zijbalk in-/uitschakelen"
@@ -1719,7 +1721,8 @@
 			"nextRun": "Volgende uitvoering",
 			"lastRun": "Laatste uitvoering",
 			"priority": "Prioriteit",
-			"active": "Actief"
+			"active": "Actief",
+			"noLastRun": "Nooit"
 		},
 		"empty": {
 			"title": "Geen terugkerende taken",
@@ -1748,6 +1751,7 @@
 			"dueDateOffset": "Vervaldatum na (dagen)",
 			"dueDateOffsetPlaceholder": "bijv. 3",
 			"nextRunAt": "Eerste uitvoering",
+			"days": "dagen",
 			"submit": "Aanmaken"
 		},
 		"edit": {

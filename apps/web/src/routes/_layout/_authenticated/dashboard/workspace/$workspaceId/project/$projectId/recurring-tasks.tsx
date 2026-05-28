@@ -302,7 +302,7 @@ function RouteComponent() {
 												<TableCell className="text-muted-foreground whitespace-nowrap">
 													{task.lastRunAt
 														? formatDateMedium(new Date(task.lastRunAt))
-														: "—"}
+														: t("recurring:table.noLastRun")}
 												</TableCell>
 												<TableCell>
 													{task.priority && task.priority !== "no-priority" ? (
@@ -316,7 +316,9 @@ function RouteComponent() {
 															})}
 														</Badge>
 													) : (
-														<span className="text-muted-foreground">—</span>
+														<span className="text-muted-foreground">
+															{t("recurring:create.priorityNone")}
+														</span>
 													)}
 												</TableCell>
 												<TableCell className="text-center">
@@ -333,6 +335,7 @@ function RouteComponent() {
 															variant="ghost"
 															size="icon-xs"
 															className="text-muted-foreground hover:text-foreground"
+															aria-label={t("common:actions.edit")}
 															onClick={() => openEditDialog(task)}
 														>
 															<Pencil className="size-4" />
@@ -390,10 +393,14 @@ function RouteComponent() {
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogClose>
-							{t("recurring:deleteConfirm.cancel")}
+							<Button variant="outline" size="sm">
+								{t("common:actions.cancel")}
+							</Button>
 						</AlertDialogClose>
 						<AlertDialogClose onClick={handleDelete}>
-							{t("recurring:deleteConfirm.confirm")}
+							<Button variant="destructive" size="sm">
+								{t("recurring:deleteConfirm.confirm")}
+							</Button>
 						</AlertDialogClose>
 					</AlertDialogFooter>
 				</AlertDialogContent>

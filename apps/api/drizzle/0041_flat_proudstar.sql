@@ -1,0 +1,1 @@
+DROP TABLE "task_checklist_item" CASCADE;

@@ -26,6 +26,11 @@ export class UpdateTaskAssigneeUseCase {
 			assigneeId: userId,
 		});
 
+		await this.eventPublisher.publish("task-relation.refresh", {
+			projectId: task.projectId,
+			userId: currentUserId,
+		});
+
 		return task;
 	}
 }

@@ -13,6 +13,9 @@ export class UpdateTaskStatusUseCase {
 		status: string,
 		currentUserId: string,
 	): Promise<Task> {
+		const oldTask = await this.taskRepository.findById(taskId);
+		if (!oldTask) throw new Error("Task not found");
+
 		const task = await this.taskRepository.updateStatus(
 			taskId,
 			status,
@@ -23,7 +26,16 @@ export class UpdateTaskStatusUseCase {
 			taskId: task.id,
 			projectId: task.projectId,
 			userId: currentUserId,
-			status: task.status,
+			oldStatus: oldTask.status,
+			newStatus: status,
+			title: task.title,
+			assigneeId: task.userId,
+			type: "status_changed",
+		});
+
+		await this.eventPublisher.publish("task-relation.refresh", {
+			projectId: task.projectId,
+			userId: currentUserId,
 		});
 
 		return task;

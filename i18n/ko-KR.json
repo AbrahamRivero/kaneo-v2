@@ -12,7 +12,9 @@
 			"remove": "제거",
 			"reset": "재설정",
 			"filter": "필터",
-			"clearAllFilters": "모든 필터 지우기"
+			"clearAllFilters": "모든 필터 지우기",
+			"edit": "편집",
+			"back": "뒤로"
 		},
 		"a11y": {
 			"toggleSidebar": "사이드바 토글"
@@ -1938,7 +1940,8 @@
 			"nextRun": "다음 실행",
 			"lastRun": "마지막 실행",
 			"priority": "우선순위",
-			"active": "활성"
+			"active": "활성",
+			"noLastRun": "없음"
 		},
 		"empty": {
 			"title": "반복 작업 없음",
@@ -1967,6 +1970,7 @@
 			"dueDateOffset": "마감일 (일 후)",
 			"dueDateOffsetPlaceholder": "예: 3",
 			"nextRunAt": "첫 실행",
+			"days": "일",
 			"submit": "만들기"
 		},
 		"edit": {

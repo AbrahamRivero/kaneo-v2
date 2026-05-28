@@ -12,7 +12,9 @@
 			"reset": "Zurücksetzen",
 			"filter": "Filter",
 			"clearAllFilters": "Alle Filter löschen",
-			"confirm": "Bestätigen"
+			"confirm": "Bestätigen",
+			"edit": "Bearbeiten",
+			"back": "Zurück"
 		},
 		"a11y": {
 			"toggleSidebar": "Sidebar umschalten"
@@ -1946,7 +1948,8 @@
 			"nextRun": "Nächste Ausführung",
 			"lastRun": "Letzte Ausführung",
 			"priority": "Priorität",
-			"active": "Aktiv"
+			"active": "Aktiv",
+			"noLastRun": "Nie"
 		},
 		"empty": {
 			"title": "Keine wiederkehrenden Aufgaben",
@@ -1975,6 +1978,7 @@
 			"dueDateOffset": "Fällig nach (Tagen)",
 			"dueDateOffsetPlaceholder": "z.B. 3",
 			"nextRunAt": "Erste Ausführung",
+			"days": "Tage",
 			"submit": "Erstellen"
 		},
 		"edit": {

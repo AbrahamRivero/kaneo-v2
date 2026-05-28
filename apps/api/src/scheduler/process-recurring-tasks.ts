@@ -6,7 +6,7 @@ import {
 	projectTable,
 	recurringTaskChecklistItemTable,
 	recurringTaskTable,
-	taskChecklistItemTable,
+	taskRelationTable,
 	taskTable,
 } from "../database/schema";
 import { publishEvent } from "../events";
@@ -64,92 +64,121 @@ export async function processRecurringTasks(): Promise<void> {
 
 			if (!project) continue;
 
-			const taskId = createId();
+			// Atomic creation: task + labels + subtasks in one transaction
+			const { taskId, number } = await db.transaction(async (tx) => {
+				const taskId = createId();
 
-			const [maxNumberResult] = await db
-				.select({ maxNumber: max(taskTable.number) })
-				.from(taskTable)
-				.where(eq(taskTable.projectId, recurring.projectId));
+				const [maxNumberResult] = await tx
+					.select({ maxNumber: max(taskTable.number) })
+					.from(taskTable)
+					.where(eq(taskTable.projectId, recurring.projectId));
 
-			const nextNumber = (maxNumberResult?.maxNumber ?? 0) + 1;
+				const nextNumber = (maxNumberResult?.maxNumber ?? 0) + 1;
 
-			const taskValues: Record<string, unknown> = {
-				id: taskId,
-				projectId: recurring.projectId,
-				number: nextNumber,
-				title: recurring.title,
-				description: recurring.description,
-				columnId: recurring.columnId,
-				userId: recurring.assigneeId,
-				createdBy: recurring.createdBy,
-				recurringTaskId: recurring.id,
-				priority: (recurring.priority ?? "no-priority") as
-					| "no-priority"
-					| "low"
-					| "medium"
-					| "high"
-					| "urgent",
-				position: 0,
-			};
+				const taskValues: Record<string, unknown> = {
+					id: taskId,
+					projectId: recurring.projectId,
+					number: nextNumber,
+					title: recurring.title,
+					description: recurring.description,
+					columnId: recurring.columnId,
+					userId: recurring.assigneeId,
+					createdBy: recurring.createdBy,
+					recurringTaskId: recurring.id,
+					priority: (recurring.priority ?? "no-priority") as
+						| "no-priority"
+						| "low"
+						| "medium"
+						| "high"
+						| "urgent",
+					position: 0,
+				};
 
-			if (recurring.dueDateDaysOffset != null) {
-				taskValues.dueDate = new Date(
-					now.getTime() + recurring.dueDateDaysOffset * 24 * 60 * 60 * 1000,
-				);
-			}
+				if (recurring.dueDateDaysOffset != null) {
+					taskValues.dueDate = new Date(
+						recurring.nextRunAt.getTime() +
+							recurring.dueDateDaysOffset * 24 * 60 * 60 * 1000,
+					);
+				}
 
-			await db
-				.insert(taskTable)
-				.values(taskValues as typeof taskTable.$inferInsert);
+				await tx
+					.insert(taskTable)
+					.values(taskValues as typeof taskTable.$inferInsert);
 
-			if (
-				recurring.labelIds != null &&
-				Array.isArray(recurring.labelIds) &&
-				(recurring.labelIds as string[]).length > 0
-			) {
-				const sourceLabels = await db
+				if (
+					recurring.labelIds != null &&
+					Array.isArray(recurring.labelIds) &&
+					(recurring.labelIds as string[]).length > 0
+				) {
+					const sourceLabels = await tx
+						.select()
+						.from(labelTable)
+						.where(inArray(labelTable.id, recurring.labelIds as string[]));
+
+					if (sourceLabels.length > 0) {
+						await tx.insert(labelTable).values(
+							sourceLabels.map((label) => ({
+								id: createId(),
+								name: label.name,
+								color: label.color,
+								taskId: taskId,
+								workspaceId: label.workspaceId,
+							})),
+						);
+					}
+				}
+
+				// Convert checklist items into real subtasks with relations
+				const templateChecklistItems = await tx
 					.select()
-					.from(labelTable)
-					.where(inArray(labelTable.id, recurring.labelIds as string[]));
+					.from(recurringTaskChecklistItemTable)
+					.where(
+						eq(recurringTaskChecklistItemTable.recurringTaskId, recurring.id),
+					)
+					.orderBy(recurringTaskChecklistItemTable.position);
 
-				if (sourceLabels.length > 0) {
-					await db.insert(labelTable).values(
-						sourceLabels.map((label) => ({
+				if (templateChecklistItems.length > 0) {
+					const subTaskNumber = nextNumber + 1;
+					const subTaskIds = templateChecklistItems.map(() => createId());
+
+					await tx.insert(taskTable).values(
+						templateChecklistItems.map((item, i) => ({
+							id: subTaskIds[i],
+							projectId: recurring.projectId,
+							number: subTaskNumber + i,
+							title: item.text,
+							columnId: recurring.columnId,
+							createdBy: recurring.createdBy,
+							priority: "no-priority",
+							position: item.position,
+							status: "to-do",
+						})),
+					);
+
+					await tx.insert(taskRelationTable).values(
+						subTaskIds.map((subTaskId) => ({
 							id: createId(),
-							name: label.name,
-							color: label.color,
-							taskId: taskId,
-							workspaceId: label.workspaceId,
+							sourceTaskId: taskId,
+							targetTaskId: subTaskId,
+							relationType: "subtask",
 						})),
 					);
 				}
-			}
 
-			const templateChecklistItems = await db
-				.select()
-				.from(recurringTaskChecklistItemTable)
-				.where(
-					eq(recurringTaskChecklistItemTable.recurringTaskId, recurring.id),
-				)
-				.orderBy(recurringTaskChecklistItemTable.position);
-
-			if (templateChecklistItems.length > 0) {
-				await db.insert(taskChecklistItemTable).values(
-					templateChecklistItems.map((item) => ({
-						id: createId(),
-						taskId,
-						text: item.text,
-						position: item.position,
-					})),
-				);
-			}
+				return { taskId, number: nextNumber };
+			});
 
 			await publishEvent("task.created", {
 				taskId,
 				projectId: recurring.projectId,
+				title: recurring.title,
+				description: recurring.description,
+				priority: recurring.priority ?? "no-priority",
+				status: "to-do",
+				number,
 				userId: recurring.createdBy ?? "",
 				assigneeId: recurring.assigneeId,
-				currentUserId: recurring.createdBy,
+				currentUserId: recurring.createdBy ?? "",
 				type: "created",
 				content: null,
 			});

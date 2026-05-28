@@ -12,7 +12,9 @@
 			"reset": "Réinitialiser",
 			"filter": "Filtrer",
 			"clearAllFilters": "Effacer tous les filtres",
-			"confirm": "Confirmer"
+			"confirm": "Confirmer",
+			"edit": "Modifier",
+			"back": "Retour"
 		},
 		"a11y": {
 			"toggleSidebar": "Basculer la barre latérale"
@@ -1944,7 +1946,8 @@
 			"nextRun": "Prochaine exécution",
 			"lastRun": "Dernière exécution",
 			"priority": "Priorité",
-			"active": "Actif"
+			"active": "Actif",
+			"noLastRun": "Jamais"
 		},
 		"empty": {
 			"title": "Aucune tâche récurrente",
@@ -1973,6 +1976,7 @@
 			"dueDateOffset": "Échéance après (jours)",
 			"dueDateOffsetPlaceholder": "ex. 3",
 			"nextRunAt": "Première exécution",
+			"days": "jours",
 			"submit": "Créer"
 		},
 		"edit": {

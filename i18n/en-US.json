@@ -12,7 +12,9 @@
 			"reset": "Reset",
 			"filter": "Filter",
 			"clearAllFilters": "Clear all filters",
-			"confirm": "Confirm"
+			"confirm": "Confirm",
+			"edit": "Edit",
+			"back": "Back"
 		},
 		"a11y": {
 			"toggleSidebar": "Toggle sidebar"
@@ -1959,7 +1961,8 @@
 			"nextRun": "Next Run",
 			"lastRun": "Last Run",
 			"priority": "Priority",
-			"active": "Active"
+			"active": "Active",
+			"noLastRun": "Never"
 		},
 		"empty": {
 			"title": "No recurring tasks",
@@ -1988,6 +1991,7 @@
 			"dueDateOffset": "Due after (days)",
 			"dueDateOffsetPlaceholder": "e.g., 3",
 			"nextRunAt": "First run",
+			"days": "days",
 			"submit": "Create"
 		},
 		"edit": {

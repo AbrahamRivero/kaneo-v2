@@ -1,10 +1,33 @@
-import { Check, Plus, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+	CalendarIcon,
+	Check,
+	Circle,
+	Clock,
+	Columns,
+	Plus,
+	RefreshCw,
+	Search,
+	Tag,
+	Trash2,
+	UserIcon,
+	X,
+} from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbList,
+	BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
 	Dialog,
-	DialogClose,
 	DialogContent,
 	DialogDescription,
 	DialogFooter,
@@ -12,15 +35,17 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import useCreateLabel from "@/hooks/mutations/label/use-create-label";
 import useGetLabelsByWorkspace from "@/hooks/queries/label/use-get-labels-by-workspace";
+import { cn } from "@/lib/cn";
+import { formatDateMedium } from "@/lib/format";
+import { getPriorityIcon } from "@/lib/priority";
 
 const labelColorMap: Record<string, string> = {
 	gray: "var(--color-stone-500)",
@@ -36,19 +61,6 @@ const labelColorMap: Record<string, string> = {
 
 function getLabelColor(color: string): string {
 	return labelColorMap[color] || "var(--color-neutral-400)";
-}
-
-function toDatetimeLocal(date: Date): string {
-	const y = date.getFullYear();
-	const m = String(date.getMonth() + 1).padStart(2, "0");
-	const d = String(date.getDate()).padStart(2, "0");
-	const h = String(date.getHours()).padStart(2, "0");
-	const min = String(date.getMinutes()).padStart(2, "0");
-	return `${y}-${m}-${d}T${h}:${min}`;
-}
-
-function fromDatetimeLocal(value: string): Date {
-	return new Date(value);
 }
 
 export type RecurringTaskFormData = {
@@ -74,12 +86,30 @@ type RecurringTaskDialogProps = {
 	onSubmit: (data: RecurringTaskFormData) => Promise<unknown>;
 	isPending: boolean;
 	columns: { id: string; name: string }[];
-	users: { userId: string; user: { id: string; name: string | null } }[];
+	users: {
+		userId: string;
+		user: { id: string; name: string | null; image?: string | null };
+	}[];
 	workspaceId: string;
 	open?: boolean;
 	onOpenChange?: (open: boolean) => void;
 	initialData?: RecurringTaskFormData & { id?: string };
 };
+
+type Priority = "no-priority" | "low" | "medium" | "high" | "urgent";
+
+type LabelColor =
+	| "gray"
+	| "dark-gray"
+	| "purple"
+	| "teal"
+	| "green"
+	| "yellow"
+	| "orange"
+	| "pink"
+	| "red";
+
+type PopoverStep = "select" | "color";
 
 function RecurringTaskDialog({
 	onSubmit,
@@ -104,16 +134,26 @@ function RecurringTaskDialog({
 	const [description, setDescription] = useState("");
 	const [frequency, setFrequency] = useState("daily");
 	const [intervalValue, setIntervalValue] = useState(1);
-	const [priority, setPriority] = useState("no-priority");
+	const [priority, setPriority] = useState<Priority>("no-priority");
 	const [columnId, setColumnId] = useState("");
 	const [assigneeId, setAssigneeId] = useState("");
 	const [labelIds, setLabelIds] = useState<string[]>([]);
 	const [dueDateDaysOffset, setDueDateDaysOffset] = useState<
 		number | undefined
 	>();
-	const [nextRunAtLocal, setNextRunAtLocal] = useState("");
+	const [nextRunAt, setNextRunAt] = useState<Date | undefined>(undefined);
 	const [checklistItems, setChecklistItems] = useState<ChecklistEntry[]>([]);
 	const [checklistInput, setChecklistInput] = useState("");
+
+	const { mutateAsync: createLabel } = useCreateLabel();
+
+	const [labelsOpen, setLabelsOpen] = useState(false);
+	const [searchValue, setSearchValue] = useState("");
+	const [labelsStep, setLabelsStep] = useState<PopoverStep>("select");
+	const [selectedColor, setSelectedColor] = useState<LabelColor>("gray");
+	const [newLabelName, setNewLabelName] = useState("");
+	const searchInputRef = useRef<HTMLInputElement>(null);
+
 	let checklistCounter = 0;
 
 	const addChecklistItem = () => {
@@ -137,12 +177,12 @@ function RecurringTaskDialog({
 				setDescription(initialData.description ?? "");
 				setFrequency(initialData.frequency);
 				setIntervalValue(initialData.intervalValue);
-				setPriority(initialData.priority ?? "no-priority");
+				setPriority((initialData.priority as Priority) ?? "no-priority");
 				setColumnId(initialData.columnId ?? "");
 				setAssigneeId(initialData.assigneeId ?? "");
 				setLabelIds(initialData.labelIds ?? []);
 				setDueDateDaysOffset(initialData.dueDateDaysOffset);
-				setNextRunAtLocal(toDatetimeLocal(new Date(initialData.nextRunAt)));
+				setNextRunAt(new Date(initialData.nextRunAt));
 				setChecklistItems(
 					(initialData.checklistItems ?? []).map((item, i) => ({
 						tempId: `existing_${i}`,
@@ -160,14 +200,19 @@ function RecurringTaskDialog({
 				setLabelIds([]);
 				setDueDateDaysOffset(undefined);
 				setChecklistItems([]);
-				const defaultDate = new Date();
-				defaultDate.setMinutes(defaultDate.getMinutes() + 1);
-				setNextRunAtLocal(toDatetimeLocal(defaultDate));
+				setNextRunAt(new Date());
 			}
 		}
 	}, [open, initialData]);
 
-	const handleSubmit = async () => {
+	useEffect(() => {
+		if (labelsOpen && searchInputRef.current) {
+			setTimeout(() => searchInputRef.current?.focus(), 100);
+		}
+	}, [labelsOpen]);
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
 		if (!title) return;
 
 		await onSubmit({
@@ -178,7 +223,7 @@ function RecurringTaskDialog({
 			columnId: columnId || undefined,
 			assigneeId: assigneeId || undefined,
 			priority: priority !== "no-priority" ? priority : undefined,
-			nextRunAt: fromDatetimeLocal(nextRunAtLocal).toISOString(),
+			nextRunAt: nextRunAt?.toISOString() ?? new Date().toISOString(),
 			labelIds: labelIds.length > 0 ? labelIds : undefined,
 			dueDateDaysOffset,
 			checklistItems:
@@ -201,276 +246,777 @@ function RecurringTaskDialog({
 		);
 	};
 
+	const priorityOptions = useMemo(
+		() =>
+			(["no-priority", "low", "medium", "high", "urgent"] as const).map(
+				(value) => ({
+					value,
+					label: t(`tasks:priority.${value}`),
+				}),
+			),
+		[t],
+	);
+
+	const frequencyOptions = useMemo(
+		() =>
+			(["daily", "weekly", "monthly"] as const).map((value) => ({
+				value,
+				label: t(`recurring:frequency.${value}`),
+			})),
+		[t],
+	);
+
+	const labelColors = useMemo(
+		() =>
+			[
+				{
+					value: "gray" as LabelColor,
+					labelKey: "stone" as const,
+					color: "var(--color-stone-500)",
+				},
+				{
+					value: "dark-gray" as LabelColor,
+					labelKey: "slate" as const,
+					color: "var(--color-slate-500)",
+				},
+				{
+					value: "purple" as LabelColor,
+					labelKey: "lavender" as const,
+					color: "var(--color-violet-500)",
+				},
+				{
+					value: "teal" as LabelColor,
+					labelKey: "sage" as const,
+					color: "var(--color-emerald-600)",
+				},
+				{
+					value: "green" as LabelColor,
+					labelKey: "forest" as const,
+					color: "var(--color-green-600)",
+				},
+				{
+					value: "yellow" as LabelColor,
+					labelKey: "amber" as const,
+					color: "var(--color-amber-600)",
+				},
+				{
+					value: "orange" as LabelColor,
+					labelKey: "terracotta" as const,
+					color: "var(--color-orange-600)",
+				},
+				{
+					value: "pink" as LabelColor,
+					labelKey: "rose" as const,
+					color: "var(--color-rose-600)",
+				},
+				{
+					value: "red" as LabelColor,
+					labelKey: "crimson" as const,
+					color: "var(--color-red-600)",
+				},
+			].map(({ labelKey, ...rest }) => ({
+				...rest,
+				label: t(`common:modals.createTask.labelColors.${labelKey}`),
+			})),
+		[t],
+	);
+
+	const selectedPriority = priorityOptions.find((p) => p.value === priority);
+	const selectedFrequency = frequencyOptions.find((f) => f.value === frequency);
+	const selectedColumn = columns.find((c) => c.id === columnId);
+	const selectedUser = users.find((u) => u.userId === assigneeId);
+
+	const filteredLabels = workspaceLabels.filter((label) =>
+		label.name.toLowerCase().includes(searchValue.toLowerCase()),
+	);
+
+	const selectedLabels = workspaceLabels.filter((label) =>
+		labelIds.includes(label.id),
+	);
+
+	const isCreatingNewLabel =
+		searchValue &&
+		!workspaceLabels.some(
+			(label) => label.name.toLowerCase() === searchValue.toLowerCase(),
+		);
+
+	const resetLabelsPopover = () => {
+		setLabelsStep("select");
+		setSearchValue("");
+		setNewLabelName("");
+		setSelectedColor("gray");
+	};
+
+	const handleCreateNewClick = () => {
+		setNewLabelName(searchValue);
+		setLabelsStep("color");
+	};
+
+	const handleColorSelect = async (color: LabelColor) => {
+		setSelectedColor(color);
+
+		if (!newLabelName.trim()) return;
+
+		try {
+			const createdLabel = await createLabel({
+				name: newLabelName.trim(),
+				color: color,
+				workspaceId,
+			});
+
+			setLabelIds((prev) => [...prev, createdLabel.id]);
+			toast.success(t("common:modals.createTask.labelCreated"));
+			resetLabelsPopover();
+			setLabelsOpen(false);
+		} catch (error) {
+			toast.error(
+				error instanceof Error
+					? error.message
+					: t("common:modals.createTask.labelCreateError"),
+			);
+		}
+	};
+
+	const handleClose = () => {
+		setOpen(false);
+		resetLabelsPopover();
+		setLabelsOpen(false);
+	};
+
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>
-						{isEditMode
-							? t("recurring:edit.title")
-							: t("recurring:create.title")}
+		<Dialog open={open} onOpenChange={handleClose}>
+			<DialogContent
+				className="max-w-2xl max-h-[90vh] flex flex-col overflow-hidden"
+				showCloseButton={false}
+			>
+				<DialogHeader className="shrink-0">
+					<DialogTitle asChild>
+						<Breadcrumb>
+							<BreadcrumbList>
+								<BreadcrumbItem className="text-muted-foreground font-semibold tracking-wider text-sm">
+									<RefreshCw className="w-3.5 h-3.5 inline mr-1.5" />
+									{t("recurring:pageTitle").toUpperCase()}
+								</BreadcrumbItem>
+								<BreadcrumbSeparator />
+								<BreadcrumbItem className="text-foreground font-medium text-sm">
+									{isEditMode
+										? t("recurring:edit.title")
+										: t("recurring:create.title")}
+								</BreadcrumbItem>
+							</BreadcrumbList>
+						</Breadcrumb>
 					</DialogTitle>
-					<DialogDescription>
+					<DialogDescription className="sr-only">
 						{isEditMode
 							? t("recurring:edit.description")
 							: t("recurring:create.description")}
 					</DialogDescription>
 				</DialogHeader>
+
 				<form
-					onSubmit={(e) => {
-						e.preventDefault();
-						handleSubmit();
-					}}
-					className="space-y-6"
+					onSubmit={handleSubmit}
+					className="flex flex-col flex-1 min-h-0 space-y-6"
 				>
-					<div className="px-6 space-y-4">
-						<div className="space-y-2">
-							<Label htmlFor="rt-title">
-								{t("recurring:create.titleField")}
-							</Label>
-							<Input
-								id="rt-title"
-								placeholder={t("recurring:create.titlePlaceholder")}
-								value={title}
-								onChange={(e) => setTitle(e.target.value)}
-							/>
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="rt-description">
-								{t("recurring:create.descriptionField")}
-							</Label>
-							<Input
-								id="rt-description"
-								placeholder={t("recurring:create.descriptionPlaceholder")}
+					<div className="flex-1 min-h-0 overflow-y-auto space-y-6 px-6">
+						<Input
+							unstyled
+							value={title}
+							onChange={(e) => setTitle(e.target.value)}
+							autoFocus
+							placeholder={t("recurring:create.titlePlaceholder")}
+							className="w-full **:data-[slot=input]:h-auto **:data-[slot=input]:px-0 **:data-[slot=input]:py-3 **:data-[slot=input]:text-2xl **:data-[slot=input]:leading-tight **:data-[slot=input]:font-semibold **:data-[slot=input]:tracking-tight **:data-[slot=input]:text-foreground **:data-[slot=input]:placeholder:text-muted-foreground **:data-[slot=input]:outline-none"
+							required
+						/>
+
+						<div className="min-h-24">
+							<Textarea
 								value={description}
 								onChange={(e) => setDescription(e.target.value)}
+								placeholder={t("recurring:create.descriptionPlaceholder")}
+								className="min-h-24 resize-none border-none shadow-none focus-visible:ring-0 px-0 text-sm"
 							/>
 						</div>
-						<div className="grid grid-cols-2 gap-4">
-							<div className="space-y-2">
-								<Label htmlFor="rt-frequency">
-									{t("recurring:create.frequency")}
-								</Label>
-								<Select
-									value={frequency}
-									onValueChange={(v) => setFrequency(v ?? "")}
-								>
-									<SelectTrigger id="rt-frequency">
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="daily">
-											{t("recurring:frequency.daily")}
-										</SelectItem>
-										<SelectItem value="weekly">
-											{t("recurring:frequency.weekly")}
-										</SelectItem>
-										<SelectItem value="monthly">
-											{t("recurring:frequency.monthly")}
-										</SelectItem>
-									</SelectContent>
-								</Select>
-							</div>
-							<div className="space-y-2">
-								<Label htmlFor="rt-interval">
-									{t("recurring:create.every")}
-								</Label>
-								<Input
-									id="rt-interval"
-									type="number"
-									min={1}
-									value={intervalValue}
-									onChange={(e) => setIntervalValue(Number(e.target.value))}
-								/>
-							</div>
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="rt-column">{t("recurring:create.column")}</Label>
-							<Select
-								value={columnId}
-								onValueChange={(v) => setColumnId(v ?? "")}
-							>
-								<SelectTrigger id="rt-column">
-									<SelectValue
-										placeholder={t("recurring:create.columnDefault")}
-									/>
-								</SelectTrigger>
-								<SelectContent>
-									{columns.map((col) => (
-										<SelectItem key={col.id} value={col.id}>
-											{col.name}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="rt-assignee">
-								{t("recurring:create.assignee")}
-							</Label>
-							<Select
-								value={assigneeId}
-								onValueChange={(v) => setAssigneeId(v ?? "")}
-							>
-								<SelectTrigger id="rt-assignee">
-									<SelectValue
-										placeholder={t("recurring:create.assigneeUnassigned")}
-									/>
-								</SelectTrigger>
-								<SelectContent>
-									{users.map((member) => (
-										<SelectItem key={member.userId} value={member.userId}>
-											{member.user.name ?? t("common:people.unknown")}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="rt-priority">
-								{t("recurring:create.priority")}
-							</Label>
-							<Select
-								value={priority}
-								onValueChange={(v) => setPriority(v ?? "")}
-							>
-								<SelectTrigger id="rt-priority">
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="no-priority">
-										{t("recurring:create.priorityNone")}
-									</SelectItem>
-									<SelectItem value="low">{t("tasks:priority.low")}</SelectItem>
-									<SelectItem value="medium">
-										{t("tasks:priority.medium")}
-									</SelectItem>
-									<SelectItem value="high">
-										{t("tasks:priority.high")}
-									</SelectItem>
-									<SelectItem value="urgent">
-										{t("tasks:priority.urgent")}
-									</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-						<div className="space-y-2">
-							<Label>{t("recurring:create.labels")}</Label>
-							<div className="border rounded-md p-2 max-h-32 overflow-y-auto space-y-1">
-								{workspaceLabels.length === 0 ? (
-									<span className="text-xs text-muted-foreground">
-										{t("recurring:create.noLabels")}
-									</span>
-								) : (
-									workspaceLabels.map(
-										(label: { id: string; name: string; color: string }) => {
-											const isSelected = labelIds.includes(label.id);
-											return (
-												<button
-													key={label.id}
-													type="button"
-													className="w-full flex items-center gap-2 px-2 py-1 text-xs hover:bg-accent/50 rounded text-left"
-													onClick={() => toggleLabel(label.id)}
-												>
-													<div
-														className={`w-3 h-3 rounded-sm border flex items-center justify-center ${isSelected ? "bg-primary border-primary" : "border-input"}`}
-													>
-														{isSelected && (
-															<Check className="w-2 h-2 text-primary-foreground" />
-														)}
-													</div>
-													<span
-														className="w-2 h-2 rounded-full shrink-0"
-														style={{
-															backgroundColor: getLabelColor(label.color),
-														}}
-													/>
-													<span className="truncate">{label.name}</span>
-												</button>
-											);
-										},
-									)
-								)}
-							</div>
-						</div>
-						<div className="space-y-2">
-							<Label>{t("recurring:create.checklist")}</Label>
-							<div className="space-y-1">
-								{checklistItems.map((item) => (
-									<div key={item.tempId} className="flex items-center gap-2">
-										<span className="flex-1 text-xs truncate px-2 py-1 border rounded bg-muted/50">
-											{item.text}
-										</span>
-										<Button
-											type="button"
-											variant="ghost"
-											size="icon-xs"
-											className="text-muted-foreground hover:text-destructive shrink-0"
-											onClick={() => removeChecklistItem(item.tempId)}
-										>
-											<Trash2 className="size-3" />
-										</Button>
-									</div>
-								))}
-								<div className="flex items-center gap-2">
-									<Input
-										placeholder={t("recurring:create.checklistPlaceholder")}
-										value={checklistInput}
-										onChange={(e) => setChecklistInput(e.target.value)}
-										onKeyDown={(e) => {
-											if (e.key === "Enter") {
-												e.preventDefault();
-												addChecklistItem();
-											}
-										}}
-									/>
-									<Button
-										type="button"
+
+						{selectedLabels.length > 0 && (
+							<div className="flex flex-wrap mb-2">
+								{selectedLabels.map((label) => (
+									<Badge
+										key={label.id}
 										variant="outline"
-										size="sm"
-										onClick={addChecklistItem}
+										className="flex items-center gap-1 pl-3 cursor-pointer hover:bg-accent/50 transition-colors"
+										onClick={() => toggleLabel(label.id)}
 									>
-										<Plus className="size-3.5" />
-									</Button>
-								</div>
+										<span
+											className="inline-block w-2 h-2 mr-1.5 rounded-full"
+											style={{
+												backgroundColor: getLabelColor(label.color),
+											}}
+										/>
+										<span className="max-w-20 truncate">{label.name}</span>
+									</Badge>
+								))}
 							</div>
-						</div>
-						<div className="grid grid-cols-2 gap-4">
-							<div className="space-y-2">
-								<Label htmlFor="rt-due-offset">
-									{t("recurring:create.dueDateOffset")}
-								</Label>
-								<Input
-									id="rt-due-offset"
-									type="number"
-									min={0}
-									placeholder={t("recurring:create.dueDateOffsetPlaceholder")}
-									value={dueDateDaysOffset ?? ""}
-									onChange={(e) =>
-										setDueDateDaysOffset(
-											e.target.value ? Number(e.target.value) : undefined,
-										)
-									}
-								/>
+						)}
+
+						{checklistItems.length > 0 && (
+							<div className="space-y-0.5">
+								<span className="text-xs font-medium text-muted-foreground">
+									{t("recurring:create.checklist")}
+								</span>
+								<AnimatePresence initial={false}>
+									{checklistItems.map((item) => (
+										<motion.div
+											key={item.tempId}
+											layout
+											initial={{ opacity: 0, height: 0 }}
+											animate={{ opacity: 1, height: "auto" }}
+											exit={{ opacity: 0, height: 0 }}
+											transition={{
+												duration: 0.2,
+												ease: "easeOut",
+											}}
+											className="flex items-center gap-2 py-1 px-2 rounded-md hover:bg-accent/50 group"
+										>
+											<Circle className="size-4 shrink-0 text-muted-foreground/40" />
+											<span className="flex-1 text-sm truncate text-foreground/90">
+												{item.text}
+											</span>
+											<button
+												type="button"
+												className="shrink-0 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity rounded p-0.5 outline-none"
+												aria-label={t("common:actions.remove")}
+												onClick={() => removeChecklistItem(item.tempId)}
+											>
+												<Trash2 className="size-3.5" />
+											</button>
+										</motion.div>
+									))}
+								</AnimatePresence>
 							</div>
-							<div className="space-y-2">
-								<Label htmlFor="rt-next-run">
-									{t("recurring:create.nextRunAt")}
-								</Label>
-								<Input
-									id="rt-next-run"
-									type="datetime-local"
-									value={nextRunAtLocal}
-									onChange={(e) => setNextRunAtLocal(e.target.value)}
-								/>
-							</div>
+						)}
+
+						<div className="flex flex-wrap items-center gap-2 py-2">
+							{/* Frequency */}
+							<Popover>
+								<PopoverTrigger asChild>
+									<button
+										type="button"
+										className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors border border-border hover:bg-accent/50 bg-accent/30 text-foreground"
+									>
+										<RefreshCw className="w-3.5 h-3.5" />
+										<span>
+											{intervalValue > 1
+												? `${t("recurring:schedule.every")} ${intervalValue} ${selectedFrequency?.label}`
+												: selectedFrequency?.label}
+										</span>
+									</button>
+								</PopoverTrigger>
+								<PopoverContent className="w-56 p-3" align="start">
+									<div className="space-y-3">
+										<div className="space-y-1.5">
+											<span className="text-xs font-medium text-muted-foreground">
+												{t("recurring:create.every")}
+											</span>
+											<Input
+												type="number"
+												min={1}
+												value={intervalValue}
+												onChange={(e) =>
+													setIntervalValue(Number(e.target.value) || 1)
+												}
+												className="h-8"
+											/>
+										</div>
+										<div className="space-y-1">
+											{frequencyOptions.map((option) => (
+												<button
+													key={option.value}
+													type="button"
+													className="w-full flex items-center gap-2 px-2 py-1.5 text-sm hover:bg-accent/50 text-left transition-colors h-8 rounded-md"
+													onClick={() => setFrequency(option.value)}
+												>
+													<span className="text-sm">{option.label}</span>
+													{frequency === option.value && (
+														<Check className="ml-auto h-4 w-4" />
+													)}
+												</button>
+											))}
+										</div>
+									</div>
+								</PopoverContent>
+							</Popover>
+
+							{/* Column */}
+							<Popover>
+								<PopoverTrigger asChild>
+									<button
+										type="button"
+										className={cn(
+											"flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors border border-border hover:bg-accent/50",
+											selectedColumn
+												? "bg-accent/30 text-foreground"
+												: "text-muted-foreground",
+										)}
+									>
+										<Columns className="w-3.5 h-3.5" />
+										<span>
+											{selectedColumn?.name ??
+												t("recurring:create.columnDefault")}
+										</span>
+									</button>
+								</PopoverTrigger>
+								<PopoverContent className="w-48 p-1" align="start">
+									<div className="space-y-1">
+										{columns.map((col) => (
+											<button
+												key={col.id}
+												type="button"
+												className="w-full flex items-center gap-2 px-2 py-1.5 text-sm hover:bg-accent/50 text-left transition-colors h-8"
+												onClick={() => setColumnId(col.id)}
+											>
+												<span className="text-sm">{col.name}</span>
+												{columnId === col.id && (
+													<Check className="ml-auto h-4 w-4" />
+												)}
+											</button>
+										))}
+									</div>
+								</PopoverContent>
+							</Popover>
+
+							{/* Priority */}
+							<Popover>
+								<PopoverTrigger asChild>
+									<button
+										type="button"
+										className={cn(
+											"flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors border border-border hover:bg-accent/50",
+											priority !== "no-priority"
+												? "bg-accent/30 text-foreground"
+												: "text-muted-foreground",
+										)}
+									>
+										{getPriorityIcon(priority)}
+										<span>
+											{selectedPriority
+												? selectedPriority.label
+												: t("recurring:create.priority")}
+										</span>
+									</button>
+								</PopoverTrigger>
+								<PopoverContent className="w-48 p-1" align="start">
+									<div className="space-y-1">
+										{priorityOptions.map((option) => (
+											<button
+												key={option.value}
+												type="button"
+												className="w-full flex items-center gap-2 px-2 py-1.5 text-sm hover:bg-accent/50 text-left transition-colors h-8"
+												onClick={() => setPriority(option.value)}
+											>
+												{getPriorityIcon(option.value)}
+												<span className="text-sm">{option.label}</span>
+												{priority === option.value && (
+													<Check className="ml-auto h-4 w-4" />
+												)}
+											</button>
+										))}
+									</div>
+								</PopoverContent>
+							</Popover>
+
+							{/* Assignee */}
+							<Popover>
+								<PopoverTrigger asChild>
+									<button
+										type="button"
+										className={cn(
+											"flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors border border-border hover:bg-accent/50",
+											selectedUser
+												? "bg-accent/30 text-foreground"
+												: "text-muted-foreground",
+										)}
+									>
+										{selectedUser ? (
+											<>
+												<Avatar className="h-4 w-4">
+													<AvatarImage
+														src={selectedUser?.user?.image ?? ""}
+														alt={selectedUser?.user?.name || ""}
+													/>
+													<AvatarFallback className="text-[10px] font-medium border border-border/30">
+														{selectedUser?.user?.name
+															?.charAt(0)
+															.toUpperCase() || "?"}
+													</AvatarFallback>
+												</Avatar>
+												<span>{selectedUser.user?.name}</span>
+											</>
+										) : (
+											<>
+												<UserIcon className="w-3.5 h-3.5" />
+												<span>{t("recurring:create.assignee")}</span>
+											</>
+										)}
+									</button>
+								</PopoverTrigger>
+								<PopoverContent className="w-48 p-1" align="start">
+									<div className="space-y-1">
+										<button
+											type="button"
+											className="w-full flex items-center gap-2 px-2 py-1.5 text-sm hover:bg-accent/50 text-left transition-colors h-8"
+											onClick={() => setAssigneeId("")}
+										>
+											<div
+												className="w-6 h-6 rounded-full bg-muted border border-border flex items-center justify-center"
+												title={t("recurring:create.assigneeUnassigned")}
+											>
+												<span className="text-[10px] font-medium text-muted-foreground">
+													?
+												</span>
+											</div>
+											<span className="text-sm">
+												{t("recurring:create.assigneeUnassigned")}
+											</span>
+											{!assigneeId && <Check className="ml-auto h-4 w-4" />}
+										</button>
+										{users.map((member) => (
+											<button
+												key={member.userId}
+												type="button"
+												className="w-full flex items-center gap-2 px-2 py-1.5 text-sm hover:bg-accent/50 text-left transition-colors h-8"
+												onClick={() => setAssigneeId(member.userId || "")}
+											>
+												<Avatar className="h-6 w-6">
+													<AvatarImage
+														src={member?.user?.image ?? ""}
+														alt={member?.user?.name || ""}
+													/>
+													<AvatarFallback className="text-xs font-medium border border-border/30">
+														{member?.user?.name?.charAt(0).toUpperCase() || "?"}
+													</AvatarFallback>
+												</Avatar>
+												<span className="text-sm">{member?.user?.name}</span>
+												{assigneeId === member.userId && (
+													<Check className="ml-auto h-4 w-4" />
+												)}
+											</button>
+										))}
+									</div>
+								</PopoverContent>
+							</Popover>
+
+							{/* Next Run At */}
+							<Popover>
+								<PopoverTrigger asChild>
+									<button
+										type="button"
+										className={cn(
+											"flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors border border-border hover:bg-accent/50",
+											nextRunAt
+												? "bg-accent/30 text-foreground"
+												: "text-muted-foreground",
+										)}
+									>
+										<CalendarIcon className="w-3.5 h-3.5" />
+										<span>
+											{nextRunAt
+												? formatDateMedium(nextRunAt)
+												: t("recurring:create.nextRunAt")}
+										</span>
+									</button>
+								</PopoverTrigger>
+								<PopoverContent className="p-0" align="start">
+									<Calendar
+										mode="single"
+										selected={nextRunAt}
+										onSelect={(date) => setNextRunAt(date)}
+										className="w-full bg-popover"
+									/>
+									{nextRunAt && (
+										<div className="pt-2 border-t border-border">
+											<Button
+												type="button"
+												variant="ghost"
+												size="sm"
+												className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
+												onClick={() => setNextRunAt(undefined)}
+											>
+												<X className="h-4 w-4" />
+												{t("common:modals.createTask.clearStartDate")}
+											</Button>
+										</div>
+									)}
+								</PopoverContent>
+							</Popover>
+
+							{/* Labels */}
+							<Popover open={labelsOpen} onOpenChange={setLabelsOpen}>
+								<PopoverTrigger asChild>
+									<button
+										type="button"
+										className={cn(
+											"flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors border border-border hover:bg-accent/50",
+											labelIds.length > 0
+												? "bg-accent/30 text-foreground"
+												: "text-muted-foreground",
+										)}
+									>
+										<Tag className="w-3.5 h-3.5" />
+										<span>{t("recurring:create.labels")}</span>
+									</button>
+								</PopoverTrigger>
+								<PopoverContent className="p-0" align="start">
+									{labelsStep === "select" && (
+										<div className="w-auto">
+											<div className="flex items-center gap-2 p-2 border-b border-border">
+												<Search className="w-3 h-3 text-muted-foreground" />
+												<input
+													ref={searchInputRef}
+													value={searchValue}
+													onChange={(e) => setSearchValue(e.target.value)}
+													placeholder={t(
+														"common:modals.createTask.searchLabels",
+													)}
+													className="w-full bg-transparent border-none text-foreground text-xs focus:outline-none placeholder:text-muted-foreground"
+												/>
+											</div>
+
+											<div className="py-1 max-h-48 overflow-y-auto">
+												{filteredLabels.length === 0 && (
+													<span className="text-xs text-muted-foreground px-2 py-1.5 block">
+														{t("recurring:create.noLabels")}
+													</span>
+												)}
+												{filteredLabels.map((label) => (
+													<button
+														key={label.id}
+														type="button"
+														className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-accent/50 text-left"
+														onClick={() => toggleLabel(label.id)}
+													>
+														<div className="shrink-0 w-3 flex justify-center">
+															{labelIds.includes(label.id) && (
+																<Check className="w-3 h-3" />
+															)}
+														</div>
+														<span
+															className="w-2 h-2 rounded-full shrink-0"
+															style={{
+																backgroundColor:
+																	labelColors.find(
+																		(c) => c.value === label.color,
+																	)?.color || "var(--color-neutral-400)",
+															}}
+														/>
+														<span className="max-w-28 truncate">
+															{label.name}
+														</span>
+													</button>
+												))}
+
+												{isCreatingNewLabel && filteredLabels.length > 0 && (
+													<div className="border-t border-border my-1" />
+												)}
+												{isCreatingNewLabel && (
+													<button
+														type="button"
+														className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-accent/50 text-left"
+														onClick={handleCreateNewClick}
+													>
+														<div className="shrink-0 w-3 flex justify-center">
+															<Plus className="w-3 h-3" />
+														</div>
+														<span
+															className="w-2 h-2 rounded-full shrink-0"
+															style={{
+																backgroundColor:
+																	labelColors.find(
+																		(c) => c.value === selectedColor,
+																	)?.color || "var(--color-neutral-400)",
+															}}
+														/>
+														<span className="truncate">
+															{t("common:modals.createTask.createLabel", {
+																name: searchValue,
+															})}
+														</span>
+													</button>
+												)}
+											</div>
+										</div>
+									)}
+									{labelsStep === "color" && (
+										<div className="w-auto">
+											<div className="flex items-center justify-between p-2 border-b border-border">
+												<span className="text-xs font-medium">
+													{t("common:modals.createTask.chooseColor")}
+												</span>
+												<button
+													type="button"
+													aria-label={t("common:actions.back")}
+													onClick={() => setLabelsStep("select")}
+													className="w-4 h-4 flex items-center justify-center hover:bg-accent/50 rounded"
+												>
+													<X className="h-3 w-3" />
+												</button>
+											</div>
+
+											<div className="py-1">
+												{labelColors.map((color) => (
+													<button
+														key={color.value}
+														type="button"
+														className={cn(
+															"w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-accent/50 text-left",
+															selectedColor === color.value && "bg-accent/30",
+														)}
+														onClick={() =>
+															handleColorSelect(color.value as LabelColor)
+														}
+													>
+														<span
+															className="w-2 h-2 rounded-full shrink-0"
+															style={{ backgroundColor: color.color }}
+														/>
+														<span className="truncate">{color.label}</span>
+														{selectedColor === color.value && (
+															<Check className="w-3 h-3 ml-auto" />
+														)}
+													</button>
+												))}
+											</div>
+										</div>
+									)}
+								</PopoverContent>
+							</Popover>
+
+							{/* Due Date Offset */}
+							<Popover>
+								<PopoverTrigger asChild>
+									<button
+										type="button"
+										className={cn(
+											"flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors border border-border hover:bg-accent/50",
+											dueDateDaysOffset !== undefined
+												? "bg-accent/30 text-foreground"
+												: "text-muted-foreground",
+										)}
+									>
+										<Clock className="w-3.5 h-3.5" />
+										<span>
+											{dueDateDaysOffset !== undefined
+												? `${dueDateDaysOffset} ${t("recurring:create.days")}`
+												: t("recurring:create.dueDateOffset")}
+										</span>
+									</button>
+								</PopoverTrigger>
+								<PopoverContent className="w-48 p-3" align="start">
+									<div className="space-y-2">
+										<span className="text-xs font-medium text-muted-foreground">
+											{t("recurring:create.dueDateOffset")}
+										</span>
+										<Input
+											type="number"
+											min={0}
+											placeholder={t(
+												"recurring:create.dueDateOffsetPlaceholder",
+											)}
+											value={dueDateDaysOffset ?? ""}
+											onChange={(e) =>
+												setDueDateDaysOffset(
+													e.target.value ? Number(e.target.value) : undefined,
+												)
+											}
+											className="h-8"
+										/>
+										{dueDateDaysOffset !== undefined && (
+											<Button
+												type="button"
+												variant="ghost"
+												size="sm"
+												className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
+												onClick={() => setDueDateDaysOffset(undefined)}
+											>
+												<X className="h-4 w-4" />
+												{t("common:actions.clear")}
+											</Button>
+										)}
+									</div>
+								</PopoverContent>
+							</Popover>
+
+							{/* Checklist */}
+							<Popover>
+								<PopoverTrigger asChild>
+									<button
+										type="button"
+										className={cn(
+											"flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors border border-border hover:bg-accent/50",
+											checklistItems.length > 0
+												? "bg-accent/30 text-foreground"
+												: "text-muted-foreground",
+										)}
+									>
+										<Plus className="w-3.5 h-3.5" />
+										<span>{t("recurring:create.checklist")}</span>
+										{checklistItems.length > 0 && (
+											<span className="ml-0.5 text-[10px] bg-muted px-1 rounded">
+												{checklistItems.length}
+											</span>
+										)}
+									</button>
+								</PopoverTrigger>
+								<PopoverContent className="w-64 p-3" align="start">
+									<div className="space-y-2">
+										<span className="text-xs font-medium text-muted-foreground">
+											{t("recurring:create.checklist")}
+										</span>
+										<div className="flex items-center gap-2">
+											<Input
+												placeholder={t("recurring:create.checklistPlaceholder")}
+												value={checklistInput}
+												onChange={(e) => setChecklistInput(e.target.value)}
+												onKeyDown={(e) => {
+													if (e.key === "Enter") {
+														e.preventDefault();
+														addChecklistItem();
+													}
+												}}
+												className="h-8 flex-1"
+											/>
+											<Button
+												type="button"
+												variant="outline"
+												size="sm"
+												className="h-8 px-2"
+												onClick={addChecklistItem}
+											>
+												<Plus className="size-3.5" />
+											</Button>
+										</div>
+									</div>
+								</PopoverContent>
+							</Popover>
 						</div>
 					</div>
-					<DialogFooter>
-						<DialogClose asChild>
-							<Button variant="ghost">{t("common:actions.cancel")}</Button>
-						</DialogClose>
-						<Button type="submit" loading={isPending}>
+
+					<DialogFooter className="shrink-0 border-t border-border bg-background px-6 py-4">
+						<Button
+							type="button"
+							onClick={handleClose}
+							variant="outline"
+							size="sm"
+							className="border-border text-foreground hover:bg-accent"
+						>
+							{t("common:actions.cancel")}
+						</Button>
+						<Button
+							type="submit"
+							disabled={!title.trim()}
+							loading={isPending}
+							size="sm"
+							className="disabled:opacity-50"
+						>
 							{isEditMode
 								? t("recurring:edit.submit")
 								: t("recurring:create.submit")}
