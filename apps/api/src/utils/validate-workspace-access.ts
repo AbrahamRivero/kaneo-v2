@@ -24,22 +24,22 @@ export async function validateWorkspaceAccess(
 			)
 			.limit(1);
 
-    if (apiKey.length === 0) {
-      throw new HTTPException(403, {
-        message: "Invalid API key for this workspace",
-      });
-    }
-  }
+		if (apiKey.length === 0) {
+			throw new HTTPException(403, {
+				message: "Invalid API key for this workspace",
+			});
+		}
+	}
 
-  const [user] = await db
-    .select({ role: schema.userTable.role })
-    .from(schema.userTable)
-    .where(eq(schema.userTable.id, userId))
-    .limit(1);
+	const [user] = await db
+		.select({ role: schema.userTable.role })
+		.from(schema.userTable)
+		.where(eq(schema.userTable.id, userId))
+		.limit(1);
 
-  if (user?.role === "admin") {
-    return;
-  }
+	if (user?.role === "admin") {
+		return;
+	}
 
 	const membership = await workspaceRepository.findMember(workspaceId, userId);
 

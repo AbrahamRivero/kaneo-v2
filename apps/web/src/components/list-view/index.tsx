@@ -290,35 +290,35 @@ function ListView({ project, disableDragDrop = false }: ListViewProps) {
 
 		const showDropIndicator = activeId && overColumnId === column.id;
 
-    return (
-      <div
-        className={cn(
-          "border-b border-border/50 transition-all duration-200 overflow-auto",
-          showDropIndicator && "border-l-4 border-l-ring bg-accent/35",
-        )}
-      >
-        <div className="flex items-center justify-between py-2 px-4 bg-muted/60 border-b border-border/50">
-          <button
-            type="button"
-            onClick={() => toggleSection(column.id)}
-            className="flex items-center gap-2 text-sm font-medium text-foreground hover:text-foreground transition-colors"
-          >
-            <ChevronRight
-              className={cn(
-                "w-3 h-3 transition-transform",
-                expandedSections[column.id] && "rotate-90",
-              )}
-            />
-            <div className="flex items-center gap-2 h-4">
-              {getColumnIcon(column.id, column.isFinal, column.icon)}
-              <div className="flex items-center gap-1">
-                <span className="mt-1 mr-1">{column.name}</span>
-                <span className="text-xs text-muted-foreground mt-0.5">
-                  {column.tasks.length}
-                </span>
-              </div>
-            </div>
-          </button>
+		return (
+			<div
+				className={cn(
+					"border-b border-border/50 transition-all duration-200 overflow-auto",
+					showDropIndicator && "border-l-4 border-l-ring bg-accent/35",
+				)}
+			>
+				<div className="flex items-center justify-between py-2 px-4 bg-muted/60 border-b border-border/50">
+					<button
+						type="button"
+						onClick={() => toggleSection(column.id)}
+						className="flex items-center gap-2 text-sm font-medium text-foreground hover:text-foreground transition-colors"
+					>
+						<ChevronRight
+							className={cn(
+								"w-3 h-3 transition-transform",
+								expandedSections[column.id] && "rotate-90",
+							)}
+						/>
+						<div className="flex items-center gap-2 h-4">
+							{getColumnIcon(column.id, column.isFinal, column.icon)}
+							<div className="flex items-center gap-1">
+								<span className="mt-1 mr-1">{column.name}</span>
+								<span className="text-xs text-muted-foreground mt-0.5">
+									{column.tasks.length}
+								</span>
+							</div>
+						</div>
+					</button>
 
 					<div className="flex items-center gap-1">
 						<button

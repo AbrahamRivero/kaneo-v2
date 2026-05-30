@@ -29,23 +29,23 @@ function RouteComponent() {
 		workspaceId: workspace?.id || "",
 	});
 
-  const queryClient = useQueryClient();
-  const { mutateAsync: updateProject } = useUpdateProject();
-  const { hasPermission } = useWorkspacePermission();
-  const savingRef = useRef(false);
-  // `project:share` isn't in CAPABILITIES (only admin/owner/custom roles
-  // with it can flip visibility), so use the generic server check. Result
-  // isn't cached, but visibility is a rarely-toggled setting page.
-  const [canShare, setCanShare] = useState(false);
-  useEffect(() => {
-    let cancelled = false;
-    void hasPermission({ project: ["share"] }).then((ok) => {
-      if (!cancelled) setCanShare(ok);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [hasPermission]);
+	const queryClient = useQueryClient();
+	const { mutateAsync: updateProject } = useUpdateProject();
+	const { hasPermission } = useWorkspacePermission();
+	const savingRef = useRef(false);
+	// `project:share` isn't in CAPABILITIES (only admin/owner/custom roles
+	// with it can flip visibility), so use the generic server check. Result
+	// isn't cached, but visibility is a rarely-toggled setting page.
+	const [canShare, setCanShare] = useState(false);
+	useEffect(() => {
+		let cancelled = false;
+		void hasPermission({ project: ["share"] }).then((ok) => {
+			if (!cancelled) setCanShare(ok);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [hasPermission]);
 
 	const handleToggle = useCallback(async () => {
 		if (!project) return;
@@ -108,22 +108,22 @@ function RouteComponent() {
 						</p>
 					</div>
 
-          <div className="space-y-4 border border-border rounded-md p-4 bg-sidebar">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label className="text-sm font-medium">
-                  {t("settings:projectVisibility.publicAccess")}
-                </Label>
-                <p className="text-xs text-muted-foreground">
-                  {t("settings:projectVisibility.publicAccessHint")}
-                </p>
-              </div>
-              <Switch
-                checked={!!project?.isPublic}
-                onCheckedChange={canShare ? handleToggle : undefined}
-                disabled={!canShare}
-              />
-            </div>
+					<div className="space-y-4 border border-border rounded-md p-4 bg-sidebar">
+						<div className="flex items-center justify-between">
+							<div className="space-y-0.5">
+								<Label className="text-sm font-medium">
+									{t("settings:projectVisibility.publicAccess")}
+								</Label>
+								<p className="text-xs text-muted-foreground">
+									{t("settings:projectVisibility.publicAccessHint")}
+								</p>
+							</div>
+							<Switch
+								checked={!!project?.isPublic}
+								onCheckedChange={canShare ? handleToggle : undefined}
+								disabled={!canShare}
+							/>
+						</div>
 
 						<Separator />
 

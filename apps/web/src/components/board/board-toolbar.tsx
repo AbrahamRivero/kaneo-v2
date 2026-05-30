@@ -149,14 +149,14 @@ export default function BoardToolbar({
 	const selectedAssigneeIds = filters.assignee ?? [];
 	const selectedDueDateFilters = filters.dueDate ?? [];
 
-  const getStatusDisplayName = (statusId: string) => {
-    const column = project?.columns?.find((col) => col.id === statusId);
-    return column?.name || statusId;
-  };
-  const getStatusIcon = (statusId: string) => {
-    const column = project?.columns?.find((col) => col.id === statusId);
-    return getColumnIcon(statusId, column?.isFinal, column?.icon);
-  };
+	const getStatusDisplayName = (statusId: string) => {
+		const column = project?.columns?.find((col) => col.id === statusId);
+		return column?.name || statusId;
+	};
+	const getStatusIcon = (statusId: string) => {
+		const column = project?.columns?.find((col) => col.id === statusId);
+		return getColumnIcon(statusId, column?.isFinal, column?.icon);
+	};
 
 	const getPriorityDisplayName = (priority: string) =>
 		getPriorityLabel(priority);

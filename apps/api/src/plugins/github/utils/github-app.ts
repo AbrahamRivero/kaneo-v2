@@ -16,15 +16,15 @@ let githubAppInstance: App | null = null;
 //
 // Returns "" when nothing is set; the caller's existence check handles that.
 export function resolveGithubPrivateKey(): string {
-  const base64 = process.env.GITHUB_PRIVATE_KEY_BASE64;
-  if (base64 && base64.trim() !== "") {
-    return Buffer.from(base64.trim(), "base64").toString("utf8");
-  }
-  const raw = process.env.GITHUB_PRIVATE_KEY ?? "";
-  if (raw.includes("\\n") && !raw.includes("\n")) {
-    return raw.replace(/\\n/g, "\n");
-  }
-  return raw;
+	const base64 = process.env.GITHUB_PRIVATE_KEY_BASE64;
+	if (base64 && base64.trim() !== "") {
+		return Buffer.from(base64.trim(), "base64").toString("utf8");
+	}
+	const raw = process.env.GITHUB_PRIVATE_KEY ?? "";
+	if (raw.includes("\\n") && !raw.includes("\n")) {
+		return raw.replace(/\\n/g, "\n");
+	}
+	return raw;
 }
 
 export function getGithubApp(): App | null {
@@ -32,22 +32,22 @@ export function getGithubApp(): App | null {
 		return githubAppInstance;
 	}
 
-  const privateKey = resolveGithubPrivateKey();
-  if (
-    !process.env.GITHUB_WEBHOOK_SECRET ||
-    !process.env.GITHUB_APP_ID ||
-    !privateKey
-  ) {
-    return null;
-  }
+	const privateKey = resolveGithubPrivateKey();
+	if (
+		!process.env.GITHUB_WEBHOOK_SECRET ||
+		!process.env.GITHUB_APP_ID ||
+		!privateKey
+	) {
+		return null;
+	}
 
-  githubAppInstance = new App({
-    appId: process.env.GITHUB_APP_ID ?? "",
-    privateKey,
-    webhooks: {
-      secret: process.env.GITHUB_WEBHOOK_SECRET ?? "",
-    },
-  });
+	githubAppInstance = new App({
+		appId: process.env.GITHUB_APP_ID ?? "",
+		privateKey,
+		webhooks: {
+			secret: process.env.GITHUB_WEBHOOK_SECRET ?? "",
+		},
+	});
 
 	return githubAppInstance;
 }

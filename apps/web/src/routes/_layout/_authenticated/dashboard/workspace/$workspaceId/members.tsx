@@ -17,43 +17,43 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
-  const { t } = useTranslation();
-  const { workspaceId } = Route.useParams();
-  const { data: workspace } = useGetFullWorkspace({ workspaceId });
-  const { canInviteUsers } = useWorkspacePermission();
-  const canInvite = Boolean(canInviteUsers());
-  const [isInviteOpen, setIsInviteOpen] = useState(false);
+	const { t } = useTranslation();
+	const { workspaceId } = Route.useParams();
+	const { data: workspace } = useGetFullWorkspace({ workspaceId });
+	const { canInviteUsers } = useWorkspacePermission();
+	const canInvite = Boolean(canInviteUsers());
+	const [isInviteOpen, setIsInviteOpen] = useState(false);
 
-  return (
-    <>
-      <PageTitle title={t("team:members.pageTitle")} />
-      <WorkspaceLayout
-        title={t("team:members.pageTitle")}
-        headerActions={
-          canInvite ? (
-            <Button
-              variant="outline"
-              size="xs"
-              onClick={() => setIsInviteOpen(true)}
-              className="gap-1"
-            >
-              <UserPlus className="w-3 h-3" />
-              {t("team:members.inviteMember")}
-            </Button>
-          ) : null
-        }
-      >
-        <MembersTable
-          workspaceId={workspaceId}
-          users={workspace?.members ?? []}
-          invitations={workspace?.invitations ?? []}
-        />
+	return (
+		<>
+			<PageTitle title={t("team:members.pageTitle")} />
+			<WorkspaceLayout
+				title={t("team:members.pageTitle")}
+				headerActions={
+					canInvite ? (
+						<Button
+							variant="outline"
+							size="xs"
+							onClick={() => setIsInviteOpen(true)}
+							className="gap-1"
+						>
+							<UserPlus className="w-3 h-3" />
+							{t("team:members.inviteMember")}
+						</Button>
+					) : null
+				}
+			>
+				<MembersTable
+					workspaceId={workspaceId}
+					users={workspace?.members ?? []}
+					invitations={workspace?.invitations ?? []}
+				/>
 
-        <InviteTeamMemberModal
-          open={isInviteOpen}
-          onClose={() => setIsInviteOpen(false)}
-        />
-      </WorkspaceLayout>
-    </>
-  );
+				<InviteTeamMemberModal
+					open={isInviteOpen}
+					onClose={() => setIsInviteOpen(false)}
+				/>
+			</WorkspaceLayout>
+		</>
+	);
 }

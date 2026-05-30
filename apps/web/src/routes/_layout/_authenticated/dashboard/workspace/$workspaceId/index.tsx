@@ -39,20 +39,20 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
-  const { t } = useTranslation();
-  const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
-  const { workspaceId } = Route.useParams();
-  const navigate = useNavigate();
-  const { data: projects, isLoading } = useGetProjects({
-    workspaceId,
-  });
-  const { canCreateProjects } = useWorkspacePermission();
-  const canCreate = canCreateProjects();
+	const { t } = useTranslation();
+	const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
+	const { workspaceId } = Route.useParams();
+	const navigate = useNavigate();
+	const { data: projects, isLoading } = useGetProjects({
+		workspaceId,
+	});
+	const { canCreateProjects } = useWorkspacePermission();
+	const canCreate = canCreateProjects();
 
-  const handleCreateProject = () => {
-    if (!canCreate) return;
-    setIsCreateProjectOpen(true);
-  };
+	const handleCreateProject = () => {
+		if (!canCreate) return;
+		setIsCreateProjectOpen(true);
+	};
 
 	useRegisterShortcuts({
 		sequentialShortcuts: {
@@ -69,112 +69,112 @@ function RouteComponent() {
 		});
 	};
 
-  if (isLoading) {
-    return (
-      <>
-        <PageTitle title={t("workspace:projects.pageTitle")} />
-        <WorkspaceLayout
-          title={t("workspace:projects.pageTitle")}
-          headerActions={
-            canCreate ? (
-              <Button
-                variant="outline"
-                size="xs"
-                onClick={handleCreateProject}
-                className="gap-1"
-              >
-                <Plus className="w-3 h-3" />
-                {t("workspace:projects.createProject")}
-              </Button>
-            ) : null
-          }
-        >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-foreground font-medium">
-                  {t("workspace:projects.title")}
-                </TableHead>
-                <TableHead className="text-foreground font-medium">
-                  {t("workspace:projects.progress")}
-                </TableHead>
-                <TableHead className="text-foreground font-medium">
-                  {t("workspace:projects.targetDate")}
-                </TableHead>
-                <TableHead className="text-foreground font-medium">
-                  {t("workspace:projects.status")}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {[1, 2, 3].map((i) => (
-                <TableRow key={i}>
-                  <TableCell className="py-3">
-                    <div className="flex items-center gap-3">
-                      <Skeleton className="h-5 w-5" />
-                      <Skeleton className="h-4 w-24" />
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-3">
-                    <Skeleton className="h-2 w-20" />
-                  </TableCell>
-                  <TableCell className="py-3">
-                    <Skeleton className="h-4 w-20" />
-                  </TableCell>
-                  <TableCell className="py-3">
-                    <Skeleton className="h-5 w-16" />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </WorkspaceLayout>
-      </>
-    );
-  }
+	if (isLoading) {
+		return (
+			<>
+				<PageTitle title={t("workspace:projects.pageTitle")} />
+				<WorkspaceLayout
+					title={t("workspace:projects.pageTitle")}
+					headerActions={
+						canCreate ? (
+							<Button
+								variant="outline"
+								size="xs"
+								onClick={handleCreateProject}
+								className="gap-1"
+							>
+								<Plus className="w-3 h-3" />
+								{t("workspace:projects.createProject")}
+							</Button>
+						) : null
+					}
+				>
+					<Table>
+						<TableHeader>
+							<TableRow>
+								<TableHead className="text-foreground font-medium">
+									{t("workspace:projects.title")}
+								</TableHead>
+								<TableHead className="text-foreground font-medium">
+									{t("workspace:projects.progress")}
+								</TableHead>
+								<TableHead className="text-foreground font-medium">
+									{t("workspace:projects.targetDate")}
+								</TableHead>
+								<TableHead className="text-foreground font-medium">
+									{t("workspace:projects.status")}
+								</TableHead>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{[1, 2, 3].map((i) => (
+								<TableRow key={i}>
+									<TableCell className="py-3">
+										<div className="flex items-center gap-3">
+											<Skeleton className="h-5 w-5" />
+											<Skeleton className="h-4 w-24" />
+										</div>
+									</TableCell>
+									<TableCell className="py-3">
+										<Skeleton className="h-2 w-20" />
+									</TableCell>
+									<TableCell className="py-3">
+										<Skeleton className="h-4 w-20" />
+									</TableCell>
+									<TableCell className="py-3">
+										<Skeleton className="h-5 w-16" />
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</WorkspaceLayout>
+			</>
+		);
+	}
 
-  if (!projects || projects.length === 0) {
-    return (
-      <>
-        <PageTitle title={t("workspace:projects.pageTitle")} />
-        <WorkspaceLayout
-          title={t("workspace:projects.pageTitle")}
-          headerActions={
-            canCreate ? (
-              <Button
-                variant="outline"
-                size="xs"
-                onClick={handleCreateProject}
-                className="gap-1"
-              >
-                <Plus className="w-3 h-3" />
-                {t("workspace:projects.createProject")}
-              </Button>
-            ) : null
-          }
-        >
-          <Empty className="min-h-[60vh]">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <LayoutGrid />
-              </EmptyMedia>
-              <EmptyTitle>{t("workspace:projects.emptyTitle")}</EmptyTitle>
-              <EmptyDescription>
-                {canCreate
-                  ? t("workspace:projects.emptyDescription")
-                  : t("workspace:projects.emptyDescriptionReadOnly")}
-              </EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-              {canCreate && (
-                <Button onClick={handleCreateProject}>
-                  <Plus />
-                  {t("workspace:projects.createProject")}
-                </Button>
-              )}
-            </EmptyContent>
-          </Empty>
-        </WorkspaceLayout>
+	if (!projects || projects.length === 0) {
+		return (
+			<>
+				<PageTitle title={t("workspace:projects.pageTitle")} />
+				<WorkspaceLayout
+					title={t("workspace:projects.pageTitle")}
+					headerActions={
+						canCreate ? (
+							<Button
+								variant="outline"
+								size="xs"
+								onClick={handleCreateProject}
+								className="gap-1"
+							>
+								<Plus className="w-3 h-3" />
+								{t("workspace:projects.createProject")}
+							</Button>
+						) : null
+					}
+				>
+					<Empty className="min-h-[60vh]">
+						<EmptyHeader>
+							<EmptyMedia variant="icon">
+								<LayoutGrid />
+							</EmptyMedia>
+							<EmptyTitle>{t("workspace:projects.emptyTitle")}</EmptyTitle>
+							<EmptyDescription>
+								{canCreate
+									? t("workspace:projects.emptyDescription")
+									: t("workspace:projects.emptyDescriptionReadOnly")}
+							</EmptyDescription>
+						</EmptyHeader>
+						<EmptyContent>
+							{canCreate && (
+								<Button onClick={handleCreateProject}>
+									<Plus />
+									{t("workspace:projects.createProject")}
+								</Button>
+							)}
+						</EmptyContent>
+					</Empty>
+				</WorkspaceLayout>
 
 				<CreateProjectModal
 					open={isCreateProjectOpen}
@@ -184,45 +184,45 @@ function RouteComponent() {
 		);
 	}
 
-  return (
-    <>
-      <PageTitle title={t("workspace:projects.pageTitle")} />
-      <WorkspaceLayout
-        title={t("workspace:projects.pageTitle")}
-        headerActions={
-          canCreate ? (
-            <Button
-              variant="outline"
-              size="xs"
-              onClick={handleCreateProject}
-              className="gap-1"
-            >
-              <Plus className="w-3 h-3" />
-              {t("workspace:projects.createProject")}
-            </Button>
-          ) : null
-        }
-      >
-        <Table>
-          <TableHeader className="p-4">
-            <TableRow>
-              <TableHead className="text-foreground font-medium">
-                {t("workspace:projects.title")}
-              </TableHead>
-              <TableHead className="text-foreground font-medium">
-                {t("workspace:projects.progress")}
-              </TableHead>
-              <TableHead className="text-foreground font-medium">
-                {t("workspace:projects.dueDate")}
-              </TableHead>
-              <TableHead className="text-foreground font-medium">
-                {t("workspace:projects.status")}
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {projects?.map((project) => {
-              if (!project || !project.id || !project.statistics) return null;
+	return (
+		<>
+			<PageTitle title={t("workspace:projects.pageTitle")} />
+			<WorkspaceLayout
+				title={t("workspace:projects.pageTitle")}
+				headerActions={
+					canCreate ? (
+						<Button
+							variant="outline"
+							size="xs"
+							onClick={handleCreateProject}
+							className="gap-1"
+						>
+							<Plus className="w-3 h-3" />
+							{t("workspace:projects.createProject")}
+						</Button>
+					) : null
+				}
+			>
+				<Table>
+					<TableHeader className="p-4">
+						<TableRow>
+							<TableHead className="text-foreground font-medium">
+								{t("workspace:projects.title")}
+							</TableHead>
+							<TableHead className="text-foreground font-medium">
+								{t("workspace:projects.progress")}
+							</TableHead>
+							<TableHead className="text-foreground font-medium">
+								{t("workspace:projects.dueDate")}
+							</TableHead>
+							<TableHead className="text-foreground font-medium">
+								{t("workspace:projects.status")}
+							</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{projects?.map((project) => {
+							if (!project || !project.id || !project.statistics) return null;
 
 							const IconComponent =
 								icons[project.icon as keyof typeof icons] || icons.Layout;

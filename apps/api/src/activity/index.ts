@@ -16,96 +16,96 @@ const activity = new Hono<{
 		userId: string;
 	};
 }>()
-  .get(
-    "/:taskId",
-    describeRoute({
-      operationId: "getActivities",
-      tags: ["Activity"],
-      description: "Get all activities for a specific task",
-      responses: {
-        200: {
-          description: "List of activities for the task",
-          content: {
-            "application/json": { schema: resolver(v.array(activitySchema)) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ taskId: v.string() })),
-    workspaceAccess.fromTaskId(),
-    async (c) => {
-      const { taskId } = c.req.valid("param");
-      const activities = await getActivities(taskId);
-      return c.json(activities);
-    },
-  )
-  .post(
-    "/create",
-    describeRoute({
-      operationId: "createActivity",
-      tags: ["Activity"],
-      description: "Create a new activity (system-generated event)",
-      responses: {
-        200: {
-          description: "Activity created successfully",
-          content: {
-            "application/json": { schema: resolver(activitySchema) },
-          },
-        },
-      },
-    }),
-    validator(
-      "json",
-      v.object({
-        taskId: v.string(),
-        userId: v.string(),
-        message: v.nullable(v.string()),
-        type: v.string(),
-        eventData: v.optional(v.nullable(v.record(v.string(), v.unknown()))),
-      }),
-    ),
-    workspaceAccess.fromTaskId(),
-    requireWorkspacePermission({ task: ["update"] }),
-    async (c) => {
-      const { taskId, userId, message, type, eventData } = c.req.valid("json");
-      const activity = await createActivity(
-        taskId,
-        type,
-        userId,
-        message,
-        eventData,
-      );
-      return c.json(activity);
-    },
-  )
-  .post(
-    "/comment",
-    describeRoute({
-      operationId: "createComment",
-      tags: ["Activity"],
-      description: "Create a new comment on a task",
-      responses: {
-        200: {
-          description: "Comment created successfully",
-          content: {
-            "application/json": { schema: resolver(activitySchema) },
-          },
-        },
-      },
-    }),
-    validator(
-      "json",
-      v.object({
-        taskId: v.string(),
-        comment: v.string(),
-      }),
-    ),
-    workspaceAccess.fromTaskId(),
-    requireWorkspacePermission({ task: ["update"] }),
-    async (c) => {
-      const { taskId, comment } = c.req.valid("json");
-      const userId = c.get("userId");
-      const newComment = await createComment(taskId, userId, comment);
+	.get(
+		"/:taskId",
+		describeRoute({
+			operationId: "getActivities",
+			tags: ["Activity"],
+			description: "Get all activities for a specific task",
+			responses: {
+				200: {
+					description: "List of activities for the task",
+					content: {
+						"application/json": { schema: resolver(v.array(activitySchema)) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ taskId: v.string() })),
+		workspaceAccess.fromTaskId(),
+		async (c) => {
+			const { taskId } = c.req.valid("param");
+			const activities = await getActivities(taskId);
+			return c.json(activities);
+		},
+	)
+	.post(
+		"/create",
+		describeRoute({
+			operationId: "createActivity",
+			tags: ["Activity"],
+			description: "Create a new activity (system-generated event)",
+			responses: {
+				200: {
+					description: "Activity created successfully",
+					content: {
+						"application/json": { schema: resolver(activitySchema) },
+					},
+				},
+			},
+		}),
+		validator(
+			"json",
+			v.object({
+				taskId: v.string(),
+				userId: v.string(),
+				message: v.nullable(v.string()),
+				type: v.string(),
+				eventData: v.optional(v.nullable(v.record(v.string(), v.unknown()))),
+			}),
+		),
+		workspaceAccess.fromTaskId(),
+		requireWorkspacePermission({ task: ["update"] }),
+		async (c) => {
+			const { taskId, userId, message, type, eventData } = c.req.valid("json");
+			const activity = await createActivity(
+				taskId,
+				type,
+				userId,
+				message,
+				eventData,
+			);
+			return c.json(activity);
+		},
+	)
+	.post(
+		"/comment",
+		describeRoute({
+			operationId: "createComment",
+			tags: ["Activity"],
+			description: "Create a new comment on a task",
+			responses: {
+				200: {
+					description: "Comment created successfully",
+					content: {
+						"application/json": { schema: resolver(activitySchema) },
+					},
+				},
+			},
+		}),
+		validator(
+			"json",
+			v.object({
+				taskId: v.string(),
+				comment: v.string(),
+			}),
+		),
+		workspaceAccess.fromTaskId(),
+		requireWorkspacePermission({ task: ["update"] }),
+		async (c) => {
+			const { taskId, comment } = c.req.valid("json");
+			const userId = c.get("userId");
+			const newComment = await createComment(taskId, userId, comment);
 
 			return c.json(newComment);
 		},

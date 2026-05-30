@@ -14,48 +14,48 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const userTable = pgTable("user", {
-  id: text("id")
-    .$defaultFn(() => createId())
-    .primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified")
-    .$defaultFn(() => false)
-    .notNull(),
-  image: text("image"),
-  locale: text("locale"),
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" })
-    .defaultNow()
-    .$onUpdate(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  isAnonymous: boolean("is_anonymous").default(false),
-  role: text("role"),
-  banned: boolean("banned").default(false),
-  banReason: text("ban_reason"),
-  banExpires: timestamp("ban_expires", { mode: "date" }),
+	id: text("id")
+		.$defaultFn(() => createId())
+		.primaryKey(),
+	name: text("name").notNull(),
+	email: text("email").notNull().unique(),
+	emailVerified: boolean("email_verified")
+		.$defaultFn(() => false)
+		.notNull(),
+	image: text("image"),
+	locale: text("locale"),
+	createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+	updatedAt: timestamp("updated_at", { mode: "date" })
+		.defaultNow()
+		.$onUpdate(() => /* @__PURE__ */ new Date())
+		.notNull(),
+	isAnonymous: boolean("is_anonymous").default(false),
+	role: text("role"),
+	banned: boolean("banned").default(false),
+	banReason: text("ban_reason"),
+	banExpires: timestamp("ban_expires", { mode: "date" }),
 });
 
 export const sessionTable = pgTable(
-  "session",
-  {
-    id: text("id").primaryKey(),
-    expiresAt: timestamp("expires_at", { mode: "date" }).notNull(),
-    token: text("token").notNull().unique(),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "date" })
-      .$onUpdate(() => /* @__PURE__ */ new Date())
-      .notNull(),
-    ipAddress: text("ip_address"),
-    userAgent: text("user_agent"),
-    userId: text("user_id")
-      .notNull()
-      .references(() => userTable.id, { onDelete: "cascade" }),
-    activeOrganizationId: text("active_organization_id"),
-    activeTeamId: text("active_team_id"),
-    impersonatedBy: text("impersonated_by"),
-  },
-  (table) => [index("session_userId_idx").on(table.userId)],
+	"session",
+	{
+		id: text("id").primaryKey(),
+		expiresAt: timestamp("expires_at", { mode: "date" }).notNull(),
+		token: text("token").notNull().unique(),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.$onUpdate(() => /* @__PURE__ */ new Date())
+			.notNull(),
+		ipAddress: text("ip_address"),
+		userAgent: text("user_agent"),
+		userId: text("user_id")
+			.notNull()
+			.references(() => userTable.id, { onDelete: "cascade" }),
+		activeOrganizationId: text("active_organization_id"),
+		activeTeamId: text("active_team_id"),
+		impersonatedBy: text("impersonated_by"),
+	},
+	(table) => [index("session_userId_idx").on(table.userId)],
 );
 
 export const accountTable = pgTable(
@@ -204,29 +204,29 @@ export const invitationTable = pgTable(
 );
 
 export const workspaceRoleTable = pgTable(
-  "workspace_role",
-  {
-    id: text("id")
-      .$defaultFn(() => createId())
-      .primaryKey(),
-    workspaceId: text("workspace_id")
-      .notNull()
-      .references(() => workspaceTable.id, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-    role: text("role").notNull(),
-    permission: text("permission").notNull(),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "date" })
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
-  },
-  (table) => [
-    index("workspace_role_workspaceId_idx").on(table.workspaceId),
-    index("workspace_role_role_idx").on(table.role),
-  ],
+	"workspace_role",
+	{
+		id: text("id")
+			.$defaultFn(() => createId())
+			.primaryKey(),
+		workspaceId: text("workspace_id")
+			.notNull()
+			.references(() => workspaceTable.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		role: text("role").notNull(),
+		permission: text("permission").notNull(),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => new Date())
+			.notNull(),
+	},
+	(table) => [
+		index("workspace_role_workspaceId_idx").on(table.workspaceId),
+		index("workspace_role_role_idx").on(table.role),
+	],
 );
 
 export const projectTable = pgTable(
@@ -1159,11 +1159,11 @@ export const invitationRelations = relations(invitation, ({ one }) => ({
 }));
 
 export const organizationRoleRelations = relations(
-  organizationRole,
-  ({ one }) => ({
-    workspace: one(workspace, {
-      fields: [organizationRole.workspaceId],
-      references: [workspace.id],
-    }),
-  }),
+	organizationRole,
+	({ one }) => ({
+		workspace: one(workspace, {
+			fields: [organizationRole.workspaceId],
+			references: [workspace.id],
+		}),
+	}),
 );

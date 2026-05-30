@@ -65,15 +65,15 @@ export default function TaskLabelsPopover({
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const queryClient = useQueryClient();
 
-  const { mutateAsync: createLabel } = useCreateLabel();
-  const { mutateAsync: deleteLabel } = useDeleteLabel();
-  // Attaching/removing labels from a task is a task mutation; creating a new
-  // workspace label needs the label capability. We gate the popover trigger
-  // on whichever is required: any flow needs at least task-edit since the
-  // result lives on the task.
-  const { canManageTasks, canManageLabels } = useWorkspacePermission();
-  const canEdit = canManageTasks();
-  const canCreateLabels = canManageLabels();
+	const { mutateAsync: createLabel } = useCreateLabel();
+	const { mutateAsync: deleteLabel } = useDeleteLabel();
+	// Attaching/removing labels from a task is a task mutation; creating a new
+	// workspace label needs the label capability. We gate the popover trigger
+	// on whichever is required: any flow needs at least task-edit since the
+	// result lives on the task.
+	const { canManageTasks, canManageLabels } = useWorkspacePermission();
+	const canEdit = canManageTasks();
+	const canCreateLabels = canManageLabels();
 
 	const { data: taskLabels = [] } = useGetLabelsByTask(task.id);
 	const { data: workspaceLabels = [] } = useGetLabelsByWorkspace(workspaceId);
@@ -216,7 +216,7 @@ export default function TaskLabelsPopover({
 					value={searchValue}
 					onChange={(e) => setSearchValue(e.target.value)}
 					placeholder={t("tasks:popover.labels.searchPlaceholder")}
-					className="border-none p-0 h-auto focus-visible:ring-0 shadow-none !bg-transparent"
+					className="border-none p-0 h-auto focus-visible:ring-0 shadow-none bg-transparent!"
 				/>
 			</div>
 
@@ -233,13 +233,13 @@ export default function TaskLabelsPopover({
 						className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-accent/50 text-left"
 						onClick={() => handleToggleLabel(label.id)}
 					>
-						<div className="flex-shrink-0 w-3 flex justify-center">
+						<div className="shrink-0 w-3 flex justify-center">
 							{taskLabelNames.includes(label.name) && (
 								<Check className="w-3 h-3" />
 							)}
 						</div>
 						<span
-							className="w-2 h-2 rounded-full flex-shrink-0"
+							className="w-2 h-2 rounded-full shrink-0"
 							style={{
 								backgroundColor:
 									labelColors.find((c) => c.value === label.color)?.color ||
@@ -250,34 +250,34 @@ export default function TaskLabelsPopover({
 					</button>
 				))}
 
-        {canCreateLabels && isCreatingNewLabel && filteredLabels.length > 0 && (
-          <div className="border-t border-border my-1" />
-        )}
-        {canCreateLabels && isCreatingNewLabel && (
-          <button
-            type="button"
-            className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-accent/50 text-left"
-            onClick={handleCreateNewClick}
-          >
-            <div className="flex-shrink-0 w-3 flex justify-center">
-              <Plus className="w-3 h-3" />
-            </div>
-            <span
-              className="w-2 h-2 rounded-full flex-shrink-0"
-              style={{
-                backgroundColor:
-                  labelColors.find((c) => c.value === selectedColor)?.color ||
-                  "var(--color-neutral-400)",
-              }}
-            />
-            <span className="truncate">
-              {t("tasks:popover.labels.create", { name: searchValue })}
-            </span>
-          </button>
-        )}
-      </div>
-    </div>
-  );
+				{canCreateLabels && isCreatingNewLabel && filteredLabels.length > 0 && (
+					<div className="border-t border-border my-1" />
+				)}
+				{canCreateLabels && isCreatingNewLabel && (
+					<button
+						type="button"
+						className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-accent/50 text-left"
+						onClick={handleCreateNewClick}
+					>
+						<div className="shrink-0 w-3 flex justify-center">
+							<Plus className="w-3 h-3" />
+						</div>
+						<span
+							className="w-2 h-2 rounded-full shrink-0"
+							style={{
+								backgroundColor:
+									labelColors.find((c) => c.value === selectedColor)?.color ||
+									"var(--color-neutral-400)",
+							}}
+						/>
+						<span className="truncate">
+							{t("tasks:popover.labels.create", { name: searchValue })}
+						</span>
+					</button>
+				)}
+			</div>
+		</div>
+	);
 
 	const renderColorStep = () => (
 		<div className="w-auto">
@@ -294,36 +294,36 @@ export default function TaskLabelsPopover({
 				</button>
 			</div>
 
-      <div className="py-1">
-        {labelColors.map((color) => (
-          <button
-            key={color.value}
-            type="button"
-            className={cn(
-              "w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-accent/50 text-left",
-              selectedColor === color.value && "bg-accent/30",
-            )}
-            onClick={() => handleColorSelect(color.value as LabelColor)}
-          >
-            <span
-              className="w-2 h-2 rounded-full flex-shrink-0"
-              style={{ backgroundColor: color.color }}
-            />
-            <span className="truncate">
-              {t(`tasks:popover.labels.colors.${color.key}`)}
-            </span>
-            {selectedColor === color.value && (
-              <Check className="w-3 h-3 ml-auto" />
-            )}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
+			<div className="py-1">
+				{labelColors.map((color) => (
+					<button
+						key={color.value}
+						type="button"
+						className={cn(
+							"w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-accent/50 text-left",
+							selectedColor === color.value && "bg-accent/30",
+						)}
+						onClick={() => handleColorSelect(color.value as LabelColor)}
+					>
+						<span
+							className="w-2 h-2 rounded-full shrink-0"
+							style={{ backgroundColor: color.color }}
+						/>
+						<span className="truncate">
+							{t(`tasks:popover.labels.colors.${color.key}`)}
+						</span>
+						{selectedColor === color.value && (
+							<Check className="w-3 h-3 ml-auto" />
+						)}
+					</button>
+				))}
+			</div>
+		</div>
+	);
 
-  // No task-edit permission → no label changes at all. The trigger renders
-  // as a plain element so users still see the existing labels.
-  if (!canEdit) return <>{children}</>;
+	// No task-edit permission → no label changes at all. The trigger renders
+	// as a plain element so users still see the existing labels.
+	if (!canEdit) return <>{children}</>;
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>

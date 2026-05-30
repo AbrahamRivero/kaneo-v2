@@ -1,11 +1,16 @@
 import { Hono } from "hono";
 import { validator } from "hono-openapi";
 import * as v from "valibot";
+import { requireWorkspacePermission } from "../utils/require-workspace-permission";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import { getWorkspaceFeatures, setFeaturesEnabled } from "./db";
 import { getFeaturesByCategory } from "./registry";
 
-const features = new Hono();
+const features = new Hono<{
+	Variables: {
+		workspaceId: string;
+	};
+}>();
 
 features.get("/registry", async (c) => {
 	const byCategory = getFeaturesByCategory();
@@ -25,6 +30,7 @@ features.get(
 features.put(
 	"/workspace/:workspaceId",
 	workspaceAccess.fromParam("workspaceId"),
+	requireWorkspacePermission({ feature: ["update"] }),
 	validator(
 		"json",
 		v.object({

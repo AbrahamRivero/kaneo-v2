@@ -9,13 +9,13 @@ import { useWorkspacePermission } from "@/hooks/use-workspace-permission";
 import { toast } from "@/lib/toast";
 import { Button } from "../ui/button";
 import {
-  Dialog,
-  DialogClose,
-  DialogFooter,
-  DialogHeader,
-  DialogPanel,
-  DialogPopup,
-  DialogTitle,
+	Dialog,
+	DialogClose,
+	DialogFooter,
+	DialogHeader,
+	DialogPanel,
+	DialogPopup,
+	DialogTitle,
 } from "../ui/dialog";
 import {
 	Form,
@@ -39,13 +39,13 @@ const teamMemberSchema = z.object({
 type TeamMemberFormValues = z.infer<typeof teamMemberSchema>;
 
 function InviteTeamMemberModal({ open, onClose }: Props) {
-  const { t } = useTranslation();
-  const { mutateAsync } = useInviteWorkspaceUser();
-  const queryClient = useQueryClient();
-  const { data: workspace } = useActiveWorkspace();
-  const workspaceId = workspace?.id;
-  const { canInviteUsers } = useWorkspacePermission();
-  const canInvite = canInviteUsers();
+	const { t } = useTranslation();
+	const { mutateAsync } = useInviteWorkspaceUser();
+	const queryClient = useQueryClient();
+	const { data: workspace } = useActiveWorkspace();
+	const workspaceId = workspace?.id;
+	const { canInviteUsers } = useWorkspacePermission();
+	const canInvite = canInviteUsers();
 
 	const form = useForm<TeamMemberFormValues>({
 		resolver: standardSchemaResolver(teamMemberSchema),
@@ -54,23 +54,23 @@ function InviteTeamMemberModal({ open, onClose }: Props) {
 		},
 	});
 
-  const onSubmit = async ({ email }: TeamMemberFormValues) => {
-    if (!workspaceId) {
-      toast.error(t("team:inviteModal.error"));
-      return;
-    }
-    if (!canInvite) {
-      // Defense-in-depth: parent gates the trigger, but if the modal is
-      // somehow open without permission we refuse rather than firing a
-      // mutation the server will reject.
-      toast.error(t("team:inviteModal.error"));
-      return;
-    }
-    try {
-      await mutateAsync({ email, workspaceId, role: "member" }); // TODO: role and email
-      await queryClient.refetchQueries({
-        queryKey: ["workspace-users", workspaceId],
-      });
+	const onSubmit = async ({ email }: TeamMemberFormValues) => {
+		if (!workspaceId) {
+			toast.error(t("team:inviteModal.error"));
+			return;
+		}
+		if (!canInvite) {
+			// Defense-in-depth: parent gates the trigger, but if the modal is
+			// somehow open without permission we refuse rather than firing a
+			// mutation the server will reject.
+			toast.error(t("team:inviteModal.error"));
+			return;
+		}
+		try {
+			await mutateAsync({ email, workspaceId, role: "member" }); // TODO: role and email
+			await queryClient.refetchQueries({
+				queryKey: ["workspace-users", workspaceId],
+			});
 
 			toast.success(t("team:inviteModal.success"));
 
@@ -83,68 +83,68 @@ function InviteTeamMemberModal({ open, onClose }: Props) {
 		}
 	};
 
-  const resetInviteTeamMember = async () => {
-    if (workspaceId) {
-      await queryClient.invalidateQueries({
-        queryKey: ["workspace-users", workspaceId],
-      });
-    }
-    form.reset();
-  };
+	const resetInviteTeamMember = async () => {
+		if (workspaceId) {
+			await queryClient.invalidateQueries({
+				queryKey: ["workspace-users", workspaceId],
+			});
+		}
+		form.reset();
+	};
 
 	const resetAndCloseModal = () => {
 		resetInviteTeamMember();
 		onClose();
 	};
 
-  return (
-    <Dialog open={open} onOpenChange={resetAndCloseModal}>
-      <DialogPopup className="w-full max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t("team:inviteModal.title")}</DialogTitle>
-        </DialogHeader>
+	return (
+		<Dialog open={open} onOpenChange={resetAndCloseModal}>
+			<DialogPopup className="w-full max-w-md">
+				<DialogHeader>
+					<DialogTitle>{t("team:inviteModal.title")}</DialogTitle>
+				</DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="contents">
-            <DialogPanel>
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("team:inviteModal.emailLabel")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder={t("team:inviteModal.emailPlaceholder")}
-                        autoFocus
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </DialogPanel>
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="contents">
+						<DialogPanel>
+							<FormField
+								control={form.control}
+								name="email"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>{t("team:inviteModal.emailLabel")}</FormLabel>
+										<FormControl>
+											<Input
+												{...field}
+												placeholder={t("team:inviteModal.emailPlaceholder")}
+												autoFocus
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</DialogPanel>
 
-            <DialogFooter>
-              <DialogClose
-                render={<Button variant="outline" size="sm" type="button" />}
-              >
-                {t("common:actions.cancel")}
-              </DialogClose>
-              <Button
-                type="submit"
-                size="sm"
-                disabled={!workspaceId || !canInvite}
-              >
-                {t("team:inviteModal.sendInvitation")}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogPopup>
-    </Dialog>
-  );
+						<DialogFooter>
+							<DialogClose
+								render={<Button variant="outline" size="sm" type="button" />}
+							>
+								{t("common:actions.cancel")}
+							</DialogClose>
+							<Button
+								type="submit"
+								size="sm"
+								disabled={!workspaceId || !canInvite}
+							>
+								{t("team:inviteModal.sendInvitation")}
+							</Button>
+						</DialogFooter>
+					</form>
+				</Form>
+			</DialogPopup>
+		</Dialog>
+	);
 }
 
 export default InviteTeamMemberModal;

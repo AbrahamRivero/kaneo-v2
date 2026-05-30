@@ -24,59 +24,59 @@ export function Hero() {
 						</p>
 					</FadeIn>
 
-          <FadeIn delay={160}>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button
-                size="lg"
-                className="gap-2"
-                onClick={() => {
-                  window.location.href = "https://cloud.kaneo.app";
-                }}
-              >
-                Cloud
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="gap-2"
-                onClick={() => {
-                  window.location.href = "/docs/core";
-                }}
-              >
-                Get Started
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="gap-2"
-                onClick={() => {
-                  window.location.href = "https://github.com/usekaneo/kaneo";
-                }}
-              >
-                <Github className="h-4 w-4" />
-                GitHub
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="gap-2 border-[#da552f]/40 bg-[#da552f]/8 text-foreground hover:bg-[#da552f]/14"
-                render={
-                  <a
-                    href="https://www.producthunt.com/products/kaneo"
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="View Kaneo on Product Hunt"
-                  >
-                    <span className="flex size-5 items-center justify-center rounded-full bg-[#da552f] font-semibold text-[13px] text-white leading-none">
-                      P
-                    </span>
-                    Product Hunt
-                  </a>
-                }
-              />
-            </div>
-          </FadeIn>
-        </div>
+					<FadeIn delay={160}>
+						<div className="mt-8 flex flex-wrap items-center gap-3">
+							<Button
+								size="lg"
+								className="gap-2"
+								onClick={() => {
+									window.location.href = "https://cloud.kaneo.app";
+								}}
+							>
+								Cloud
+							</Button>
+							<Button
+								variant="outline"
+								size="lg"
+								className="gap-2"
+								onClick={() => {
+									window.location.href = "/docs/core";
+								}}
+							>
+								Get Started
+							</Button>
+							<Button
+								variant="outline"
+								size="lg"
+								className="gap-2"
+								onClick={() => {
+									window.location.href = "https://github.com/usekaneo/kaneo";
+								}}
+							>
+								<Github className="h-4 w-4" />
+								GitHub
+							</Button>
+							<Button
+								variant="outline"
+								size="lg"
+								className="gap-2 border-[#da552f]/40 bg-[#da552f]/8 text-foreground hover:bg-[#da552f]/14"
+								render={
+									<a
+										href="https://www.producthunt.com/products/kaneo"
+										target="_blank"
+										rel="noreferrer"
+										aria-label="View Kaneo on Product Hunt"
+									>
+										<span className="flex size-5 items-center justify-center rounded-full bg-[#da552f] font-semibold text-[13px] text-white leading-none">
+											P
+										</span>
+										Product Hunt
+									</a>
+								}
+							/>
+						</div>
+					</FadeIn>
+				</div>
 
 				{/* ── App preview — interactive mock of the real Kaneo UI ── */}
 				<FadeIn delay={240} distance={32}>

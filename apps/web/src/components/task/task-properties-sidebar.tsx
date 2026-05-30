@@ -80,26 +80,26 @@ export default function TaskPropertiesSidebar({
 	className,
 	compact = false,
 }: TaskPropertiesSidebarProps) {
-  const { t } = useTranslation();
-  const { data: task } = useGetTask(taskId ?? "");
-  const { data: project } = useGetProject({ id: projectId, workspaceId });
-  const { data: columns = [] } = useGetColumns(projectId);
-  const { data: workspaceUsers } = useGetActiveWorkspaceUsers(workspaceId);
-  const { data: taskLabels = [] } = useGetLabelsByTask(taskId ?? "");
-  const { data: githubIntegration } = useGetGithubIntegration(projectId);
-  const { data: giteaIntegration } = useGetGiteaIntegration(projectId);
-  const { data: workspaceProjects = [] } = useGetProjects({ workspaceId });
-  const canMoveTask =
-    Boolean(task) && workspaceProjects.some((p) => p.id !== task?.projectId);
-  const statusColumn = columns.find(
-    (column) => column.slug === task?.status || column.id === task?.status,
-  );
-  const statusLabel = getStatusDisplayLabel(
-    task?.status ?? "",
-    statusColumn?.name,
-  );
-  const statusIsFinal = statusColumn?.isFinal ?? false;
-  const statusIcon = statusColumn?.icon;
+	const { t } = useTranslation();
+	const { data: task } = useGetTask(taskId ?? "");
+	const { data: project } = useGetProject({ id: projectId, workspaceId });
+	const { data: columns = [] } = useGetColumns(projectId);
+	const { data: workspaceUsers } = useGetActiveWorkspaceUsers(workspaceId);
+	const { data: taskLabels = [] } = useGetLabelsByTask(taskId ?? "");
+	const { data: githubIntegration } = useGetGithubIntegration(projectId);
+	const { data: giteaIntegration } = useGetGiteaIntegration(projectId);
+	const { data: workspaceProjects = [] } = useGetProjects({ workspaceId });
+	const canMoveTask =
+		Boolean(task) && workspaceProjects.some((p) => p.id !== task?.projectId);
+	const statusColumn = columns.find(
+		(column) => column.slug === task?.status || column.id === task?.status,
+	);
+	const statusLabel = getStatusDisplayLabel(
+		task?.status ?? "",
+		statusColumn?.name,
+	);
+	const statusIsFinal = statusColumn?.isFinal ?? false;
+	const statusIcon = statusColumn?.icon;
 
 	const projectSlug = project?.slug;
 	const taskNumber = task?.number;
@@ -129,9 +129,9 @@ export default function TaskPropertiesSidebar({
 			})}
 		>
 			{creatorImage || creatorName ? (
-				<Avatar className="h-[16px] w-[16px]">
+				<Avatar className="h-4 w-4">
 					<AvatarImage src={creatorImage ?? ""} alt={creatorName ?? ""} />
-					<AvatarFallback className="text-[9px] font-medium border border-border/30 shrink-0 h-[16px] w-[16px]">
+					<AvatarFallback className="text-[9px] font-medium border border-border/30 shrink-0 h-4 w-4">
 						{creatorName?.charAt(0).toUpperCase() ?? "?"}
 					</AvatarFallback>
 				</Avatar>
@@ -141,7 +141,7 @@ export default function TaskPropertiesSidebar({
 			<span className="text-[10px] text-muted-foreground">
 				{t("tasks:creator.label")}:
 			</span>
-			<span className="text-xs font-semibold truncate max-w-[100px]">
+			<span className="text-xs font-semibold truncate max-w-25">
 				{creatorName ?? t("tasks:creator.unknown")}
 			</span>
 		</div>
@@ -235,7 +235,11 @@ export default function TaskPropertiesSidebar({
 										size="sm"
 										className="justify-start h-7 px-1.5 gap-1.5"
 									>
-										{getColumnIcon(task.status ?? "", statusIsFinal,statusIcon)}
+										{getColumnIcon(
+											task.status ?? "",
+											statusIsFinal,
+											statusIcon,
+										)}
 										<span className="text-xs font-semibold truncate">
 											{statusLabel}
 										</span>
@@ -420,7 +424,11 @@ export default function TaskPropertiesSidebar({
 											size="sm"
 											className="justify-start h-7 px-1.5 gap-1.5"
 										>
-											{getColumnIcon(task.status ?? "", statusIsFinal,statusIcon)}
+											{getColumnIcon(
+												task.status ?? "",
+												statusIsFinal,
+												statusIcon,
+											)}
 											<span className="text-xs font-semibold truncate">
 												{statusLabel}
 											</span>
@@ -449,24 +457,24 @@ export default function TaskPropertiesSidebar({
 											className="justify-start h-7 px-1.5 gap-1.5"
 										>
 											{task.userId ? (
-												<Avatar className="h-[16px] w-[16px]">
+												<Avatar className="h-4 w-4">
 													<AvatarImage
 														src={assignee?.user?.image ?? ""}
 														alt={assignee?.user?.name || ""}
 													/>
-													<AvatarFallback className="text-[9px] font-medium border border-border/30 shrink-0 h-[16px] w-[16px]">
+													<AvatarFallback className="text-[9px] font-medium border border-border/30 shrink-0 h-4 w-4">
 														{assignee?.user?.name?.charAt(0).toUpperCase()}
 													</AvatarFallback>
 												</Avatar>
 											) : (
 												<div
-													className="w-[16px] h-[16px] rounded-full bg-muted border border-border flex items-center justify-center shrink-0"
+													className="w-4 h-4 rounded-full bg-muted border border-border flex items-center justify-center shrink-0"
 													title={t("tasks:popover.assignee.unassigned")}
 												>
 													<span className="text-[8px] font-medium">?</span>
 												</div>
 											)}
-											<span className="text-xs font-semibold truncate max-w-[100px]">
+											<span className="text-xs font-semibold truncate max-w-25">
 												{assignee?.user?.name ||
 													task.assigneeName ||
 													t("tasks:popover.assignee.unassigned")}
@@ -608,7 +616,11 @@ export default function TaskPropertiesSidebar({
 											size="sm"
 											className="justify-start h-7 px-1.5 gap-1.5 w-full"
 										>
-											{getColumnIcon(task.status ?? "", statusIsFinal,statusIcon)}
+											{getColumnIcon(
+												task.status ?? "",
+												statusIsFinal,
+												statusIcon,
+											)}
 											<span className="text-xs font-semibold truncate">
 												{statusLabel}
 											</span>
@@ -637,24 +649,24 @@ export default function TaskPropertiesSidebar({
 											className="justify-start h-7 px-1.5 gap-1.5 w-full"
 										>
 											{task.userId ? (
-												<Avatar className="h-[16px] w-[16px]">
+												<Avatar className="h-4 w-4">
 													<AvatarImage
 														src={assignee?.user?.image ?? ""}
 														alt={assignee?.user?.name || ""}
 													/>
-													<AvatarFallback className="text-[9px] font-medium border border-border/30 shrink-0 h-[16px] w-[16px]">
+													<AvatarFallback className="text-[9px] font-medium border border-border/30 shrink-0 h-4 w-4">
 														{assignee?.user?.name?.charAt(0).toUpperCase()}
 													</AvatarFallback>
 												</Avatar>
 											) : (
 												<div
-													className="w-[16px] h-[16px] rounded-full bg-muted border border-border flex items-center justify-center shrink-0"
+													className="w-4 h-4 rounded-full bg-muted border border-border flex items-center justify-center shrink-0"
 													title={t("tasks:popover.assignee.unassigned")}
 												>
 													<span className="text-[8px] font-medium">?</span>
 												</div>
 											)}
-											<span className="text-xs font-semibold truncate max-w-[100px]">
+											<span className="text-xs font-semibold truncate max-w-25">
 												{assignee?.user?.name ||
 													task.assigneeName ||
 													t("tasks:popover.assignee.unassigned")}
@@ -748,16 +760,14 @@ export default function TaskPropertiesSidebar({
 												className="flex items-center gap-1 px-1.5 py-0.5 cursor-pointer hover:bg-accent/50 transition-colors text-[10px]"
 											>
 												<span
-													className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+													className="w-1.5 h-1.5 rounded-full shrink-0"
 													style={{
 														backgroundColor:
 															labelColors.find((c) => c.value === label.color)
 																?.color || "var(--color-neutral-400)",
 													}}
 												/>
-												<span className="truncate max-w-[60px]">
-													{label.name}
-												</span>
+												<span className="truncate max-w-15">{label.name}</span>
 											</Badge>
 										</TaskLabelsPopover>
 									),

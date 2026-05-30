@@ -1,3 +1,4 @@
+import { HTTPException } from "hono/http-exception";
 import type { Label, LabelWithRelations } from "../../domain";
 import type { LabelRepository } from "../ports/label-repository.port";
 
@@ -7,7 +8,7 @@ export class GetLabelUseCase {
 	async execute(id: string): Promise<Label> {
 		const label = await this.labelRepository.findById(id);
 		if (!label) {
-			throw new Error("Label not found");
+			throw new HTTPException(404, { message: "Label not found" });
 		}
 		return label;
 	}
@@ -95,10 +96,13 @@ export class UpdateLabelUseCase {
 	}): Promise<Label> {
 		const existingLabel = await this.labelRepository.findById(input.id);
 		if (!existingLabel) {
-			throw new Error("Label not found");
+			throw new HTTPException(404, { message: "Label not found" });
 		}
 
 		const [updatedLabel] = await this.labelRepository.update(input);
+		if (!updatedLabel) {
+			throw new HTTPException(500, { message: "Failed to update label" });
+		}
 		return updatedLabel;
 	}
 }
@@ -117,16 +121,18 @@ export class DeleteLabelUseCase {
 	async execute(input: { id: string; userId: string }): Promise<Label> {
 		const label = await this.labelRepository.findById(input.id);
 		if (!label) {
-			throw new Error("Label not found");
+			throw new HTTPException(404, { message: "Label not found" });
 		}
 
 		if (!label.taskId) {
-			throw new Error("Label is not associated with a task");
+			throw new HTTPException(400, {
+				message: "Label is not associated with a task",
+			});
 		}
 
 		const task = await this.labelRepository.findTaskById(label.taskId);
 		if (!task) {
-			throw new Error("Task not found");
+			throw new HTTPException(404, { message: "Task not found" });
 		}
 
 		const deletedLabel = await this.labelRepository.delete(input.id);
@@ -179,16 +185,18 @@ export class AssignLabelToTaskUseCase {
 	}): Promise<Label> {
 		const label = await this.labelRepository.findById(input.labelId);
 		if (!label) {
-			throw new Error("Label not found");
+			throw new HTTPException(404, { message: "Label not found" });
 		}
 
 		const task = await this.labelRepository.findTaskById(input.taskId);
 		if (!task) {
-			throw new Error("Task not found");
+			throw new HTTPException(404, { message: "Task not found" });
 		}
 
 		if (label.workspaceId && label.workspaceId !== task.workspaceId) {
-			throw new Error("Label and task must belong to the same workspace");
+			throw new HTTPException(400, {
+				message: "Label and task must belong to the same workspace",
+			});
 		}
 
 		const updatedLabel = await this.labelRepository.assignToTask(
@@ -239,16 +247,18 @@ export class UnassignLabelFromTaskUseCase {
 	async execute(input: { labelId: string; userId: string }): Promise<Label> {
 		const label = await this.labelRepository.findById(input.labelId);
 		if (!label) {
-			throw new Error("Label not found");
+			throw new HTTPException(404, { message: "Label not found" });
 		}
 
 		if (!label.taskId) {
-			throw new Error("Label is not assigned to a task");
+			throw new HTTPException(400, {
+				message: "Label is not assigned to a task",
+			});
 		}
 
 		const task = await this.labelRepository.findTaskById(label.taskId);
 		if (!task) {
-			throw new Error("Task not found");
+			throw new HTTPException(404, { message: "Task not found" });
 		}
 
 		const updatedLabel = await this.labelRepository.unassignFromTask(

@@ -17,19 +17,19 @@ function DeleteTeamMemberModal({
 	onClose: () => void;
 }) {
 	const { t } = useTranslation();
-  const { data: workspace } = useActiveWorkspace();
-  const workspaceId = workspace?.id ?? "";
-  const { mutateAsync: deleteWorkspaceUser } = useDeleteWorkspaceUser();
-  const queryClient = useQueryClient();
-  const { canRemoveMembers } = useWorkspacePermission();
-  const canRemove = canRemoveMembers();
+	const { data: workspace } = useActiveWorkspace();
+	const workspaceId = workspace?.id ?? "";
+	const { mutateAsync: deleteWorkspaceUser } = useDeleteWorkspaceUser();
+	const queryClient = useQueryClient();
+	const { canRemoveMembers } = useWorkspacePermission();
+	const canRemove = canRemoveMembers();
 
-  const onRemoveMember = async () => {
-    if (!canRemove) return;
-    await deleteWorkspaceUser({
-      workspaceId,
-      userId,
-    });
+	const onRemoveMember = async () => {
+		if (!canRemove) return;
+		await deleteWorkspaceUser({
+			workspaceId,
+			userId,
+		});
 
 		queryClient.invalidateQueries({
 			queryKey: ["workspace-users"],
@@ -59,31 +59,31 @@ function DeleteTeamMemberModal({
 							{t("team:deleteMemberModal.description", { name: userId })}
 						</p>
 
-            <div className="flex justify-end gap-2">
-              <DialogClose
-                render={
-                  <Button
-                    className="bg-muted text-foreground hover:bg-accent"
-                    type="button"
-                  />
-                }
-              >
-                {t("common:actions.cancel")}
-              </DialogClose>
-              <Button
-                onClick={onRemoveMember}
-                variant="destructive"
-                disabled={!canRemove}
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                {t("team:deleteMemberModal.removeButton")}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </DialogPopup>
-    </Dialog>
-  );
+						<div className="flex justify-end gap-2">
+							<DialogClose
+								render={
+									<Button
+										className="bg-muted text-foreground hover:bg-accent"
+										type="button"
+									/>
+								}
+							>
+								{t("common:actions.cancel")}
+							</DialogClose>
+							<Button
+								onClick={onRemoveMember}
+								variant="destructive"
+								disabled={!canRemove}
+							>
+								<Trash2 className="w-4 h-4 mr-2" />
+								{t("team:deleteMemberModal.removeButton")}
+							</Button>
+						</div>
+					</div>
+				</div>
+			</DialogPopup>
+		</Dialog>
+	);
 }
 
 export default DeleteTeamMemberModal;

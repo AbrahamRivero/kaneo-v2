@@ -38,15 +38,15 @@ export async function handleIssueOpened(payload: IssueOpenedPayload) {
 		return;
 	}
 
-  const { issue, repository } = payload;
+	const { issue, repository } = payload;
 
-  const appName = process.env.GITHUB_APP_NAME;
-  if (appName && issue.user?.login === `${appName}[bot]`) {
-    console.log(
-      `Issue #${issue.number} was created by the configured GitHub App, skipping task creation`,
-    );
-    return;
-  }
+	const appName = process.env.GITHUB_APP_NAME;
+	if (appName && issue.user?.login === `${appName}[bot]`) {
+		console.log(
+			`Issue #${issue.number} was created by the configured GitHub App, skipping task creation`,
+		);
+		return;
+	}
 
 	const integrations = await findAllIntegrationsByRepo(
 		repository.owner.login,

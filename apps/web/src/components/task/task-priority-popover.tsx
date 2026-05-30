@@ -33,11 +33,11 @@ export default function TaskPriorityPopover({
 	task,
 	children,
 }: TaskPriorityPopoverProps) {
-  const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
-  const { mutateAsync: updateTaskPriority } = useUpdateTaskPriority();
-  const { canManageTasks } = useWorkspacePermission();
-  const canEdit = canManageTasks();
+	const { t } = useTranslation();
+	const [open, setOpen] = useState(false);
+	const { mutateAsync: updateTaskPriority } = useUpdateTaskPriority();
+	const { canManageTasks } = useWorkspacePermission();
+	const canEdit = canManageTasks();
 
 	const handlePriorityChange = useCallback(
 		async (newPriority: string) => {
@@ -66,11 +66,11 @@ export default function TaskPriorityPopover({
 		[handlePriorityChange],
 	);
 
-  useNumberedShortcuts(open, shortcutOptions);
+	useNumberedShortcuts(open, shortcutOptions);
 
-  // Read-only role: render the trigger child as a plain element so the user
-  // still sees the current priority but can't open the popover.
-  if (!canEdit) return <>{children}</>;
+	// Read-only role: render the trigger child as a plain element so the user
+	// still sees the current priority but can't open the popover.
+	if (!canEdit) return <>{children}</>;
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>

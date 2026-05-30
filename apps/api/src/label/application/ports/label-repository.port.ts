@@ -10,7 +10,7 @@ export interface LabelRepository {
 	findByWorkspaceId(workspaceId: string): Promise<Label[]>;
 	findByTaskId(taskId: string): Promise<Label[]>;
 	create(input: CreateLabelInput): Promise<LabelWithRelations>;
-	update(input: UpdateLabelInput): Promise<Label>;
+	update(input: UpdateLabelInput): Promise<Label[]>;
 	delete(id: string): Promise<Label>;
 	assignToTask(labelId: string, taskId: string): Promise<Label>;
 	unassignFromTask(labelId: string): Promise<Label>;

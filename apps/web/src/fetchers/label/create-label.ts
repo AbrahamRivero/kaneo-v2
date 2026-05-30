@@ -12,11 +12,11 @@ async function createLabel({
 	workspaceId,
 }: CreateLabelRequest) {
 	const response = await client.label.$post({
-		query: { workspaceId },
 		json: {
 			name,
 			color,
 			taskId,
+			workspaceId,
 		},
 	});
 

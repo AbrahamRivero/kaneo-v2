@@ -1,6 +1,11 @@
+import { eq } from "drizzle-orm";
 import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
+import db from "../database";
+import { templateTable } from "../database/schema";
+import { validateWorkspaceAccess } from "../utils/validate-workspace-access";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import createTemplateCtrl from "./controllers/create-template";
 import deleteTemplateCtrl from "./controllers/delete-template";
@@ -138,6 +143,14 @@ const template = new Hono<{
 		),
 		async (c) => {
 			const { id } = c.req.valid("param");
+			const [tmpl] = await db
+				.select({ workspaceId: templateTable.workspaceId })
+				.from(templateTable)
+				.where(eq(templateTable.id, id))
+				.limit(1);
+			if (!tmpl)
+				throw new HTTPException(404, { message: "Template not found" });
+			await validateWorkspaceAccess(c.get("userId"), tmpl.workspaceId);
 			const data = c.req.valid("json");
 			const result = await updateTemplateCtrl(id, data);
 			return c.json(result);
@@ -161,6 +174,14 @@ const template = new Hono<{
 		validator("param", v.object({ id: v.string() })),
 		async (c) => {
 			const { id } = c.req.valid("param");
+			const [tmpl] = await db
+				.select({ workspaceId: templateTable.workspaceId })
+				.from(templateTable)
+				.where(eq(templateTable.id, id))
+				.limit(1);
+			if (!tmpl)
+				throw new HTTPException(404, { message: "Template not found" });
+			await validateWorkspaceAccess(c.get("userId"), tmpl.workspaceId);
 			const result = await deleteTemplateCtrl(id);
 			return c.json(result);
 		},

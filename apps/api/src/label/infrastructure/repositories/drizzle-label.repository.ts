@@ -74,7 +74,9 @@ export class DrizzleLabelRepository implements LabelRepository {
 				}));
 
 			if (!label) {
-				throw new Error("Failed to create or resolve label");
+				throw new HTTPException(500, {
+					message: "Failed to create or resolve label",
+				});
 			}
 
 			return {
@@ -112,7 +114,9 @@ export class DrizzleLabelRepository implements LabelRepository {
 			}));
 
 		if (!label) {
-			throw new Error("Failed to create or resolve label");
+			throw new HTTPException(500, {
+				message: "Failed to create or resolve label",
+			});
 		}
 
 		return {

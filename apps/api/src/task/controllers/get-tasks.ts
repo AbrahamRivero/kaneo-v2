@@ -38,7 +38,7 @@ async function getTasks(projectId: string, filters?: TaskFilters) {
 		id: column.slug,
 		slug: column.slug,
 		name: column.name,
-    icon: column.icon,
+		icon: column.icon,
 		isFinal: column.isFinal,
 		tasks: result.tasks.filter((task) => task.status === column.slug),
 	}));

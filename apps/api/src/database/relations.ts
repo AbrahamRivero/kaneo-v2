@@ -31,6 +31,7 @@ import {
 	verificationTable,
 	workflowRuleTable,
 	workspaceFeatureTable,
+	workspaceRoleTable,
 	workspaceTable,
 	workspaceUserTable,
 } from "./schema";
@@ -330,13 +331,13 @@ export const invitationTableRelations = relations(
 );
 
 export const workspaceRoleTableRelations = relations(
-  workspaceRoleTable,
-  ({ one }) => ({
-    workspace: one(workspaceTable, {
-      fields: [workspaceRoleTable.workspaceId],
-      references: [workspaceTable.id],
-    }),
-  }),
+	workspaceRoleTable,
+	({ one }) => ({
+		workspace: one(workspaceTable, {
+			fields: [workspaceRoleTable.workspaceId],
+			references: [workspaceTable.id],
+		}),
+	}),
 );
 
 export const apikeyTableRelations = relations(apikeyTable, ({ one }) => ({

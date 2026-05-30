@@ -22,30 +22,30 @@ export default function TaskStartDatePopover({
 	task,
 	children,
 }: TaskStartDatePopoverProps) {
-  const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
-  const { mutateAsync: updateTask } = useUpdateTask();
-  const { canManageTasks } = useWorkspacePermission();
-  const canEdit = canManageTasks();
+	const { t } = useTranslation();
+	const [open, setOpen] = useState(false);
+	const { mutateAsync: updateTask } = useUpdateTask();
+	const { canManageTasks } = useWorkspacePermission();
+	const canEdit = canManageTasks();
 
-  const handleDateChange = async (date: Date | undefined) => {
-    try {
-      await updateTask({
-        ...task,
-        startDate: date?.toISOString() || null,
-      });
-      toast.success(t("tasks:popover.startDate.updateSuccess"));
-      setOpen(false);
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : t("tasks:popover.startDate.updateError"),
-      );
-    }
-  };
+	const handleDateChange = async (date: Date | undefined) => {
+		try {
+			await updateTask({
+				...task,
+				startDate: date?.toISOString() || null,
+			});
+			toast.success(t("tasks:popover.startDate.updateSuccess"));
+			setOpen(false);
+		} catch (error) {
+			toast.error(
+				error instanceof Error
+					? error.message
+					: t("tasks:popover.startDate.updateError"),
+			);
+		}
+	};
 
-  if (!canEdit) return <>{children}</>;
+	if (!canEdit) return <>{children}</>;
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>

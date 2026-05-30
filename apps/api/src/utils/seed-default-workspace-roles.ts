@@ -17,8 +17,8 @@ import db, { schema } from "../database";
  * Idempotent: only inserts rows that aren't already present.
  */
 export async function seedDefaultWorkspaceRoles() {
-  try {
-    const tableExists = await db.execute(sql`
+	try {
+		const tableExists = await db.execute(sql`
       SELECT EXISTS (
         SELECT 1
         FROM information_schema.tables
@@ -26,79 +26,79 @@ export async function seedDefaultWorkspaceRoles() {
       ) AS exists;
     `);
 
-    const exists =
-      tableExists.rows[0]?.exists === true ||
-      tableExists.rows[0]?.exists === "t";
-    if (!exists) {
-      console.log(
-        "🛈 workspace_role table does not exist — skipping default-role seed.",
-      );
-      return;
-    }
+		const exists =
+			tableExists.rows[0]?.exists === true ||
+			tableExists.rows[0]?.exists === "t";
+		if (!exists) {
+			console.log(
+				"🛈 workspace_role table does not exist — skipping default-role seed.",
+			);
+			return;
+		}
 
-    const workspaces = await db
-      .select({ id: schema.workspaceTable.id })
-      .from(schema.workspaceTable);
+		const workspaces = await db
+			.select({ id: schema.workspaceTable.id })
+			.from(schema.workspaceTable);
 
-    if (workspaces.length === 0) {
-      return;
-    }
+		if (workspaces.length === 0) {
+			return;
+		}
 
-    const workspaceIds = workspaces.map((w) => w.id);
+		const workspaceIds = workspaces.map((w) => w.id);
 
-    const existingRows = await db
-      .select({
-        workspaceId: schema.workspaceRoleTable.workspaceId,
-        role: schema.workspaceRoleTable.role,
-      })
-      .from(schema.workspaceRoleTable)
-      .where(
-        and(
-          inArray(schema.workspaceRoleTable.workspaceId, workspaceIds),
-          inArray(
-            schema.workspaceRoleTable.role,
-            DEFAULT_ROLE_NAMES as unknown as string[],
-          ),
-        ),
-      );
+		const existingRows = await db
+			.select({
+				workspaceId: schema.workspaceRoleTable.workspaceId,
+				role: schema.workspaceRoleTable.role,
+			})
+			.from(schema.workspaceRoleTable)
+			.where(
+				and(
+					inArray(schema.workspaceRoleTable.workspaceId, workspaceIds),
+					inArray(
+						schema.workspaceRoleTable.role,
+						DEFAULT_ROLE_NAMES as unknown as string[],
+					),
+				),
+			);
 
-    const present = new Set(
-      existingRows.map((r) => `${r.workspaceId}:${r.role}`),
-    );
+		const present = new Set(
+			existingRows.map((r) => `${r.workspaceId}:${r.role}`),
+		);
 
-    const now = new Date();
-    const rows: Array<typeof schema.workspaceRoleTable.$inferInsert> = [];
-    for (const workspaceId of workspaceIds) {
-      for (const name of DEFAULT_ROLE_NAMES) {
-        if (present.has(`${workspaceId}:${name}`)) continue;
-        rows.push({
-          workspaceId,
-          role: name,
-          permission: JSON.stringify(defaultRolePayloads[name]),
-          createdAt: now,
-          updatedAt: now,
-        });
-      }
-    }
+		const now = new Date();
+		const rows: Array<typeof schema.workspaceRoleTable.$inferInsert> = [];
+		for (const workspaceId of workspaceIds) {
+			for (const name of DEFAULT_ROLE_NAMES) {
+				if (present.has(`${workspaceId}:${name}`)) continue;
+				rows.push({
+					workspaceId,
+					role: name,
+					permission: JSON.stringify(defaultRolePayloads[name]),
+					createdAt: now,
+					updatedAt: now,
+				});
+			}
+		}
 
-    if (rows.length === 0) {
-      return;
-    }
+		if (rows.length === 0) {
+			return;
+		}
 
-    // Postgres' bind protocol caps parameters at 65535 per query, so insert
-    // in chunks. 6 columns × 1000 rows = 6000 params per batch, leaving ample
-    // headroom even for instances with tens of thousands of workspaces.
-    const BATCH_SIZE = 1000;
-    for (let i = 0; i < rows.length; i += BATCH_SIZE) {
-      await db
-        .insert(schema.workspaceRoleTable)
-        .values(rows.slice(i, i + BATCH_SIZE));
-    }
-    console.log(
-      `✅ Seeded ${rows.length} default workspace role row(s) across ${workspaceIds.length} workspace(s).`,
-    );
-  } catch (error) {
-    console.error("❌ Failed to seed default workspace roles:", error);
-    throw error;
-  }
+		// Postgres' bind protocol caps parameters at 65535 per query, so insert
+		// in chunks. 6 columns × 1000 rows = 6000 params per batch, leaving ample
+		// headroom even for instances with tens of thousands of workspaces.
+		const BATCH_SIZE = 1000;
+		for (let i = 0; i < rows.length; i += BATCH_SIZE) {
+			await db
+				.insert(schema.workspaceRoleTable)
+				.values(rows.slice(i, i + BATCH_SIZE));
+		}
+		console.log(
+			`✅ Seeded ${rows.length} default workspace role row(s) across ${workspaceIds.length} workspace(s).`,
+		);
+	} catch (error) {
+		console.error("❌ Failed to seed default workspace roles:", error);
+		throw error;
+	}
 }

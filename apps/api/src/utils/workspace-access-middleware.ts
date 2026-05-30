@@ -17,7 +17,8 @@ type WorkspaceIdSource =
 				| "timeEntry"
 				| "activity"
 				| "column"
-				| "workflowRule";
+				| "workflowRule"
+				| "taskRelation";
 			idKey: string;
 	  };
 
@@ -97,7 +98,8 @@ async function lookupWorkspaceId(
 		| "timeEntry"
 		| "activity"
 		| "column"
-		| "workflowRule",
+		| "workflowRule"
+		| "taskRelation",
 	id: string,
 ): Promise<string | null> {
 	try {
@@ -199,6 +201,23 @@ async function lookupWorkspaceId(
 				return workflowRule?.workspaceId || null;
 			}
 
+			case "taskRelation": {
+				const [result] = await db
+					.select({ workspaceId: schema.projectTable.workspaceId })
+					.from(schema.taskRelationTable)
+					.innerJoin(
+						schema.taskTable,
+						eq(schema.taskRelationTable.sourceTaskId, schema.taskTable.id),
+					)
+					.innerJoin(
+						schema.projectTable,
+						eq(schema.taskTable.projectId, schema.projectTable.id),
+					)
+					.where(eq(schema.taskRelationTable.id, id))
+					.limit(1);
+				return result?.workspaceId || null;
+			}
+
 			default:
 				return null;
 		}
@@ -278,6 +297,14 @@ export const workspaceAccess = {
 		workspaceAccessMiddleware({
 			sources: [
 				{ type: "lookup", resource: "workflowRule", idKey },
+				{ type: "query", key: "workspaceId" },
+			],
+		}),
+
+	fromTaskRelation: (idKey = "id") =>
+		workspaceAccessMiddleware({
+			sources: [
+				{ type: "lookup", resource: "taskRelation", idKey },
 				{ type: "query", key: "workspaceId" },
 			],
 		}),

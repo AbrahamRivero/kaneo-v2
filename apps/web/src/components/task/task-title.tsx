@@ -13,14 +13,14 @@ type TaskTitleProps = {
 };
 
 export default function TaskTitle({ taskId }: TaskTitleProps) {
-  const { t } = useTranslation();
-  const { data: task } = useGetTask(taskId);
-  const { mutateAsync: updateTaskTitle } = useUpdateTaskTitle();
-  const { canManageTasks } = useWorkspacePermission();
-  const canEdit = canManageTasks();
-  const isInitializedRef = useRef(false);
-  const taskRef = useRef(task);
-  const updateTaskRef = useRef(updateTaskTitle);
+	const { t } = useTranslation();
+	const { data: task } = useGetTask(taskId);
+	const { mutateAsync: updateTaskTitle } = useUpdateTaskTitle();
+	const { canManageTasks } = useWorkspacePermission();
+	const canEdit = canManageTasks();
+	const isInitializedRef = useRef(false);
+	const taskRef = useRef(task);
+	const updateTaskRef = useRef(updateTaskTitle);
 
 	useEffect(() => {
 		taskRef.current = task;
@@ -74,25 +74,25 @@ export default function TaskTitle({ taskId }: TaskTitleProps) {
 		[debouncedUpdate],
 	);
 
-  return (
-    <Form {...form}>
-      <FormField
-        control={form.control}
-        name="title"
-        render={({ field }) => (
-          <input
-            {...field}
-            type="text"
-            placeholder={t("tasks:detail.titlePlaceholder")}
-            readOnly={!canEdit}
-            className="block h-auto w-full appearance-none border-0 bg-transparent p-0 font-heading text-[2rem] leading-[1.15] font-semibold tracking-[-0.02em] text-foreground outline-none placeholder:text-foreground/45"
-            onChange={(e) => {
-              field.onChange(e);
-              handleTitleChange(e.target.value);
-            }}
-          />
-        )}
-      />
-    </Form>
-  );
+	return (
+		<Form {...form}>
+			<FormField
+				control={form.control}
+				name="title"
+				render={({ field }) => (
+					<input
+						{...field}
+						type="text"
+						placeholder={t("tasks:detail.titlePlaceholder")}
+						readOnly={!canEdit}
+						className="block h-auto w-full appearance-none border-0 bg-transparent p-0 font-heading text-[2rem] leading-[1.15] font-semibold tracking-[-0.02em] text-foreground outline-none placeholder:text-foreground/45"
+						onChange={(e) => {
+							field.onChange(e);
+							handleTitleChange(e.target.value);
+						}}
+					/>
+				)}
+			/>
+		</Form>
+	);
 }

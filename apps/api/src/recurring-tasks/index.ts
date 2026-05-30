@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { describeRoute, validator } from "hono-openapi";
 import * as v from "valibot";
 import { recurringTaskSchema } from "../schemas";
+import { workspaceAccess } from "../utils/workspace-access-middleware";
 import createChecklistItem from "./controllers/create-checklist-item";
 import createRecurringTask from "./controllers/create-recurring-task";
 import deleteChecklistItem from "./controllers/delete-checklist-item";
@@ -16,7 +17,12 @@ const checklistItemSchema = v.object({
 	position: v.number(),
 });
 
-const recurringTasks = new Hono<{ Variables: { userId: string } }>()
+const recurringTasks = new Hono<{
+	Variables: {
+		userId: string;
+		workspaceId: string;
+	};
+}>()
 	.get(
 		"/:projectId",
 		describeRoute({
@@ -25,6 +31,7 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 			description: "List recurring tasks for a project",
 		}),
 		validator("param", v.object({ projectId: v.string() })),
+		workspaceAccess.fromProject("projectId"),
 		async (c) => {
 			const { projectId } = c.req.valid("param");
 			const tasks = await listRecurringTasks(projectId);
@@ -76,6 +83,7 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 				),
 			}),
 		),
+		workspaceAccess.fromProject("projectId"),
 		async (c) => {
 			const { projectId } = c.req.valid("param");
 			const body = c.req.valid("json");
@@ -130,6 +138,7 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 				),
 			}),
 		),
+		workspaceAccess.fromProject("projectId"),
 		async (c) => {
 			const { recurringTaskId } = c.req.valid("param");
 			const { nextRunAt, ...rest } = c.req.valid("json");
@@ -156,6 +165,7 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 				recurringTaskId: v.string(),
 			}),
 		),
+		workspaceAccess.fromProject("projectId"),
 		async (c) => {
 			const { recurringTaskId } = c.req.valid("param");
 			const userId = c.get("userId");
@@ -177,6 +187,7 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 				recurringTaskId: v.string(),
 			}),
 		),
+		workspaceAccess.fromProject("projectId"),
 		async (c) => {
 			const { recurringTaskId } = c.req.valid("param");
 			const items = await listChecklistItems(recurringTaskId);
@@ -214,6 +225,7 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 				position: v.number(),
 			}),
 		),
+		workspaceAccess.fromProject("projectId"),
 		async (c) => {
 			const { recurringTaskId } = c.req.valid("param");
 			const body = c.req.valid("json");
@@ -240,6 +252,7 @@ const recurringTasks = new Hono<{ Variables: { userId: string } }>()
 				checklistItemId: v.string(),
 			}),
 		),
+		workspaceAccess.fromProject("projectId"),
 		async (c) => {
 			const { checklistItemId } = c.req.valid("param");
 			const item = await deleteChecklistItem(checklistItemId);

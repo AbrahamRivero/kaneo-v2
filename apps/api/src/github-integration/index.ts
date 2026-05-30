@@ -1,7 +1,10 @@
-import type { Context } from "hono";
-import { Hono } from "hono";
+import { eq } from "drizzle-orm";
+import { type Context, Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
+import db from "../database";
+import { projectTable } from "../database/schema";
 import { handleGitHubWebhook } from "../plugins/github/webhook-handler";
 import { githubIntegrationSchema } from "../schemas";
 import { requireWorkspacePermission } from "../utils/require-workspace-permission";
@@ -125,60 +128,60 @@ const githubIntegration = new Hono<{
 				repositoryName,
 			});
 
-      return c.json(verification);
-    },
-  )
-  .get(
-    "/project/:projectId",
-    describeRoute({
-      operationId: "getGitHubIntegration",
-      tags: ["GitHub"],
-      description: "Get GitHub integration for a project",
-      responses: {
-        200: {
-          description: "GitHub integration details",
-          content: {
-            "application/json": { schema: resolver(githubIntegrationSchema) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ projectId: v.string() })),
-    workspaceAccess.fromProject("projectId"),
-    async (c) => {
-      const { projectId } = c.req.valid("param");
-      const integration = await getGithubIntegration(projectId);
-      return c.json(integration);
-    },
-  )
-  .post(
-    "/project/:projectId",
-    describeRoute({
-      operationId: "createGitHubIntegration",
-      tags: ["GitHub"],
-      description: "Create a new GitHub integration for a project",
-      responses: {
-        200: {
-          description: "Integration created successfully",
-          content: {
-            "application/json": { schema: resolver(githubIntegrationSchema) },
-          },
-        },
-      },
-    }),
-    validator("param", v.object({ projectId: v.string() })),
-    validator(
-      "json",
-      v.object({
-        repositoryOwner: v.pipe(v.string(), v.minLength(1)),
-        repositoryName: v.pipe(v.string(), v.minLength(1)),
-      }),
-    ),
-    workspaceAccess.fromProject("projectId"),
-    requireWorkspacePermission({ workspace: ["manage_settings"] }),
-    async (c) => {
-      const { projectId } = c.req.valid("param");
-      const { repositoryOwner, repositoryName } = c.req.valid("json");
+			return c.json(verification);
+		},
+	)
+	.get(
+		"/project/:projectId",
+		describeRoute({
+			operationId: "getGitHubIntegration",
+			tags: ["GitHub"],
+			description: "Get GitHub integration for a project",
+			responses: {
+				200: {
+					description: "GitHub integration details",
+					content: {
+						"application/json": { schema: resolver(githubIntegrationSchema) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ projectId: v.string() })),
+		workspaceAccess.fromProject("projectId"),
+		async (c) => {
+			const { projectId } = c.req.valid("param");
+			const integration = await getGithubIntegration(projectId);
+			return c.json(integration);
+		},
+	)
+	.post(
+		"/project/:projectId",
+		describeRoute({
+			operationId: "createGitHubIntegration",
+			tags: ["GitHub"],
+			description: "Create a new GitHub integration for a project",
+			responses: {
+				200: {
+					description: "Integration created successfully",
+					content: {
+						"application/json": { schema: resolver(githubIntegrationSchema) },
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ projectId: v.string() })),
+		validator(
+			"json",
+			v.object({
+				repositoryOwner: v.pipe(v.string(), v.minLength(1)),
+				repositoryName: v.pipe(v.string(), v.minLength(1)),
+			}),
+		),
+		workspaceAccess.fromProject("projectId"),
+		requireWorkspacePermission({ workspace: ["manage_settings"] }),
+		async (c) => {
+			const { projectId } = c.req.valid("param");
+			const { repositoryOwner, repositoryName } = c.req.valid("json");
 
 			const integration = await createGithubIntegration({
 				projectId,
@@ -298,15 +301,17 @@ const githubIntegration = new Hono<{
 			await validateWorkspaceAccess(userId, project.workspaceId, apiKeyId);
 			c.set("workspaceId", project.workspaceId);
 
-      return next();
-    },
-    requireWorkspacePermission({ task: ["create"] }),
-    async (c) => {
-      const { projectId } = c.req.valid("json");
-      const result = await importIssues(projectId);
-      return c.json(result);
-    },
-  );
+			return next();
+		},
+		requireWorkspacePermission({ task: ["create"] }),
+		async (c) => {
+			const { projectId } = c.req.valid("json");
+			const userId = c.get("userId");
+			const apiKey = c.get("apiKey");
+			const result = await importIssues(projectId, userId, apiKey?.id);
+			return c.json(result);
+		},
+	);
 
 export async function handleGithubWebhookRoute(c: Context) {
 	const arrayBuffer = await c.req.arrayBuffer();

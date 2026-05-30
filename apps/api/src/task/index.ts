@@ -668,6 +668,7 @@ const task = new Hono<{
 			}),
 		),
 		workspaceAccess.fromTask(),
+		requireWorkspacePermission({ task: ["update"] }),
 		async (c) => {
 			const { id } = c.req.valid("param");
 			const { key, filename, contentType, size, surface } = c.req.valid("json");

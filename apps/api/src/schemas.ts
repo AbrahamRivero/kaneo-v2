@@ -5,6 +5,7 @@ export const labelSchema = v.object({
 	name: v.string(),
 	color: v.string(),
 	createdAt: v.date(),
+	updatedAt: v.date(),
 	taskId: v.nullable(v.string()),
 	workspaceId: v.nullable(v.string()),
 });

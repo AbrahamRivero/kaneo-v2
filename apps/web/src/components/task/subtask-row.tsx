@@ -122,7 +122,7 @@ export default function SubtaskRow({
 					task={task}
 					taskCardContext={{
 						projectId,
-						worskpaceId: workspaceId,
+						workspaceId: workspaceId,
 					}}
 					onDeleteClick={onDeleteClick}
 				/>

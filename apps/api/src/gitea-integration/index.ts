@@ -1,8 +1,10 @@
-import type { Context } from "hono";
-import { Hono } from "hono";
+import { eq } from "drizzle-orm";
+import { type Context, Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
+import db from "../database";
+import { projectTable } from "../database/schema";
 import { handleGiteaWebhookRequest } from "../plugins/gitea/webhook-handler";
 import { giteaIntegrationSchema } from "../schemas";
 import { requireWorkspacePermission } from "../utils/require-workspace-permission";
@@ -308,15 +310,17 @@ const giteaIntegration = new Hono<{
 			await validateWorkspaceAccess(userId, project.workspaceId, apiKeyId);
 			c.set("workspaceId", project.workspaceId);
 
-      return next();
-    },
-    requireWorkspacePermission({ task: ["create"] }),
-    async (c) => {
-      const { projectId } = c.req.valid("json");
-      const result = await importGiteaIssues(projectId);
-      return c.json(result);
-    },
-  );
+			return next();
+		},
+		requireWorkspacePermission({ task: ["create"] }),
+		async (c) => {
+			const { projectId } = c.req.valid("json");
+			const userId = c.get("userId");
+			const apiKey = c.get("apiKey");
+			const result = await importGiteaIssues(projectId, userId, apiKey?.id);
+			return c.json(result);
+		},
+	);
 
 export async function handleGiteaWebhookRoute(c: Context) {
 	const integrationId = c.req.param("integrationId");

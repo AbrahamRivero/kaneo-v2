@@ -2,9 +2,9 @@
     "compilerOptions": {
         "outDir": "./dist",
         "rootDir": "./src",
-        "module": "ESNext",
-        "target": "ESNext",
-        "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "bundler",
         "declaration": true,
         "sourceMap": true,
         "strict": true,

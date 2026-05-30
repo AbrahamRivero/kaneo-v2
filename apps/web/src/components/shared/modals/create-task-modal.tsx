@@ -112,72 +112,72 @@ function CreateTaskModal({
 	const { t } = useTranslation();
 	const { project, setProject } = useProjectStore();
 
-  const labelColors = useMemo(
-    () =>
-      [
-        {
-          value: "gray" as LabelColor,
-          labelKey: "stone" as const,
-          color: "var(--color-stone-500)",
-        },
-        {
-          value: "dark-gray" as LabelColor,
-          labelKey: "slate" as const,
-          color: "var(--color-slate-500)",
-        },
-        {
-          value: "purple" as LabelColor,
-          labelKey: "lavender" as const,
-          color: "var(--color-violet-500)",
-        },
-        {
-          value: "teal" as LabelColor,
-          labelKey: "sage" as const,
-          color: "var(--color-emerald-600)",
-        },
-        {
-          value: "green" as LabelColor,
-          labelKey: "forest" as const,
-          color: "var(--color-green-600)",
-        },
-        {
-          value: "yellow" as LabelColor,
-          labelKey: "amber" as const,
-          color: "var(--color-amber-600)",
-        },
-        {
-          value: "orange" as LabelColor,
-          labelKey: "terracotta" as const,
-          color: "var(--color-orange-600)",
-        },
-        {
-          value: "pink" as LabelColor,
-          labelKey: "rose" as const,
-          color: "var(--color-rose-600)",
-        },
-        {
-          value: "red" as LabelColor,
-          labelKey: "crimson" as const,
-          color: "var(--color-red-600)",
-        },
-      ].map(({ labelKey, ...rest }) => ({
-        ...rest,
-        label: t(`common:modals.createTask.labelColors.${labelKey}`),
-      })),
-    [t],
-  );
-  const location = useLocation();
-  const { data: workspace } = useActiveWorkspace();
-  const { data: workspaceUsers } = useGetActiveWorkspaceUsers(
-    workspace?.id || "",
-  );
-  const { mutateAsync: createLabel } = useCreateLabel();
-  const { data: workspaceLabels = [] } = useGetLabelsByWorkspace(
-    workspace?.id || "",
-  );
-  const { canCreateTasks, canManageLabels } = useWorkspacePermission();
-  const canCreateTaskCapability = canCreateTasks();
-  const canCreateLabelCapability = canManageLabels();
+	const labelColors = useMemo(
+		() =>
+			[
+				{
+					value: "gray" as LabelColor,
+					labelKey: "stone" as const,
+					color: "var(--color-stone-500)",
+				},
+				{
+					value: "dark-gray" as LabelColor,
+					labelKey: "slate" as const,
+					color: "var(--color-slate-500)",
+				},
+				{
+					value: "purple" as LabelColor,
+					labelKey: "lavender" as const,
+					color: "var(--color-violet-500)",
+				},
+				{
+					value: "teal" as LabelColor,
+					labelKey: "sage" as const,
+					color: "var(--color-emerald-600)",
+				},
+				{
+					value: "green" as LabelColor,
+					labelKey: "forest" as const,
+					color: "var(--color-green-600)",
+				},
+				{
+					value: "yellow" as LabelColor,
+					labelKey: "amber" as const,
+					color: "var(--color-amber-600)",
+				},
+				{
+					value: "orange" as LabelColor,
+					labelKey: "terracotta" as const,
+					color: "var(--color-orange-600)",
+				},
+				{
+					value: "pink" as LabelColor,
+					labelKey: "rose" as const,
+					color: "var(--color-rose-600)",
+				},
+				{
+					value: "red" as LabelColor,
+					labelKey: "crimson" as const,
+					color: "var(--color-red-600)",
+				},
+			].map(({ labelKey, ...rest }) => ({
+				...rest,
+				label: t(`common:modals.createTask.labelColors.${labelKey}`),
+			})),
+		[t],
+	);
+	const location = useLocation();
+	const { data: workspace } = useActiveWorkspace();
+	const { data: workspaceUsers } = useGetActiveWorkspaceUsers(
+		workspace?.id || "",
+	);
+	const { mutateAsync: createLabel } = useCreateLabel();
+	const { data: workspaceLabels = [] } = useGetLabelsByWorkspace(
+		workspace?.id || "",
+	);
+	const { canCreateTasks, canManageLabels } = useWorkspacePermission();
+	const canCreateTaskCapability = canCreateTasks();
+	const canCreateLabelCapability = canManageLabels();
 
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
@@ -576,14 +576,14 @@ function CreateTaskModal({
 		}
 	};
 
-  const removeLabel = (labelName: string) => {
-    setLabels(labels.filter((l) => l.name !== labelName));
-  };
+	const removeLabel = (labelName: string) => {
+		setLabels(labels.filter((l) => l.name !== labelName));
+	};
 
-  // Defense-in-depth: if the user lacks task-create permission, don't render
-  // the modal even if a stale trigger somehow opens it (e.g., keyboard
-  // shortcut after the capability has changed).
-  if (!canCreateTaskCapability) return null;
+	// Defense-in-depth: if the user lacks task-create permission, don't render
+	// the modal even if a stale trigger somehow opens it (e.g., keyboard
+	// shortcut after the capability has changed).
+	if (!canCreateTaskCapability) return null;
 
 	return (
 		<Dialog open={open} onOpenChange={handleClose}>
@@ -643,7 +643,6 @@ function CreateTaskModal({
 								{labels.map((label) => (
 									<Badge
 										key={label.name}
-										color={label.color}
 										variant="outline"
 										className="flex items-center gap-1 pl-3 cursor-pointer hover:bg-accent/50 transition-colors"
 										onClick={() => removeLabel(label.name)}
@@ -944,53 +943,53 @@ function CreateTaskModal({
 													</button>
 												))}
 
-                        {canCreateLabelCapability &&
-                          isCreatingNewLabel &&
-                          filteredLabels.length > 0 && (
-                            <div className="border-t border-border my-1" />
-                          )}
-                        {canCreateLabelCapability && isCreatingNewLabel && (
-                          <button
-                            type="button"
-                            className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-accent/50 text-left"
-                            onClick={handleCreateNewClick}
-                          >
-                            <div className="flex-shrink-0 w-3 flex justify-center">
-                              <Plus className="w-3 h-3" />
-                            </div>
-                            <span
-                              className="w-2 h-2 rounded-full flex-shrink-0"
-                              style={{
-                                backgroundColor:
-                                  labelColors.find(
-                                    (c) => c.value === selectedColor,
-                                  )?.color || "var(--color-neutral-400)",
-                              }}
-                            />
-                            <span className="truncate">
-                              {t("common:modals.createTask.createLabel", {
-                                name: searchValue,
-                              })}
-                            </span>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  {labelsStep === "color" && (
-                    <div className="w-auto">
-                      <div className="flex items-center justify-between p-2 border-b border-border">
-                        <span className="text-xs font-medium">
-                          {t("common:modals.createTask.chooseColor")}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setLabelsStep("select")}
-                          className="w-4 h-4 flex items-center justify-center hover:bg-accent/50 rounded"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </div>
+												{canCreateLabelCapability &&
+													isCreatingNewLabel &&
+													filteredLabels.length > 0 && (
+														<div className="border-t border-border my-1" />
+													)}
+												{canCreateLabelCapability && isCreatingNewLabel && (
+													<button
+														type="button"
+														className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-accent/50 text-left"
+														onClick={handleCreateNewClick}
+													>
+														<div className="shrink-0 w-3 flex justify-center">
+															<Plus className="w-3 h-3" />
+														</div>
+														<span
+															className="w-2 h-2 rounded-full shrink-0"
+															style={{
+																backgroundColor:
+																	labelColors.find(
+																		(c) => c.value === selectedColor,
+																	)?.color || "var(--color-neutral-400)",
+															}}
+														/>
+														<span className="truncate">
+															{t("common:modals.createTask.createLabel", {
+																name: searchValue,
+															})}
+														</span>
+													</button>
+												)}
+											</div>
+										</div>
+									)}
+									{labelsStep === "color" && (
+										<div className="w-auto">
+											<div className="flex items-center justify-between p-2 border-b border-border">
+												<span className="text-xs font-medium">
+													{t("common:modals.createTask.chooseColor")}
+												</span>
+												<button
+													type="button"
+													onClick={() => setLabelsStep("select")}
+													className="w-4 h-4 flex items-center justify-center hover:bg-accent/50 rounded"
+												>
+													<X className="h-3 w-3" />
+												</button>
+											</div>
 
 											<div className="py-1">
 												{labelColors.map((color) => (

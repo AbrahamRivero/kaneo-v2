@@ -20,7 +20,7 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	Form,
 	FormControl,
@@ -129,12 +129,16 @@ function RouteComponent() {
 		}
 	}, [projectFromHook, setProject]);
 
-  const { mutateAsync: updateProject } = useUpdateProject();
-  const { mutateAsync: deleteProject, isPending: isDeleting } =
-    useDeleteProject();
-  const { canManageProjects, canDeleteProjects } = useWorkspacePermission();
-  const canEdit = canManageProjects();
-  const canDelete = canDeleteProjects();
+	const { mutateAsync: updateProject } = useUpdateProject();
+	const { mutateAsync: deleteProject, isPending: isDeleting } =
+		useDeleteProject();
+	const { mutateAsync: archiveProject, isPending: isArchiving } =
+		useArchiveProject();
+	const { mutateAsync: unarchiveProject, isPending: isUnarchiving } =
+		useUnarchiveProject();
+	const { canManageProjects, canDeleteProjects } = useWorkspacePermission();
+	const canEdit = canManageProjects();
+	const canDelete = canDeleteProjects();
 
 	const projectForm = useForm<ProjectFormValues>({
 		resolver: standardSchemaResolver(projectSchema),
@@ -274,16 +278,16 @@ function RouteComponent() {
 		}, 800);
 	}, [projectForm, saveProject]);
 
-  useEffect(() => {
-    if (!canEdit) return;
-    // Do not gate on formState.isDirty here: after setValue (e.g. icon pick), the
-    // watch callback can run before RHF updates isDirty, so the debounced save never runs.
-    const subscription = projectForm.watch(() => {
-      debouncedSave();
-    });
+	useEffect(() => {
+		if (!canEdit) return;
+		// Do not gate on formState.isDirty here: after setValue (e.g. icon pick), the
+		// watch callback can run before RHF updates isDirty, so the debounced save never runs.
+		const subscription = projectForm.watch(() => {
+			debouncedSave();
+		});
 
-    return () => subscription.unsubscribe();
-  }, [projectForm, debouncedSave, canEdit]);
+		return () => subscription.unsubscribe();
+	}, [projectForm, debouncedSave, canEdit]);
 
 	useEffect(() => {
 		return () => {
@@ -319,7 +323,10 @@ function RouteComponent() {
 			await archiveProject({ id: projectFromHook.id });
 			toast.success(t("settings:projectGeneral.toastArchived"));
 
-			await queryClient.invalidateQueries({ queryKey: ["projects"] });
+			await queryClient.invalidateQueries({
+				queryKey: ["projects"],
+				refetchType: "all",
+			});
 
 			setIsArchiveModalOpen(false);
 		} catch (error) {
@@ -338,7 +345,10 @@ function RouteComponent() {
 			await unarchiveProject({ id: projectFromHook.id });
 			toast.success(t("settings:projectGeneral.toastUnarchived"));
 
-			await queryClient.invalidateQueries({ queryKey: ["projects"] });
+			await queryClient.invalidateQueries({
+				queryKey: ["projects"],
+				refetchType: "all",
+			});
 
 			setIsUnarchiveModalOpen(false);
 		} catch (error) {
@@ -402,251 +412,296 @@ function RouteComponent() {
 						</p>
 					</div>
 
-          <div className="space-y-4 border border-border rounded-md p-4 bg-sidebar">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <p className="text-sm font-medium">
-                  {t("settings:projectGeneral.iconLabel")}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {t("settings:projectGeneral.iconHint")}
-                </p>
-              </div>
-              <div className="flex items-center gap-3">
-                <Popover
-                  open={iconPopoverOpen}
-                  onOpenChange={(open) => {
-                    setIconPopoverOpen(open);
-                    if (!open) setIconSearch("");
-                  }}
-                  modal={true}
-                >
-                  <PopoverTrigger asChild>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="h-8 w-auto justify-start gap-2 font-normal"
-                      title={t("settings:projectGeneral.pickIconTitle")}
-                      disabled={!canEdit}
-                    >
-                      {(() => {
-                        const selectedKey =
-                          (projectForm.watch("icon") as keyof typeof icons) ||
-                          "Layout";
-                        const SelectedIcon = icons[selectedKey] || icons.Layout;
-                        return <SelectedIcon className="h-4 w-4" />;
-                      })()}
-                      <span className="truncate text-xs">
-                        {projectForm.watch("icon") || "Layout"}
-                      </span>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80" align="end">
-                    <div className="space-y-2">
-                      <Input
-                        value={iconSearch}
-                        onChange={(e) => setIconSearch(e.target.value)}
-                        placeholder={t(
-                          "settings:projectGeneral.searchIconsPlaceholder",
-                        )}
-                        className="h-8 text-xs"
-                      />
-                      <div className="max-h-[280px] overflow-y-auto pr-1">
-                        <div className="grid grid-cols-6 gap-1.5">
-                          {Object.entries(icons)
-                            .filter(([iconName]) =>
-                              iconName
-                                .toLowerCase()
-                                .includes(iconSearch.trim().toLowerCase()),
-                            )
-                            .map(([iconName, Icon]) => {
-                              const isSelected =
-                                projectForm.getValues("icon") === iconName;
-                              return (
-                                <Button
-                                  key={iconName}
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                    projectForm.setValue("icon", iconName, {
-                                      shouldDirty: true,
-                                      shouldValidate: true,
-                                    });
-                                    setIconPopoverOpen(false);
-                                    setIconSearch("");
-                                  }}
-                                  className={cn(
-                                    "h-10 items-center justify-center rounded-md p-0",
-                                    isSelected &&
-                                      "bg-sidebar-accent text-sidebar-accent-foreground",
-                                  )}
-                                  title={iconName}
-                                >
-                                  <Icon className="h-4 w-4" />
-                                </Button>
-                              );
-                            })}
-                        </div>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
+					<div className="space-y-4 border border-border rounded-md p-4 bg-sidebar">
+						<div className="flex items-center justify-between">
+							<div className="space-y-0.5">
+								<p className="text-sm font-medium">
+									{t("settings:projectGeneral.iconLabel")}
+								</p>
+								<p className="text-xs text-muted-foreground">
+									{t("settings:projectGeneral.iconHint")}
+								</p>
+							</div>
+							<div className="flex items-center gap-3">
+								<Popover
+									open={iconPopoverOpen}
+									onOpenChange={(open) => {
+										setIconPopoverOpen(open);
+										if (!open) setIconSearch("");
+									}}
+									modal={true}
+								>
+									<PopoverTrigger asChild>
+										<Button
+											type="button"
+											variant="outline"
+											size="sm"
+											className="h-8 w-auto justify-start gap-2 font-normal"
+											title={t("settings:projectGeneral.pickIconTitle")}
+											disabled={!canEdit}
+										>
+											{(() => {
+												const selectedKey =
+													(projectForm.watch("icon") as keyof typeof icons) ||
+													"Layout";
+												const SelectedIcon = icons[selectedKey] || icons.Layout;
+												return <SelectedIcon className="h-4 w-4" />;
+											})()}
+											<span className="truncate text-xs">
+												{projectForm.watch("icon") || "Layout"}
+											</span>
+										</Button>
+									</PopoverTrigger>
+									<PopoverContent className="w-80" align="end">
+										<div className="space-y-2">
+											<Input
+												value={iconSearch}
+												onChange={(e) => setIconSearch(e.target.value)}
+												placeholder={t(
+													"settings:projectGeneral.searchIconsPlaceholder",
+												)}
+												className="h-8 text-xs"
+											/>
+											<div className="max-h-70 overflow-y-auto pr-1">
+												<div className="grid grid-cols-6 gap-1.5">
+													{Object.entries(icons)
+														.filter(([iconName]) =>
+															iconName
+																.toLowerCase()
+																.includes(iconSearch.trim().toLowerCase()),
+														)
+														.map(([iconName, Icon]) => {
+															const isSelected =
+																projectForm.getValues("icon") === iconName;
+															return (
+																<Button
+																	key={iconName}
+																	type="button"
+																	variant="ghost"
+																	size="sm"
+																	onClick={() => {
+																		projectForm.setValue("icon", iconName, {
+																			shouldDirty: true,
+																			shouldValidate: true,
+																		});
+																		setIconPopoverOpen(false);
+																		setIconSearch("");
+																	}}
+																	className={cn(
+																		"h-10 items-center justify-center rounded-md p-0",
+																		isSelected &&
+																			"bg-sidebar-accent text-sidebar-accent-foreground",
+																	)}
+																	title={iconName}
+																>
+																	<Icon className="h-4 w-4" />
+																</Button>
+															);
+														})}
+												</div>
+											</div>
+										</div>
+									</PopoverContent>
+								</Popover>
+							</div>
+						</div>
 
 						<Separator />
 
-            <Form {...projectForm}>
-              <form className="space-y-4">
-                <FormField
-                  control={projectForm.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                          <FormLabel className="text-sm font-medium">
-                            {t("settings:projectGeneral.projectNameLabel")}
-                          </FormLabel>
-                          <p className="text-xs text-muted-foreground">
-                            {t("settings:projectGeneral.projectNameHint")}
-                          </p>
-                        </div>
-                        <FormControl>
-                          <Input
-                            className="w-64"
-                            placeholder={t(
-                              "settings:projectGeneral.projectNamePlaceholder",
-                            )}
-                            disabled={!canEdit}
-                            {...field}
-                          />
-                        </FormControl>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+						<Form {...projectForm}>
+							<form className="space-y-4">
+								<FormField
+									control={projectForm.control}
+									name="name"
+									render={({ field }) => (
+										<FormItem>
+											<div className="flex items-center justify-between">
+												<div className="space-y-0.5">
+													<FormLabel className="text-sm font-medium">
+														{t("settings:projectGeneral.projectNameLabel")}
+													</FormLabel>
+													<p className="text-xs text-muted-foreground">
+														{t("settings:projectGeneral.projectNameHint")}
+													</p>
+												</div>
+												<FormControl>
+													<Input
+														className="w-64"
+														placeholder={t(
+															"settings:projectGeneral.projectNamePlaceholder",
+														)}
+														disabled={!canEdit}
+														{...field}
+													/>
+												</FormControl>
+											</div>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 
 								<Separator />
 
-                <FormField
-                  control={projectForm.control}
-                  name="slug"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                          <FormLabel className="text-sm font-medium">
-                            {t("settings:projectGeneral.keyLabel")}
-                          </FormLabel>
-                          <p className="text-xs text-muted-foreground">
-                            {t("settings:projectGeneral.keyHint", {
-                              slug: projectForm.watch("slug") || "ABC",
-                            })}
-                          </p>
-                        </div>
-                        <FormControl>
-                          <Input
-                            className="w-64"
-                            placeholder={t(
-                              "settings:projectGeneral.keyPlaceholder",
-                            )}
-                            disabled={!canEdit}
-                            {...field}
-                          />
-                        </FormControl>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+								<FormField
+									control={projectForm.control}
+									name="slug"
+									render={({ field }) => (
+										<FormItem>
+											<div className="flex items-center justify-between">
+												<div className="space-y-0.5">
+													<FormLabel className="text-sm font-medium">
+														{t("settings:projectGeneral.keyLabel")}
+													</FormLabel>
+													<p className="text-xs text-muted-foreground">
+														{t("settings:projectGeneral.keyHint", {
+															slug: projectForm.watch("slug") || "ABC",
+														})}
+													</p>
+												</div>
+												<FormControl>
+													<Input
+														className="w-64"
+														placeholder={t(
+															"settings:projectGeneral.keyPlaceholder",
+														)}
+														disabled={!canEdit}
+														{...field}
+													/>
+												</FormControl>
+											</div>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 
 								<Separator />
 
-                <FormField
-                  control={projectForm.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                          <FormLabel className="text-sm font-medium">
-                            {t("settings:projectGeneral.descriptionLabel")}
-                          </FormLabel>
-                          <p className="text-xs text-muted-foreground">
-                            {t("settings:projectGeneral.descriptionHint")}
-                          </p>
-                        </div>
-                        <FormControl>
-                          <Input
-                            className="w-64"
-                            placeholder={t(
-                              "settings:projectGeneral.descriptionPlaceholder",
-                            )}
-                            disabled={!canEdit}
-                            {...field}
-                          />
-                        </FormControl>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </form>
-            </Form>
-            <Separator />
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <p className="text-sm font-medium">
-                  {t("settings:projectGeneral.importExportTasks")}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {t("settings:projectGeneral.importExportTasksDescription")}
-                </p>
-              </div>
-              {project && <TasksImportExport project={project} />}
-            </div>
-          </div>
-        </div>
+								<FormField
+									control={projectForm.control}
+									name="description"
+									render={({ field }) => (
+										<FormItem>
+											<div className="flex items-center justify-between">
+												<div className="space-y-0.5">
+													<FormLabel className="text-sm font-medium">
+														{t("settings:projectGeneral.descriptionLabel")}
+													</FormLabel>
+													<p className="text-xs text-muted-foreground">
+														{t("settings:projectGeneral.descriptionHint")}
+													</p>
+												</div>
+												<FormControl>
+													<Input
+														className="w-64"
+														placeholder={t(
+															"settings:projectGeneral.descriptionPlaceholder",
+														)}
+														disabled={!canEdit}
+														{...field}
+													/>
+												</FormControl>
+											</div>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</form>
+						</Form>
+						<Separator />
+						<div className="flex items-center justify-between">
+							<div className="space-y-0.5">
+								<p className="text-sm font-medium">
+									{t("settings:projectGeneral.importExportTasks")}
+								</p>
+								<p className="text-xs text-muted-foreground">
+									{t("settings:projectGeneral.importExportTasksDescription")}
+								</p>
+							</div>
+							{project && <TasksImportExport project={project} />}
+						</div>
+					</div>
+				</div>
 
-        {canDelete && (
-          <div className="space-y-6">
-            <div className="space-y-1">
-              <h2 className="text-md font-medium">
-                {t("settings:projectGeneral.dangerZone")}
-              </h2>
-              <p className="text-xs text-muted-foreground">
-                {t("settings:projectGeneral.dangerZoneSubtitle")}
-              </p>
-            </div>
+				{canManageProjects() && (
+					<div className="space-y-6">
+						<div className="space-y-1">
+							<h2 className="text-md font-medium">
+								{t("settings:projectGeneral.projectStatus")}
+							</h2>
+							<p className="text-xs text-muted-foreground">
+								{t("settings:projectGeneral.projectStatusSubtitle")}
+							</p>
+						</div>
 
-            <div className="space-y-4 border border-border rounded-md p-4 bg-sidebar">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <p className="text-sm font-medium">
-                    {t("settings:projectGeneral.deleteProject")}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {t("settings:projectGeneral.deleteProjectDescription")}
-                  </p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-destructive hover:text-destructive transition-colors"
-                  type="button"
-                  onClick={() => setIsDeleteModalOpen(true)}
-                  disabled={!project}
-                >
-                  {t("settings:projectGeneral.deleteProject")}
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
+						<div className="space-y-4 border border-border rounded-md p-4 bg-sidebar">
+							<div className="flex items-center justify-between">
+								<div className="space-y-0.5">
+									<p className="text-sm font-medium">
+										{project?.archivedAt
+											? t("settings:projectGeneral.unarchiveProject")
+											: t("settings:projectGeneral.archiveProject")}
+									</p>
+									<p className="text-xs text-muted-foreground">
+										{project?.archivedAt
+											? t("settings:projectGeneral.unarchiveProjectDescription")
+											: t("settings:projectGeneral.archiveProjectDescription")}
+									</p>
+								</div>
+								<Button
+									variant="outline"
+									size="sm"
+									type="button"
+									onClick={() =>
+										project?.archivedAt
+											? setIsUnarchiveModalOpen(true)
+											: setIsArchiveModalOpen(true)
+									}
+									disabled={!project}
+								>
+									{project?.archivedAt
+										? t("settings:projectGeneral.unarchiveProject")
+										: t("settings:projectGeneral.archiveProject")}
+								</Button>
+							</div>
+						</div>
+					</div>
+				)}
+
+				{canDelete && (
+					<div className="space-y-6">
+						<div className="space-y-1">
+							<h2 className="text-md font-medium">
+								{t("settings:projectGeneral.dangerZone")}
+							</h2>
+							<p className="text-xs text-muted-foreground">
+								{t("settings:projectGeneral.dangerZoneSubtitle")}
+							</p>
+						</div>
+
+						<div className="space-y-4 border border-border rounded-md p-4 bg-sidebar">
+							<div className="flex items-center justify-between">
+								<div className="space-y-0.5">
+									<p className="text-sm font-medium">
+										{t("settings:projectGeneral.deleteProject")}
+									</p>
+									<p className="text-xs text-muted-foreground">
+										{t("settings:projectGeneral.deleteProjectDescription")}
+									</p>
+								</div>
+								<Button
+									variant="ghost"
+									size="sm"
+									className="text-destructive hover:text-destructive transition-colors"
+									type="button"
+									onClick={() => setIsDeleteModalOpen(true)}
+									disabled={!project}
+								>
+									{t("settings:projectGeneral.deleteProject")}
+								</Button>
+							</div>
+						</div>
+					</div>
+				)}
 
 				<AlertDialog
 					open={isDeleteModalOpen}
@@ -664,20 +719,22 @@ function RouteComponent() {
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 						<AlertDialogFooter>
-							<AlertDialogClose>
-								<Button variant="outline" size="sm">
-									{t("common:actions.cancel")}
-								</Button>
+							<AlertDialogClose
+								className={buttonVariants({ variant: "outline", size: "sm" })}
+							>
+								{t("common:actions.cancel")}
 							</AlertDialogClose>
 							<AlertDialogClose
 								onClick={handleDeleteProject}
 								disabled={isDeleting}
+								className={buttonVariants({
+									variant: "destructive",
+									size: "sm",
+								})}
 							>
-								<Button variant="destructive" size="sm" disabled={isDeleting}>
-									{isDeleting
-										? t("common:actions.deleting")
-										: t("settings:projectGeneral.deleteModalConfirm")}
-								</Button>
+								{isDeleting
+									? t("common:actions.deleting")
+									: t("settings:projectGeneral.deleteModalConfirm")}
 							</AlertDialogClose>
 						</AlertDialogFooter>
 					</AlertDialogContent>
@@ -699,20 +756,19 @@ function RouteComponent() {
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 						<AlertDialogFooter>
-							<AlertDialogClose>
-								<Button variant="outline" size="sm">
-									{t("common:actions.cancel")}
-								</Button>
+							<AlertDialogClose
+								className={buttonVariants({ variant: "outline", size: "sm" })}
+							>
+								{t("common:actions.cancel")}
 							</AlertDialogClose>
 							<AlertDialogClose
 								onClick={handleArchiveProject}
 								disabled={isArchiving}
+								className={buttonVariants({ variant: "outline", size: "sm" })}
 							>
-								<Button variant="outline" size="sm" disabled={isArchiving}>
-									{isArchiving
-										? t("settings:projectGeneral.archivingProject")
-										: t("settings:projectGeneral.archiveModalConfirm")}
-								</Button>
+								{isArchiving
+									? t("settings:projectGeneral.archivingProject")
+									: t("settings:projectGeneral.archiveModalConfirm")}
 							</AlertDialogClose>
 						</AlertDialogFooter>
 					</AlertDialogContent>
@@ -734,20 +790,19 @@ function RouteComponent() {
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 						<AlertDialogFooter>
-							<AlertDialogClose>
-								<Button variant="outline" size="sm">
-									{t("common:actions.cancel")}
-								</Button>
+							<AlertDialogClose
+								className={buttonVariants({ variant: "outline", size: "sm" })}
+							>
+								{t("common:actions.cancel")}
 							</AlertDialogClose>
 							<AlertDialogClose
 								onClick={handleUnarchiveProject}
 								disabled={isUnarchiving}
+								className={buttonVariants({ variant: "outline", size: "sm" })}
 							>
-								<Button variant="outline" size="sm" disabled={isUnarchiving}>
-									{isUnarchiving
-										? t("settings:projectGeneral.unarchivingProject")
-										: t("settings:projectGeneral.unarchiveModalConfirm")}
-								</Button>
+								{isUnarchiving
+									? t("settings:projectGeneral.unarchivingProject")
+									: t("settings:projectGeneral.unarchiveModalConfirm")}
 							</AlertDialogClose>
 						</AlertDialogFooter>
 					</AlertDialogContent>

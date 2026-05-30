@@ -69,39 +69,39 @@ function BulkToolbar() {
 	const { selectedTaskIds, clearSelection, selectAll } =
 		useBulkSelectionStore();
 
-  const priorityOptions = useMemo(
-    () => [
-      { value: "urgent", label: getPriorityLabel("urgent") },
-      { value: "high", label: getPriorityLabel("high") },
-      { value: "medium", label: getPriorityLabel("medium") },
-      { value: "low", label: getPriorityLabel("low") },
-      { value: "no-priority", label: getPriorityLabel("no-priority") },
-    ],
-    [],
-  );
-  const { project } = useProjectStore();
-  const {
-    bulkMoveToBacklog,
-    bulkDelete,
-    bulkArchive,
-    bulkChangeStatus,
-    bulkAssign,
-    bulkPriority,
-    bulkAddLabel,
-    bulkDueDate,
-  } = useBulkOperations();
-  const { data: workspace } = useActiveWorkspace();
-  const { data: workspaceUsers } = useGetActiveWorkspaceUsers(
-    workspace?.id ?? "",
-  );
-  const { data: workspaceLabels = [] } = useGetLabelsByWorkspace(
-    workspace?.id ?? "",
-  );
-  const { canManageTasks, canAssignTasks } = useWorkspacePermission();
-  const canEdit = canManageTasks();
-  const canAssign = canAssignTasks();
-  const [isActionsOpen, setIsActionsOpen] = useState(false);
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+	const priorityOptions = useMemo(
+		() => [
+			{ value: "urgent", label: getPriorityLabel("urgent") },
+			{ value: "high", label: getPriorityLabel("high") },
+			{ value: "medium", label: getPriorityLabel("medium") },
+			{ value: "low", label: getPriorityLabel("low") },
+			{ value: "no-priority", label: getPriorityLabel("no-priority") },
+		],
+		[],
+	);
+	const { project } = useProjectStore();
+	const {
+		bulkMoveToBacklog,
+		bulkDelete,
+		bulkArchive,
+		bulkChangeStatus,
+		bulkAssign,
+		bulkPriority,
+		bulkAddLabel,
+		bulkDueDate,
+	} = useBulkOperations();
+	const { data: workspace } = useActiveWorkspace();
+	const { data: workspaceUsers } = useGetActiveWorkspaceUsers(
+		workspace?.id ?? "",
+	);
+	const { data: workspaceLabels = [] } = useGetLabelsByWorkspace(
+		workspace?.id ?? "",
+	);
+	const { canManageTasks, canAssignTasks } = useWorkspacePermission();
+	const canEdit = canManageTasks();
+	const canAssign = canAssignTasks();
+	const [isActionsOpen, setIsActionsOpen] = useState(false);
+	const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
 	const selectedCount = selectedTaskIds.size;
 
@@ -263,123 +263,123 @@ function BulkToolbar() {
 		[bulkDueDate, selectedTaskIds, selectedCount, clearSelection, t],
 	);
 
-  const groupedItems = useMemo<BulkActionGroup[]>(() => {
-    const groups: BulkActionGroup[] = [];
-    if (canEdit) {
-      groups.push({
-        value: "actions",
-        label: t("tasks:bulk.actions"),
-        items: [
-          {
-            value: "bulk-delete",
-            label: t("tasks:bulk.delete"),
-            icon: <Trash2 className="h-4 w-4 text-muted-foreground" />,
-            onRun: () => {
-              void handleBulkDelete();
-            },
-          },
-          {
-            value: "bulk-archive",
-            label: t("tasks:bulk.archive"),
-            icon: <Archive className="h-4 w-4 text-muted-foreground" />,
-            onRun: () => {
-              void handleBulkArchive();
-            },
-          },
-        ],
-      });
-      groups.push({
-        value: "status",
-        label: t("tasks:bulk.changeStatus"),
-        items: (project?.columns ?? []).map((col) => ({
-          value: `status-${col.id}`,
-          label: col.name,
-          icon: getColumnIcon(col.id, col.isFinal, col.icon),
-          onRun: () => {
-            void handleBulkChangeStatus(col.id);
-          },
-        })),
-      });
-    }
-    if (canAssign) {
-      groups.push({
-        value: "assign",
-        label: t("tasks:bulk.assignTo"),
-        items: (workspaceUsers?.members ?? []).map((member) => ({
-          value: `assign-${member.userId}`,
-          label: member.user?.name || t("common:people.someone"),
-          icon: (
-            <Avatar className="h-5 w-5">
-              <AvatarImage
-                src={member.user?.image ?? ""}
-                alt={member.user?.name || ""}
-              />
-              <AvatarFallback className="text-xs font-medium border border-border/30">
-                {member.user?.name?.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-          ),
-          onRun: () => {
-            void handleBulkAssign(member.userId);
-          },
-        })),
-      });
-    }
-    if (canEdit) {
-      groups.push({
-        value: "priority",
-        label: t("tasks:bulk.setPriority"),
-        items: priorityOptions.map((opt) => ({
-          value: `priority-${opt.value}`,
-          label: opt.label,
-          icon: getPriorityIcon(opt.value),
-          onRun: () => {
-            void handleBulkPriority(opt.value);
-          },
-        })),
-      });
-      groups.push({
-        value: "label",
-        label: t("tasks:bulk.addLabel"),
-        items: uniqueLabels.map((label) => ({
-          value: `label-${label.id}`,
-          label: label.name,
-          icon: (
-            <span
-              className="inline-block w-3 h-3 rounded-full shrink-0"
-              style={{
-                backgroundColor:
-                  labelColors.find((c) => c.value === label.color)?.color ||
-                  "var(--color-neutral-400)",
-              }}
-            />
-          ),
-          onRun: () => {
-            void handleBulkAddLabel(label.id);
-          },
-        })),
-      });
-    }
-    return groups;
-  }, [
-    canEdit,
-    canAssign,
-    project?.columns,
-    workspaceUsers?.members,
-    uniqueLabels,
-    handleBulkDelete,
-    handleBulkArchive,
-    handleBulkChangeStatus,
-    handleBulkAssign,
-    handleBulkPriority,
-    handleBulkAddLabel,
-    priorityOptions,
-    t,
-  ]);
+	const groupedItems = useMemo<BulkActionGroup[]>(() => {
+		const groups: BulkActionGroup[] = [];
+		if (canEdit) {
+			groups.push({
+				value: "actions",
+				label: t("tasks:bulk.actions"),
+				items: [
+					{
+						value: "bulk-delete",
+						label: t("tasks:bulk.delete"),
+						icon: <Trash2 className="h-4 w-4 text-muted-foreground" />,
+						onRun: () => {
+							void handleBulkDelete();
+						},
+					},
+					{
+						value: "bulk-archive",
+						label: t("tasks:bulk.archive"),
+						icon: <Archive className="h-4 w-4 text-muted-foreground" />,
+						onRun: () => {
+							void handleBulkArchive();
+						},
+					},
+				],
+			});
+			groups.push({
+				value: "status",
+				label: t("tasks:bulk.changeStatus"),
+				items: (project?.columns ?? []).map((col) => ({
+					value: `status-${col.id}`,
+					label: col.name,
+					icon: getColumnIcon(col.id, col.isFinal, col.icon),
+					onRun: () => {
+						void handleBulkChangeStatus(col.id);
+					},
+				})),
+			});
+		}
+		if (canAssign) {
+			groups.push({
+				value: "assign",
+				label: t("tasks:bulk.assignTo"),
+				items: (workspaceUsers?.members ?? []).map((member) => ({
+					value: `assign-${member.userId}`,
+					label: member.user?.name || t("common:people.someone"),
+					icon: (
+						<Avatar className="h-5 w-5">
+							<AvatarImage
+								src={member.user?.image ?? ""}
+								alt={member.user?.name || ""}
+							/>
+							<AvatarFallback className="text-xs font-medium border border-border/30">
+								{member.user?.name?.charAt(0).toUpperCase()}
+							</AvatarFallback>
+						</Avatar>
+					),
+					onRun: () => {
+						void handleBulkAssign(member.userId);
+					},
+				})),
+			});
+		}
+		if (canEdit) {
+			groups.push({
+				value: "priority",
+				label: t("tasks:bulk.setPriority"),
+				items: priorityOptions.map((opt) => ({
+					value: `priority-${opt.value}`,
+					label: opt.label,
+					icon: getPriorityIcon(opt.value),
+					onRun: () => {
+						void handleBulkPriority(opt.value);
+					},
+				})),
+			});
+			groups.push({
+				value: "label",
+				label: t("tasks:bulk.addLabel"),
+				items: uniqueLabels.map((label) => ({
+					value: `label-${label.id}`,
+					label: label.name,
+					icon: (
+						<span
+							className="inline-block w-3 h-3 rounded-full shrink-0"
+							style={{
+								backgroundColor:
+									labelColors.find((c) => c.value === label.color)?.color ||
+									"var(--color-neutral-400)",
+							}}
+						/>
+					),
+					onRun: () => {
+						void handleBulkAddLabel(label.id);
+					},
+				})),
+			});
+		}
+		return groups;
+	}, [
+		canEdit,
+		canAssign,
+		project?.columns,
+		workspaceUsers?.members,
+		uniqueLabels,
+		handleBulkDelete,
+		handleBulkArchive,
+		handleBulkChangeStatus,
+		handleBulkAssign,
+		handleBulkPriority,
+		handleBulkAddLabel,
+		priorityOptions,
+		t,
+	]);
 
-  if (selectedCount === 0) return null;
-  // Nothing the user can do in bulk → no toolbar.
-  if (!canEdit && !canAssign) return null;
+	if (selectedCount === 0) return null;
+	// Nothing the user can do in bulk → no toolbar.
+	if (!canEdit && !canAssign) return null;
 
 	return (
 		<div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
@@ -390,66 +390,66 @@ function BulkToolbar() {
 					</span>
 				</ToolbarGroup>
 
-        {canEdit && (
-          <>
-            <ToolbarSeparator orientation="vertical" className="my-1 h-5" />
-            <ToolbarGroup>
-              <Button size="sm" variant="ghost" onClick={handleMoveToBacklog}>
-                <ArrowDownToLine className="size-4" />
-                {t("tasks:bulk.moveToBacklog")}
-              </Button>
-            </ToolbarGroup>
+				{canEdit && (
+					<>
+						<ToolbarSeparator orientation="vertical" className="my-1 h-5" />
+						<ToolbarGroup>
+							<Button size="sm" variant="ghost" onClick={handleMoveToBacklog}>
+								<ArrowDownToLine className="size-4" />
+								{t("tasks:bulk.moveToBacklog")}
+							</Button>
+						</ToolbarGroup>
 
-            <ToolbarSeparator orientation="vertical" className="my-1 h-5" />
-            <ToolbarGroup>
-              <Popover
-                open={isDatePickerOpen}
-                onOpenChange={setIsDatePickerOpen}
-              >
-                <PopoverTrigger asChild>
-                  <Button size="sm" variant="ghost">
-                    <CalendarIcon className="size-4" />
-                    {t("tasks:bulk.setDueDate")}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="p-0" align="center">
-                  <Calendar
-                    mode="single"
-                    onSelect={handleBulkDueDate}
-                    className="w-full bg-popover"
-                  />
-                  <div className="p-0 border-t border-border">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground rounded-none"
-                      onClick={() => handleBulkDueDate(undefined)}
-                    >
-                      <X className="h-4 w-4" />
-                      {t("tasks:dueDate.clear")}
-                    </Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </ToolbarGroup>
-          </>
-        )}
+						<ToolbarSeparator orientation="vertical" className="my-1 h-5" />
+						<ToolbarGroup>
+							<Popover
+								open={isDatePickerOpen}
+								onOpenChange={setIsDatePickerOpen}
+							>
+								<PopoverTrigger asChild>
+									<Button size="sm" variant="ghost">
+										<CalendarIcon className="size-4" />
+										{t("tasks:bulk.setDueDate")}
+									</Button>
+								</PopoverTrigger>
+								<PopoverContent className="p-0" align="center">
+									<Calendar
+										mode="single"
+										onSelect={handleBulkDueDate}
+										className="w-full bg-popover"
+									/>
+									<div className="p-0 border-t border-border">
+										<Button
+											variant="ghost"
+											size="sm"
+											className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground rounded-none"
+											onClick={() => handleBulkDueDate(undefined)}
+										>
+											<X className="h-4 w-4" />
+											{t("tasks:dueDate.clear")}
+										</Button>
+									</div>
+								</PopoverContent>
+							</Popover>
+						</ToolbarGroup>
+					</>
+				)}
 
-        {groupedItems.length > 0 && (
-          <>
-            <ToolbarSeparator orientation="vertical" className="my-1 h-5" />
-            <ToolbarGroup>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setIsActionsOpen(true)}
-              >
-                <Menu className="size-4" />
-                {t("tasks:bulk.actions")}
-              </Button>
-            </ToolbarGroup>
-          </>
-        )}
+				{groupedItems.length > 0 && (
+					<>
+						<ToolbarSeparator orientation="vertical" className="my-1 h-5" />
+						<ToolbarGroup>
+							<Button
+								size="sm"
+								variant="ghost"
+								onClick={() => setIsActionsOpen(true)}
+							>
+								<Menu className="size-4" />
+								{t("tasks:bulk.actions")}
+							</Button>
+						</ToolbarGroup>
+					</>
+				)}
 
 				<ToolbarSeparator orientation="vertical" className="my-1 h-5" />
 

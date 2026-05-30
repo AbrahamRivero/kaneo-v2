@@ -50,25 +50,37 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "./ui/alert-dialog";
-import { Button } from "./ui/button";
+import { buttonVariants } from "./ui/button";
 
 export function NavProjects() {
-  const { t } = useTranslation();
-  const { isMobile } = useSidebar();
-  const { data: workspace } = useActiveWorkspace();
-  const { data: projects } = useGetProjects({
-    workspaceId: workspace?.id || "",
-  });
-  const queryClient = useQueryClient();
-  const { mutateAsync: deleteProject } = useDeleteProject();
-  const { canCreateProjects, canDeleteProjects } = useWorkspacePermission();
-  const canCreate = canCreateProjects();
-  const canDeleteProject = canDeleteProjects();
-  const navigate = useNavigate();
-  const { workspaceId: currentWorkspaceId, projectId: currentProjectId } =
-    useParams({
-      strict: false,
-    });
+	const { t } = useTranslation();
+	const { isMobile } = useSidebar();
+	const { data: workspace } = useActiveWorkspace();
+	const { data: projects } = useGetProjects({
+		workspaceId: workspace?.id || "",
+	});
+	const { data: allProjects } = useGetProjects({
+		workspaceId: workspace?.id || "",
+		includeArchived: true,
+	});
+	const archivedProjectsList =
+		allProjects?.filter((p: { archivedAt: Date | null }) => p.archivedAt) ?? [];
+	const queryClient = useQueryClient();
+	const { mutateAsync: deleteProject } = useDeleteProject();
+	const { mutateAsync: archiveProject, isPending: isArchiving } =
+		useArchiveProject();
+	const { mutateAsync: unarchiveProject, isPending: isUnarchiving } =
+		useUnarchiveProject();
+	const { canCreateProjects, canDeleteProjects, canManageProjects } =
+		useWorkspacePermission();
+	const canCreate = canCreateProjects();
+	const canDeleteProject = canDeleteProjects();
+	const canManage = canManageProjects();
+	const navigate = useNavigate();
+	const { workspaceId: currentWorkspaceId, projectId: currentProjectId } =
+		useParams({
+			strict: false,
+		});
 
 	const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] =
 		useState(false);
@@ -104,6 +116,117 @@ export function NavProjects() {
 
 	if (!workspace) return null;
 
+	const ProjectMenuItem = ({
+		project,
+	}: {
+		project: { id: string; name: string; archivedAt: Date | null };
+	}) => (
+		<SidebarMenuItem>
+			<SidebarMenuButton
+				isActive={isCurrentProject(project.id)}
+				size="default"
+				className="h-8 gap-0 ps-3.5 text-sm hover:bg-transparent hover:text-sidebar-accent-foreground active:bg-transparent"
+				onClick={() => handleProjectClick(project)}
+			>
+				<span>{project.name}</span>
+			</SidebarMenuButton>
+
+			<DropdownMenu>
+				<DropdownMenuTrigger
+					render={
+						<button
+							type="button"
+							className="absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-lg p-0 text-sidebar-foreground outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 peer-hover/menu-button:text-sidebar-accent-foreground after:-inset-2 after:absolute md:after:hidden peer-data-[size=sm]/menu-button:top-1 peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 group-data-[collapsible=icon]:hidden group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0"
+						/>
+					}
+				>
+					<MoreHorizontal />
+					<span className="sr-only">{t("navigation:sidebar.more")}</span>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent
+					className="w-44 rounded-lg"
+					side={isMobile ? "bottom" : "right"}
+					align={isMobile ? "end" : "start"}
+				>
+					<DropdownMenuItem
+						className="h-7 items-start cursor-pointer text-sm"
+						onClick={() => handleProjectClick(project)}
+					>
+						<Folder className="text-muted-foreground" />
+						<span>{t("navigation:projectList.viewProject")}</span>
+					</DropdownMenuItem>
+					<DropdownMenuItem
+						className="h-7 items-start cursor-pointer text-sm"
+						onClick={() => {
+							navigator.clipboard.writeText(
+								`${window.location.origin}/dashboard/workspace/${workspace?.id}/project/${project.id}`,
+							);
+							toast.success(t("navigation:projectList.linkCopied"));
+						}}
+					>
+						<Forward className="text-muted-foreground" />
+						<span>{t("navigation:projectList.shareProject")}</span>
+					</DropdownMenuItem>
+					<DropdownMenuItem
+						className="h-7 items-start cursor-pointer text-sm"
+						onClick={() => {
+							navigate({
+								to: "/dashboard/settings/projects/$projectId/general",
+								params: { projectId: project.id },
+							});
+						}}
+					>
+						<Settings className="text-muted-foreground" />
+						<span>{t("navigation:projectList.projectSettings")}</span>
+					</DropdownMenuItem>
+					{canManage && (
+						<>
+							<DropdownMenuSeparator />
+							{project.archivedAt ? (
+								<DropdownMenuItem
+									className="h-7 items-start cursor-pointer text-sm"
+									onClick={() => {
+										setProjectToUnarchiveId(project.id);
+										setIsUnarchiveModalOpen(true);
+									}}
+								>
+									<ArchiveRestore className="text-muted-foreground" />
+									<span>{t("navigation:projectList.unarchiveProject")}</span>
+								</DropdownMenuItem>
+							) : (
+								<DropdownMenuItem
+									className="h-7 items-start cursor-pointer text-sm"
+									onClick={() => {
+										setProjectToArchiveId(project.id);
+										setIsArchiveModalOpen(true);
+									}}
+								>
+									<Archive className="text-muted-foreground" />
+									<span>{t("navigation:projectList.archiveProject")}</span>
+								</DropdownMenuItem>
+							)}
+						</>
+					)}
+					{canDeleteProject && (
+						<>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem
+								className="h-7 items-start text-destructive cursor-pointer text-sm"
+								onClick={() => {
+									setProjectToDeleteID(project.id);
+									setIsDeleteProjectModalOpen(true);
+								}}
+							>
+								<Trash2 className="text-destructive" />
+								<span>{t("navigation:projectList.deleteProject")}</span>
+							</DropdownMenuItem>
+						</>
+					)}
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</SidebarMenuItem>
+	);
+
 	return (
 		<>
 			<Collapsible defaultOpen className="group/collapsible">
@@ -120,115 +243,53 @@ export function NavProjects() {
 					<CollapsiblePanel>
 						<SidebarGroupContent>
 							<SidebarMenu className="gap-0.5">
-								{projects?.map((project) => {
-									return (
-										<SidebarMenuItem key={project.id}>
-											<SidebarMenuButton
-												isActive={isCurrentProject(project.id)}
-												size="default"
-												className="h-8 gap-0 ps-3.5 text-sm hover:bg-transparent hover:text-sidebar-accent-foreground active:bg-transparent"
-												onClick={() => handleProjectClick(project)}
-											>
-												<span>{project.name}</span>
-											</SidebarMenuButton>
+								{projects?.map(
+									(project: {
+										id: string;
+										name: string;
+										archivedAt: Date | null;
+									}) => (
+										<ProjectMenuItem key={project.id} project={project} />
+									),
+								)}
 
-                      <DropdownMenu>
-                        <DropdownMenuTrigger
-                          render={
-                            <button
-                              type="button"
-                              className="absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-lg p-0 text-sidebar-foreground outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 peer-hover/menu-button:text-sidebar-accent-foreground after:-inset-2 after:absolute md:after:hidden peer-data-[size=sm]/menu-button:top-1 peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 group-data-[collapsible=icon]:hidden group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0"
-                            />
-                          }
-                        >
-                          <MoreHorizontal />
-                          <span className="sr-only">
-                            {t("navigation:sidebar.more")}
-                          </span>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          className="w-44 rounded-lg"
-                          side={isMobile ? "bottom" : "right"}
-                          align={isMobile ? "end" : "start"}
-                        >
-                          <DropdownMenuItem
-                            className="h-7 items-start cursor-pointer text-sm"
-                            onClick={() => handleProjectClick(project)}
-                          >
-                            <Folder className="text-muted-foreground" />
-                            <span>
-                              {t("navigation:projectList.viewProject")}
-                            </span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="h-7 items-start cursor-pointer text-sm"
-                            onClick={() => {
-                              navigator.clipboard.writeText(
-                                `${window.location.origin}/dashboard/workspace/${workspace?.id}/project/${project.id}`,
-                              );
-                              toast.success(
-                                t("navigation:projectList.linkCopied"),
-                              );
-                            }}
-                          >
-                            <Forward className="text-muted-foreground" />
-                            <span>
-                              {t("navigation:projectList.shareProject")}
-                            </span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="h-7 items-start cursor-pointer text-sm"
-                            onClick={() => {
-                              navigate({
-                                to: "/dashboard/settings/projects/$projectId/general",
-                                params: { projectId: project.id },
-                              });
-                            }}
-                          >
-                            <Settings className="text-muted-foreground" />
-                            <span>
-                              {t("navigation:projectList.projectSettings")}
-                            </span>
-                          </DropdownMenuItem>
-                          {canDeleteProject && (
-                            <>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                className="h-7 items-start text-destructive cursor-pointer text-sm"
-                                onClick={() => {
-                                  setProjectToDeleteID(project.id);
-                                  setIsDeleteProjectModalOpen(true);
-                                }}
-                              >
-                                <Trash2 className="text-destructive" />
-                                <span>
-                                  {t("navigation:projectList.deleteProject")}
-                                </span>
-                              </DropdownMenuItem>
-                            </>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </SidebarMenuItem>
-                  );
-                })}
+								{canCreate && (
+									<SidebarMenuItem className="mt-1">
+										<SidebarMenuButton
+											size="default"
+											className="h-8 ps-3.5 text-sm hover:bg-transparent hover:text-sidebar-accent-foreground active:bg-transparent"
+											onClick={() => setIsCreateProjectModalOpen(true)}
+										>
+											<span>{t("navigation:projectList.addProject")}</span>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+								)}
+							</SidebarMenu>
+						</SidebarGroupContent>
+					</CollapsiblePanel>
+				</SidebarGroup>
+			</Collapsible>
 
-                {canCreate && (
-                  <SidebarMenuItem className="mt-1">
-                    <SidebarMenuButton
-                      size="default"
-                      className="h-8 ps-3.5 text-sm hover:bg-transparent hover:text-sidebar-accent-foreground active:bg-transparent"
-                      onClick={() => setIsCreateProjectModalOpen(true)}
-                    >
-                      <span>{t("navigation:projectList.addProject")}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </CollapsiblePanel>
-        </SidebarGroup>
-      </Collapsible>
+			{archivedProjectsList.length > 0 && (
+				<SidebarGroup className="group-data-[collapsible=icon]:hidden gap-1 p-2 pt-1">
+					<SidebarGroupLabel className="h-7 px-0 text-sidebar-accent-foreground">
+						{t("navigation:sidebar.archivedProjects")}
+					</SidebarGroupLabel>
+					<SidebarGroupContent>
+						<SidebarMenu className="gap-0.5">
+							{archivedProjectsList.map(
+								(project: {
+									id: string;
+									name: string;
+									archivedAt: Date | null;
+								}) => (
+									<ProjectMenuItem key={project.id} project={project} />
+								),
+							)}
+						</SidebarMenu>
+					</SidebarGroupContent>
+				</SidebarGroup>
+			)}
 
 			<CreateProjectModal
 				open={isCreateProjectModalOpen}
@@ -249,12 +310,13 @@ export function NavProjects() {
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogClose>
-							<Button variant="outline" size="sm">
-								{t("common:actions.cancel")}
-							</Button>
+						<AlertDialogClose
+							className={buttonVariants({ variant: "outline", size: "sm" })}
+						>
+							{t("common:actions.cancel")}
 						</AlertDialogClose>
 						<AlertDialogClose
+							className={buttonVariants({ variant: "destructive", size: "sm" })}
 							onClick={async () => {
 								await deleteProject({
 									id: projectToDeleteId || "",
@@ -262,6 +324,7 @@ export function NavProjects() {
 								toast.success(t("navigation:projectList.deletedToast"));
 								queryClient.invalidateQueries({
 									queryKey: ["projects"],
+									refetchType: "all",
 								});
 								navigate({
 									to: "/dashboard/workspace/$workspaceId",
@@ -271,9 +334,7 @@ export function NavProjects() {
 								});
 							}}
 						>
-							<Button variant="destructive" size="sm">
-								{t("navigation:projectList.deleteProject")}
-							</Button>
+							{t("navigation:projectList.deleteProject")}
 						</AlertDialogClose>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -293,22 +354,24 @@ export function NavProjects() {
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogClose>
-							<Button variant="outline" size="sm">
-								{t("common:actions.cancel")}
-							</Button>
+						<AlertDialogClose
+							className={buttonVariants({ variant: "outline", size: "sm" })}
+						>
+							{t("common:actions.cancel")}
 						</AlertDialogClose>
 						<AlertDialogClose
+							className={buttonVariants({ variant: "outline", size: "sm" })}
 							onClick={async () => {
 								await archiveProject({ id: projectToArchiveId || "" });
 								toast.success(t("navigation:projectList.archivedToast"));
-								queryClient.invalidateQueries({ queryKey: ["projects"] });
+								queryClient.invalidateQueries({
+									queryKey: ["projects"],
+									refetchType: "all",
+								});
 							}}
 							disabled={isArchiving}
 						>
-							<Button variant="outline" size="sm" disabled={isArchiving}>
-								{t("navigation:projectList.archiveProject")}
-							</Button>
+							{t("navigation:projectList.archiveProject")}
 						</AlertDialogClose>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -328,22 +391,24 @@ export function NavProjects() {
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogClose>
-							<Button variant="outline" size="sm">
-								{t("common:actions.cancel")}
-							</Button>
+						<AlertDialogClose
+							className={buttonVariants({ variant: "outline", size: "sm" })}
+						>
+							{t("common:actions.cancel")}
 						</AlertDialogClose>
 						<AlertDialogClose
+							className={buttonVariants({ variant: "outline", size: "sm" })}
 							onClick={async () => {
 								await unarchiveProject({ id: projectToUnarchiveId || "" });
 								toast.success(t("navigation:projectList.unarchivedToast"));
-								queryClient.invalidateQueries({ queryKey: ["projects"] });
+								queryClient.invalidateQueries({
+									queryKey: ["projects"],
+									refetchType: "all",
+								});
 							}}
 							disabled={isUnarchiving}
 						>
-							<Button variant="outline" size="sm" disabled={isUnarchiving}>
-								{t("navigation:projectList.unarchiveProject")}
-							</Button>
+							{t("navigation:projectList.unarchiveProject")}
 						</AlertDialogClose>
 					</AlertDialogFooter>
 				</AlertDialogContent>

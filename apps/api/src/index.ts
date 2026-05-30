@@ -702,11 +702,13 @@ export function createApp() {
 		notificationPreferencesApi,
 		projectApi,
 		publicProjectApi,
+		_recurringTasksApi,
 		searchApi,
 		slackIntegrationApi,
 		taskApi,
 		taskRelationApi,
 		telegramIntegrationApi,
+		_templateApi,
 		timeEntryApi,
 		workflowRuleApi,
 		workspaceApi,
@@ -820,11 +822,13 @@ const {
 	notificationPreferencesApi,
 	projectApi,
 	publicProjectApi,
+	_recurringTasksApi,
 	searchApi,
 	slackIntegrationApi,
 	taskApi,
 	taskRelationApi,
 	telegramIntegrationApi,
+	_templateApi,
 	timeEntryApi,
 	workflowRuleApi,
 	workspaceApi,
@@ -865,6 +869,7 @@ export type AppType =
 	| typeof publicProjectApi
 	| typeof invitationPublicApi
 	| typeof oauthApi
+	| typeof _recurringTasksApi
 	| typeof _templateApi;
 
 export default app;

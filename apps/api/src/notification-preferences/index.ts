@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
 import { notificationPreferenceSchema } from "../schemas";
+import { workspaceAccess } from "../utils/workspace-access-middleware";
 import deleteWorkspaceRuleController from "./controllers/delete-workspace-rule";
 import getNotificationPreferencesController from "./controllers/get-notification-preferences";
 import updateNotificationPreferencesController from "./controllers/update-notification-preferences";
@@ -23,6 +24,7 @@ const notificationPreferences = new Hono<{
 	Variables: {
 		userId: string;
 		userEmail: string;
+		workspaceId: string;
 	};
 }>();
 
@@ -172,6 +174,7 @@ notificationPreferences
 		}),
 		validator("param", v.object({ workspaceId: v.string() })),
 		validator("json", workspaceRuleSchema),
+		workspaceAccess.fromParam("workspaceId"),
 		async (c) => {
 			const userId = c.get("userId");
 			const userEmail = c.get("userEmail");
@@ -230,6 +233,7 @@ notificationPreferences
 			},
 		}),
 		validator("param", v.object({ workspaceId: v.string() })),
+		workspaceAccess.fromParam("workspaceId"),
 		async (c) => {
 			const userId = c.get("userId");
 			const userEmail = c.get("userEmail");

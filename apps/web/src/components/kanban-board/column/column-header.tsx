@@ -16,12 +16,12 @@ type ColumnHeaderProps = {
 };
 
 export function ColumnHeader({ column }: ColumnHeaderProps) {
-  const { t } = useTranslation();
-  const { project, setProject } = useProjectStore();
-  const { mutate: updateTask } = useUpdateTask();
-  const { canManageTasks, canCreateTasks } = useWorkspacePermission();
-  const canTask = canManageTasks();
-  const canCreate = canCreateTasks();
+	const { t } = useTranslation();
+	const { project, setProject } = useProjectStore();
+	const { mutate: updateTask } = useUpdateTask();
+	const { canManageTasks, canCreateTasks } = useWorkspacePermission();
+	const canTask = canManageTasks();
+	const canCreate = canCreateTasks();
 
 	const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
 	const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -50,42 +50,42 @@ export function ColumnHeader({ column }: ColumnHeaderProps) {
 		setIsArchiveModalOpen(false);
 	};
 
-  return (
-    <div className="flex items-center justify-between gap-2">
-      <div className="flex min-w-0 items-center gap-2">
-        <span className="text-muted-foreground">
-          {getColumnIcon(column.id, column.isFinal, column.icon)}
-        </span>
-        <span className="truncate text-sm font-medium text-foreground/95">
-          {column.name}
-        </span>
-        <span className="rounded-md bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
-          {column.tasks.length}
-        </span>
-      </div>
+	return (
+		<div className="flex items-center justify-between gap-2">
+			<div className="flex min-w-0 items-center gap-2">
+				<span className="text-muted-foreground">
+					{getColumnIcon(column.id, column.isFinal, column.icon)}
+				</span>
+				<span className="truncate text-sm font-medium text-foreground/95">
+					{column.name}
+				</span>
+				<span className="rounded-md bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
+					{column.tasks.length}
+				</span>
+			</div>
 
-      <div className="flex items-center">
-        {canTask && column.isFinal && column.tasks.length > 0 && (
-          <button
-            type="button"
-            onClick={() => setIsArchiveModalOpen(true)}
-            className="flex items-center rounded-md px-2 py-1 text-left text-muted-foreground transition-all hover:bg-accent/50"
-            title={t("tasks:listView.archiveAllTooltip")}
-          >
-            <Archive className="w-4 h-4 text-muted-foreground" />
-          </button>
-        )}
-        {canCreate && (
-          <button
-            type="button"
-            onClick={() => setIsTaskModalOpen(true)}
-            className="flex items-center rounded-md px-2 py-1 text-left text-muted-foreground transition-all hover:bg-accent/50"
-            title={t("tasks:kanban.addTask")}
-          >
-            <Plus className="w-4 h-4 text-muted-foreground" />
-          </button>
-        )}
-      </div>
+			<div className="flex items-center">
+				{canTask && column.isFinal && column.tasks.length > 0 && (
+					<button
+						type="button"
+						onClick={() => setIsArchiveModalOpen(true)}
+						className="flex items-center rounded-md px-2 py-1 text-left text-muted-foreground transition-all hover:bg-accent/50"
+						title={t("tasks:listView.archiveAllTooltip")}
+					>
+						<Archive className="w-4 h-4 text-muted-foreground" />
+					</button>
+				)}
+				{canCreate && (
+					<button
+						type="button"
+						onClick={() => setIsTaskModalOpen(true)}
+						className="flex items-center rounded-md px-2 py-1 text-left text-muted-foreground transition-all hover:bg-accent/50"
+						title={t("tasks:kanban.addTask")}
+					>
+						<Plus className="w-4 h-4 text-muted-foreground" />
+					</button>
+				)}
+			</div>
 
 			<CreateTaskModal
 				open={isTaskModalOpen}

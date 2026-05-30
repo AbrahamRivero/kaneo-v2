@@ -30,15 +30,15 @@ export default function TaskAssigneePopover({
 	workspaceId,
 	children,
 }: TaskAssigneePopoverProps) {
-  const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
-  const [visibleUsersCount, setVisibleUsersCount] = useState(
-    INITIAL_VISIBLE_USERS,
-  );
-  const { mutateAsync: updateTaskAssignee } = useUpdateTaskAssignee();
-  const { data: workspaceUsers } = useGetActiveWorkspaceUsers(workspaceId);
-  const { canAssignTasks } = useWorkspacePermission();
-  const canAssign = canAssignTasks();
+	const { t } = useTranslation();
+	const [open, setOpen] = useState(false);
+	const [visibleUsersCount, setVisibleUsersCount] = useState(
+		INITIAL_VISIBLE_USERS,
+	);
+	const { mutateAsync: updateTaskAssignee } = useUpdateTaskAssignee();
+	const { data: workspaceUsers } = useGetActiveWorkspaceUsers(workspaceId);
+	const { canAssignTasks } = useWorkspacePermission();
+	const canAssign = canAssignTasks();
 
 	const usersOptions = useMemo(() => {
 		return workspaceUsers?.members?.map((member) => ({
@@ -103,9 +103,9 @@ export default function TaskAssigneePopover({
 		[usersOptions?.length],
 	);
 
-  useNumberedShortcuts(open, shortcutOptions);
+	useNumberedShortcuts(open, shortcutOptions);
 
-  if (!canAssign) return <>{children}</>;
+	if (!canAssign) return <>{children}</>;
 
 	return (
 		<Popover open={open} onOpenChange={handleOpenChange}>
