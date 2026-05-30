@@ -133,6 +133,7 @@ const activity = new Hono<{
 			}),
 		),
 		workspaceAccess.fromActivity("activityId"),
+		requireWorkspacePermission({ task: ["update"] }),
 		async (c) => {
 			const { activityId, comment } = c.req.valid("json");
 			const userId = c.get("userId");
@@ -162,6 +163,7 @@ const activity = new Hono<{
 			}),
 		),
 		workspaceAccess.fromActivity("activityId"),
+		requireWorkspacePermission({ task: ["update"] }),
 		async (c) => {
 			const { activityId } = c.req.valid("json");
 			const userId = c.get("userId");

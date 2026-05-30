@@ -9,6 +9,7 @@ import useAuth from "@/components/providers/auth-provider/hooks/use-auth";
 import { Timeline } from "@/components/ui/timeline";
 import useGetActivitiesByTaskId from "@/hooks/queries/activity/use-get-activities-by-task-id";
 import useExternalLinks from "@/hooks/queries/external-link/use-external-links";
+import { useFeatureEnabled } from "@/hooks/queries/features/use-workspace-features";
 import useGetProject from "@/hooks/queries/project/use-get-project";
 import useGetTask from "@/hooks/queries/task/use-get-task";
 import useGetTaskRelations from "@/hooks/queries/task-relation/use-get-task-relations";
@@ -33,6 +34,7 @@ export default function TaskDetailsContent({
 }: TaskDetailsContentProps) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
+	const isRecurringEnabled = useFeatureEnabled(workspaceId, "recurring-tasks");
 	const { data: task } = useGetTask(
 		taskId && taskId.length > 0 ? taskId : null,
 	);
@@ -82,7 +84,7 @@ export default function TaskDetailsContent({
 				<p className="text-xs font-semibold text-foreground/70">
 					{project?.slug}-{task?.number}
 				</p>
-				{task?.recurringTaskId && (
+				{isRecurringEnabled && task?.recurringTaskId && (
 					<button
 						type="button"
 						onClick={() =>

@@ -4,6 +4,7 @@
 		"actions": {
 			"cancel": "Отмена",
 			"close": "Закрыть",
+			"clear": "Очистить",
 			"clearAll": "Очистить все",
 			"delete": "Удалить",
 			"deleting": "Удаление...",
@@ -615,6 +616,12 @@
 					"expirationRequired": "Срок действия обязателен"
 				}
 			}
+		},
+		"workspaceModules": {
+			"title": "Модули"
+		},
+		"workspaceTemplates": {
+			"title": "Шаблоны"
 		},
 		"workspaceGeneral": {
 			"pageTitle": "Основные настройки",

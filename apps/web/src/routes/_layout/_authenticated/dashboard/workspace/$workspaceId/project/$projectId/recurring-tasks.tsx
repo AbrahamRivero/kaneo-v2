@@ -3,6 +3,7 @@ import { Pencil, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import ProjectLayout from "@/components/common/project-layout";
+import { FeatureGate } from "@/components/feature-gate";
 import PageTitle from "@/components/page-title";
 import type { RecurringTaskFormData } from "@/components/shared/modals/create-recurring-task-dialog";
 import RecurringTaskDialog from "@/components/shared/modals/create-recurring-task-dialog";
@@ -197,29 +198,25 @@ function RouteComponent() {
 		setDialogOpen(true);
 	};
 
-	if (isLoading) {
-		return (
-			<>
-				<PageTitle title={t("recurring:pageTitle")} />
-				<ProjectLayout
-					projectId={projectId}
-					workspaceId={workspaceId}
-					activeView="recurring"
-				>
-					<div className="space-y-4 p-4">
-						<Skeleton className="h-8 w-48" />
-						<div className="space-y-2">
-							<Skeleton className="h-10 w-full" />
-							<Skeleton className="h-10 w-full" />
-							<Skeleton className="h-10 w-full" />
-						</div>
+	const pageContent = isLoading ? (
+		<>
+			<PageTitle title={t("recurring:pageTitle")} />
+			<ProjectLayout
+				projectId={projectId}
+				workspaceId={workspaceId}
+				activeView="recurring"
+			>
+				<div className="space-y-4 p-4">
+					<Skeleton className="h-8 w-48" />
+					<div className="space-y-2">
+						<Skeleton className="h-10 w-full" />
+						<Skeleton className="h-10 w-full" />
+						<Skeleton className="h-10 w-full" />
 					</div>
-				</ProjectLayout>
-			</>
-		);
-	}
-
-	return (
+				</div>
+			</ProjectLayout>
+		</>
+	) : (
 		<>
 			<PageTitle title={t("recurring:pageTitle")} />
 			<ProjectLayout
@@ -407,4 +404,6 @@ function RouteComponent() {
 			</AlertDialog>
 		</>
 	);
+
+	return <FeatureGate featureKey="recurring-tasks">{pageContent}</FeatureGate>;
 }

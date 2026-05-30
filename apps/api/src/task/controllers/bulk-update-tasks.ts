@@ -2,7 +2,7 @@ import { eq, inArray } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
 import { projectTable, taskTable } from "../../database/schema";
-import { workspaceRepository } from "../../workspace/infrastructure/repositories/drizzle-workspace.repository";
+import { checkWorkspacePermission } from "../../utils/require-workspace-permission";
 import { createTaskUseCases } from "../application";
 import type { BulkOperationInput } from "../domain";
 
@@ -50,13 +50,9 @@ async function bulkUpdateTasks({
 		});
 	}
 
-	const membership = await workspaceRepository.findMember(workspaceId, userId);
-
-	if (!membership) {
-		throw new HTTPException(403, {
-			message: "You don't have access to this workspace",
-		});
-	}
+	await checkWorkspacePermission(workspaceId, userId, {
+		task: ["update"],
+	});
 
 	return bulkUpdateTasksUseCase.execute({
 		taskIds,

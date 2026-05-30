@@ -4,6 +4,7 @@
 		"actions": {
 			"cancel": "Откажи",
 			"close": "Затвори",
+			"clear": "Исчисти",
 			"clearAll": "Исчисти се",
 			"delete": "Избриши",
 			"deleting": "Се брише...",
@@ -614,6 +615,12 @@
 					"expirationRequired": "Истекувањето е задолжително"
 				}
 			}
+		},
+		"workspaceModules": {
+			"title": "Модули"
+		},
+		"workspaceTemplates": {
+			"title": "Шаблони"
 		},
 		"workspaceGeneral": {
 			"pageTitle": "Општи поставки",

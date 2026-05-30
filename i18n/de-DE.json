@@ -4,6 +4,7 @@
 		"actions": {
 			"cancel": "Abbrechen",
 			"close": "Schließen",
+			"clear": "Leeren",
 			"clearAll": "Alle löschen",
 			"delete": "Löschen",
 			"deleting": "Wird gelöscht...",

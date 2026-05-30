@@ -1,7 +1,9 @@
 import { Hono } from "hono";
 import { describeRoute, validator } from "hono-openapi";
 import * as v from "valibot";
+import { requireFeature } from "../features/middleware";
 import { recurringTaskSchema } from "../schemas";
+import { requireWorkspacePermission } from "../utils/require-workspace-permission";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import createChecklistItem from "./controllers/create-checklist-item";
 import createRecurringTask from "./controllers/create-recurring-task";
@@ -32,6 +34,8 @@ const recurringTasks = new Hono<{
 		}),
 		validator("param", v.object({ projectId: v.string() })),
 		workspaceAccess.fromProject("projectId"),
+		requireFeature("recurring-tasks"),
+		requireWorkspacePermission({ project: ["read"] }),
 		async (c) => {
 			const { projectId } = c.req.valid("param");
 			const tasks = await listRecurringTasks(projectId);
@@ -84,6 +88,8 @@ const recurringTasks = new Hono<{
 			}),
 		),
 		workspaceAccess.fromProject("projectId"),
+		requireFeature("recurring-tasks"),
+		requireWorkspacePermission({ task: ["create"] }),
 		async (c) => {
 			const { projectId } = c.req.valid("param");
 			const body = c.req.valid("json");
@@ -139,6 +145,8 @@ const recurringTasks = new Hono<{
 			}),
 		),
 		workspaceAccess.fromProject("projectId"),
+		requireFeature("recurring-tasks"),
+		requireWorkspacePermission({ task: ["update"] }),
 		async (c) => {
 			const { recurringTaskId } = c.req.valid("param");
 			const { nextRunAt, ...rest } = c.req.valid("json");
@@ -166,6 +174,8 @@ const recurringTasks = new Hono<{
 			}),
 		),
 		workspaceAccess.fromProject("projectId"),
+		requireFeature("recurring-tasks"),
+		requireWorkspacePermission({ task: ["delete"] }),
 		async (c) => {
 			const { recurringTaskId } = c.req.valid("param");
 			const userId = c.get("userId");
@@ -188,6 +198,8 @@ const recurringTasks = new Hono<{
 			}),
 		),
 		workspaceAccess.fromProject("projectId"),
+		requireFeature("recurring-tasks"),
+		requireWorkspacePermission({ task: ["read"] }),
 		async (c) => {
 			const { recurringTaskId } = c.req.valid("param");
 			const items = await listChecklistItems(recurringTaskId);
@@ -226,6 +238,8 @@ const recurringTasks = new Hono<{
 			}),
 		),
 		workspaceAccess.fromProject("projectId"),
+		requireFeature("recurring-tasks"),
+		requireWorkspacePermission({ task: ["create"] }),
 		async (c) => {
 			const { recurringTaskId } = c.req.valid("param");
 			const body = c.req.valid("json");
@@ -253,6 +267,8 @@ const recurringTasks = new Hono<{
 			}),
 		),
 		workspaceAccess.fromProject("projectId"),
+		requireFeature("recurring-tasks"),
+		requireWorkspacePermission({ task: ["delete"] }),
 		async (c) => {
 			const { checklistItemId } = c.req.valid("param");
 			const item = await deleteChecklistItem(checklistItemId);

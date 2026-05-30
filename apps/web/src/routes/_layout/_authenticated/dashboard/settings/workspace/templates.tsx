@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { FeatureGate } from "@/components/feature-gate";
 import PageTitle from "@/components/page-title";
 import CreateTemplateModal from "@/components/shared/modals/create-template-modal";
 import { Button } from "@/components/ui/button";
@@ -47,7 +48,7 @@ function RouteComponent() {
 	};
 
 	return (
-		<>
+		<FeatureGate featureKey="templates">
 			<PageTitle title={t("templates:pageTitle")} />
 			<div className="max-w-4xl mx-auto space-y-8">
 				<div className="space-y-2">
@@ -157,6 +158,6 @@ function RouteComponent() {
 					</div>
 				)}
 			</div>
-		</>
+		</FeatureGate>
 	);
 }

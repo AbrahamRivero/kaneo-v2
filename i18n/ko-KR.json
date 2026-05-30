@@ -4,6 +4,7 @@
 		"actions": {
 			"cancel": "취소",
 			"close": "닫기",
+			"clear": "지우기",
 			"clearAll": "모두 지우기",
 			"confirm": "확인",
 			"delete": "삭제",

@@ -5,6 +5,12 @@ import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
 import db from "../database";
 import { templateTable } from "../database/schema";
+import { isFeatureEnabled } from "../features/db";
+import { requireFeature } from "../features/middleware";
+import {
+	checkWorkspacePermission,
+	requireWorkspacePermission,
+} from "../utils/require-workspace-permission";
 import { validateWorkspaceAccess } from "../utils/validate-workspace-access";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import createTemplateCtrl from "./controllers/create-template";
@@ -50,6 +56,8 @@ const template = new Hono<{
 			},
 		}),
 		workspaceAccess.fromParam("workspaceId"),
+		requireFeature("templates"),
+		requireWorkspacePermission({ project: ["read"] }),
 		async (c) => {
 			const workspaceId = c.get("workspaceId");
 			const result = await listTemplatesCtrl(workspaceId);
@@ -74,6 +82,22 @@ const template = new Hono<{
 		validator("param", v.object({ id: v.string() })),
 		async (c) => {
 			const { id } = c.req.valid("param");
+			const userId = c.get("userId") as string;
+			const [tmpl] = await db
+				.select({ workspaceId: templateTable.workspaceId })
+				.from(templateTable)
+				.where(eq(templateTable.id, id))
+				.limit(1);
+			if (!tmpl)
+				throw new HTTPException(404, { message: "Template not found" });
+			const workspaceId = tmpl.workspaceId as string;
+			await validateWorkspaceAccess(userId, workspaceId);
+			if (!(await isFeatureEnabled(workspaceId, "templates"))) {
+				throw new HTTPException(404, { message: "Feature not available" });
+			}
+			await checkWorkspacePermission(workspaceId, userId, {
+				project: ["read"],
+			});
 			const result = await getTemplateCtrl(id);
 			return c.json(result);
 		},
@@ -105,6 +129,8 @@ const template = new Hono<{
 			}),
 		),
 		workspaceAccess.fromBody(),
+		requireFeature("templates"),
+		requireWorkspacePermission({ project: ["create"] }),
 		async (c) => {
 			const data = c.req.valid("json");
 			const workspaceId = c.get("workspaceId");
@@ -143,6 +169,7 @@ const template = new Hono<{
 		),
 		async (c) => {
 			const { id } = c.req.valid("param");
+			const userId = c.get("userId") as string;
 			const [tmpl] = await db
 				.select({ workspaceId: templateTable.workspaceId })
 				.from(templateTable)
@@ -150,7 +177,14 @@ const template = new Hono<{
 				.limit(1);
 			if (!tmpl)
 				throw new HTTPException(404, { message: "Template not found" });
-			await validateWorkspaceAccess(c.get("userId"), tmpl.workspaceId);
+			const workspaceId = tmpl.workspaceId as string;
+			await validateWorkspaceAccess(userId, workspaceId);
+			if (!(await isFeatureEnabled(workspaceId, "templates"))) {
+				throw new HTTPException(404, { message: "Feature not available" });
+			}
+			await checkWorkspacePermission(workspaceId, userId, {
+				project: ["update"],
+			});
 			const data = c.req.valid("json");
 			const result = await updateTemplateCtrl(id, data);
 			return c.json(result);
@@ -174,6 +208,7 @@ const template = new Hono<{
 		validator("param", v.object({ id: v.string() })),
 		async (c) => {
 			const { id } = c.req.valid("param");
+			const userId = c.get("userId") as string;
 			const [tmpl] = await db
 				.select({ workspaceId: templateTable.workspaceId })
 				.from(templateTable)
@@ -181,7 +216,14 @@ const template = new Hono<{
 				.limit(1);
 			if (!tmpl)
 				throw new HTTPException(404, { message: "Template not found" });
-			await validateWorkspaceAccess(c.get("userId"), tmpl.workspaceId);
+			const workspaceId = tmpl.workspaceId as string;
+			await validateWorkspaceAccess(userId, workspaceId);
+			if (!(await isFeatureEnabled(workspaceId, "templates"))) {
+				throw new HTTPException(404, { message: "Feature not available" });
+			}
+			await checkWorkspacePermission(workspaceId, userId, {
+				project: ["delete"],
+			});
 			const result = await deleteTemplateCtrl(id);
 			return c.json(result);
 		},

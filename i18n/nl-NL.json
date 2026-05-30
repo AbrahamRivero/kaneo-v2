@@ -4,6 +4,7 @@
 		"actions": {
 			"cancel": "Annuleren",
 			"close": "Sluiten",
+			"clear": "Wissen",
 			"clearAll": "Alles wissen",
 			"delete": "Verwijderen",
 			"deleting": "Verwijderen...",

@@ -4,6 +4,7 @@
 		"actions": {
 			"cancel": "Cancelar",
 			"close": "Cerrar",
+			"clear": "Limpiar",
 			"clearAll": "Limpiar todo",
 			"delete": "Borrar",
 			"deleting": "Borrando...",

@@ -17,6 +17,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useDeleteTask } from "@/hooks/mutations/task/use-delete-task";
+import { useFeatureEnabled } from "@/hooks/queries/features/use-workspace-features";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 import { useGetActiveWorkspaceUsers } from "@/hooks/queries/workspace-users/use-get-active-workspace-users";
 import { cn } from "@/lib/cn";
@@ -50,6 +51,10 @@ export default function BacklogTaskRow({ task }: BacklogTaskRowProps) {
 
 	const { project } = useProjectStore();
 	const { data: workspace } = useActiveWorkspace();
+	const isRecurringEnabled = useFeatureEnabled(
+		workspace?.id ?? "",
+		"recurring-tasks",
+	);
 	const {
 		showAssignees,
 		showPriority,
@@ -230,11 +235,23 @@ export default function BacklogTaskRow({ task }: BacklogTaskRowProps) {
 							</span>
 						)}
 
-						{task.recurringTaskId && (
-							<RefreshCw
-								className="ml-1.5 h-3 w-3 shrink-0 text-primary/70"
-								aria-label={t("recurring:pageTitle")}
-							/>
+						{isRecurringEnabled && task.recurringTaskId && (
+							<button
+								type="button"
+								onClick={(e) => {
+									e.stopPropagation();
+									navigate({
+										to: "/dashboard/workspace/$workspaceId/project/$projectId/recurring-tasks",
+										params: {
+											workspaceId: workspace?.id ?? "",
+											projectId: project?.id ?? "",
+										},
+									});
+								}}
+								className="ml-1.5 shrink-0"
+							>
+								<RefreshCw className="h-3 w-3 text-primary/70 hover:text-primary transition-colors" />
+							</button>
 						)}
 
 						{showAssignees && (
