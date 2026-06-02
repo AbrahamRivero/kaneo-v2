@@ -5,6 +5,7 @@ import {
 	apikeyTable,
 	assetTable,
 	columnTable,
+	deviceCodeTable,
 	externalLinkTable,
 	githubIntegrationTable,
 	integrationTable,
@@ -40,7 +41,6 @@ export const userTableRelations = relations(userTable, ({ many, one }) => ({
 	sessions: many(sessionTable),
 	accounts: many(accountTable),
 	teamMembers: many(teamMemberTable),
-	workspaces: many(workspaceTable),
 	workspaceMemberships: many(workspaceUserTable),
 	assignedTasks: many(taskTable, { relationName: "taskAssignee" }),
 	createdTasks: many(taskTable, { relationName: "taskCreator" }),
@@ -223,6 +223,10 @@ export const labelTableRelations = relations(labelTable, ({ one }) => ({
 	task: one(taskTable, {
 		fields: [labelTable.taskId],
 		references: [taskTable.id],
+	}),
+	workspace: one(workspaceTable, {
+		fields: [labelTable.workspaceId],
+		references: [workspaceTable.id],
 	}),
 }));
 
@@ -462,6 +466,16 @@ export const templateTaskTableRelations = relations(
 		template: one(templateTable, {
 			fields: [templateTaskTable.templateId],
 			references: [templateTable.id],
+		}),
+	}),
+);
+
+export const deviceCodeTableRelations = relations(
+	deviceCodeTable,
+	({ one }) => ({
+		user: one(userTable, {
+			fields: [deviceCodeTable.userId],
+			references: [userTable.id],
 		}),
 	}),
 );

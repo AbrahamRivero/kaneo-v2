@@ -115,7 +115,7 @@ export const workspaceTable = pgTable("workspace", {
 	logo: text("logo"),
 	metadata: text("metadata"),
 	description: text("description"),
-	createdAt: timestamp("created_at", { mode: "date" }).notNull(),
+	createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
 
 export const workspaceUserTable = pgTable(
@@ -151,10 +151,11 @@ export const teamTable = pgTable(
 		workspaceId: text("workspace_id")
 			.notNull()
 			.references(() => workspaceTable.id, { onDelete: "cascade" }),
-		createdAt: timestamp("created_at").notNull(),
-		updatedAt: timestamp("updated_at").$onUpdate(
-			() => /* @__PURE__ */ new Date(),
-		),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => new Date())
+			.notNull(),
 	},
 	(table) => [index("team_workspaceId_idx").on(table.workspaceId)],
 );
@@ -169,7 +170,7 @@ export const teamMemberTable = pgTable(
 		userId: text("user_id")
 			.notNull()
 			.references(() => userTable.id, { onDelete: "cascade" }),
-		createdAt: timestamp("created_at"),
+		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 	},
 	(table) => [
 		index("teamMember_teamId_idx").on(table.teamId),
@@ -192,6 +193,10 @@ export const invitationTable = pgTable(
 		status: text("status").default("pending").notNull(),
 		expiresAt: timestamp("expires_at").notNull(),
 		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => new Date())
+			.notNull(),
 		inviterId: text("inviter_id")
 			.notNull()
 			.references(() => userTable.id, { onDelete: "cascade" }),
@@ -609,6 +614,10 @@ export const assetTable = pgTable(
 			onUpdate: "cascade",
 		}),
 		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => new Date())
+			.notNull(),
 	},
 	(table) => [
 		index("asset_workspaceId_idx").on(table.workspaceId),
@@ -926,6 +935,10 @@ export const taskRelationTable = pgTable(
 			}),
 		relationType: text("relation_type").notNull(),
 		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => new Date())
+			.notNull(),
 	},
 	(table) => [
 		index("task_relation_source_idx").on(table.sourceTaskId),
@@ -1070,6 +1083,10 @@ export const templateTaskTable = pgTable(
 		columnSlug: text("column_slug").notNull(),
 		priority: text("priority").default("no-priority"),
 		createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+		updatedAt: timestamp("updated_at", { mode: "date" })
+			.defaultNow()
+			.$onUpdate(() => new Date())
+			.notNull(),
 	},
 	(table) => [index("templateTask_templateId_idx").on(table.templateId)],
 );
