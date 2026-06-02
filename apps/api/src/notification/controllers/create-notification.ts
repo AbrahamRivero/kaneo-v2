@@ -1,4 +1,3 @@
-import { publishEvent } from "../../events";
 import { CreateNotificationUseCase } from "../application/use-cases";
 import { deliverNotification } from "../infrastructure/delivery/delivery";
 import { notificationRepository } from "../infrastructure/repositories/drizzle-notification.repository";
@@ -35,11 +34,6 @@ async function createNotification({
 	});
 
 	if (notification) {
-		await publishEvent("notification.created", {
-			notificationId: notification.id,
-			userId,
-		});
-
 		void deliverNotification(notification.id).catch((error) => {
 			console.error("Failed to deliver notification", {
 				notificationId: notification.id,

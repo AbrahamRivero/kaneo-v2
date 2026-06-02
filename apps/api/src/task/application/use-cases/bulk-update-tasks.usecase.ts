@@ -13,8 +13,11 @@ export class BulkUpdateTasksUseCase {
 
 		if (result.success && result.updatedCount > 0) {
 			for (const taskId of input.taskIds) {
+				const taskContext = await this.taskRepository.findTaskContext(taskId);
+
 				await this.eventPublisher.publish("task.bulk_updated", {
 					taskId,
+					projectId: taskContext?.projectId ?? "",
 					operation: input.operation,
 					value: input.value,
 					userId: input.currentUserId,

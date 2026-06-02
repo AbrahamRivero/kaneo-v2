@@ -278,6 +278,7 @@ const taskUpdateEvents = [
 	"task.due_date_changed",
 	"task.title_changed",
 	"task.description_changed",
+	"task.bulk_updated",
 	"task.label_assigned",
 	"task.label_unassigned",
 	"task.label_created",
@@ -285,7 +286,6 @@ const taskUpdateEvents = [
 	"task-relation.created",
 	"task-relation.deleted",
 	"task.comment_created",
-	"comment.created",
 	"comment.deleted",
 	"comment.updated",
 ];
@@ -372,7 +372,6 @@ for (const eventName of taskUpdateEvents) {
 				type = "TASK_LABEL_UPDATED";
 				break;
 			case "task.comment_created":
-			case "comment.created":
 			case "comment.deleted":
 			case "comment.updated":
 				type = "COMMENT_UPDATED";
