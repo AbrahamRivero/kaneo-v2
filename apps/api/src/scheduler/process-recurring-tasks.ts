@@ -58,14 +58,18 @@ export async function processRecurringTasks(): Promise<void> {
 
 	for (const recurring of dueTasks) {
 		try {
-			const project = await db.query.projectTable.findFirst({
-				where: eq(projectTable.id, recurring.projectId),
-			});
-
-			if (!project) continue;
-
 			// Atomic creation: task + labels + subtasks in one transaction
-			const { taskId, number, subTasks } = await db.transaction(async (tx) => {
+			// Lock the project row as a mutex to serialize task number assignment
+			const result = await db.transaction(async (tx) => {
+				const [project] = await tx
+					.select()
+					.from(projectTable)
+					.where(eq(projectTable.id, recurring.projectId))
+					.for("update")
+					.limit(1);
+
+				if (!project) return null;
+
 				const taskId = createId();
 
 				const [maxNumberResult] = await tx
@@ -116,15 +120,27 @@ export async function processRecurringTasks(): Promise<void> {
 						.where(inArray(labelTable.id, recurring.labelIds as string[]));
 
 					if (sourceLabels.length > 0) {
-						await tx.insert(labelTable).values(
-							sourceLabels.map((label) => ({
-								id: createId(),
-								name: label.name,
-								color: label.color,
-								taskId: taskId,
-								workspaceId: label.workspaceId,
-							})),
-						);
+						const insertedLabels = await tx
+							.insert(labelTable)
+							.values(
+								sourceLabels.map((label) => ({
+									id: createId(),
+									name: label.name,
+									color: label.color,
+									taskId: taskId,
+									workspaceId: label.workspaceId,
+								})),
+							)
+							.returning();
+
+						for (const _label of insertedLabels) {
+							await publishEvent("task.label_assigned", {
+								projectId: recurring.projectId,
+								taskId,
+								userId: recurring.createdBy ?? "",
+								type: "label_assigned",
+							});
+						}
 					}
 				}
 
@@ -163,7 +179,7 @@ export async function processRecurringTasks(): Promise<void> {
 							projectId: recurring.projectId,
 							number: subTask.number,
 							title: subTask.title,
-							description: recurring.description,
+							description: null,
 							columnId: recurring.columnId,
 							userId: recurring.assigneeId,
 							createdBy: recurring.createdBy,
@@ -192,6 +208,10 @@ export async function processRecurringTasks(): Promise<void> {
 
 				return { taskId, number: nextNumber, subTasks };
 			});
+
+			if (!result) continue;
+
+			const { taskId, number, subTasks } = result;
 
 			await publishEvent("task.created", {
 				taskId,

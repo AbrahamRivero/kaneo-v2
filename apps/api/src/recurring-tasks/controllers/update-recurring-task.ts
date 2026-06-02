@@ -48,22 +48,24 @@ async function updateRecurringTask(
 	}
 
 	if (checklistItems) {
-		await db
-			.delete(recurringTaskChecklistItemTable)
-			.where(
-				eq(recurringTaskChecklistItemTable.recurringTaskId, recurringTaskId),
-			);
+		await db.transaction(async (tx) => {
+			await tx
+				.delete(recurringTaskChecklistItemTable)
+				.where(
+					eq(recurringTaskChecklistItemTable.recurringTaskId, recurringTaskId),
+				);
 
-		if (checklistItems.length > 0) {
-			await db.insert(recurringTaskChecklistItemTable).values(
-				checklistItems.map((item) => ({
-					id: createId(),
-					recurringTaskId,
-					text: item.text,
-					position: item.position,
-				})),
-			);
-		}
+			if (checklistItems.length > 0) {
+				await tx.insert(recurringTaskChecklistItemTable).values(
+					checklistItems.map((item) => ({
+						id: createId(),
+						recurringTaskId,
+						text: item.text,
+						position: item.position,
+					})),
+				);
+			}
+		});
 	}
 
 	await publishEvent("recurring_task.updated", {
