@@ -8,6 +8,7 @@ import {
 	projectTable,
 	taskTable,
 } from "../../database/schema";
+import { publishEvent } from "../../events";
 import type { GitHubConfig } from "../../plugins/github/config";
 import {
 	createExternalLink,
@@ -263,6 +264,17 @@ async function importSingleIssue(
 	if (!createdTask) {
 		throw new Error("Failed to create task");
 	}
+
+	await publishEvent("task.created", {
+		...createdTask,
+		taskId: createdTask.id,
+		userId: createdTask.userId ?? "",
+		type: "task",
+		content: null,
+		source: "github",
+		externalId: issue.number.toString(),
+		actor: issue.user?.login ?? "github-import",
+	});
 
 	await createExternalLink({
 		taskId: createdTask.id,

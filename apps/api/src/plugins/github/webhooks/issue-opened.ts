@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { columnRepository } from "../../../column/infrastructure/repositories/drizzle-column.repository";
 import db from "../../../database";
 import { projectTable, taskTable } from "../../../database/schema";
+import { publishEvent } from "../../../events";
 import getNextTaskNumber from "../../../task/controllers/get-next-task-number";
 import type { GitHubConfig } from "../config";
 import { createExternalLink, findExternalLink } from "../services/link-manager";
@@ -111,6 +112,17 @@ export async function handleIssueOpened(payload: IssueOpenedPayload) {
 			console.error("Failed to create task from GitHub issue");
 			continue;
 		}
+
+		await publishEvent("task.created", {
+			...createdTask,
+			taskId: createdTask.id,
+			userId: createdTask.userId ?? "",
+			type: "task",
+			content: null,
+			source: "github",
+			externalId: issue.number.toString(),
+			actor: issue.user?.login ?? "github-webhook",
+		});
 
 		await createExternalLink({
 			taskId: createdTask.id,
