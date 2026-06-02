@@ -164,7 +164,7 @@ const column = new Hono<{
 		}),
 		validator("param", v.object({ id: v.string() })),
 		workspaceAccess.fromColumn("id"),
-		requireWorkspacePermission({ project: ["update"] }),
+		requireWorkspacePermission({ project: ["delete"] }),
 		async (c) => {
 			const { id } = c.req.valid("param");
 			const result = await deleteColumn(id);

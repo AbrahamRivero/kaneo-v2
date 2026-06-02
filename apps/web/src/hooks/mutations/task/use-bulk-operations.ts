@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import bulkOperation from "@/fetchers/task/bulk-operation";
 import deleteTask from "@/fetchers/task/delete-task";
 
-export function useBulkOperations() {
+export function useBulkOperations(projectId?: string) {
 	const queryClientRef = useQueryClient();
 
 	const invalidateCommon = () => {
@@ -20,6 +20,7 @@ export function useBulkOperations() {
 	const bulkArchive = useMutation({
 		mutationFn: async (taskIds: string[]) => {
 			await bulkOperation({
+				projectId: projectId ?? "",
 				taskIds,
 				operation: "updateStatus",
 				value: "archived",
@@ -37,6 +38,7 @@ export function useBulkOperations() {
 			status: string;
 		}) => {
 			await bulkOperation({
+				projectId: projectId ?? "",
 				taskIds,
 				operation: "updateStatus",
 				value: status,
@@ -54,6 +56,7 @@ export function useBulkOperations() {
 			userId: string;
 		}) => {
 			await bulkOperation({
+				projectId: projectId ?? "",
 				taskIds,
 				operation: "updateAssignee",
 				value: userId,
@@ -65,6 +68,7 @@ export function useBulkOperations() {
 	const bulkMoveToBacklog = useMutation({
 		mutationFn: async (taskIds: string[]) => {
 			await bulkOperation({
+				projectId: projectId ?? "",
 				taskIds,
 				operation: "updateStatus",
 				value: "planned",
@@ -82,6 +86,7 @@ export function useBulkOperations() {
 			status: string;
 		}) => {
 			await bulkOperation({
+				projectId: projectId ?? "",
 				taskIds,
 				operation: "updateStatus",
 				value: status,
@@ -99,6 +104,7 @@ export function useBulkOperations() {
 			priority: string;
 		}) => {
 			await bulkOperation({
+				projectId: projectId ?? "",
 				taskIds,
 				operation: "updatePriority",
 				value: priority,
@@ -116,6 +122,7 @@ export function useBulkOperations() {
 			labelId: string;
 		}) => {
 			await bulkOperation({
+				projectId: projectId ?? "",
 				taskIds,
 				operation: "addLabel",
 				value: labelId,
@@ -136,6 +143,7 @@ export function useBulkOperations() {
 			dueDate: string | null;
 		}) => {
 			await bulkOperation({
+				projectId: projectId ?? "",
 				taskIds,
 				operation: "updateDueDate",
 				value: dueDate,

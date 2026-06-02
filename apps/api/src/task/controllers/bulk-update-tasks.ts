@@ -1,8 +1,3 @@
-import { eq, inArray } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { projectTable, taskTable } from "../../database/schema";
-import { checkWorkspacePermission } from "../../utils/require-workspace-permission";
 import { createTaskUseCases } from "../application";
 import type { BulkOperationInput } from "../domain";
 
@@ -19,41 +14,6 @@ async function bulkUpdateTasks({
 	value?: string | null;
 	userId: string;
 }) {
-	const tasks = await db
-		.select({
-			id: taskTable.id,
-			workspaceId: projectTable.workspaceId,
-		})
-		.from(taskTable)
-		.innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
-		.where(inArray(taskTable.id, taskIds));
-
-	if (tasks.length === 0) {
-		throw new HTTPException(404, {
-			message: "No tasks found",
-		});
-	}
-
-	const workspaceIds = [...new Set(tasks.map((t) => t.workspaceId))];
-
-	if (workspaceIds.length > 1) {
-		throw new HTTPException(400, {
-			message: "All tasks must belong to the same workspace",
-		});
-	}
-
-	const workspaceId = workspaceIds[0];
-
-	if (!workspaceId) {
-		throw new HTTPException(400, {
-			message: "Could not determine workspace",
-		});
-	}
-
-	await checkWorkspacePermission(workspaceId, userId, {
-		task: ["update"],
-	});
-
 	return bulkUpdateTasksUseCase.execute({
 		taskIds,
 		operation,

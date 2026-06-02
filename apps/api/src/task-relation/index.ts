@@ -98,7 +98,7 @@ const taskRelation = new Hono<{
 		}),
 		validator("param", v.object({ id: v.string() })),
 		workspaceAccess.fromTaskRelation("id"),
-		requireWorkspacePermission({ task: ["update"] }),
+		requireWorkspacePermission({ task: ["delete"] }),
 		async (c) => {
 			const userId = c.get("userId");
 			const { id } = c.req.valid("param");

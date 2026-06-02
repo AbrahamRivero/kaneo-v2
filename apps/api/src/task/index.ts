@@ -114,6 +114,7 @@ const task = new Hono<{
 		validator(
 			"json",
 			v.object({
+				projectId: v.string(),
 				taskIds: v.pipe(v.array(v.string()), v.minLength(1)),
 				operation: v.picklist([
 					"updateStatus",
@@ -127,6 +128,8 @@ const task = new Hono<{
 				value: v.optional(v.nullable(v.string())),
 			}),
 		),
+		workspaceAccess.fromBody("projectId"),
+		requireWorkspacePermission({ task: ["update"] }),
 		async (c) => {
 			const { taskIds, operation, value } = c.req.valid("json");
 			const userId = c.get("userId");

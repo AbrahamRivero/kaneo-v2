@@ -10,16 +10,18 @@ type BulkOperationType =
 	| "updateDueDate";
 
 async function bulkOperation({
+	projectId,
 	taskIds,
 	operation,
 	value,
 }: {
+	projectId: string;
 	taskIds: string[];
 	operation: BulkOperationType;
 	value?: string | null;
 }) {
 	const response = await client.task.bulk.$patch({
-		json: { taskIds, operation, value },
+		json: { projectId, taskIds, operation, value },
 	});
 
 	if (!response.ok) {

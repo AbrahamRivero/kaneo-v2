@@ -95,7 +95,7 @@ function BacklogBulkToolbar() {
 		bulkPriority,
 		bulkAddLabel,
 		bulkDueDate,
-	} = useBulkOperations();
+	} = useBulkOperations(project?.id);
 	const { data: workspace } = useActiveWorkspace();
 	const { data: workspaceUsers } = useGetActiveWorkspaceUsers(
 		workspace?.id ?? "",
