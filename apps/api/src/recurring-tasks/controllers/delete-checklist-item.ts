@@ -1,21 +1,9 @@
-import { eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { recurringTaskChecklistItemTable } from "../../database/schema";
+import { createRecurringTaskUseCases } from "../application";
 
-async function deleteChecklistItem(checklistItemId: string) {
-	const [item] = await db
-		.delete(recurringTaskChecklistItemTable)
-		.where(eq(recurringTaskChecklistItemTable.id, checklistItemId))
-		.returning();
+const { deleteChecklistItem } = createRecurringTaskUseCases();
 
-	if (!item) {
-		throw new HTTPException(404, {
-			message: "Checklist item not found",
-		});
-	}
-
-	return item;
+async function deleteChecklistItemController(checklistItemId: string) {
+	return deleteChecklistItem.execute(checklistItemId);
 }
 
-export default deleteChecklistItem;
+export default deleteChecklistItemController;

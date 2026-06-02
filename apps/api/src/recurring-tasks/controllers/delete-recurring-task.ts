@@ -1,26 +1,12 @@
-import { eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { recurringTaskTable } from "../../database/schema";
-import { publishEvent } from "../../events";
+import { createRecurringTaskUseCases } from "../application";
 
-async function deleteRecurringTask(recurringTaskId: string, userId?: string) {
-	const [task] = await db
-		.delete(recurringTaskTable)
-		.where(eq(recurringTaskTable.id, recurringTaskId))
-		.returning();
+const { deleteRecurringTask } = createRecurringTaskUseCases();
 
-	if (!task) {
-		throw new HTTPException(404, { message: "Recurring task not found" });
-	}
-
-	await publishEvent("recurring_task.deleted", {
-		recurringTaskId,
-		projectId: task.projectId,
-		userId: userId ?? "",
-	});
-
-	return task;
+async function deleteRecurringTaskController(
+	recurringTaskId: string,
+	userId?: string,
+) {
+	return deleteRecurringTask.execute(recurringTaskId, userId);
 }
 
-export default deleteRecurringTask;
+export default deleteRecurringTaskController;

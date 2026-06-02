@@ -1,13 +1,9 @@
-import { eq } from "drizzle-orm";
-import db from "../../database";
-import { recurringTaskChecklistItemTable } from "../../database/schema";
+import { createRecurringTaskUseCases } from "../application";
 
-async function listChecklistItems(recurringTaskId: string) {
-	return db
-		.select()
-		.from(recurringTaskChecklistItemTable)
-		.where(eq(recurringTaskChecklistItemTable.recurringTaskId, recurringTaskId))
-		.orderBy(recurringTaskChecklistItemTable.position);
+const { listChecklistItems } = createRecurringTaskUseCases();
+
+async function listChecklistItemsController(recurringTaskId: string) {
+	return listChecklistItems.execute(recurringTaskId);
 }
 
-export default listChecklistItems;
+export default listChecklistItemsController;

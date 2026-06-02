@@ -1,20 +1,9 @@
-import { eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
-import db from "../../database";
-import { templateTable } from "../../database/schema";
+import { createTemplateUseCases } from "../application";
 
-async function deleteTemplate(templateId: string) {
-	const existing = await db.query.templateTable.findFirst({
-		where: eq(templateTable.id, templateId),
-	});
+const { deleteTemplate } = createTemplateUseCases();
 
-	if (!existing) {
-		throw new HTTPException(404, { message: "Template not found" });
-	}
-
-	await db.delete(templateTable).where(eq(templateTable.id, templateId));
-
-	return { success: true };
+async function deleteTemplateController(templateId: string) {
+	return deleteTemplate.execute(templateId);
 }
 
-export default deleteTemplate;
+export default deleteTemplateController;
