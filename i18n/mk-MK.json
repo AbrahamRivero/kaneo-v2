@@ -1,4 +1,4 @@
-﻿{
+{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -244,7 +244,7 @@
 		"checkEmail": {
 			"pageTitle": "Провери ја е-поштата",
 			"title": "Провери ја е-поштата",
-			"inboxMessage": "Ти испративме привремен линк за најава. Провери го сандачето на \u003cemail\u003e{{email}}\u003c/email\u003e.",
+			"inboxMessage": "Ти испративме привремен линк за најава. Провери го сандачето на <email>{{email}}</email>.",
 			"emailFallback": "твојата е-пошта",
 			"backToLogin": "Назад кон најава"
 		},
@@ -317,15 +317,15 @@
 			"goToSignIn": "Оди на најава",
 			"workspaceLabel": "Работен простор: {{workspaceName}}",
 			"joinWorkspace": "Приклучи се на {{workspaceName}}",
-			"inviteBodySignedIn": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e те покани да се приклучиш на нивниот работен простор.",
-			"inviteBodySignedOut": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e те покани да се приклучиш на нивниот работен простор на Kaneo.",
+			"inviteBodySignedIn": "<inviter>{{inviterName}}</inviter> те покани да се приклучиш на нивниот работен простор.",
+			"inviteBodySignedOut": "<inviter>{{inviterName}}</inviter> те покани да се приклучиш на нивниот работен простор на Kaneo.",
 			"signInToAccept": "Најави се за да ја прифатиш поканата.",
 			"accepting": "Се прифаќа...",
 			"acceptInvitation": "Прифати покана",
 			"goToDashboard": "Оди на контролна табла",
-			"signedInAs": "Најавен како \u003cemail\u003e{{email}}\u003c/email\u003e",
+			"signedInAs": "Најавен како <email>{{email}}</email>",
 			"youveBeenInvited": "Поканет си!",
-			"invitationFor": "Покана за: \u003cemail\u003e{{email}}\u003c/email\u003e",
+			"invitationFor": "Покана за: <email>{{email}}</email>",
 			"signIn": "Најави се",
 			"toast": {
 				"acceptFailed": "Неуспешно прифаќање на поканата",
@@ -344,7 +344,7 @@
 			"creating": "Се креира...",
 			"createWorkspace": "Креирај работен простор",
 			"workspaceCreatedTitle": "Работниот простор е креиран",
-			"redirectingToWorkspace": "Те носиме на \u003cname\u003e{{name}}\u003c/name\u003e...",
+			"redirectingToWorkspace": "Те носиме на <name>{{name}}</name>...",
 			"toast": {
 				"workspaceCreated": "Работниот простор е успешно креиран",
 				"createFailed": "Неуспешно креирање на работен простор"
@@ -1123,7 +1123,9 @@
 				"pr_merged": "PR спoен",
 				"issue_opened": "Issue отворен",
 				"issue_closed": "Issue затворен"
-			}
+			},
+			"giteaHeading": "Gitea",
+			"giteaHint": "When a Gitea webhook event occurs, move the linked task to a column."
 		},
 		"externalLinks": {
 			"resources": "Ресурси",
@@ -1236,7 +1238,7 @@
 			"title": "Кратенки на тастатура",
 			"subtitle": "Забрзај го работниот тек со кратенки на тастатура",
 			"searchPlaceholder": "Пребарај кратенки...",
-			"footer": "Притисни \u003ckbd\u003eEscape\u003c/kbd\u003e за затворање",
+			"footer": "Притисни <kbd>Escape</kbd> за затворање",
 			"categories": {
 				"general": "Општо",
 				"create": "Креирај",
@@ -1840,7 +1842,8 @@
 				"complete": "Завршен",
 				"inProgress": "Во тек"
 			},
-			"noDueDate": "Без краен рок"
+			"noDueDate": "Без краен рок",
+			"emptyDescriptionReadOnly": "There are no projects in this workspace yet. Ask an admin to create one."
 		},
 		"search": {
 			"pageTitle": "Пребарување",
@@ -1894,7 +1897,8 @@
 		"roles": {
 			"owner": "Сопственик",
 			"admin": "Администратор",
-			"member": "Член"
+			"member": "Член",
+			"viewer": "Viewer"
 		},
 		"members": {
 			"pageTitle": "Членови",
@@ -1929,7 +1933,9 @@
 			"removeSuccess": "Членот на тимот е успешно отстранет",
 			"removeError": "Неуспешно отстранување на член на тим",
 			"cancelInviteSuccess": "Поканата е успешно откажана",
-			"cancelInviteError": "Неуспешно откажување на покана"
+			"cancelInviteError": "Неуспешно откажување на покана",
+			"roleUpdateSuccess": "Role updated",
+			"roleUpdateError": "Failed to update role"
 		},
 		"deleteMemberModal": {
 			"title": "Отстрани член на тим",

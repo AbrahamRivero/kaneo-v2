@@ -1,4 +1,4 @@
-﻿{
+{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -244,7 +244,7 @@
 		"checkEmail": {
 			"pageTitle": "Prüfe deine E-Mails",
 			"title": "Prüfe deine E-Mails",
-			"inboxMessage": "Wir haben dir einen temporären Anmeldelink gesendet. Bitte prüfe dein Postfach unter \u003cemail\u003e{{email}}\u003c/email\u003e.",
+			"inboxMessage": "Wir haben dir einen temporären Anmeldelink gesendet. Bitte prüfe dein Postfach unter <email>{{email}}</email>.",
 			"emailFallback": "deine E-Mail-Adresse",
 			"backToLogin": "Zurück zur Anmeldung"
 		},
@@ -270,7 +270,7 @@
 			"codeSentTo": "Code gesendet an {{email}}",
 			"verificationCodeLabel": "Bestätigungscode",
 			"verifying": "Wird verifiziert...",
-			"verifyAndSignIn": "Verifizieren \u0026 anmelden",
+			"verifyAndSignIn": "Verifizieren & anmelden",
 			"changeEmail": "E-Mail ändern",
 			"resend": "Erneut senden",
 			"validation": {
@@ -317,15 +317,15 @@
 			"goToSignIn": "Zur Anmeldung",
 			"workspaceLabel": "Workspace: {{workspaceName}}",
 			"joinWorkspace": "{{workspaceName}} beitreten",
-			"inviteBodySignedIn": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e hat dich eingeladen, ihrem Workspace beizutreten.",
-			"inviteBodySignedOut": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e hat dich eingeladen, ihrem Workspace auf Kaneo beizutreten.",
+			"inviteBodySignedIn": "<inviter>{{inviterName}}</inviter> hat dich eingeladen, ihrem Workspace beizutreten.",
+			"inviteBodySignedOut": "<inviter>{{inviterName}}</inviter> hat dich eingeladen, ihrem Workspace auf Kaneo beizutreten.",
 			"signInToAccept": "Melde dich an, um die Einladung anzunehmen.",
 			"accepting": "Wird angenommen...",
 			"acceptInvitation": "Einladung annehmen",
 			"goToDashboard": "Zum Dashboard",
-			"signedInAs": "Angemeldet als \u003cemail\u003e{{email}}\u003c/email\u003e",
+			"signedInAs": "Angemeldet als <email>{{email}}</email>",
 			"youveBeenInvited": "Du wurdest eingeladen!",
-			"invitationFor": "Einladung für: \u003cemail\u003e{{email}}\u003c/email\u003e",
+			"invitationFor": "Einladung für: <email>{{email}}</email>",
 			"signIn": "Anmelden",
 			"toast": {
 				"acceptFailed": "Einladung konnte nicht angenommen werden",
@@ -344,7 +344,7 @@
 			"creating": "Wird erstellt...",
 			"createWorkspace": "Workspace erstellen",
 			"workspaceCreatedTitle": "Workspace erstellt",
-			"redirectingToWorkspace": "Du wirst zu \u003cname\u003e{{name}}\u003c/name\u003e weitergeleitet...",
+			"redirectingToWorkspace": "Du wirst zu <name>{{name}}</name> weitergeleitet...",
 			"toast": {
 				"workspaceCreated": "Workspace erfolgreich erstellt",
 				"createFailed": "Workspace konnte nicht erstellt werden"
@@ -1238,7 +1238,7 @@
 			"title": "Tastenkürzel",
 			"subtitle": "Beschleunige deinen Workflow mit Tastenkürzeln",
 			"searchPlaceholder": "Tastenkürzel suchen...",
-			"footer": "Drücke \u003ckbd\u003eEscape\u003c/kbd\u003e, um zu schließen",
+			"footer": "Drücke <kbd>Escape</kbd>, um zu schließen",
 			"categories": {
 				"general": "Allgemein",
 				"create": "Erstellen",
@@ -1842,7 +1842,8 @@
 				"complete": "Abgeschlossen",
 				"inProgress": "In Bearbeitung"
 			},
-			"noDueDate": "Kein Fälligkeitsdatum"
+			"noDueDate": "Kein Fälligkeitsdatum",
+			"emptyDescriptionReadOnly": "There are no projects in this workspace yet. Ask an admin to create one."
 		},
 		"search": {
 			"pageTitle": "Suche",
@@ -1896,7 +1897,8 @@
 		"roles": {
 			"owner": "Eigentümer",
 			"admin": "Admin",
-			"member": "Mitglied"
+			"member": "Mitglied",
+			"viewer": "Viewer"
 		},
 		"members": {
 			"pageTitle": "Mitglieder",
@@ -1931,7 +1933,9 @@
 			"removeSuccess": "Teammitglied erfolgreich entfernt",
 			"removeError": "Teammitglied konnte nicht entfernt werden",
 			"cancelInviteSuccess": "Einladung erfolgreich abgebrochen",
-			"cancelInviteError": "Einladung konnte nicht abgebrochen werden"
+			"cancelInviteError": "Einladung konnte nicht abgebrochen werden",
+			"roleUpdateSuccess": "Role updated",
+			"roleUpdateError": "Failed to update role"
 		},
 		"deleteMemberModal": {
 			"title": "Teammitglied entfernen",

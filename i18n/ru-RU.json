@@ -1,4 +1,4 @@
-﻿{
+{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -245,7 +245,7 @@
 		"checkEmail": {
 			"pageTitle": "Проверьте почту",
 			"title": "Проверьте свою почту",
-			"inboxMessage": "Мы отправили вам временную ссылку для входа. Пожалуйста, проверьте свой почтовый ящик по адресу \u003cemail\u003e{{email}}\u003c/email\u003e.",
+			"inboxMessage": "Мы отправили вам временную ссылку для входа. Пожалуйста, проверьте свой почтовый ящик по адресу <email>{{email}}</email>.",
 			"emailFallback": "ваш адрес электронной почты",
 			"backToLogin": "Вернуться к входу"
 		},
@@ -318,15 +318,15 @@
 			"goToSignIn": "Перейти к входу",
 			"workspaceLabel": "Рабочая область: {{workspaceName}}",
 			"joinWorkspace": "Присоединиться к {{workspaceName}}",
-			"inviteBodySignedIn": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e приглашает вас присоединиться к рабочей области.",
-			"inviteBodySignedOut": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e приглашает вас присоединиться к рабочей области в Kaneo.",
+			"inviteBodySignedIn": "<inviter>{{inviterName}}</inviter> приглашает вас присоединиться к рабочей области.",
+			"inviteBodySignedOut": "<inviter>{{inviterName}}</inviter> приглашает вас присоединиться к рабочей области в Kaneo.",
 			"signInToAccept": "Войдите, чтобы принять приглашение.",
 			"accepting": "Принятие...",
 			"acceptInvitation": "Принять приглашение",
 			"goToDashboard": "Перейти к панели управления",
-			"signedInAs": "Вы вошли как \u003cemail\u003e{{email}}\u003c/email\u003e",
+			"signedInAs": "Вы вошли как <email>{{email}}</email>",
 			"youveBeenInvited": "Вас пригласили!",
-			"invitationFor": "Приглашение для: \u003cemail\u003e{{email}}\u003c/email\u003e",
+			"invitationFor": "Приглашение для: <email>{{email}}</email>",
 			"signIn": "Войти",
 			"toast": {
 				"acceptFailed": "Не удалось принять приглашение",
@@ -345,7 +345,7 @@
 			"creating": "Создание...",
 			"createWorkspace": "Создать рабочую область",
 			"workspaceCreatedTitle": "Рабочая область создана",
-			"redirectingToWorkspace": "Переход к \u003cname\u003e{{name}}\u003c/name\u003e...",
+			"redirectingToWorkspace": "Переход к <name>{{name}}</name>...",
 			"toast": {
 				"workspaceCreated": "Рабочая область успешно создана",
 				"createFailed": "Не удалось создать рабочую область"
@@ -1114,7 +1114,9 @@
 			"importError": "Не удалось импортировать задачи",
 			"invalidFormat": "Некорректный формат файла импорта",
 			"noFileDropped": "Файл не был перетащен",
-			"notJsonFile": "Пожалуйста, загрузите JSON-файл"
+			"notJsonFile": "Пожалуйста, загрузите JSON-файл",
+			"importSuccess": "Imported {{count}} tasks successfully",
+			"importPartialError": "Failed to import {{count}} tasks"
 		},
 		"workflowEditor": {
 			"loading": "Загрузка...",
@@ -1180,7 +1182,8 @@
 			"members": "Участники",
 			"invitations": "Приглашения",
 			"more": "Ещё",
-			"toggleSidebar": "Переключить боковую панель"
+			"toggleSidebar": "Переключить боковую панель",
+			"backToBoard": "Back to board"
 		},
 		"projectList": {
 			"viewProject": "Открыть проект",
@@ -1244,7 +1247,7 @@
 			"title": "Сочетания клавиш",
 			"subtitle": "Ускорьте работу с помощью сочетаний клавиш",
 			"searchPlaceholder": "Поиск сочетаний...",
-			"footer": "Нажмите \u003ckbd\u003eEscape\u003c/kbd\u003e, чтобы закрыть",
+			"footer": "Нажмите <kbd>Escape</kbd>, чтобы закрыть",
 			"categories": {
 				"general": "Основные",
 				"create": "Создание",
@@ -1413,7 +1416,9 @@
 					"yaml": "YAML"
 				}
 			}
-		}
+		},
+		"moved": "moved task from \"{{from}}\" to \"{{to}}\"",
+		"created": "created this task"
 	},
 	"tasks": {
 		"status": {
@@ -1440,7 +1445,9 @@
 		},
 		"common": {
 			"selectTask": "Выбрать задачу",
-			"loadingTask": "Загрузка задачи..."
+			"loadingTask": "Загрузка задачи...",
+			"taskNotFound": "Task not found",
+			"taskNotFoundDescription": "The task you are looking for does not exist or has been deleted."
 		},
 		"detail": {
 			"subtaskOf": "Подзадача",
@@ -1667,7 +1674,8 @@
 				"dueThisWeek": "Срок на этой неделе",
 				"dueNextWeek": "Срок на следующей неделе",
 				"noDueDate": "Без срока"
-			}
+			},
+			"moveAllSuccess": "Moved {{count}} tasks to To Do"
 		},
 		"sort": {
 			"label": "Сортировка",
@@ -1705,7 +1713,8 @@
 			"operators": {
 				"isAnyOf": "любой из",
 				"includeAnyOf": "включает любой из"
-			}
+			},
+			"selectedCount": "{{count}} selected"
 		},
 		"gantt": {
 			"pageTitle": "{{name}} — Гант",
@@ -1734,7 +1743,8 @@
 			"success_one": "{{count}} задача архивирована",
 			"success_few": "{{count}} задачи архивированы",
 			"success_many": "{{count}} задач архивировано",
-			"success_other": "{{count}} задач архивировано"
+			"success_other": "{{count}} задач архивировано",
+			"success": "Archived {{count}} tasks"
 		},
 		"listView": {
 			"addTask": "Добавить задачу",
@@ -1845,7 +1855,16 @@
 			"actions": "Действия",
 			"searchActions": "Поиск действий...",
 			"noActionsFound": "Действия не найдены.",
-			"changeStatus": "Изменить статус"
+			"changeStatus": "Изменить статус",
+			"selectedCount": "{{count}} selected",
+			"moveToBacklogSuccess": "{{count}} tasks moved to backlog",
+			"moveToBoardSuccess": "{{count}} tasks moved to board",
+			"deleteConfirm": "Delete {{count}} tasks? This action cannot be undone.",
+			"deleteSuccess": "{{count}} tasks deleted",
+			"archiveSuccess": "{{count}} tasks archived",
+			"updateSuccess": "{{count}} tasks updated",
+			"assignSuccess": "{{count}} tasks assigned",
+			"addLabelSuccess": "Label added to {{count}} tasks"
 		}
 	},
 	"invitations": {
@@ -1884,7 +1903,8 @@
 				"complete": "Завершён",
 				"inProgress": "В работе"
 			},
-			"noDueDate": "Без срока"
+			"noDueDate": "Без срока",
+			"emptyDescriptionReadOnly": "There are no projects in this workspace yet. Ask an admin to create one."
 		},
 		"search": {
 			"pageTitle": "Поиск",
@@ -1940,7 +1960,8 @@
 		"roles": {
 			"owner": "Владелец",
 			"admin": "Администратор",
-			"member": "Участник"
+			"member": "Участник",
+			"viewer": "Viewer"
 		},
 		"members": {
 			"pageTitle": "Участники",
@@ -1975,7 +1996,9 @@
 			"removeSuccess": "Участник команды успешно удалён",
 			"removeError": "Не удалось удалить участника команды",
 			"cancelInviteSuccess": "Приглашение успешно отменено",
-			"cancelInviteError": "Не удалось отменить приглашение"
+			"cancelInviteError": "Не удалось отменить приглашение",
+			"roleUpdateSuccess": "Role updated",
+			"roleUpdateError": "Failed to update role"
 		},
 		"deleteMemberModal": {
 			"title": "Удалить участника команды",

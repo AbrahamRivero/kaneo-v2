@@ -1,4 +1,4 @@
-﻿{
+{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -244,7 +244,7 @@
 		"checkEmail": {
 			"pageTitle": "이메일을 확인하세요",
 			"title": "이메일을 확인하세요",
-			"inboxMessage": "임시 로그인 링크를 보내드렸습니다. \u003cemail\u003e{{email}}\u003c/email\u003e 수신함을 확인하세요.",
+			"inboxMessage": "임시 로그인 링크를 보내드렸습니다. <email>{{email}}</email> 수신함을 확인하세요.",
 			"emailFallback": "이메일 주소",
 			"backToLogin": "로그인으로 돌아가기"
 		},
@@ -317,15 +317,15 @@
 			"goToSignIn": "로그인으로 이동",
 			"workspaceLabel": "워크스페이스: {{workspaceName}}",
 			"joinWorkspace": "{{workspaceName}} 참여",
-			"inviteBodySignedIn": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e님이 워크스페이스에 초대했습니다.",
-			"inviteBodySignedOut": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e님이 Kaneo 워크스페이스에 초대했습니다.",
+			"inviteBodySignedIn": "<inviter>{{inviterName}}</inviter>님이 워크스페이스에 초대했습니다.",
+			"inviteBodySignedOut": "<inviter>{{inviterName}}</inviter>님이 Kaneo 워크스페이스에 초대했습니다.",
 			"signInToAccept": "이 초대를 수락하려면 로그인하세요.",
 			"accepting": "수락 중...",
 			"acceptInvitation": "초대 수락",
 			"goToDashboard": "대시보드로 이동",
-			"signedInAs": "\u003cemail\u003e{{email}}\u003c/email\u003e(으)로 로그인됨",
+			"signedInAs": "<email>{{email}}</email>(으)로 로그인됨",
 			"youveBeenInvited": "초대를 받았습니다!",
-			"invitationFor": "초대 대상: \u003cemail\u003e{{email}}\u003c/email\u003e",
+			"invitationFor": "초대 대상: <email>{{email}}</email>",
 			"signIn": "로그인",
 			"toast": {
 				"acceptFailed": "초대 수락에 실패했습니다",
@@ -344,7 +344,7 @@
 			"creating": "생성 중...",
 			"createWorkspace": "워크스페이스 만들기",
 			"workspaceCreatedTitle": "워크스페이스가 생성되었습니다",
-			"redirectingToWorkspace": "\u003cname\u003e{{name}}\u003c/name\u003e(으)로 이동 중...",
+			"redirectingToWorkspace": "<name>{{name}}</name>(으)로 이동 중...",
 			"toast": {
 				"workspaceCreated": "워크스페이스가 생성되었습니다",
 				"createFailed": "워크스페이스 생성에 실패했습니다"
@@ -1238,7 +1238,7 @@
 			"title": "키보드 단축키",
 			"subtitle": "키보드 단축키로 워크플로 속도를 높이세요",
 			"searchPlaceholder": "단축키 검색...",
-			"footer": "닫으려면 \u003ckbd\u003eEscape\u003c/kbd\u003e를 누르세요",
+			"footer": "닫으려면 <kbd>Escape</kbd>를 누르세요",
 			"categories": {
 				"general": "일반",
 				"create": "만들기",
@@ -1298,6 +1298,14 @@
 				"title": "시간 추적 시작됨",
 				"contentWithTask": "다음 작업의 시간 추적이 시작되었습니다: {{taskTitle}}",
 				"contentWithoutTask": "작업의 시간 추적이 시작되었습니다"
+			},
+			"due_date_reminder": {
+				"title": "Task due soon",
+				"content": "Task \"{{taskTitle}}\" is due soon"
+			},
+			"task_overdue": {
+				"title": "Task overdue",
+				"content": "Task \"{{taskTitle}}\" is past its due date"
 			}
 		}
 	},
@@ -1834,7 +1842,8 @@
 				"complete": "완료",
 				"inProgress": "진행 중"
 			},
-			"noDueDate": "마감일 없음"
+			"noDueDate": "마감일 없음",
+			"emptyDescriptionReadOnly": "There are no projects in this workspace yet. Ask an admin to create one."
 		},
 		"search": {
 			"pageTitle": "검색",
@@ -1888,7 +1897,8 @@
 		"roles": {
 			"owner": "소유자",
 			"admin": "관리자",
-			"member": "멤버"
+			"member": "멤버",
+			"viewer": "Viewer"
 		},
 		"members": {
 			"pageTitle": "멤버",
@@ -1923,7 +1933,9 @@
 			"removeSuccess": "팀 멤버가 제거되었습니다",
 			"removeError": "팀 멤버 제거에 실패했습니다",
 			"cancelInviteSuccess": "초대가 취소되었습니다",
-			"cancelInviteError": "초대 취소에 실패했습니다"
+			"cancelInviteError": "초대 취소에 실패했습니다",
+			"roleUpdateSuccess": "Role updated",
+			"roleUpdateError": "Failed to update role"
 		},
 		"deleteMemberModal": {
 			"title": "팀 구성원 제거",

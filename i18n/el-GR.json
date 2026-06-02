@@ -1,4 +1,4 @@
-﻿{
+{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -244,7 +244,7 @@
 		"checkEmail": {
 			"pageTitle": "Ελέγξτε το email σας",
 			"title": "Ελέγξτε το email σας",
-			"inboxMessage": "Σας στείλαμε έναν προσωρινό σύνδεσμο σύνδεσης. Παρακαλούμε ελέγξτε τα εισερχόμενά σας στη διεύθυνση \u003cemail\u003e{{email}}\u003c/email\u003e.",
+			"inboxMessage": "Σας στείλαμε έναν προσωρινό σύνδεσμο σύνδεσης. Παρακαλούμε ελέγξτε τα εισερχόμενά σας στη διεύθυνση <email>{{email}}</email>.",
 			"emailFallback": "τη διεύθυνση email σας",
 			"backToLogin": "Επιστροφή στη σύνδεση"
 		},
@@ -270,7 +270,7 @@
 			"codeSentTo": "Ο κωδικός στάλθηκε στο {{email}}",
 			"verificationCodeLabel": "Κωδικός επαλήθευσης",
 			"verifying": "Γίνεται επαλήθευση...",
-			"verifyAndSignIn": "Επαλήθευση \u0026 Σύνδεση",
+			"verifyAndSignIn": "Επαλήθευση & Σύνδεση",
 			"changeEmail": "Αλλαγή email",
 			"resend": "Επανάληψη αποστολής",
 			"validation": {
@@ -317,15 +317,15 @@
 			"goToSignIn": "Μετάβαση στη σύνδεση",
 			"workspaceLabel": "Χώρος εργασίας: {{workspaceName}}",
 			"joinWorkspace": "Συμμετοχή στο {{workspaceName}}",
-			"inviteBodySignedIn": "Ο/Η \u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e σας προσκάλεσε να συμμετάσχετε στον χώρο εργασίας του/της.",
-			"inviteBodySignedOut": "Ο/Η \u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e σας προσκάλεσε να συμμετάσχετε στον χώρο εργασίας του/της στο Kaneo.",
+			"inviteBodySignedIn": "Ο/Η <inviter>{{inviterName}}</inviter> σας προσκάλεσε να συμμετάσχετε στον χώρο εργασίας του/της.",
+			"inviteBodySignedOut": "Ο/Η <inviter>{{inviterName}}</inviter> σας προσκάλεσε να συμμετάσχετε στον χώρο εργασίας του/της στο Kaneo.",
 			"signInToAccept": "Συνδεθείτε για να αποδεχτείτε αυτήν την πρόσκληση.",
 			"accepting": "Γίνεται αποδοχή...",
 			"acceptInvitation": "Αποδοχή πρόσκλησης",
 			"goToDashboard": "Μετάβαση στον πίνακα ελέγχου",
-			"signedInAs": "Συνδεδεμένος ως \u003cemail\u003e{{email}}\u003c/email\u003e",
+			"signedInAs": "Συνδεδεμένος ως <email>{{email}}</email>",
 			"youveBeenInvited": "Έχετε προσκληθεί!",
-			"invitationFor": "Πρόσκληση για: \u003cemail\u003e{{email}}\u003c/email\u003e",
+			"invitationFor": "Πρόσκληση για: <email>{{email}}</email>",
 			"signIn": "Σύνδεση",
 			"toast": {
 				"acceptFailed": "Αποτυχία αποδοχής πρόσκλησης",
@@ -344,7 +344,7 @@
 			"creating": "Γίνεται δημιουργία...",
 			"createWorkspace": "Δημιουργία χώρου εργασίας",
 			"workspaceCreatedTitle": "Ο χώρος εργασίας δημιουργήθηκε",
-			"redirectingToWorkspace": "Μεταφορά στο \u003cname\u003e{{name}}\u003c/name\u003e...",
+			"redirectingToWorkspace": "Μεταφορά στο <name>{{name}}</name>...",
 			"toast": {
 				"workspaceCreated": "Ο χώρος εργασίας δημιουργήθηκε με επιτυχία",
 				"createFailed": "Αποτυχία δημιουργίας χώρου εργασίας"
@@ -1123,7 +1123,9 @@
 				"pr_merged": "Συγχώνευση PR",
 				"issue_opened": "Άνοιγμα issue",
 				"issue_closed": "Κλείσιμο issue"
-			}
+			},
+			"giteaHeading": "Gitea",
+			"giteaHint": "When a Gitea webhook event occurs, move the linked task to a column."
 		},
 		"externalLinks": {
 			"resources": "Πόροι",
@@ -1236,7 +1238,7 @@
 			"title": "Συντομεύσεις πληκτρολογίου",
 			"subtitle": "Επιταχύνετε τη ροή εργασίας σας με συντομεύσεις πληκτρολογίου",
 			"searchPlaceholder": "Αναζήτηση συντομεύσεων...",
-			"footer": "Πατήστε \u003ckbd\u003eEscape\u003c/kbd\u003e για κλείσιμο",
+			"footer": "Πατήστε <kbd>Escape</kbd> για κλείσιμο",
 			"categories": {
 				"general": "Γενικά",
 				"create": "Δημιουργία",
@@ -1840,7 +1842,8 @@
 				"complete": "Ολοκληρωμένο",
 				"inProgress": "Σε εξέλιξη"
 			},
-			"noDueDate": "Χωρίς ημερομηνία λήξης"
+			"noDueDate": "Χωρίς ημερομηνία λήξης",
+			"emptyDescriptionReadOnly": "There are no projects in this workspace yet. Ask an admin to create one."
 		},
 		"search": {
 			"pageTitle": "Αναζήτηση",
@@ -1894,7 +1897,8 @@
 		"roles": {
 			"owner": "Ιδιοκτήτης",
 			"admin": "Διαχειριστής",
-			"member": "Μέλος"
+			"member": "Μέλος",
+			"viewer": "Viewer"
 		},
 		"members": {
 			"pageTitle": "Μέλη",
@@ -1929,7 +1933,9 @@
 			"removeSuccess": "Το μέλος της ομάδας αφαιρέθηκε με επιτυχία",
 			"removeError": "Αποτυχία αφαίρεσης μέλους ομάδας",
 			"cancelInviteSuccess": "Η πρόσκληση ακυρώθηκε με επιτυχία",
-			"cancelInviteError": "Αποτυχία ακύρωσης πρόσκλησης"
+			"cancelInviteError": "Αποτυχία ακύρωσης πρόσκλησης",
+			"roleUpdateSuccess": "Role updated",
+			"roleUpdateError": "Failed to update role"
 		},
 		"deleteMemberModal": {
 			"title": "Αφαίρεση μέλους ομάδας",

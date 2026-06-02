@@ -1,4 +1,4 @@
-﻿{
+{
 	"common": {
 		"appName": "Kaneo",
 		"actions": {
@@ -46,7 +46,8 @@
 			"macedonian": "Macedonio",
 			"french": "Francés",
 			"spanish": "Español",
-			"korean": "Coreano"
+			"korean": "Coreano",
+			"dutch": "Neerlandés"
 		},
 		"people": {
 			"someone": "Alguien",
@@ -243,7 +244,7 @@
 		"checkEmail": {
 			"pageTitle": "Verifica tu email",
 			"title": "Verifica tu email",
-			"inboxMessage": "Te hemos enviado un enlace temporal. Por favor, comprueba tu bandeja de entrada en \u003cemail\u003e{{email}}\u003c/email\u003e.",
+			"inboxMessage": "Te hemos enviado un enlace temporal. Por favor, comprueba tu bandeja de entrada en <email>{{email}}</email>.",
 			"emailFallback": "tu dirección de correo electrónico",
 			"backToLogin": "Volver a login"
 		},
@@ -316,15 +317,15 @@
 			"goToSignIn": "Ir a Iniciar Sesión",
 			"workspaceLabel": "Espacio de trabajo: {{workspaceName}}",
 			"joinWorkspace": "Unirse a {{workspaceName}}",
-			"inviteBodySignedIn": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e te ha invitado a unirse a su espacio de trabajo.",
-			"inviteBodySignedOut": "\u003cinviter\u003e{{inviterName}}\u003c/inviter\u003e te ha invitado a unirse a su espacio de trabajo en Kaneo.",
+			"inviteBodySignedIn": "<inviter>{{inviterName}}</inviter> te ha invitado a unirse a su espacio de trabajo.",
+			"inviteBodySignedOut": "<inviter>{{inviterName}}</inviter> te ha invitado a unirse a su espacio de trabajo en Kaneo.",
 			"signInToAccept": "Inicia sesión para aceptar esta invitación.",
 			"accepting": "Aceptando...",
 			"acceptInvitation": "Aceptar invitación",
 			"goToDashboard": "Ir al Panel de Control",
-			"signedInAs": "Sesión iniciada como \u003cemail\u003e{{email}}\u003c/email\u003e",
+			"signedInAs": "Sesión iniciada como <email>{{email}}</email>",
 			"youveBeenInvited": "¡Has sido invitado!",
-			"invitationFor": "Invitación para: \u003cemail\u003e{{email}}\u003c/email\u003e",
+			"invitationFor": "Invitación para: <email>{{email}}</email>",
 			"signIn": "Iniciar sesión",
 			"toast": {
 				"acceptFailed": "Error al aceptar la invitación",
@@ -343,7 +344,7 @@
 			"creating": "Creando...",
 			"createWorkspace": "Crear espacio de trabajo",
 			"workspaceCreatedTitle": "Espacio de trabajo creado",
-			"redirectingToWorkspace": "Redirigiéndote a \u003cname\u003e{{name}}\u003c/name\u003e...",
+			"redirectingToWorkspace": "Redirigiéndote a <name>{{name}}</name>...",
 			"toast": {
 				"workspaceCreated": "Espacio de trabajo creado correctamente",
 				"createFailed": "Error al crear el espacio de trabajo"
@@ -630,7 +631,11 @@
 			"genericWebhookSectionTitle": "Webhooks generales",
 			"genericWebhookSectionSubtitle": "Envía los eventos de las tareas a cualquier endpoint HTTP como JSON.",
 			"slackSectionTitle": "Integración con Slack",
-			"slackSectionSubtitle": "Envía los eventos de las tareas a un canal de Slack con un webhook."
+			"slackSectionSubtitle": "Envía los eventos de las tareas a un canal de Slack con un webhook.",
+			"giteaSectionTitle": "Gitea",
+			"giteaSectionSubtitle": "Conecta con repositorios Gitea",
+			"telegramSectionTitle": "Telegram",
+			"telegramSectionSubtitle": "Recibe notificaciones en Telegram"
 		},
 		"projectVisibility": {
 			"pageTitle": "Visibilidad del Proyecto",
@@ -909,7 +914,9 @@
 				"pr_merged": "PR mergeada",
 				"issue_opened": "Issue abierto",
 				"issue_closed": "Issue cerrado"
-			}
+			},
+			"giteaHeading": "Gitea",
+			"giteaHint": "Eventos de Gitea (push, PR) pueden mover tareas entre columnas"
 		},
 		"externalLinks": {
 			"resources": "Recursos",
@@ -918,6 +925,215 @@
 			"merged": "Merged",
 			"draft": "Borrador",
 			"open": "Abierta"
+		},
+		"notifications": "Notificaciones",
+		"notificationsPage": {
+			"pageTitle": "Preferencias de notificación",
+			"title": "Notificaciones",
+			"subtitle": "Configura cómo y cuándo recibir notificaciones",
+			"statusConnected": "Conectado",
+			"statusPaused": "Pausado",
+			"emailTitle": "Correo electrónico",
+			"emailDescription": "Recibir notificaciones por correo electrónico",
+			"accountEmailLabel": "Correo electrónico",
+			"accountEmailNoAddress": "No hay correo electrónico configurado",
+			"accountEmailHint": "Configura tu correo en la página de información de la cuenta",
+			"saveChanges": "Guardar cambios",
+			"disconnect": "Desconectar",
+			"ntfyTitle": "ntfy",
+			"ntfyDescription": "Recibir notificaciones push vía ntfy",
+			"serverUrl": "URL del servidor",
+			"topic": "Topic",
+			"token": "Token",
+			"ntfyServerPlaceholder": "https://ntfy.ejemplo.com",
+			"ntfyTopicPlaceholder": "Introduce el topic",
+			"ntfyTokenPlaceholder": "Introduce tu token (opcional)",
+			"ntfyTokenHintConfigured": "Token configurado. Introducir uno nuevo lo reemplazará.",
+			"ntfyTokenHintOptional": "Token opcional para autenticación",
+			"connectNtfy": "Conectar ntfy",
+			"gotifyTitle": "Gotify",
+			"gotifyDescription": "Recibir notificaciones push vía Gotify",
+			"gotifyTokenLabel": "Token de aplicación",
+			"gotifyServerPlaceholder": "https://gotify.ejemplo.com",
+			"gotifyTokenPlaceholder": "Introduce tu token de aplicación",
+			"gotifyTokenHintConfigured": "Token configurado. Introducir uno nuevo lo reemplazará.",
+			"gotifyTokenHintRequired": "Se requiere un token de aplicación de Gotify",
+			"connectGotify": "Conectar Gotify",
+			"webhookTitle": "Webhook",
+			"webhookDescription": "Recibir notificaciones vía webhook HTTP",
+			"endpointUrl": "URL del endpoint",
+			"signingSecret": "Secreto de firma",
+			"webhookUrlPlaceholder": "https://ejemplo.com/webhook",
+			"webhookSecretPlaceholder": "Introduce un secreto (opcional)",
+			"webhookSecretHintConfigured": "Secreto configurado. Nuevo lo reemplazará.",
+			"webhookSecretHintOptional": "Secreto opcional para firmar peticiones",
+			"connectWebhook": "Conectar Webhook",
+			"workspaceRulesTitle": "Reglas por espacio de trabajo",
+			"workspaceRulesDescription": "Reglas específicas por espacio de trabajo",
+			"workspaceCardHint": "Gestiona notificaciones para este espacio de trabajo",
+			"workspaceCardLabelEmail": "Email",
+			"workspaceCardLabelNtfy": "ntfy",
+			"workspaceCardLabelGotify": "Gotify",
+			"workspaceCardLabelWebhook": "Webhook",
+			"emailChannelHintEnabled": "Notificaciones por email activas",
+			"emailChannelHintDisabled": "Configura un email para activar notificaciones por correo",
+			"ntfyChannelHintEnabled": "Notificaciones ntfy activas",
+			"ntfyChannelHintDisabled": "Conecta un servidor ntfy para activar notificaciones",
+			"gotifyChannelHintEnabled": "Notificaciones Gotify activas",
+			"gotifyChannelHintDisabled": "Conecta un servidor Gotify para activar notificaciones",
+			"webhookChannelHintEnabled": "Notificaciones webhook activas",
+			"webhookChannelHintDisabled": "Conecta una URL de webhook para activar notificaciones",
+			"projectScope": "Ámbito del proyecto",
+			"projectScopeDescription": "Selecciona si aplica a todos los proyectos o solo algunos",
+			"allProjects": "Todos los proyectos",
+			"allProjectsDescription": "Recibir notificaciones de todos los proyectos",
+			"selectedProjects": "Proyectos seleccionados",
+			"selectedProjectsDescription": "Selecciona los proyectos para esta regla",
+			"noProjectsInWorkspace": "No hay proyectos en este espacio de trabajo",
+			"createRule": "Crear regla",
+			"removeRule": "Eliminar regla",
+			"toastEmailSaved": "Preferencias de email guardadas",
+			"toastEmailSaveFailed": "Error al guardar preferencias de email",
+			"toastNtfySaved": "Configuración de ntfy guardada",
+			"toastNtfySaveFailed": "Error al guardar configuración de ntfy",
+			"toastNtfyDisconnected": "ntfy desconectado",
+			"toastNtfyDisconnectFailed": "Error al desconectar ntfy",
+			"toastGotifySaved": "Configuración de Gotify guardada",
+			"toastGotifySaveFailed": "Error al guardar configuración de Gotify",
+			"toastGotifyDisconnected": "Gotify desconectado",
+			"toastGotifyDisconnectFailed": "Error al desconectar Gotify",
+			"toastWebhookSaved": "Configuración de webhook guardada",
+			"toastWebhookSaveFailed": "Error al guardar webhook",
+			"toastWebhookDisconnected": "Webhook desconectado",
+			"toastWebhookDisconnectFailed": "Error al desconectar webhook",
+			"toastRuleSaved": "Regla guardada",
+			"toastRuleSaveFailed": "Error al guardar la regla",
+			"toastRuleRemoved": "Regla eliminada",
+			"toastRuleRemoveFailed": "Error al eliminar la regla",
+			"toastPreferencesSaved": "Preferencias guardadas",
+			"toastPreferencesSaveFailed": "Error al guardar preferencias",
+			"toastRuleSavedGeneric": "Regla guardada correctamente",
+			"toastRuleRemovedGeneric": "Regla eliminada correctamente"
+		},
+		"giteaIntegration": {
+			"validation": {
+				"baseUrlRequired": "La URL base es obligatoria",
+				"baseUrlInvalid": "La URL base no es válida",
+				"ownerRequired": "El propietario es obligatorio",
+				"ownerInvalid": "El propietario no es válido",
+				"nameRequired": "El nombre del repositorio es obligatorio",
+				"nameInvalid": "El nombre del repositorio no es válido"
+			},
+			"toast": {
+				"verifyOk": "Conexión verificada correctamente",
+				"verifyWarning": "No se pudo verificar la conexión",
+				"repoNotFound": "Repositorio no encontrado",
+				"verifyError": "Error al verificar la conexión",
+				"tokenRequired": "Se requiere un token de acceso",
+				"tokenRequiredVerify": "Se requiere un token para verificar",
+				"verifyFirst": "Verifica la conexión primero",
+				"updated": "Integración actualizada",
+				"updateError": "Error al actualizar la integración",
+				"removed": "Integración eliminada",
+				"removeError": "Error al eliminar la integración",
+				"issuesImported": "Issues importados correctamente",
+				"importError": "Error al importar issues",
+				"commentOnEnabled": "Comentarios en issues activados",
+				"commentOnDisabled": "Comentarios en issues desactivados",
+				"settingsUpdateError": "Error al actualizar la configuración",
+				"secretCopied": "Secreto copiado al portapapeles",
+				"unableToCopySecret": "No se pudo copiar el secreto"
+			},
+			"webhookShow": "Mostrar",
+			"webhookHide": "Ocultar",
+			"webhookCopy": "Copiar",
+			"connectionStatus": "Estado de conexión",
+			"connectedActive": "Conexión activa",
+			"notConnectedHint": "Conecta un repositorio de Gitea para empezar",
+			"badgeConnected": "Conectado",
+			"badgeNotConnected": "No conectado",
+			"repository": "Repositorio",
+			"repositoryHint": "Repositorio de Gitea a integrar",
+			"commentTaskLinkTitle": "Comentario en tarea vinculada",
+			"commentTaskLinkHint": "Cuando se añada un comentario a una tarea vinculada",
+			"webhookTitle": "Webhook",
+			"webhookHint": "Configura este webhook en tu repositorio de Gitea",
+			"webhookSecretLabel": "Secreto del webhook",
+			"baseUrlLabel": "URL base",
+			"baseUrlHint": "URL base de tu instancia de Gitea",
+			"tokenLabel": "Token de acceso",
+			"tokenHint": "Token de acceso personal de Gitea",
+			"tokenPlaceholder": "Introduce tu token de acceso",
+			"tokenPlaceholderUpdate": "Introduce un nuevo token (opcional)",
+			"currentToken": "Token actual",
+			"ownerLabel": "Propietario",
+			"ownerHint": "Propietario del repositorio (usuario u organización)",
+			"repoNameLabel": "Repositorio",
+			"repoNameHint": "Nombre del repositorio",
+			"actionsTitle": "Acciones",
+			"actionsHint": "Acciones disponibles para gestionar la integración con Gitea",
+			"browse": "Explorar",
+			"verify": "Verificar",
+			"update": "Actualizar",
+			"connect": "Conectar",
+			"disconnect": "Desconectar",
+			"importSectionTitle": "Importar issues",
+			"importSectionHint": "Importa issues existentes desde Gitea como tareas",
+			"importing": "Importando...",
+			"importIssues": "Importar issues",
+			"importDisabledHint": "Conecta un repositorio para importar issues",
+			"browseModalTitle": "Explorar repositorios",
+			"browseModalHint": "Selecciona un repositorio para conectar",
+			"searchRepos": "Buscar repositorios...",
+			"browseNeedsCredentials": "Conecta y verifica primero para explorar repositorios",
+			"loadingRepos": "Cargando repositorios...",
+			"retry": "Reintentar"
+		},
+		"telegramIntegration": {
+			"validation": {
+				"botTokenInvalid": "Token del bot no válido",
+				"chatIdRequired": "ID del chat obligatorio",
+				"threadIdInvalid": "ID del hilo debe ser un número entero"
+			},
+			"toast": {
+				"saved": "Configuración de Telegram guardada",
+				"saveError": "Error al guardar Telegram",
+				"enabled": "Telegram activado",
+				"disabled": "Telegram desactivado",
+				"updateError": "Error al actualizar Telegram",
+				"removed": "Integración de Telegram eliminada",
+				"removeError": "Error al eliminar Telegram"
+			},
+			"connectionTitle": "Conexión",
+			"connectionHint": "Configura los detalles de conexión del bot",
+			"connected": "Conectado",
+			"paused": "Pausado",
+			"botTokenLabel": "Token del bot",
+			"botTokenPlaceholder": "Introduce el token de tu bot",
+			"botTokenHint": "Token del bot de Telegram",
+			"botTokenHintConfigured": "Token configurado",
+			"chatIdLabel": "ID del chat",
+			"chatIdPlaceholder": "-1001234567890",
+			"chatIdHint": "ID numérico del chat o grupo",
+			"threadIdLabel": "ID del hilo",
+			"threadIdPlaceholder": "Opcional",
+			"threadIdHint": "ID del hilo en el grupo (para topics)",
+			"chatLabelLabel": "Etiqueta del chat",
+			"chatLabelPlaceholder": "Mi grupo de proyecto",
+			"chatLabelHint": "Etiqueta para identificar el chat",
+			"eventsTitle": "Eventos",
+			"eventsHint": "Selecciona qué eventos enviar a Telegram",
+			"events": {
+				"taskCreated": "Tarea creada",
+				"taskStatusChanged": "Estado cambiado",
+				"taskPriorityChanged": "Prioridad cambiada",
+				"taskTitleChanged": "Título cambiado",
+				"taskDescriptionChanged": "Descripción cambiada",
+				"taskCommentCreated": "Comentario creado"
+			},
+			"connect": "Conectar",
+			"saveChanges": "Guardar cambios",
+			"disconnect": "Desconectar"
 		}
 	},
 	"navigation": {
@@ -976,7 +1192,8 @@
 			"deleteConfirmTitle": "¿Eliminar proyecto?",
 			"deleteConfirmDescription": "Esto eliminará permanentemente el proyecto y todos sus datos. Esta acción no se puede deshacer.",
 			"deletedToast": "Proyecto eliminado",
-			"deleteProject": "Eliminar proyecto"
+			"deleteProject": "Eliminar proyecto",
+			"projectSettings": "Configuración del proyecto"
 		},
 		"search": {
 			"inputPlaceholder": "Busca tareas, proyectos, comentarios...",
@@ -1021,7 +1238,7 @@
 			"title": "Atajos de teclado",
 			"subtitle": "Agiliza tus flujos de trabajo con atajos de teclado",
 			"searchPlaceholder": "Buscar atajos...",
-			"footer": "Pulsa \u003ckbd\u003eEscape\u003c/kbd\u003e para cerrar",
+			"footer": "Pulsa <kbd>Escape</kbd> para cerrar",
 			"categories": {
 				"general": "General",
 				"create": "Crear",
@@ -1576,6 +1793,17 @@
 			"searchActions": "Buscar acciones...",
 			"noActionsFound": "No se han encontrado acciones.",
 			"changeStatus": "Cambiar estado"
+		},
+		"move": {
+			"title": "Mover tarea a otro proyecto",
+			"projectLabel": "Proyecto de destino",
+			"projectPlaceholder": "Selecciona un proyecto",
+			"statusLabel": "Estado",
+			"statusHintKeep": "Mantener estado actual",
+			"statusHintAdjust": "Ajustar estado al mover",
+			"action": "Mover",
+			"success": "Tarea movida correctamente",
+			"error": "Error al mover la tarea"
 		}
 	},
 	"invitations": {
@@ -1614,7 +1842,8 @@
 				"complete": "Completado",
 				"inProgress": "En progreso"
 			},
-			"noDueDate": "Sin fecha de vencimiento"
+			"noDueDate": "Sin fecha de vencimiento",
+			"emptyDescriptionReadOnly": "Descripción no disponible"
 		},
 		"search": {
 			"pageTitle": "Buscar",
@@ -1668,7 +1897,8 @@
 		"roles": {
 			"owner": "Propietario",
 			"admin": "Admin",
-			"member": "Miembro"
+			"member": "Miembro",
+			"viewer": "Espectador"
 		},
 		"members": {
 			"pageTitle": "Miembros",
@@ -1703,7 +1933,9 @@
 			"removeSuccess": "Miembro eliminado del equipo correctamente",
 			"removeError": "Error al eliminar miembro del equipo",
 			"cancelInviteSuccess": "Invitación cancelada correctamente",
-			"cancelInviteError": "Error al cancelar invitación"
+			"cancelInviteError": "Error al cancelar invitación",
+			"roleUpdateSuccess": "Rol actualizado correctamente",
+			"roleUpdateError": "Error al actualizar el rol"
 		},
 		"deleteMemberModal": {
 			"title": "Eliminar Miembro del Equipo",
