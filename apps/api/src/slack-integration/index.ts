@@ -43,6 +43,7 @@ slackIntegration
 		}),
 		validator("param", v.object({ projectId: v.string() })),
 		workspaceAccess.fromProject("projectId"),
+		requireWorkspacePermission({ project: ["read"] }),
 		async (c) => {
 			const { projectId } = c.req.valid("param");
 			const integration = await getSlackIntegration(projectId);

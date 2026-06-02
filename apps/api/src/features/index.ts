@@ -49,6 +49,7 @@ features.get(
 		},
 	}),
 	workspaceAccess.fromParam("workspaceId"),
+	requireWorkspacePermission({ feature: ["read"] }),
 	async (c) => {
 		const workspaceId = c.get("workspaceId") as string;
 		const result = await getWorkspaceFeatures(workspaceId);

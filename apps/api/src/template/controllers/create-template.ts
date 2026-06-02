@@ -1,4 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
+import { eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
 import {

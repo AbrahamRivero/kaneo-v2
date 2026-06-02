@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
+import { requireWorkspacePermission } from "../utils/require-workspace-permission";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import getWorkspaceMembersCtrl from "./controllers/get-workspace-members";
 
@@ -38,6 +39,7 @@ const workspace = new Hono<{
 	}),
 	validator("param", v.object({ workspaceId: v.string() })),
 	workspaceAccess.fromParam("workspaceId"),
+	requireWorkspacePermission({ workspace: ["read"] }),
 	async (c) => {
 		const workspaceId = c.get("workspaceId");
 		const members = await getWorkspaceMembersCtrl(workspaceId);

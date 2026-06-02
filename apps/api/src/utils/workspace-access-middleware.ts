@@ -18,7 +18,8 @@ type WorkspaceIdSource =
 				| "activity"
 				| "column"
 				| "workflowRule"
-				| "taskRelation";
+				| "taskRelation"
+				| "template";
 			idKey: string;
 	  };
 
@@ -53,16 +54,20 @@ export function workspaceAccessMiddleware(
 				workspaceId = c.req.query(source.key) || null;
 			} else if (source.type === "body") {
 				const body = await readJsonObjectBody(c);
-				workspaceId =
-					typeof body[source.key] === "string" ? body[source.key] : null;
+				const val = body[source.key];
+				workspaceId = typeof val === "string" ? val : null;
 			} else if (source.type === "param") {
 				workspaceId = c.req.param(source.key) || null;
 			} else if (source.type === "lookup") {
 				const body = await readJsonObjectBody(c);
-				const idFromBody =
-					typeof body[source.idKey] === "string" ? body[source.idKey] : null;
-				const id =
-					c.req.param(source.idKey) || c.req.query(source.idKey) || idFromBody;
+				const raw = body[source.idKey];
+				const idFromBody = typeof raw === "string" ? raw : null;
+				const paramValue = c.req.param(source.idKey);
+				const queryValue = c.req.query(source.idKey);
+				const id: string | null =
+					(typeof paramValue === "string" ? paramValue : null) ||
+					(typeof queryValue === "string" ? queryValue : null) ||
+					idFromBody;
 				if (id) {
 					workspaceId = await lookupWorkspaceId(source.resource, id);
 				}
@@ -99,7 +104,8 @@ async function lookupWorkspaceId(
 		| "activity"
 		| "column"
 		| "workflowRule"
-		| "taskRelation",
+		| "taskRelation"
+		| "template",
 	id: string,
 ): Promise<string | null> {
 	try {
@@ -218,6 +224,15 @@ async function lookupWorkspaceId(
 				return result?.workspaceId || null;
 			}
 
+			case "template": {
+				const [tmpl] = await db
+					.select({ workspaceId: schema.templateTable.workspaceId })
+					.from(schema.templateTable)
+					.where(eq(schema.templateTable.id, id))
+					.limit(1);
+				return tmpl?.workspaceId || null;
+			}
+
 			default:
 				return null;
 		}
@@ -305,6 +320,14 @@ export const workspaceAccess = {
 		workspaceAccessMiddleware({
 			sources: [
 				{ type: "lookup", resource: "taskRelation", idKey },
+				{ type: "query", key: "workspaceId" },
+			],
+		}),
+
+	fromTemplate: (idKey = "id") =>
+		workspaceAccessMiddleware({
+			sources: [
+				{ type: "lookup", resource: "template", idKey },
 				{ type: "query", key: "workspaceId" },
 			],
 		}),

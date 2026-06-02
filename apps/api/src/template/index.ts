@@ -1,17 +1,8 @@
-import { eq } from "drizzle-orm";
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import * as v from "valibot";
-import db from "../database";
-import { templateTable } from "../database/schema";
-import { isFeatureEnabled } from "../features/db";
 import { requireFeature } from "../features/middleware";
-import {
-	checkWorkspacePermission,
-	requireWorkspacePermission,
-} from "../utils/require-workspace-permission";
-import { validateWorkspaceAccess } from "../utils/validate-workspace-access";
+import { requireWorkspacePermission } from "../utils/require-workspace-permission";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import createTemplateCtrl from "./controllers/create-template";
 import deleteTemplateCtrl from "./controllers/delete-template";
@@ -80,24 +71,11 @@ const template = new Hono<{
 			},
 		}),
 		validator("param", v.object({ id: v.string() })),
+		workspaceAccess.fromTemplate("id"),
+		requireFeature("templates"),
+		requireWorkspacePermission({ project: ["read"] }),
 		async (c) => {
 			const { id } = c.req.valid("param");
-			const userId = c.get("userId") as string;
-			const [tmpl] = await db
-				.select({ workspaceId: templateTable.workspaceId })
-				.from(templateTable)
-				.where(eq(templateTable.id, id))
-				.limit(1);
-			if (!tmpl)
-				throw new HTTPException(404, { message: "Template not found" });
-			const workspaceId = tmpl.workspaceId as string;
-			await validateWorkspaceAccess(userId, workspaceId);
-			if (!(await isFeatureEnabled(workspaceId, "templates"))) {
-				throw new HTTPException(404, { message: "Feature not available" });
-			}
-			await checkWorkspacePermission(workspaceId, userId, {
-				project: ["read"],
-			});
 			const result = await getTemplateCtrl(id);
 			return c.json(result);
 		},
@@ -167,26 +145,13 @@ const template = new Hono<{
 				tasks: v.optional(v.array(taskSchema)),
 			}),
 		),
+		workspaceAccess.fromTemplate("id"),
+		requireFeature("templates"),
+		requireWorkspacePermission({ project: ["update"] }),
 		async (c) => {
 			const { id } = c.req.valid("param");
-			const userId = c.get("userId") as string;
-			const [tmpl] = await db
-				.select({ workspaceId: templateTable.workspaceId })
-				.from(templateTable)
-				.where(eq(templateTable.id, id))
-				.limit(1);
-			if (!tmpl)
-				throw new HTTPException(404, { message: "Template not found" });
-			const workspaceId = tmpl.workspaceId as string;
-			await validateWorkspaceAccess(userId, workspaceId);
-			if (!(await isFeatureEnabled(workspaceId, "templates"))) {
-				throw new HTTPException(404, { message: "Feature not available" });
-			}
-			await checkWorkspacePermission(workspaceId, userId, {
-				project: ["update"],
-			});
-			const data = c.req.valid("json");
-			const result = await updateTemplateCtrl(id, data);
+			const body = c.req.valid("json");
+			const result = await updateTemplateCtrl(id, body);
 			return c.json(result);
 		},
 	)
@@ -206,24 +171,11 @@ const template = new Hono<{
 			},
 		}),
 		validator("param", v.object({ id: v.string() })),
+		workspaceAccess.fromTemplate("id"),
+		requireFeature("templates"),
+		requireWorkspacePermission({ project: ["delete"] }),
 		async (c) => {
 			const { id } = c.req.valid("param");
-			const userId = c.get("userId") as string;
-			const [tmpl] = await db
-				.select({ workspaceId: templateTable.workspaceId })
-				.from(templateTable)
-				.where(eq(templateTable.id, id))
-				.limit(1);
-			if (!tmpl)
-				throw new HTTPException(404, { message: "Template not found" });
-			const workspaceId = tmpl.workspaceId as string;
-			await validateWorkspaceAccess(userId, workspaceId);
-			if (!(await isFeatureEnabled(workspaceId, "templates"))) {
-				throw new HTTPException(404, { message: "Feature not available" });
-			}
-			await checkWorkspacePermission(workspaceId, userId, {
-				project: ["delete"],
-			});
 			const result = await deleteTemplateCtrl(id);
 			return c.json(result);
 		},
