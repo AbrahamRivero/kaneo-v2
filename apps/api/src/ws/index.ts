@@ -179,6 +179,29 @@ export function removeConnection(projectId: string, conn: ProjectConnection) {
 	}
 }
 
+export function broadcastToUser(
+	userId: string,
+	message: ProjectBroadcastMessage,
+	excludeInitiatorId?: string,
+) {
+	const payload = JSON.stringify(message);
+	for (const [projectId, connections] of projectConnections) {
+		for (const conn of connections) {
+			if (conn.userId !== userId) continue;
+			if (excludeInitiatorId && conn.initiatorId === excludeInitiatorId)
+				continue;
+			try {
+				conn.ws.send(payload);
+			} catch {
+				connections.delete(conn);
+			}
+		}
+		if (connections.size === 0) {
+			projectConnections.delete(projectId);
+		}
+	}
+}
+
 export function broadcastToProject(
 	projectId: string,
 	message: ProjectBroadcastMessage,
@@ -393,3 +416,35 @@ for (const eventName of taskUpdateEvents) {
 		);
 	});
 }
+
+subscribeToEvent<{
+	notificationId: string;
+	userId: string;
+	title: string | null;
+	content: string | null;
+	type: string;
+	eventData: unknown;
+	resourceId: string | null;
+	resourceType: string | null;
+	isRead: boolean | null;
+	createdAt: Date;
+	initiatorId?: string;
+}>("notification.created", async (data) => {
+	broadcastToUser(data.userId, {
+		type: "NOTIFICATION_CREATED",
+		projectId: "",
+		taskId: "",
+		notification: {
+			id: data.notificationId,
+			userId: data.userId,
+			title: data.title,
+			content: data.content,
+			type: data.type,
+			eventData: data.eventData,
+			resourceId: data.resourceId,
+			resourceType: data.resourceType,
+			isRead: data.isRead,
+			createdAt: data.createdAt,
+		},
+	});
+});

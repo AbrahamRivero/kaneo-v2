@@ -1,6 +1,6 @@
 import { createHmac } from "node:crypto";
 import { sendNotificationEmail } from "@kaneo/email";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import db from "../../../database";
 import {
 	notificationTable,
@@ -518,12 +518,56 @@ export async function deliverNotification(
 	}
 
 	const results = await Promise.allSettled(deliveries);
+	const failures: string[] = [];
+
 	for (const result of results) {
 		if (result.status === "rejected") {
+			failures.push(result.reason.message ?? String(result.reason));
 			console.error("Notification delivery failed", {
 				notificationId,
 				error: result.reason,
 			});
 		}
 	}
+
+	if (failures.length === 0) {
+		await db
+			.update(notificationTable)
+			.set({ deliveryStatus: "delivered" })
+			.where(eq(notificationTable.id, notificationId));
+	} else {
+		await db
+			.update(notificationTable)
+			.set({
+				deliveryStatus: "failed",
+				retryCount: sql`${notificationTable.retryCount} + 1`,
+				lastDeliveryError: failures.join("; ").slice(0, 1000),
+			})
+			.where(eq(notificationTable.id, notificationId));
+	}
+}
+
+export async function retryFailedDelivery(
+	notificationId: string,
+): Promise<void> {
+	await deliverNotification(notificationId);
+}
+
+export async function retryAllFailedDeliveries(): Promise<number> {
+	const failed = await db
+		.select({ id: notificationTable.id })
+		.from(notificationTable)
+		.where(
+			and(
+				eq(notificationTable.deliveryStatus, "failed"),
+				sql`${notificationTable.retryCount} < 5`,
+			),
+		)
+		.limit(50);
+
+	for (const { id } of failed) {
+		void deliverNotification(id).catch(() => {});
+	}
+
+	return failed.length;
 }

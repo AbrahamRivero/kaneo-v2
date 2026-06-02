@@ -4,6 +4,18 @@ export type ProjectBroadcastMessage = {
 	taskId?: string;
 	sourceTaskId?: string;
 	targetTaskId?: string;
+	notification?: {
+		id: string;
+		userId: string;
+		title: string | null;
+		content: string | null;
+		type: string;
+		eventData: unknown;
+		resourceId: string | null;
+		resourceType: string | null;
+		isRead: boolean | null;
+		createdAt: Date;
+	};
 };
 
 export type BroadcastMessage = {

@@ -1,3 +1,4 @@
+import { publishEvent } from "../../events";
 import { CreateNotificationUseCase } from "../application/use-cases";
 import { deliverNotification } from "../infrastructure/delivery/delivery";
 import { notificationRepository } from "../infrastructure/repositories/drizzle-notification.repository";
@@ -39,6 +40,19 @@ async function createNotification({
 				notificationId: notification.id,
 				error,
 			});
+		});
+
+		publishEvent("notification.created", {
+			notificationId: notification.id,
+			userId: notification.userId,
+			title: notification.title,
+			content: notification.content,
+			type: notification.type,
+			eventData: notification.eventData,
+			resourceId: notification.resourceId,
+			resourceType: notification.resourceType,
+			isRead: notification.isRead,
+			createdAt: notification.createdAt,
 		});
 	}
 

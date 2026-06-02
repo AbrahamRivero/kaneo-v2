@@ -11,6 +11,7 @@ import createNotification from "./controllers/create-notification";
 import getNotifications from "./controllers/get-notifications";
 import markAllNotificationsAsRead from "./controllers/mark-all-notifications-as-read";
 import markAsRead from "./controllers/mark-notification-as-read";
+import { retryFailedDelivery } from "./infrastructure/delivery/delivery";
 
 const bulkResultSchema = v.object({
 	success: v.boolean(),
@@ -135,6 +136,30 @@ const notification = new Hono<{
 			const userId = c.get("userId");
 			const result = await markAllNotificationsAsRead(userId);
 			return c.json(result);
+		},
+	)
+	.post(
+		"/:id/retry",
+		describeRoute({
+			operationId: "retryNotificationDelivery",
+			tags: ["Notifications"],
+			description: "Retry delivery of a failed notification",
+			responses: {
+				200: {
+					description: "Delivery retry initiated",
+					content: {
+						"application/json": {
+							schema: resolver(v.object({ success: v.boolean() })),
+						},
+					},
+				},
+			},
+		}),
+		validator("param", v.object({ id: v.string() })),
+		async (c) => {
+			const { id } = c.req.valid("param");
+			await retryFailedDelivery(id);
+			return c.json({ success: true });
 		},
 	)
 	.delete(

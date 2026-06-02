@@ -670,6 +670,9 @@ export const notificationTable = pgTable(
 		isRead: boolean("is_read").default(false),
 		resourceId: text("resource_id"),
 		resourceType: text("resource_type"),
+		deliveryStatus: text("delivery_status").default("pending").notNull(),
+		retryCount: integer("retry_count").default(0).notNull(),
+		lastDeliveryError: text("last_delivery_error"),
 		createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
 			.defaultNow()
 			.notNull(),
