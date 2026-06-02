@@ -13,6 +13,9 @@ export class UpdateTaskDescriptionUseCase {
 		description: string,
 		currentUserId: string,
 	): Promise<Task> {
+		const oldTask = await this.taskRepository.findById(taskId);
+		if (!oldTask) throw new Error("Task not found");
+
 		const task = await this.taskRepository.updateDescription(
 			taskId,
 			description,
@@ -23,7 +26,9 @@ export class UpdateTaskDescriptionUseCase {
 			taskId: task.id,
 			projectId: task.projectId,
 			userId: currentUserId,
-			description: task.description,
+			oldDescription: oldTask.description,
+			newDescription: description,
+			type: "description_changed",
 		});
 
 		return task;

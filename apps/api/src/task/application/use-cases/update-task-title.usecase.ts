@@ -13,6 +13,9 @@ export class UpdateTaskTitleUseCase {
 		title: string,
 		currentUserId: string,
 	): Promise<Task> {
+		const oldTask = await this.taskRepository.findById(taskId);
+		if (!oldTask) throw new Error("Task not found");
+
 		const task = await this.taskRepository.updateTitle(
 			taskId,
 			title,
@@ -23,7 +26,9 @@ export class UpdateTaskTitleUseCase {
 			taskId: task.id,
 			projectId: task.projectId,
 			userId: currentUserId,
-			title: task.title,
+			oldTitle: oldTask.title,
+			newTitle: title,
+			type: "title_changed",
 		});
 
 		return task;
