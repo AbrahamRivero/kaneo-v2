@@ -43,11 +43,22 @@ export class MoveTaskUseCase {
 
 		const result = await this.taskRepository.move(input);
 
+		const [sourceProject, destinationProject] = await Promise.all([
+			this.taskRepository.getProject(existingTask.projectId),
+			this.taskRepository.getProject(input.destinationProjectId),
+		]);
+
 		await this.eventPublisher.publish("task.moved", {
 			taskId: result.task.id,
-			sourceProjectId: result.sourceProjectId,
-			destinationProjectId: result.destinationProjectId,
 			userId: input.currentUserId,
+			fromProjectId: existingTask.projectId,
+			fromProjectName: sourceProject?.name ?? "Unknown",
+			toProjectId: result.task.projectId,
+			toProjectName: destinationProject?.name ?? "Unknown",
+			oldStatus: existingTask.status,
+			newStatus: result.task.status,
+			type: "moved",
+			content: null,
 		});
 
 		return result;

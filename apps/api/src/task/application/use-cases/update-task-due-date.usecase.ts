@@ -13,6 +13,10 @@ export class UpdateTaskDueDateUseCase {
 		dueDate: Date | null,
 		currentUserId: string,
 	): Promise<Task> {
+		const existingTask = await this.taskRepository.findById(taskId);
+
+		const oldDueDate = existingTask?.dueDate ?? null;
+
 		const task = await this.taskRepository.updateDueDate(
 			taskId,
 			dueDate,
@@ -23,7 +27,10 @@ export class UpdateTaskDueDateUseCase {
 			taskId: task.id,
 			projectId: task.projectId,
 			userId: currentUserId,
-			dueDate: task.dueDate,
+			oldDueDate,
+			newDueDate: task.dueDate,
+			title: task.title,
+			type: "due_date_changed",
 		});
 
 		return task;
