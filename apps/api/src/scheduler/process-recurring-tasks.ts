@@ -65,7 +65,7 @@ export async function processRecurringTasks(): Promise<void> {
 			if (!project) continue;
 
 			// Atomic creation: task + labels + subtasks in one transaction
-			const { taskId, number } = await db.transaction(async (tx) => {
+			const { taskId, number, subTasks } = await db.transaction(async (tx) => {
 				const taskId = createId();
 
 				const [maxNumberResult] = await tx
@@ -137,35 +137,60 @@ export async function processRecurringTasks(): Promise<void> {
 					)
 					.orderBy(recurringTaskChecklistItemTable.position);
 
+				type SubTaskInfo = {
+					id: string;
+					title: string;
+					number: number;
+					position: number;
+				};
+				const subTasks: SubTaskInfo[] = [];
+
 				if (templateChecklistItems.length > 0) {
 					const subTaskNumber = nextNumber + 1;
-					const subTaskIds = templateChecklistItems.map(() => createId());
+
+					templateChecklistItems.forEach((item, i) => {
+						subTasks.push({
+							id: createId(),
+							title: item.text,
+							number: subTaskNumber + i,
+							position: item.position,
+						});
+					});
 
 					await tx.insert(taskTable).values(
-						templateChecklistItems.map((item, i) => ({
-							id: subTaskIds[i],
+						subTasks.map((subTask) => ({
+							id: subTask.id,
 							projectId: recurring.projectId,
-							number: subTaskNumber + i,
-							title: item.text,
+							number: subTask.number,
+							title: subTask.title,
+							description: recurring.description,
 							columnId: recurring.columnId,
+							userId: recurring.assigneeId,
 							createdBy: recurring.createdBy,
-							priority: "no-priority",
-							position: item.position,
-							status: "to-do",
+							recurringTaskId: recurring.id,
+							priority: (recurring.priority ?? "no-priority") as
+								| "no-priority"
+								| "low"
+								| "medium"
+								| "high"
+								| "urgent",
+							position: subTask.position,
 						})),
 					);
 
+					const relationIds = templateChecklistItems.map(() => createId());
+
 					await tx.insert(taskRelationTable).values(
-						subTaskIds.map((subTaskId) => ({
-							id: createId(),
+						subTasks.map((subTask, i) => ({
+							id: relationIds[i],
 							sourceTaskId: taskId,
-							targetTaskId: subTaskId,
+							targetTaskId: subTask.id,
 							relationType: "subtask",
 						})),
 					);
 				}
 
-				return { taskId, number: nextNumber };
+				return { taskId, number: nextNumber, subTasks };
 			});
 
 			await publishEvent("task.created", {
@@ -183,6 +208,33 @@ export async function processRecurringTasks(): Promise<void> {
 				type: "created",
 				content: null,
 			});
+
+			for (const subTask of subTasks) {
+				await publishEvent("task.created", {
+					taskId: subTask.id,
+					recurringTaskId: recurring.id,
+					projectId: recurring.projectId,
+					title: subTask.title,
+					description: null,
+					priority: recurring.priority ?? "no-priority",
+					status: "to-do",
+					number: subTask.number,
+					userId: recurring.createdBy ?? "",
+					assigneeId: recurring.assigneeId,
+					currentUserId: recurring.createdBy ?? "",
+					type: "created",
+					content: null,
+				});
+
+				await publishEvent("task-relation.created", {
+					sourceTaskId: taskId,
+					targetTaskId: subTask.id,
+					relationType: "subtask",
+					taskId: subTask.id,
+					projectId: recurring.projectId,
+					userId: recurring.createdBy ?? "",
+				});
+			}
 
 			const nextRun = computeNextRun(recurring);
 
