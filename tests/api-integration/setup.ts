@@ -6,7 +6,7 @@ import { afterEach, vi } from "vitest";
 // Prevent dotenv-mono from loading the local .env file during tests.
 // All env vars are set explicitly below — the .env file must be ignored.
 vi.mock("dotenv-mono", () => ({
-  config: () => {},
+	config: () => {},
 }));
 
 function stripEnvValueQuotes(value: string) {
