@@ -1326,6 +1326,10 @@
 				"title": "Задача обновлена",
 				"content": "\"{{taskTitle}}\" была обновлена"
 			},
+			"task_deleted": {
+				"title": "Задача удалена",
+				"content": "\"{{taskTitle}}\" была удалена"
+			},
 			"project_created": {
 				"title": "Новый проект создан",
 				"content": "Новый проект был создан: {{projectName}}"

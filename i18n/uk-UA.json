@@ -1318,6 +1318,10 @@
 				"title": "Завдання оновлено",
 				"content": "\"{{taskTitle}}\" було оновлено"
 			},
+			"task_deleted": {
+				"title": "Завдання видалено",
+				"content": "\"{{taskTitle}}\" було видалено"
+			},
 			"project_created": {
 				"title": "Новий проект створено",
 				"content": "Створено новий проект: {{projectName}}"

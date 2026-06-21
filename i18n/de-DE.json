@@ -1315,6 +1315,10 @@
 				"title": "Aufgabe aktualisiert",
 				"content": "\"{{taskTitle}}\" wurde aktualisiert"
 			},
+			"task_deleted": {
+				"title": "Aufgabe gelöscht",
+				"content": "\"{{taskTitle}}\" wurde gelöscht"
+			},
 			"project_created": {
 				"title": "Neues Projekt erstellt",
 				"content": "Ein neues Projekt wurde erstellt: {{projectName}}"

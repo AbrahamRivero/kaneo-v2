@@ -26,6 +26,7 @@ export interface UpdateTaskInput {
 	projectId?: string;
 	position?: number;
 	userId?: string | null;
+	columnId?: string | null;
 }
 
 export interface TaskFilters {

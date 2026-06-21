@@ -142,6 +142,15 @@ function buildDeliveryContent(notification: {
 					: "A task was updated in Kaneo.",
 			};
 		}
+		case "task_deleted": {
+			const taskTitle = getStringValue(notification.eventData, "taskTitle");
+			return {
+				title: "Task deleted",
+				body: taskTitle
+					? `"${taskTitle}" was deleted.`
+					: "A task was deleted in Kaneo.",
+			};
+		}
 		case "project_created": {
 			const projectName = getStringValue(notification.eventData, "projectName");
 			return {

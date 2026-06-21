@@ -1315,6 +1315,10 @@
 				"title": "Εργασία ενημερώθηκε",
 				"content": "Η \"{{taskTitle}}\" ενημερώθηκε"
 			},
+			"task_deleted": {
+				"title": "Εργασία διαγράφηκε",
+				"content": "Η \"{{taskTitle}}\" διαγράφηκε"
+			},
 			"project_created": {
 				"title": "Νέο έργο δημιουργήθηκε",
 				"content": "Δημιουργήθηκε ένα νέο έργο: {{projectName}}"

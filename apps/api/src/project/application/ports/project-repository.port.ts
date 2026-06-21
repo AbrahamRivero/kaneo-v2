@@ -6,6 +6,7 @@ export interface CreateProjectInput {
 	icon: string;
 	slug: string;
 	templateId?: string;
+	userId?: string;
 }
 
 export interface UpdateProjectInput {

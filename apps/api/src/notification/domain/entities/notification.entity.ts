@@ -9,6 +9,7 @@ export type NotificationType =
 	| "task_overdue"
 	| "task_comment_created"
 	| "task_updated"
+	| "task_deleted"
 	| "project_created";
 
 export type CreateNotificationInput = {

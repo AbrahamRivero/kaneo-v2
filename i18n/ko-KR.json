@@ -1315,6 +1315,10 @@
 				"title": "Task updated",
 				"content": "\"{{taskTitle}}\" was updated"
 			},
+			"task_deleted": {
+				"title": "Task deleted",
+				"content": "\"{{taskTitle}}\" was deleted"
+			},
 			"project_created": {
 				"title": "New project created",
 				"content": "A new project was created: {{projectName}}"

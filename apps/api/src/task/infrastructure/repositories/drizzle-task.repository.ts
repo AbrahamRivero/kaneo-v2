@@ -515,6 +515,7 @@ export class DrizzleTaskRepository implements TaskRepository {
 				...(input.projectId !== undefined && { projectId: input.projectId }),
 				...(input.position !== undefined && { position: input.position }),
 				...(input.userId !== undefined && { userId: input.userId }),
+				...(input.columnId !== undefined && { columnId: input.columnId }),
 			})
 			.where(eq(taskTable.id, input.id))
 			.returning();

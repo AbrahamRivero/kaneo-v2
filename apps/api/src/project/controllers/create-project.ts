@@ -2,6 +2,12 @@ import { publishEvent } from "../../events";
 import { CreateProjectUseCase } from "../application/use-cases/create-project.usecase";
 import { projectRepository } from "../infrastructure/repositories/drizzle-project.repository";
 
+const eventPublisher = {
+	publish: async (eventType: string, data: unknown) => {
+		await publishEvent(eventType, data);
+	},
+};
+
 async function createProjectCtrl(
 	workspaceId: string,
 	name: string,
@@ -10,20 +16,13 @@ async function createProjectCtrl(
 	templateId?: string,
 	userId?: string,
 ) {
-	const useCase = new CreateProjectUseCase(projectRepository);
+	const useCase = new CreateProjectUseCase(projectRepository, eventPublisher);
 	const project = await useCase.execute({
 		workspaceId,
 		name,
 		icon,
 		slug,
 		templateId,
-	});
-
-	await publishEvent("project.created", {
-		projectId: project.id,
-		workspaceId: project.workspaceId,
-		name: project.name,
-		slug: project.slug,
 		userId,
 	});
 

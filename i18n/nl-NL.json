@@ -1315,6 +1315,10 @@
 				"title": "Taak bijgewerkt",
 				"content": "\"{{taskTitle}}\" is bijgewerkt"
 			},
+			"task_deleted": {
+				"title": "Taak verwijderd",
+				"content": "\"{{taskTitle}}\" is verwijderd"
+			},
 			"project_created": {
 				"title": "Nieuw project aangemaakt",
 				"content": "Er is een nieuw project aangemaakt: {{projectName}}"

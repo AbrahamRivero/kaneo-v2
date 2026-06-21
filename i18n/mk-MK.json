@@ -1315,6 +1315,10 @@
 				"title": "Задачата е ажурирана",
 				"content": "\"{{taskTitle}}\" е ажурирана"
 			},
+			"task_deleted": {
+				"title": "Задачата е избришана",
+				"content": "\"{{taskTitle}}\" е избришана"
+			},
 			"project_created": {
 				"title": "Нов проект е креиран",
 				"content": "Нов проект е креиран: {{projectName}}"

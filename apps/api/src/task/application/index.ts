@@ -2,8 +2,10 @@ export * from "./ports";
 export * from "./use-cases";
 
 import { publishEvent } from "../../events";
+import { assetCleanupAdapter } from "../infrastructure/adapters/drizzle-asset-cleanup.adapter";
 import { columnQueryAdapter } from "../infrastructure/adapters/drizzle-column-query.adapter";
 import { DrizzleTaskRepository } from "../infrastructure/repositories/drizzle-task.repository";
+import { taskValidatorService } from "./services/task-validator.service";
 import {
 	BulkUpdateTasksUseCase,
 	CreateTaskImageUploadUseCase,
@@ -36,8 +38,18 @@ export const createTaskUseCases = () => ({
 	createTask: new CreateTaskUseCase(taskRepository, eventPublisher),
 	getTask: new GetTaskUseCase(taskRepository),
 	getTasks: new GetTasksUseCase(taskRepository),
-	updateTask: new UpdateTaskUseCase(taskRepository, eventPublisher),
-	deleteTask: new DeleteTaskUseCase(taskRepository, eventPublisher),
+	updateTask: new UpdateTaskUseCase(
+		taskRepository,
+		eventPublisher,
+		taskValidatorService,
+		columnQueryAdapter,
+		assetCleanupAdapter,
+	),
+	deleteTask: new DeleteTaskUseCase(
+		taskRepository,
+		eventPublisher,
+		assetCleanupAdapter,
+	),
 	updateTaskStatus: new UpdateTaskStatusUseCase(taskRepository, eventPublisher),
 	updateTaskPriority: new UpdateTaskPriorityUseCase(
 		taskRepository,
@@ -55,6 +67,7 @@ export const createTaskUseCases = () => ({
 	updateTaskDescription: new UpdateTaskDescriptionUseCase(
 		taskRepository,
 		eventPublisher,
+		assetCleanupAdapter,
 	),
 	exportTasks: new ExportTasksUseCase(taskRepository),
 	bulkUpdateTasks: new BulkUpdateTasksUseCase(taskRepository, eventPublisher),

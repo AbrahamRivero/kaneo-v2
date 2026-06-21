@@ -108,6 +108,11 @@ function getNotificationTitle(
 					...eventData,
 					defaultValue: notification.title ?? notification.type,
 				});
+			case "task_deleted":
+				return t("notifications:events.task_deleted.title", {
+					...eventData,
+					defaultValue: notification.title ?? notification.type,
+				});
 			case "project_created":
 				return t("notifications:events.project_created.title", {
 					...eventData,
@@ -182,6 +187,11 @@ function getNotificationContent(
 				});
 			case "task_updated":
 				return t("notifications:events.task_updated.content", {
+					...eventData,
+					defaultValue: notification.content ?? "",
+				});
+			case "task_deleted":
+				return t("notifications:events.task_deleted.content", {
 					...eventData,
 					defaultValue: notification.content ?? "",
 				});
