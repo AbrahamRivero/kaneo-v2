@@ -11,7 +11,7 @@ import {
 	userTable,
 	workspaceTable,
 } from "../../../database/schema";
-import { decryptSecret } from "../../../notification-preferences/secrets";
+import { decryptSecret } from "../../../notification-preferences/infrastructure";
 import { assertPublicWebhookDestination } from "../../../plugins/generic-webhook/config";
 
 const DEFAULT_OUTBOUND_FETCH_TIMEOUT_MS = 15_000;
