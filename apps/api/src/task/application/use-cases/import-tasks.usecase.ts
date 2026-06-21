@@ -1,11 +1,7 @@
 import { HTTPException } from "hono/http-exception";
-import { columnRepository } from "../../../column/infrastructure/repositories/drizzle-column.repository";
 import type { ImportTask } from "../../domain";
-import {
-	coercePriority,
-	coerceStatus,
-	getValidTaskStatuses,
-} from "../../validate-task-fields";
+import { coercePriority, coerceStatus, VIRTUAL_STATUSES } from "../../domain";
+import type { ColumnQueryPort } from "../ports/column-query.port";
 import type { TaskRepository } from "../ports/task-repository.port";
 
 interface ImportTaskResult {
@@ -39,6 +35,7 @@ export interface ImportTasksResult {
 export class ImportTasksUseCase {
 	constructor(
 		private taskRepository: TaskRepository,
+		private columnQuery: ColumnQueryPort,
 		private eventPublisher: {
 			publish: (eventType: string, data: unknown) => Promise<void>;
 		},
@@ -56,7 +53,8 @@ export class ImportTasksUseCase {
 		let taskNumber = await this.taskRepository.getNextTaskNumber(
 			input.projectId,
 		);
-		const validStatuses = await getValidTaskStatuses(input.projectId);
+		const columns = await this.columnQuery.findByProjectId(input.projectId);
+		const validStatuses = [...columns.map((c) => c.slug), ...VIRTUAL_STATUSES];
 
 		const results: ImportTaskResult[] = [];
 
@@ -73,12 +71,12 @@ export class ImportTasksUseCase {
 					(w): w is string => !!w,
 				);
 
-				const columns = await columnRepository.findByProjectId(input.projectId);
 				const column = columns.find((c) => c.slug === status);
 
 				const createdTask = await this.taskRepository.insertTask({
 					projectId: input.projectId,
 					userId: taskData.userId || null,
+					createdBy: input.currentUserId,
 					title: taskData.title,
 					status,
 					columnId: column?.id ?? null,

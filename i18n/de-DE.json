@@ -1306,6 +1306,18 @@
 			"task_overdue": {
 				"title": "Aufgabe überfällig",
 				"content": "Aufgabe \"{{taskTitle}}\" ist überfällig"
+			},
+			"task_comment_created": {
+				"title": "Neuer Kommentar zur Aufgabe",
+				"content": "Ein neuer Kommentar wurde zu \"{{taskTitle}}\" hinzugefügt"
+			},
+			"task_updated": {
+				"title": "Aufgabe aktualisiert",
+				"content": "\"{{taskTitle}}\" wurde aktualisiert"
+			},
+			"project_created": {
+				"title": "Neues Projekt erstellt",
+				"content": "Ein neues Projekt wurde erstellt: {{projectName}}"
 			}
 		}
 	},

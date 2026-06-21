@@ -1306,6 +1306,18 @@
 			"task_overdue": {
 				"title": "Задачата е прерочена",
 				"content": "Задачата \"{{taskTitle}}\" е прерочена"
+			},
+			"task_comment_created": {
+				"title": "Нов коментар на задача",
+				"content": "Нов коментар е додаден на \"{{taskTitle}}\""
+			},
+			"task_updated": {
+				"title": "Задачата е ажурирана",
+				"content": "\"{{taskTitle}}\" е ажурирана"
+			},
+			"project_created": {
+				"title": "Нов проект е креиран",
+				"content": "Нов проект е креиран: {{projectName}}"
 			}
 		}
 	},

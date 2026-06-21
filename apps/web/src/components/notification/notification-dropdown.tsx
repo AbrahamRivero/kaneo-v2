@@ -98,6 +98,21 @@ function getNotificationTitle(
 					...eventData,
 					defaultValue: notification.title ?? notification.type,
 				});
+			case "task_comment_created":
+				return t("notifications:events.task_comment_created.title", {
+					...eventData,
+					defaultValue: notification.title ?? notification.type,
+				});
+			case "task_updated":
+				return t("notifications:events.task_updated.title", {
+					...eventData,
+					defaultValue: notification.title ?? notification.type,
+				});
+			case "project_created":
+				return t("notifications:events.project_created.title", {
+					...eventData,
+					defaultValue: notification.title ?? notification.type,
+				});
 			default:
 				break;
 		}
@@ -157,6 +172,21 @@ function getNotificationContent(
 				});
 			case "task_overdue":
 				return t("notifications:events.task_overdue.content", {
+					...eventData,
+					defaultValue: notification.content ?? "",
+				});
+			case "task_comment_created":
+				return t("notifications:events.task_comment_created.content", {
+					...eventData,
+					defaultValue: notification.content ?? "",
+				});
+			case "task_updated":
+				return t("notifications:events.task_updated.content", {
+					...eventData,
+					defaultValue: notification.content ?? "",
+				});
+			case "project_created":
+				return t("notifications:events.project_created.content", {
 					...eventData,
 					defaultValue: notification.content ?? "",
 				});

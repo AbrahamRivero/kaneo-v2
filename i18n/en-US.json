@@ -1314,6 +1314,18 @@
 			"task_overdue": {
 				"title": "Task overdue",
 				"content": "Task \"{{taskTitle}}\" is past its due date"
+			},
+			"task_comment_created": {
+				"title": "New comment on task",
+				"content": "A new comment was added to \"{{taskTitle}}\""
+			},
+			"task_updated": {
+				"title": "Task updated",
+				"content": "\"{{taskTitle}}\" was updated"
+			},
+			"project_created": {
+				"title": "New project created",
+				"content": "A new project was created: {{projectName}}"
 			}
 		}
 	},

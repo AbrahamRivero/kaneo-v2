@@ -6,7 +6,10 @@ export type NotificationType =
 	| "task_assignee_changed"
 	| "time_entry_created"
 	| "due_date_reminder"
-	| "task_overdue";
+	| "task_overdue"
+	| "task_comment_created"
+	| "task_updated"
+	| "project_created";
 
 export type CreateNotificationInput = {
 	userId: string;

@@ -26,6 +26,7 @@ import {
 } from "../../../database/schema";
 import { publishEvent } from "../../../events";
 import type { TaskRepository } from "../../application/ports/task-repository.port";
+import { assertValidTaskStatus } from "../../application/services/task-validator.service";
 import type {
 	BulkOperationInput,
 	BulkOperationResult,
@@ -41,7 +42,6 @@ import type {
 	UpdateTaskInput,
 	UpsertTaskAssetInput,
 } from "../../domain";
-import { assertValidTaskStatus } from "../../validate-task-fields";
 
 export class DrizzleTaskRepository implements TaskRepository {
 	async exportTasks(projectId: string): Promise<ExportTasksResult> {

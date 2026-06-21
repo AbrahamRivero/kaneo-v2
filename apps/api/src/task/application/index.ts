@@ -2,6 +2,7 @@ export * from "./ports";
 export * from "./use-cases";
 
 import { publishEvent } from "../../events";
+import { columnQueryAdapter } from "../infrastructure/adapters/drizzle-column-query.adapter";
 import { DrizzleTaskRepository } from "../infrastructure/repositories/drizzle-task.repository";
 import {
 	BulkUpdateTasksUseCase,
@@ -58,7 +59,11 @@ export const createTaskUseCases = () => ({
 	exportTasks: new ExportTasksUseCase(taskRepository),
 	bulkUpdateTasks: new BulkUpdateTasksUseCase(taskRepository, eventPublisher),
 	moveTask: new MoveTaskUseCase(taskRepository, eventPublisher),
-	importTasks: new ImportTasksUseCase(taskRepository, eventPublisher),
+	importTasks: new ImportTasksUseCase(
+		taskRepository,
+		columnQueryAdapter,
+		eventPublisher,
+	),
 	createTaskImageUpload: new CreateTaskImageUploadUseCase(taskRepository),
 	finalizeTaskImageUpload: new FinalizeTaskImageUploadUseCase(taskRepository),
 });

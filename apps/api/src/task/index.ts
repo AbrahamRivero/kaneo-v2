@@ -29,7 +29,7 @@ import updateTaskDueDate from "./controllers/update-task-due-date";
 import updateTaskPriority from "./controllers/update-task-priority";
 import updateTaskStatus from "./controllers/update-task-status";
 import updateTaskTitle from "./controllers/update-task-title";
-import { VALID_PRIORITIES } from "./validate-task-fields";
+import { VALID_PRIORITIES } from "./domain";
 
 const task = new Hono<{
 	Variables: {

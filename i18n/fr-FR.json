@@ -1306,6 +1306,18 @@
 			"task_overdue": {
 				"title": "Tâche en retard",
 				"content": "La tâche \"{{taskTitle}}\" est en retard"
+			},
+			"task_comment_created": {
+				"title": "Nouveau commentaire sur la tâche",
+				"content": "Un nouveau commentaire a été ajouté à \"{{taskTitle}}\""
+			},
+			"task_updated": {
+				"title": "Tâche mise à jour",
+				"content": "\"{{taskTitle}}\" a été mise à jour"
+			},
+			"project_created": {
+				"title": "Nouveau projet créé",
+				"content": "Un nouveau projet a été créé : {{projectName}}"
 			}
 		}
 	},

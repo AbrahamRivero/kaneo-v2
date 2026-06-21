@@ -11,6 +11,7 @@ import createNotification from "./controllers/create-notification";
 import getNotifications from "./controllers/get-notifications";
 import markAllNotificationsAsRead from "./controllers/mark-all-notifications-as-read";
 import markAsRead from "./controllers/mark-notification-as-read";
+import { workspaceMemberQueryAdapter } from "./infrastructure/adapters/drizzle-workspace-member-query.adapter";
 import { retryFailedDelivery } from "./infrastructure/delivery/delivery";
 
 const bulkResultSchema = v.object({
@@ -358,6 +359,78 @@ subscribeToEvent<{
 			resourceId: data.resourceId,
 			resourceType: data.resourceType,
 		});
+	}
+});
+
+subscribeToEvent<{
+	taskId: string;
+	projectId: string;
+	userId: string;
+	comment: string;
+	content: string;
+	assigneeId: string | null;
+	taskTitle: string;
+}>("task.comment_created", async (data) => {
+	if (data.assigneeId && data.assigneeId !== data.userId) {
+		await createNotification({
+			userId: data.assigneeId,
+			type: "task_comment_created",
+			eventData: {
+				taskTitle: data.taskTitle,
+			},
+			resourceId: data.taskId,
+			resourceType: "task",
+		});
+	}
+});
+
+subscribeToEvent<{
+	taskId: string;
+	projectId: string;
+	title: string;
+	status: string;
+	userId?: string;
+	assigneeId?: string | null;
+}>("task.updated", async (data) => {
+	if (data.assigneeId && data.assigneeId !== data.userId) {
+		await createNotification({
+			userId: data.assigneeId,
+			type: "task_updated",
+			eventData: {
+				taskTitle: data.title,
+			},
+			resourceId: data.taskId,
+			resourceType: "task",
+		});
+	}
+});
+
+subscribeToEvent<{
+	projectId: string;
+	workspaceId: string;
+	name: string;
+	slug: string;
+	userId?: string;
+}>("project.created", async (data) => {
+	if (!data.workspaceId || !data.userId) return;
+
+	const memberIds =
+		await workspaceMemberQueryAdapter.findMemberIdsByWorkspaceId(
+			data.workspaceId,
+		);
+
+	for (const memberId of memberIds) {
+		if (memberId !== data.userId) {
+			await createNotification({
+				userId: memberId,
+				type: "project_created",
+				eventData: {
+					projectName: data.name,
+				},
+				resourceId: data.projectId,
+				resourceType: "project",
+			});
+		}
 	}
 });
 

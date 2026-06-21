@@ -124,6 +124,33 @@ function buildDeliveryContent(notification: {
 					: "A time entry was created in Kaneo.",
 			};
 		}
+		case "task_comment_created": {
+			const taskTitle = getStringValue(notification.eventData, "taskTitle");
+			return {
+				title: "New comment on task",
+				body: taskTitle
+					? `A new comment was added to "${taskTitle}".`
+					: "A new comment was added to a task in Kaneo.",
+			};
+		}
+		case "task_updated": {
+			const taskTitle = getStringValue(notification.eventData, "taskTitle");
+			return {
+				title: "Task updated",
+				body: taskTitle
+					? `"${taskTitle}" was updated.`
+					: "A task was updated in Kaneo.",
+			};
+		}
+		case "project_created": {
+			const projectName = getStringValue(notification.eventData, "projectName");
+			return {
+				title: "New project created",
+				body: projectName
+					? `A new project was created: ${projectName}`
+					: "A new project was created in Kaneo.",
+			};
+		}
 		case "due_date_reminder": {
 			const taskTitle = getStringValue(notification.eventData, "taskTitle");
 			const reminderType = getStringValue(
@@ -195,6 +222,38 @@ async function resolveNotificationContext(notification: {
 			taskId: task.taskId,
 			taskTitle: task.taskTitle,
 			taskUrl: buildTaskUrl(task.workspaceId, task.projectId, task.taskId),
+		};
+	}
+
+	if (notification.resourceType === "project") {
+		const projectData = await db
+			.select({
+				projectId: projectTable.id,
+				projectName: projectTable.name,
+				workspaceId: workspaceTable.id,
+				workspaceName: workspaceTable.name,
+			})
+			.from(projectTable)
+			.innerJoin(
+				workspaceTable,
+				eq(projectTable.workspaceId, workspaceTable.id),
+			)
+			.where(eq(projectTable.id, notification.resourceId))
+			.limit(1)
+			.then((rows) => rows[0] ?? null);
+
+		if (!projectData) {
+			return null;
+		}
+
+		return {
+			workspaceId: projectData.workspaceId,
+			workspaceName: projectData.workspaceName,
+			projectId: projectData.projectId,
+			projectName: projectData.projectName,
+			taskId: null,
+			taskTitle: null,
+			taskUrl: null,
 		};
 	}
 

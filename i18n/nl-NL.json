@@ -1306,6 +1306,18 @@
 			"task_overdue": {
 				"title": "Taak verlopen",
 				"content": "Taak \"{{taskTitle}}\" is verlopen"
+			},
+			"task_comment_created": {
+				"title": "Nieuwe reactie op taak",
+				"content": "Er is een nieuwe reactie toegevoegd aan \"{{taskTitle}}\""
+			},
+			"task_updated": {
+				"title": "Taak bijgewerkt",
+				"content": "\"{{taskTitle}}\" is bijgewerkt"
+			},
+			"project_created": {
+				"title": "Nieuw project aangemaakt",
+				"content": "Er is een nieuw project aangemaakt: {{projectName}}"
 			}
 		}
 	},

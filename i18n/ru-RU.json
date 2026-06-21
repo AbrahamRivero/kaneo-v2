@@ -1317,6 +1317,18 @@
 			"task_overdue": {
 				"title": "Задача просрочена",
 				"content": "Задача \"{{taskTitle}}\" просрочена"
+			},
+			"task_comment_created": {
+				"title": "Новый комментарий к задаче",
+				"content": "Новый комментарий был добавлен к \"{{taskTitle}}\""
+			},
+			"task_updated": {
+				"title": "Задача обновлена",
+				"content": "\"{{taskTitle}}\" была обновлена"
+			},
+			"project_created": {
+				"title": "Новый проект создан",
+				"content": "Новый проект был создан: {{projectName}}"
 			}
 		}
 	},

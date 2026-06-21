@@ -1306,6 +1306,18 @@
 			"task_overdue": {
 				"title": "Εργασία εκπρόθεσμη",
 				"content": "Η εργασία \"{{taskTitle}}\" είναι εκπρόθεσμη"
+			},
+			"task_comment_created": {
+				"title": "Νέο σχόλιο στην εργασία",
+				"content": "Προστέθηκε νέο σχόλιο στην \"{{taskTitle}}\""
+			},
+			"task_updated": {
+				"title": "Εργασία ενημερώθηκε",
+				"content": "Η \"{{taskTitle}}\" ενημερώθηκε"
+			},
+			"project_created": {
+				"title": "Νέο έργο δημιουργήθηκε",
+				"content": "Δημιουργήθηκε ένα νέο έργο: {{projectName}}"
 			}
 		}
 	},

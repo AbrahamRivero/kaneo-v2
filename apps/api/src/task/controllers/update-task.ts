@@ -4,7 +4,7 @@ import db from "../../database";
 import { columnTable, taskTable } from "../../database/schema";
 import { publishEvent } from "../../events";
 import { deleteOrphanedAssets } from "../../storage/cleanup-assets";
-import { assertValidTaskStatus } from "../validate-task-fields";
+import { assertValidTaskStatus } from "../application/services/task-validator.service";
 
 async function updateTask(
 	id: string,
@@ -85,6 +85,7 @@ async function updateTask(
 		title: updatedTask.title,
 		status: updatedTask.status,
 		userId: currentUserId,
+		assigneeId: updatedTask.userId,
 	});
 
 	if (existingTask.description !== description) {

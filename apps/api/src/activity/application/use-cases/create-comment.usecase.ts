@@ -34,6 +34,8 @@ export class CreateCommentUseCase {
 				...activity,
 				comment: `**${user?.name}** commented:\n> ${input.content}`,
 				projectId: task.projectId,
+				assigneeId: task.assigneeId,
+				taskTitle: task.title,
 			});
 		}
 
